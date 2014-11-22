@@ -1,6 +1,23 @@
 package com.lazerycode.selenium.config;
 
-import com.opera.core.systems.OperaDriver;
+import static com.lazerycode.selenium.config.DriverBinaryMapper.configureBinary;
+import static com.lazerycode.selenium.config.DriverBinaryMapper.getBinaryPath;
+import static com.lazerycode.selenium.config.OperatingSystem.getOperatingSystem;
+import static com.lazerycode.selenium.config.SystemArchitecture.getSystemArchitecture;
+import static com.lazerycode.selenium.config.SystemProperty.BROWSER_VERSION;
+import static com.lazerycode.selenium.config.SystemProperty.DEVICE_NAME;
+import static com.lazerycode.selenium.config.SystemProperty.GRID_URL;
+import static com.lazerycode.selenium.config.SystemProperty.PLATFORM;
+import static com.lazerycode.selenium.config.SystemProperty.PLATFORM_VERSION;
+import static com.lazerycode.selenium.config.SystemProperty.SAUCE_KEY;
+import static com.lazerycode.selenium.config.SystemProperty.SAUCE_USER;
+import io.appium.java_client.AppiumDriver;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.HashMap;
+
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -13,15 +30,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.HashMap;
-
-import static com.lazerycode.selenium.config.DriverBinaryMapper.configureBinary;
-import static com.lazerycode.selenium.config.DriverBinaryMapper.getBinaryPath;
-import static com.lazerycode.selenium.config.OperatingSystem.getOperatingSystem;
-import static com.lazerycode.selenium.config.SystemArchitecture.getSystemArchitecture;
+import com.opera.core.systems.OperaDriver;
 
 public enum DriverType implements DriverSetup {
 
@@ -37,7 +46,8 @@ public enum DriverType implements DriverSetup {
     CHROME {
         public DesiredCapabilities getDesiredCapabilities() {
             DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-            capabilities.setCapability("chrome.switches", Arrays.asList("--no-default-browser-check"));
+            capabilities.setCapability("chrome.switches",
+                    Arrays.asList("--no-default-browser-check"));
             HashMap<String, String> chromePreferences = new HashMap<String, String>();
             chromePreferences.put("profile.password_manager_enabled", "false");
             capabilities.setCapability("chrome.prefs", chromePreferences);
@@ -55,9 +65,13 @@ public enum DriverType implements DriverSetup {
     },
     IE {
         public DesiredCapabilities getDesiredCapabilities() {
-            DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer();
-            capabilities.setCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, true);
-            capabilities.setCapability(InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING, true);
+            DesiredCapabilities capabilities = DesiredCapabilities
+                    .internetExplorer();
+            capabilities.setCapability(
+                    CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION,
+                    true);
+            capabilities.setCapability(
+                    InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING, true);
             capabilities.setCapability("requireWindowFocus", true);
             return capabilities;
         }
@@ -73,13 +87,25 @@ public enum DriverType implements DriverSetup {
     },
     SAFARI {
         public DesiredCapabilities getDesiredCapabilities() {
-            DesiredCapabilities capabilities = DesiredCapabilities.safari();
-            capabilities.setCapability("safari.cleanSession", true);
-            return capabilities;
+            if (isMobile()) {
+                DesiredCapabilities capabilities = new DesiredCapabilities();
+                capabilities.setCapability("browserName", "safari");
+                capabilities.setCapability("platformName", "iOS");
+                return capabilities;
+            } else {
+                DesiredCapabilities capabilities = DesiredCapabilities.safari();
+                capabilities.setCapability("safari.cleanSession", true);
+                return capabilities;
+            }
         }
 
         public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
-            return new SafariDriver(capabilities);
+            if (isMobile()) {
+                throw new IllegalArgumentException(
+                        "remoteDriver must be set to true when running with Appium");
+            } else {
+                return new SafariDriver(capabilities);
+            }
         }
     },
     OPERA {
@@ -97,17 +123,36 @@ public enum DriverType implements DriverSetup {
         public DesiredCapabilities getDesiredCapabilities() {
             DesiredCapabilities capabilities = DesiredCapabilities.phantomjs();
             capabilities.setCapability("takesScreenshot", true);
-            capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, getBinaryPath(PHANTOMJS, operatingSystem, systemArchitecture));
+            capabilities.setCapability(
+                    PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
+                    getBinaryPath(PHANTOMJS, operatingSystem,
+                            systemArchitecture));
             return capabilities;
         }
 
         public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
             return new PhantomJSDriver(capabilities);
         }
+    },
+    ANDROID {
+        public DesiredCapabilities getDesiredCapabilities() {
+            DesiredCapabilities capabilities = new DesiredCapabilities();
+            capabilities.setCapability("browserName", "Browser");
+            capabilities.setCapability("platformName", "Android");
+            return capabilities;
+        }
+
+        public WebDriver getWebDriverObject(
+                DesiredCapabilities desiredCapabilities) {
+            throw new IllegalArgumentException(
+                    "remote must be set to true when running on Android");
+
+        }
     };
 
     public static final DriverType defaultDriverType = FIREFOX;
-    public static final boolean useRemoteWebDriver = Boolean.valueOf(System.getProperty("remoteDriver"));
+    public static final boolean useRemoteWebDriver = GRID_URL.isSpecified()
+            || (SAUCE_USER.isSpecified() && SAUCE_KEY.isSpecified());
     private static final OperatingSystem operatingSystem = getOperatingSystem();
     private static final SystemArchitecture systemArchitecture = getSystemArchitecture();
 
@@ -119,22 +164,47 @@ public enum DriverType implements DriverSetup {
         DesiredCapabilities desiredCapabilities = getDesiredCapabilities();
 
         if (useRemoteWebDriver) {
-            URL seleniumGridURL = new URL(System.getProperty("gridURL"));
-            String desiredBrowserVersion = System.getProperty("desiredBrowserVersion");
-            String desiredPlatform = System.getProperty("desiredPlatform");
+            URL seleniumGridURL = getGridURL();
 
-            if (null != desiredPlatform && !desiredPlatform.isEmpty()) {
-                desiredCapabilities.setPlatform(Platform.valueOf(desiredPlatform.toUpperCase()));
+            if (isMobile()) {
+                desiredCapabilities.setCapability("appiumVersion", "1.3.3");
+
+                if (PLATFORM_VERSION.isSpecified()) {
+                    desiredCapabilities.setCapability("platformVersion",
+                            PLATFORM_VERSION.getValue());
+                } else {
+                    throw new IllegalArgumentException(
+                            "platformVersion must be specified");
+                }
+
+                if (DEVICE_NAME.isSpecified()) {
+                    desiredCapabilities.setCapability("deviceName",
+                            DEVICE_NAME.getValue());
+                } else {
+                    throw new IllegalArgumentException(
+                            "deviceName must be specified");
+                }
+
+                return new AppiumDriver(seleniumGridURL, desiredCapabilities);
+            } else {
+                if (PLATFORM.isSpecified()) {
+                    desiredCapabilities.setPlatform(Platform.valueOf(PLATFORM
+                            .getValue().toUpperCase()));
+                }
+
+                if (BROWSER_VERSION.isSpecified()) {
+                    desiredCapabilities.setVersion(BROWSER_VERSION.getValue());
+                }
+                return new RemoteWebDriver(seleniumGridURL, desiredCapabilities);
             }
-
-            if (null != desiredBrowserVersion && !desiredBrowserVersion.isEmpty()) {
-                desiredCapabilities.setVersion(desiredBrowserVersion);
-            }
-
-            return new RemoteWebDriver(seleniumGridURL, desiredCapabilities);
         }
 
-        return getWebDriverObject(desiredCapabilities);
+        if (isMobile()) {
+            throw new IllegalArgumentException(
+                    "seleniumGridURL or sauceUser and sauceKey must be specified when running via Appium.");
+        } else {
+            return getWebDriverObject(desiredCapabilities);
+        }
     }
 
     public static DriverType determineEffectiveDriverType(String browser) {
@@ -142,17 +212,21 @@ public enum DriverType implements DriverSetup {
         try {
             driverType = valueOf(browser.toUpperCase());
         } catch (IllegalArgumentException ignored) {
-            System.err.println("Unknown driver specified, defaulting to '" + driverType + "'...");
+            System.err.println("Unknown driver specified, defaulting to '"
+                    + driverType + "'...");
         } catch (NullPointerException ignored) {
-            System.err.println("No driver specified, defaulting to '" + driverType + "'...");
+            System.err.println("No driver specified, defaulting to '"
+                    + driverType + "'...");
         }
 
         return driverType;
     }
 
     public WebDriver configureDriverBinaryAndInstantiateWebDriver() {
-        System.out.println("Current Operating System: " + operatingSystem.getOperatingSystemType());
-        System.out.println("Current Architecture: " + systemArchitecture.getSystemArchitectureType());
+        // System.out.println("Current Operating System: "
+        // + operatingSystem.getOperatingSystemType());
+        // System.out.println("Current Architecture: "
+        // + systemArchitecture.getSystemArchitectureType());
         System.out.println("Current Browser Selection: " + this);
 
         configureBinary(this, operatingSystem, systemArchitecture);
@@ -163,5 +237,18 @@ public enum DriverType implements DriverSetup {
             urlIsInvalid.printStackTrace();
             return null;
         }
+    }
+
+    private URL getGridURL() throws MalformedURLException {
+        if (Sauce.isDesired()) {
+            return Sauce.getURL();
+        } else {
+            return new URL(GRID_URL.getValue());
+        }
+    }
+
+    public static boolean isMobile() {
+        return "ios".equalsIgnoreCase(PLATFORM.getValue())
+                || "android".equalsIgnoreCase(PLATFORM.getValue());
     }
 }

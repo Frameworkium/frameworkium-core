@@ -23,6 +23,7 @@ Yes you can specify which browser to use by using one of the following switches:
 - -Dbrowser=firefox
 - -Dbrowser=chrome
 - -Dbrowser=ie
+- -Dbrowser=safari
 - -Dbrowser=opera
 - -Dbrowser=htmlunit
 - -Dbrowser=phantomjs

@@ -49,6 +49,7 @@ Thumbs.db
 \.classpath
 \.project
 \.settings
+\.checkstyle
 \.dorsync
 /nbactions.xml
 

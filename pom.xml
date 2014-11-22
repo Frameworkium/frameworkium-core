@@ -36,11 +36,14 @@
 		<browser>firefox</browser>
 		<threads>1</threads>
 		<standalone.binary.root.folder>${project.basedir}/src/test/resources/selenium_standalone_binaries</standalone.binary.root.folder>
-		<remote>false</remote>
 		<seleniumGridURL />
 		<platform />
+		<platformVersion />
+		<deviceName />
 		<browserVersion />
 		<groups />
+		<sauceUser />
+		<sauceKey />
 		<aspectj.version>1.7.4</aspectj.version>
 		<allure.version>1.4.3</allure.version>
 	</properties>
@@ -98,13 +101,28 @@
 			<artifactId>htmlelements-java</artifactId>
 			<version>1.12</version>
 		</dependency>
-       <dependency>
-           <groupId>com.google.inject</groupId>
-           <artifactId>guice</artifactId>
-           <version>3.0</version>
-           <type>jar</type>
-           <scope>compile</scope>
-       </dependency>
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>3.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.appium</groupId>
+			<artifactId>java-client</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.saucelabs</groupId>
+			<artifactId>sauce_testng</artifactId>
+			<version>2.1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.saucelabs</groupId>
+			<artifactId>saucerest</artifactId>
+			<version>1.0.17</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>
@@ -118,7 +136,7 @@
 					<plugin>
 						<groupId>com.lazerycode.selenium</groupId>
 						<artifactId>driver-binary-downloader-maven-plugin</artifactId>
-						<version>1.0.3</version>
+						<version>1.0.4</version>
 						<configuration>
 							<rootStandaloneServerDirectory>${standalone.binary.root.folder}</rootStandaloneServerDirectory>
 							<downloadedZipFileDirectory>${project.basedir}/src/test/resources/selenium_standalone_zips</downloadedZipFileDirectory>
@@ -153,13 +171,17 @@
 								<browser>${browser}</browser>
 								<binaryRootFolder>${standalone.binary.root.folder}</binaryRootFolder>
 								<screenshotDirectory>${project.build.directory}/screenshots</screenshotDirectory>
-								<remoteDriver>${remote}</remoteDriver>
 								<gridURL>${seleniumGridURL}</gridURL>
 								<desiredPlatform>${platform}</desiredPlatform>
+								<desiredPlatformVersion>${platformVersion}</desiredPlatformVersion>
 								<desiredBrowserVersion>${browserVersion}</desiredBrowserVersion>
+								<desiredDeviceName>${deviceName}</desiredDeviceName>
+								<SAUCE_USER_NAME>${sauceUser}</SAUCE_USER_NAME>
+								<SAUCE_ACCESS_KEY>${sauceKey}</SAUCE_ACCESS_KEY>
 							</systemProperties>
 							<includes>
-								<include>**/*WebDriver.java</include>
+								<include>**/*WebTest.java</include>
+								<include>**/*MobiTest.java</include>
 							</includes>
 							<groups>${groups}</groups>
 							<testFailureIgnore>false</testFailureIgnore>
@@ -177,7 +199,6 @@
 			</build>
 		</profile>
 	</profiles>
-
 	<reporting>
 		<excludeDefaults>true</excludeDefaults>
 		<plugins>
@@ -188,4 +209,16 @@
 			</plugin>
 		</plugins>
 	</reporting>
+	<repositories>
+		<repository>
+			<id>saucelabs-repository</id>
+			<url>https://repository-saucelabs.forge.cloudbees.com/release</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 </project>
