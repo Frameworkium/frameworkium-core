@@ -1,5 +1,7 @@
-Selenium-Maven-Template
+Bootstrapium
 =======================
+
+This project is built on top of [Ardesco's Selenium-Maven-Template](https://github.com/Ardesco/Selenium-Maven-Template).
 
 A maven template for Selenium that has the latest dependencies so that you can just check out and start writing tests in four easy steps.
 
