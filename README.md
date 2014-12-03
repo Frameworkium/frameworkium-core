@@ -1,55 +1,37 @@
 Bootstrapium
 =======================
 
-This project is built on top of [Ardesco's Selenium-Maven-Template](https://github.com/Ardesco/Selenium-Maven-Template).
+This project is based on Ardesco's [Selenium-Maven-Template](https://github.com/Ardesco/Selenium-Maven-Template) with some handy added extras for getting started quickly with Selenium and Appium.
 
-A maven template for Selenium that has the latest dependencies so that you can just check out and start writing tests in four easy steps.
-
+Get started in four easy steps:
 
 1. Open a terminal window/command prompt
-2. Clone this project.
-3. CD into project directory
-4. mvn clean verify
+2. ``` git clone https://github.com/jvanderwee/bootstrapium.git ```  
+3. ``` cd bootstrapium ```
+4. ``` mvn clean verify ```
 
-All dependencies should now be downloaded and the example google cheese test will have run successfully (Assuming you have Firefox installed in the default location)
+All dependencies will be downloaded and the example Selenium test will run (assuming you have Firefox installed in the default location!).
 
-### What should I know?
+### Stuff you can do
 
-- To run any unit tests that test your Selenium framework you just need to ensure that all unit test file names end, or start with "test" and they will be run by step 4.
-- The maven surefire plugin has been used to create a profile with the id "selenium-tests" that configures surefire to pick up any java files that ends with the text "WebDriver".  This means that as long as all of your selenium test file names end with WebDriver.java they will get picked up and run when you perform step 4.
+Want to run your tests on a different browser? No problem, just provide the 'browser' argument:
 
-### Anything else?
+```bash
+mvn clean verify -Dbrowser=chrome 
+```
 
-Yes you can specify which browser to use by using one of the following switches:
+Running your mobile web tests using Appium on Sauce Labs is only slightly more involved:
 
-- -Dbrowser=firefox
-- -Dbrowser=chrome
-- -Dbrowser=ie
-- -Dbrowser=safari
-- -Dbrowser=opera
-- -Dbrowser=htmlunit
-- -Dbrowser=phantomjs
+```bash
+mvn clean verify -DsauceUser={username} -DsauceKey={accessKey} -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.1 -DdeviceName="iPhone Simulator" 
+```
 
-You don't need to worry about downloading the IEDriverServer, or chromedriver binaries, this project will do that for you automatically.
+A full list of arguments can be found on the [project wiki](https://github.com/jvanderwee/bootstrapium/wiki).
 
-Not got PhantomJS?  Don't worry that will be automatically downloaded for you as well!
+After running your tests, you can generate an [Allure](http://allure.qatools.ru) test report by simply running:
 
-You can specify a grid to connect to where you can choose your browser, browser version and platform:
+```bash
+mvn site 
+```
 
-- -Dremote=true 
-- -DseleniumGridURL=http://{username}:{accessKey}@ondemand.saucelabs.com:80/wd/hub 
-- -Dplatform=xp 
-- -Dbrowser=firefox 
-- -DbrowserVersion=33
-
-You can even specify multiple threads (you can do it on a grid as well!):
-
-- -Dthreads=2
-
-You can execute one or more specific groups of tests:
-
-- -Dgroups=checkintest,functest
-
-If the tests fail screenshots will be saved in ${project.basedir}/target/screenshots
-
-Run 'mvn site' to generate an [Allure](http://allure.qatools.ru) report in ${project.basedir}/target/site/allure-maven-plugin
+Bootstrapium does other stuff too - check out the [project wiki](https://github.com/jvanderwee/bootstrapium/wiki) for further info.
