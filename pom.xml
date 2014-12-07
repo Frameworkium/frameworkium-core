@@ -17,7 +17,7 @@
 	<version>1.0-SNAPSHOT</version>
 	<modelVersion>4.0.0</modelVersion>
 
-	<name>Bootstrap</name>
+	<name>Bootstrapium</name>
 	<description>Bootstrap For Selenium and Appium</description>
 	<url>http://www.jvanderwee.com</url>
 
@@ -33,7 +33,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<env.config>local</env.config>
-		<browser>firefox</browser>
+		<browser>phantomjs</browser>
 		<threads>1</threads>
 		<standalone.binary.root.folder>${project.basedir}/src/test/resources/selenium_standalone_binaries</standalone.binary.root.folder>
 		<seleniumGridURL />
