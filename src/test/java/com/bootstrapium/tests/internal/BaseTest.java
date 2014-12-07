@@ -11,6 +11,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
 
@@ -23,37 +24,49 @@ import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 
-@Listeners({ScreenshotListener.class, SauceLabsListener.class, MethodInterceptor.class})
+@Listeners({ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class})
 public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
     private static List<WebDriver> webDriverPool = Collections
             .synchronizedList(new ArrayList<WebDriver>());
     private static ThreadLocal<WebDriver> driverThread;
 
+    private static DriverType desiredDriver = determineEffectiveDriverType();
+    
     @BeforeSuite(alwaysRun = true)
-    public static void instantiateDriverObject() {
-
-        final DriverType desiredDriver = determineEffectiveDriverType(System
-                .getProperty("browser"));
-
-        driverThread = new ThreadLocal<WebDriver>() {
-            @Override
-            protected WebDriver initialValue() {
-                final WebDriver webDriver = desiredDriver
-                        .configureDriverBinaryAndInstantiateWebDriver();
-                webDriverPool.add(webDriver);
-                return webDriver;
-            }
-        };
+    public static void instantiateNonNativeDriverObject() {
+    	if(DriverType.isNative()) {
+    		driverThread = new ThreadLocal<WebDriver>();
+    	} else {
+    		driverThread = new ThreadLocal<WebDriver>() {
+    			@Override
+    			protected WebDriver initialValue() {
+    				final WebDriver webDriver = desiredDriver.instantiate();
+    				webDriverPool.add(webDriver);
+    				return webDriver;
+    			}
+    		};
+    	}
     }
 
+    @BeforeMethod(alwaysRun = true)
+    public static void instantiateNativeDriverObject() {
+    	if(DriverType.isNative()) {
+    		driverThread.set(desiredDriver.instantiate());
+    	}
+    }
+    
     public static WebDriver getDriver() {
         return driverThread.get();
     }
 
     @AfterMethod(alwaysRun = true)
-    public static void clearCookies() {
-        getDriver().manage().deleteAllCookies();
+    public static void clearSession() {
+    	if(DriverType.isNative()) {
+    		getDriver().quit();
+    	} else {
+    		getDriver().manage().deleteAllCookies();
+    	}
     }
 
     @AfterSuite(alwaysRun = true)
@@ -61,6 +74,10 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         for (WebDriver driver : webDriverPool) {
             driver.quit();
         }
+    }
+    
+    @AfterSuite(alwaysRun = true)
+    public static void createAllureProperties() {
         AllureProperties.create();
     }
     

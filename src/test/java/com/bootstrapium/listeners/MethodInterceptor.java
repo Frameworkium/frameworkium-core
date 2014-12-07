@@ -17,12 +17,20 @@ public class MethodInterceptor implements IMethodInterceptor {
         List<IMethodInstance> methodsToRun = new ArrayList<IMethodInstance>();
         for (IMethodInstance instance : methods) {
             String clazz = instance.getMethod().getRealClass().getName();
-            if (!DriverType.isMobile() && clazz.endsWith("WebTest")) {
-                methodsToRun.add(instance);
-            } else if (DriverType.isMobile() && clazz.endsWith("MobiTest")) {
-                methodsToRun.add(instance);
-            }
+            if (!DriverType.isMobile()) {
+            	if(clazz.endsWith("WebTest")) {
+            		methodsToRun.add(instance);
+            	}
+            } else {
+            	if(DriverType.isNative() && clazz.endsWith("AppTest")) {
+            		methodsToRun.add(instance);
+            	}
+            	else if(!DriverType.isNative() && clazz.endsWith("MobiTest")){
+            		methodsToRun.add(instance);
+            	}
+            }   
         }
+ 
         return methodsToRun;
     }
 

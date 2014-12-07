@@ -35,7 +35,6 @@
 		<env.config>local</env.config>
 		<browser>phantomjs</browser>
 		<threads>1</threads>
-		<standalone.binary.root.folder>${project.basedir}/src/test/resources/selenium_standalone_binaries</standalone.binary.root.folder>
 		<seleniumGridURL />
 		<platform />
 		<platformVersion />
@@ -45,6 +44,7 @@
 		<sauceUser />
 		<sauceKey />
 		<build />
+		<appPath />
 		<aspectj.version>1.7.4</aspectj.version>
 		<allure.version>1.4.3</allure.version>
 	</properties>
@@ -153,7 +153,6 @@
 							<systemProperties>
 								<env.config>${env.config}</env.config>
 								<browser>${browser}</browser>
-								<binaryRootFolder>${standalone.binary.root.folder}</binaryRootFolder>
 								<screenshotDirectory>${project.build.directory}/screenshots</screenshotDirectory>
 								<gridURL>${seleniumGridURL}</gridURL>
 								<desiredPlatform>${platform}</desiredPlatform>
@@ -163,10 +162,12 @@
 								<SAUCE_USER_NAME>${sauceUser}</SAUCE_USER_NAME>
 								<SAUCE_ACCESS_KEY>${sauceKey}</SAUCE_ACCESS_KEY>
 								<build>${build}</build>
+								<appPath>${appPath}</appPath>
 							</systemProperties>
 							<includes>
 								<include>**/*WebTest.java</include>
 								<include>**/*MobiTest.java</include>
+								<include>**/*AppTest.java</include>
 							</includes>
 							<groups>${groups}</groups>
 							<testFailureIgnore>false</testFailureIgnore>

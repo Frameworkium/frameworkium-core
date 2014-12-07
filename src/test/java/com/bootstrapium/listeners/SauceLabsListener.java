@@ -1,8 +1,14 @@
 package com.bootstrapium.listeners;
 
+import static com.bootstrapium.config.SystemProperty.APP_PATH;
+
+import java.io.File;
+import java.io.IOException;
+
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 
+import com.bootstrapium.config.DriverType;
 import com.bootstrapium.config.Sauce;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandTestListener;
@@ -15,6 +21,14 @@ public class SauceLabsListener extends SauceOnDemandTestListener {
     public void onStart(ITestContext testContext) {
         if (isRunningOnSauceLabs) {
             super.onStart(testContext);
+            
+            if(DriverType.isNative()) {
+            	try {
+            		Sauce.uploadFile(new File(APP_PATH.getValue()));
+            	} catch(IOException ioe) {
+            		ioe.printStackTrace();
+            	}
+            }
         }
     }
 

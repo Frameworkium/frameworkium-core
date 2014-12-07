@@ -10,7 +10,6 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Augmenter;
-import org.openqa.selenium.remote.SessionNotFoundException;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 

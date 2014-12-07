@@ -1,5 +1,6 @@
 package com.bootstrapium.config;
 
+import static com.bootstrapium.config.SystemProperty.APP_PATH;
 import static com.bootstrapium.config.SystemProperty.BROWSER_VERSION;
 import static com.bootstrapium.config.SystemProperty.BUILD;
 import static com.bootstrapium.config.SystemProperty.DEVICE_NAME;
@@ -10,6 +11,7 @@ import static com.bootstrapium.config.SystemProperty.SAUCE_KEY;
 import static com.bootstrapium.config.SystemProperty.SAUCE_USER;
 import io.appium.java_client.AppiumDriver;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -43,7 +45,7 @@ public enum DriverType implements DriverSetup {
         public DesiredCapabilities getDesiredCapabilities() {
             DesiredCapabilities capabilities = DesiredCapabilities.chrome();
             capabilities.setCapability("chrome.switches",
-                    Arrays.asList("--no-default-browser-check"));
+            		Arrays.asList("--no-default-browser-check"));
             HashMap<String, String> chromePreferences = new HashMap<String, String>();
             chromePreferences.put("profile.password_manager_enabled", "false");
             capabilities.setCapability("chrome.prefs", chromePreferences);
@@ -51,7 +53,7 @@ public enum DriverType implements DriverSetup {
         }
 
         public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
-            return new ChromeDriver(capabilities);
+            	return new ChromeDriver(capabilities);
         }
     },
     IE {
@@ -88,7 +90,7 @@ public enum DriverType implements DriverSetup {
         public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
             if (isMobile()) {
                 throw new IllegalArgumentException(
-                        "remoteDriver must be set to true when running with Appium");
+                        "seleniumGridURL or sauceUser and sauceKey must be specified when running on iOS");
             } else {
                 return new SafariDriver(capabilities);
             }
@@ -116,7 +118,7 @@ public enum DriverType implements DriverSetup {
             return new PhantomJSDriver(capabilities);
         }
     },
-    ANDROID {
+    BROWSER {
         public DesiredCapabilities getDesiredCapabilities() {
             DesiredCapabilities capabilities = new DesiredCapabilities();
             capabilities.setCapability("browserName", "Browser");
@@ -127,7 +129,35 @@ public enum DriverType implements DriverSetup {
         public WebDriver getWebDriverObject(
                 DesiredCapabilities desiredCapabilities) {
             throw new IllegalArgumentException(
-                    "remote must be set to true when running on Android");
+                    "seleniumGridURL or sauceUser and sauceKey must be specified when running on Android");
+
+        }
+    },
+    IOS {
+        public DesiredCapabilities getDesiredCapabilities() {
+            DesiredCapabilities capabilities = new DesiredCapabilities();
+            capabilities.setCapability("platformName", "iOS");
+            return capabilities;
+        }
+
+        public WebDriver getWebDriverObject(
+                DesiredCapabilities desiredCapabilities) {
+            throw new IllegalArgumentException(
+                    "seleniumGridURL or sauceUser and sauceKey must be specified when running on iOS");
+
+        }
+    },
+    ANDROID {
+        public DesiredCapabilities getDesiredCapabilities() {
+            DesiredCapabilities capabilities = new DesiredCapabilities();
+            capabilities.setCapability("platformName", "Android");
+            return capabilities;
+        }
+
+        public WebDriver getWebDriverObject(
+                DesiredCapabilities desiredCapabilities) {
+            throw new IllegalArgumentException(
+                    "seleniumGridURL or sauceUser and sauceKey must be specified when running on Android");
 
         }
     };
@@ -149,6 +179,11 @@ public enum DriverType implements DriverSetup {
         		desiredCapabilities.setCapability("sauce-advisor", false);
         		// Set build number
         		desiredCapabilities.setCapability("build", BUILD.getValue());
+        		
+        		if(isNative()) {
+        			// Set app path
+        			desiredCapabilities.setCapability("app", "sauce-storage:" + new File(APP_PATH.getValue()).getName());
+        		}
         		
             } else {
             	seleniumGridURL = new URL(GRID_URL.getValue());
@@ -195,10 +230,14 @@ public enum DriverType implements DriverSetup {
         }
     }
 
-    public static DriverType determineEffectiveDriverType(String browser) {
+    public static DriverType determineEffectiveDriverType() {
         DriverType driverType = defaultDriverType;
         try {
-            driverType = valueOf(browser.toUpperCase());
+        	if(isNative()) {
+        		driverType = valueOf(PLATFORM.getValue().toUpperCase());
+        	} else {
+        		driverType = valueOf(com.bootstrapium.config.SystemProperty.BROWSER.getValue().toUpperCase());
+        	}
         } catch (IllegalArgumentException ignored) {
             System.err.println("Unknown driver specified, defaulting to '"
                     + driverType + "'...");
@@ -210,7 +249,7 @@ public enum DriverType implements DriverSetup {
         return driverType;
     }
 
-    public WebDriver configureDriverBinaryAndInstantiateWebDriver() {
+    public WebDriver instantiate() {
         System.out.println("Current Browser Selection: " + this);
 
         try {
@@ -224,5 +263,9 @@ public enum DriverType implements DriverSetup {
     public static boolean isMobile() {
         return "ios".equalsIgnoreCase(PLATFORM.getValue())
                 || "android".equalsIgnoreCase(PLATFORM.getValue());
+    }
+    
+    public static boolean isNative() {
+        return APP_PATH.isSpecified();
     }
 }

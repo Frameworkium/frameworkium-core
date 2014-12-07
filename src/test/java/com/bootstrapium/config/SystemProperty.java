@@ -5,7 +5,7 @@ public enum SystemProperty {
     BROWSER("browser"), BROWSER_VERSION("desiredBrowserVersion"), PLATFORM("desiredPlatform"), PLATFORM_VERSION("desiredPlatformVersion"), DEVICE_NAME(
             "desiredDeviceName"), GRID_URL("gridURL"), SAUCE_USER("SAUCE_USER_NAME"), SAUCE_KEY(
             "SAUCE_ACCESS_KEY"), BUILD(
-                    "build");
+                    "build"), APP_PATH("appPath");
 
     private String value;
 
