@@ -1,7 +1,5 @@
 package com.bootstrapium.config;
 
-import static com.bootstrapium.config.DriverBinaryMapper.configureBinary;
-import static com.bootstrapium.config.DriverBinaryMapper.getBinaryPath;
 import static com.bootstrapium.config.OperatingSystem.getOperatingSystem;
 import static com.bootstrapium.config.SystemArchitecture.getSystemArchitecture;
 import static com.bootstrapium.config.SystemProperty.BROWSER_VERSION;
@@ -24,7 +22,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -57,11 +54,6 @@ public enum DriverType implements DriverSetup {
         public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
             return new ChromeDriver(capabilities);
         }
-
-        @Override
-        public String getWebDriverSystemPropertyKey() {
-            return "webdriver.chrome.driver";
-        }
     },
     IE {
         public DesiredCapabilities getDesiredCapabilities() {
@@ -78,11 +70,6 @@ public enum DriverType implements DriverSetup {
 
         public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
             return new InternetExplorerDriver(capabilities);
-        }
-
-        @Override
-        public String getWebDriverSystemPropertyKey() {
-            return "webdriver.ie.driver";
         }
     },
     SAFARI {
@@ -123,10 +110,6 @@ public enum DriverType implements DriverSetup {
         public DesiredCapabilities getDesiredCapabilities() {
             DesiredCapabilities capabilities = DesiredCapabilities.phantomjs();
             capabilities.setCapability("takesScreenshot", true);
-            capabilities.setCapability(
-                    PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY,
-                    getBinaryPath(PHANTOMJS, operatingSystem,
-                            systemArchitecture));
             return capabilities;
         }
 
@@ -153,12 +136,6 @@ public enum DriverType implements DriverSetup {
     public static final DriverType defaultDriverType = FIREFOX;
     public static final boolean useRemoteWebDriver = GRID_URL.isSpecified()
             || (SAUCE_USER.isSpecified() && SAUCE_KEY.isSpecified());
-    private static final OperatingSystem operatingSystem = getOperatingSystem();
-    private static final SystemArchitecture systemArchitecture = getSystemArchitecture();
-
-    public String getWebDriverSystemPropertyKey() {
-        return null;
-    }
 
     public WebDriver instantiateWebDriver() throws MalformedURLException {
         DesiredCapabilities desiredCapabilities = getDesiredCapabilities();
@@ -223,13 +200,7 @@ public enum DriverType implements DriverSetup {
     }
 
     public WebDriver configureDriverBinaryAndInstantiateWebDriver() {
-        // System.out.println("Current Operating System: "
-        // + operatingSystem.getOperatingSystemType());
-        // System.out.println("Current Architecture: "
-        // + systemArchitecture.getSystemArchitectureType());
         System.out.println("Current Browser Selection: " + this);
-
-        configureBinary(this, operatingSystem, systemArchitecture);
 
         try {
             return instantiateWebDriver();
