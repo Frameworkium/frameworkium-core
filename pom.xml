@@ -44,6 +44,7 @@
 		<groups />
 		<sauceUser />
 		<sauceKey />
+		<build />
 		<aspectj.version>1.7.4</aspectj.version>
 		<allure.version>1.4.3</allure.version>
 	</properties>
@@ -161,6 +162,7 @@
 								<desiredDeviceName>${deviceName}</desiredDeviceName>
 								<SAUCE_USER_NAME>${sauceUser}</SAUCE_USER_NAME>
 								<SAUCE_ACCESS_KEY>${sauceKey}</SAUCE_ACCESS_KEY>
+								<build>${build}</build>
 							</systemProperties>
 							<includes>
 								<include>**/*WebTest.java</include>

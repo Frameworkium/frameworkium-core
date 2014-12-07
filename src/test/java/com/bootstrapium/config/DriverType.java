@@ -1,8 +1,7 @@
 package com.bootstrapium.config;
 
-import static com.bootstrapium.config.OperatingSystem.getOperatingSystem;
-import static com.bootstrapium.config.SystemArchitecture.getSystemArchitecture;
 import static com.bootstrapium.config.SystemProperty.BROWSER_VERSION;
+import static com.bootstrapium.config.SystemProperty.BUILD;
 import static com.bootstrapium.config.SystemProperty.DEVICE_NAME;
 import static com.bootstrapium.config.SystemProperty.GRID_URL;
 import static com.bootstrapium.config.SystemProperty.PLATFORM;
@@ -141,7 +140,19 @@ public enum DriverType implements DriverSetup {
         DesiredCapabilities desiredCapabilities = getDesiredCapabilities();
 
         if (useRemoteWebDriver) {
-            URL seleniumGridURL = getGridURL();
+        	URL seleniumGridURL;
+        	if (Sauce.isDesired()) {
+        		seleniumGridURL = Sauce.getURL();
+        		// Enable HTML source capture
+        		desiredCapabilities.setCapability("capture-html", true);
+        		// Disable Sauce Advisor
+        		desiredCapabilities.setCapability("sauce-advisor", false);
+        		// Set build number
+        		desiredCapabilities.setCapability("build", BUILD.getValue());
+        		
+            } else {
+            	seleniumGridURL = new URL(GRID_URL.getValue());
+            }
 
             if (isMobile()) {
                 desiredCapabilities.setCapability("appiumVersion", "1.3.3");
@@ -207,14 +218,6 @@ public enum DriverType implements DriverSetup {
         } catch (MalformedURLException urlIsInvalid) {
             urlIsInvalid.printStackTrace();
             return null;
-        }
-    }
-
-    private URL getGridURL() throws MalformedURLException {
-        if (Sauce.isDesired()) {
-            return Sauce.getURL();
-        } else {
-            return new URL(GRID_URL.getValue());
         }
     }
 
