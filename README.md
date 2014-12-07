@@ -3,14 +3,11 @@ Bootstrapium
 
 This project is based on Ardesco's [Selenium-Maven-Template](https://github.com/Ardesco/Selenium-Maven-Template) with some handy added extras for getting started quickly with Selenium and Appium.
 
-Get started in four easy steps:
+The easiest way to get starting is by using [bootstrapium-vagrant](https://github.com/jvanderwee/bootstrapium-vagrant) to create a VM with Bootstrapium and its dependencies pre-installed.
 
-1. Open a terminal window/command prompt
-2. ``` git clone https://github.com/jvanderwee/bootstrapium.git ```  
-3. ``` cd bootstrapium ```
-4. ``` mvn clean verify ```
+If you do not wish to use Vagrant then clone this project and ensure PhantomJS and chrome-driver are on your path.
 
-All dependencies will be downloaded and the example Selenium test will run (assuming you have Firefox installed in the default location!).
+Open the ``` bootstrapium ``` directory in a terminal window/command prompt and run ``` mvn clean verify ``` to run the example test using PhantomJS.
 
 ### Stuff you can do
 
@@ -19,6 +16,8 @@ Want to run your tests on a different browser? No problem, just provide the 'bro
 ```bash
 mvn clean verify -Dbrowser=chrome 
 ```
+
+All you need to do is ensure the browser is installed in the default location (bootstrapium-vagrant pre-installs Firefox and Chrome).
 
 Running your mobile web tests using Appium on Sauce Labs is only slightly more involved:
 
