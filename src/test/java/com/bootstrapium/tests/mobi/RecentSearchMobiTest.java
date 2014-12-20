@@ -1,6 +1,6 @@
 package com.bootstrapium.tests.mobi;
 
-import static org.testng.Assert.assertTrue;
+import static com.google.common.truth.Truth.assertThat;
 
 import org.testng.annotations.Test;
 
@@ -20,7 +20,6 @@ public class RecentSearchMobiTest extends BaseTest {
         HomePage homePage = resultsPage.header().clickLogoToGoHome();
 
         // Check 'SE16' is listed in recent searches
-        assertTrue(homePage.getRecentSearches().contains("SE16, for sale"),
-                "Expected SE16 in recent searches");
+        assertThat(homePage.getRecentSearches()).contains("SE16, for sale");
     }
 }

@@ -124,6 +124,11 @@
 			<artifactId>saucerest</artifactId>
 			<version>1.0.17</version>
 		</dependency>
+		<dependency>
+  			<groupId>com.google.truth</groupId>
+  			<artifactId>truth</artifactId>
+  			<version>0.24</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>
