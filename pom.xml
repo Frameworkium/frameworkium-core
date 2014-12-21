@@ -33,7 +33,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<env.config>local</env.config>
-		<browser>phantomjs</browser>
+		<browser/>
 		<threads>1</threads>
 		<seleniumGridURL />
 		<platform />
