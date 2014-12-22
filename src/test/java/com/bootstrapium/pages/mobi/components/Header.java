@@ -19,6 +19,6 @@ public class Header extends HtmlElement {
     @Step("Click Rightmove logo to return to the home page")
     public HomePage clickLogoToGoHome() {
         logo.click();
-        return PageFactory.getInstance(HomePage.class);
+        return PageFactory.newInstance(HomePage.class);
     }
 }

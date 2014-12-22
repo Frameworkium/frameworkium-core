@@ -14,27 +14,19 @@ import ru.yandex.qatools.htmlelements.loader.HtmlElementLoader;
 
 import com.bootstrapium.pages.internal.BasePage;
 import com.bootstrapium.pages.internal.PageFactory;
+import com.bootstrapium.pages.internal.Visible;
 
 public class CalculatorPage extends BasePage<CalculatorPage>{
 
     @FindBy(className = "UIATextField")
     private List<TextInput> fields;
     
+    @Visible
     @FindBy(className = "UIAButton")
     private Button computeSumButton;
     
     @FindBy(className = "UIAStaticText")
     private TextBlock resultLabel;
-    
-    public CalculatorPage get() {
-        HtmlElementLoader.populatePageObject(this, driver);
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.className("UIAButton")));
-        return this;
-    }
-    
-    public static CalculatorPage newInstance() {
-        return PageFactory.getInstance(CalculatorPage.class);
-    }
     
     @Step("Compute sum of {0} and {1}.")
     public CalculatorPage computeSum(Integer a, Integer b) {

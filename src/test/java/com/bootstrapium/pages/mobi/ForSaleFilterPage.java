@@ -12,9 +12,11 @@ import ru.yandex.qatools.htmlelements.loader.HtmlElementLoader;
 
 import com.bootstrapium.pages.internal.BasePage;
 import com.bootstrapium.pages.internal.PageFactory;
+import com.bootstrapium.pages.internal.Visible;
 
 public class ForSaleFilterPage extends BasePage<ForSaleFilterPage> {
 
+    @Visible
     @Name("Find Properties button")
     @FindBy(id = "search")
     private Button findPropertiesButton;
@@ -23,12 +25,6 @@ public class ForSaleFilterPage extends BasePage<ForSaleFilterPage> {
     @FindBy(id = "searchLocation")
     private TextInput locationField;
     
-    public ForSaleFilterPage get() {
-        HtmlElementLoader.populatePageObject(this, driver);
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("search")));
-        return this;
-    }
-
     @Step("Enter location \"{0}\".")
     public ForSaleFilterPage enterLocation(String location) {
         locationField.sendKeys(location);
@@ -38,6 +34,6 @@ public class ForSaleFilterPage extends BasePage<ForSaleFilterPage> {
     @Step("Click Find Properties.")
     public ForSaleResultsPage findProperties() {
         findPropertiesButton.click();
-        return PageFactory.getInstance(ForSaleResultsPage.class);
+        return PageFactory.newInstance(ForSaleResultsPage.class);
     }
 }
