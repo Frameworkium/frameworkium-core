@@ -41,8 +41,7 @@
 		<deviceName />
 		<browserVersion />
 		<groups />
-		<sauceUser />
-		<sauceKey />
+		<sauce />
 		<build />
 		<appPath />
 		<aspectj.version>1.7.4</aspectj.version>
@@ -164,8 +163,7 @@
 								<desiredPlatformVersion>${platformVersion}</desiredPlatformVersion>
 								<desiredBrowserVersion>${browserVersion}</desiredBrowserVersion>
 								<desiredDeviceName>${deviceName}</desiredDeviceName>
-								<SAUCE_USER_NAME>${sauceUser}</SAUCE_USER_NAME>
-								<SAUCE_ACCESS_KEY>${sauceKey}</SAUCE_ACCESS_KEY>
+								<sauce>${sauce}</sauce>
 								<build>${build}</build>
 								<appPath>${appPath}</appPath>
 							</systemProperties>

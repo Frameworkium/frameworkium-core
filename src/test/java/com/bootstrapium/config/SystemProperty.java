@@ -3,9 +3,8 @@ package com.bootstrapium.config;
 public enum SystemProperty {
 
     BROWSER("browser"), BROWSER_VERSION("desiredBrowserVersion"), PLATFORM("desiredPlatform"), PLATFORM_VERSION("desiredPlatformVersion"), DEVICE_NAME(
-            "desiredDeviceName"), GRID_URL("gridURL"), SAUCE_USER("SAUCE_USER_NAME"), SAUCE_KEY(
-            "SAUCE_ACCESS_KEY"), BUILD(
-                    "build"), APP_PATH("appPath");
+            "desiredDeviceName"), GRID_URL("gridURL"), BUILD(
+                    "build"), APP_PATH("appPath"), SAUCE("sauce");
 
     private String value;
 

@@ -7,8 +7,6 @@ import static com.bootstrapium.config.SystemProperty.DEVICE_NAME;
 import static com.bootstrapium.config.SystemProperty.GRID_URL;
 import static com.bootstrapium.config.SystemProperty.PLATFORM;
 import static com.bootstrapium.config.SystemProperty.PLATFORM_VERSION;
-import static com.bootstrapium.config.SystemProperty.SAUCE_KEY;
-import static com.bootstrapium.config.SystemProperty.SAUCE_USER;
 import io.appium.java_client.AppiumDriver;
 
 import java.io.File;
@@ -164,7 +162,7 @@ public enum DriverType implements DriverSetup {
 
     public static final DriverType defaultDriverType = PHANTOMJS;
     public static final boolean useRemoteWebDriver = GRID_URL.isSpecified()
-            || (SAUCE_USER.isSpecified() && SAUCE_KEY.isSpecified());
+            || Sauce.isDesired();
 
     public WebDriver instantiateWebDriver() throws MalformedURLException {
         DesiredCapabilities desiredCapabilities = getDesiredCapabilities();

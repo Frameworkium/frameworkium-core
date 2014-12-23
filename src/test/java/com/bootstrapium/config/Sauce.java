@@ -1,7 +1,6 @@
 package com.bootstrapium.config;
 
-import static com.bootstrapium.config.SystemProperty.SAUCE_KEY;
-import static com.bootstrapium.config.SystemProperty.SAUCE_USER;
+import static com.bootstrapium.config.SystemProperty.SAUCE;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +16,7 @@ import com.saucelabs.saucerest.SauceREST;
 public class Sauce {
 
     private static final SauceOnDemandAuthentication authentication = new SauceOnDemandAuthentication(
-            SAUCE_USER.getValue(), SAUCE_KEY.getValue());
+            System.getenv("SAUCE_USERNAME"), System.getenv("SAUCE_ACCESS_KEY"));
 
     private static final SauceREST client = new SauceREST(authentication.getUsername(),
             authentication.getAccessKey());
@@ -29,7 +28,7 @@ public class Sauce {
     }
 
     public static boolean isDesired() {
-        return SAUCE_USER.isSpecified() && SAUCE_KEY.isSpecified();
+        return SAUCE.isSpecified() && Boolean.parseBoolean(SAUCE.getValue());
     }
 
     public static void updateJobName(
