@@ -29,7 +29,11 @@ public abstract class BasePage<T extends BasePage<T>> {
     @SuppressWarnings("unchecked")
     public T get() {
         HtmlElementLoader.populatePageObject((T) this, driver);
-        waitForVisibleElements((T) this);
+        try {
+            waitForVisibleElements((T) this);
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
         return (T) this;
     }
 
@@ -38,21 +42,19 @@ public abstract class BasePage<T extends BasePage<T>> {
         return get();
     }
 
-    private void waitForVisibleElements(Object pageObject) {
+    private void waitForVisibleElements(Object pageObject) throws IllegalArgumentException, IllegalAccessException {
         for (Field field : pageObject.getClass().getDeclaredFields()) {
             for (Annotation annotation : field.getDeclaredAnnotations()) {
                 if (annotation instanceof Visible) {
-                    try {
-                        field.setAccessible(true);
-                        Object obj = field.get(pageObject);
-                        WebElement element = ((TypifiedElement) obj)
-                                .getWrappedElement();
-                        wait.until(ExpectedConditions.visibilityOf(element));
-                    } catch (IllegalArgumentException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                    field.setAccessible(true);
+                    Object obj = field.get(pageObject);
+                    WebElement element = null;
+                    if (obj instanceof TypifiedElement) {
+                        element = ((TypifiedElement) obj).getWrappedElement();
+                    } else if (obj instanceof WebElement) {
+                        element = (WebElement) obj;
                     }
+                    wait.until(ExpectedConditions.visibilityOf(element));
                 }
             }
         }
