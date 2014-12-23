@@ -190,7 +190,7 @@ public enum DriverType implements DriverSetup {
             }
 
             if (isMobile()) {
-                desiredCapabilities.setCapability("appiumVersion", "1.3.3");
+                desiredCapabilities.setCapability("appiumVersion", "1.3.4");
 
                 if (PLATFORM_VERSION.isSpecified()) {
                     desiredCapabilities.setCapability("platformVersion",
