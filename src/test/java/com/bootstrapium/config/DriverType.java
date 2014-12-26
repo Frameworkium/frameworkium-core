@@ -194,16 +194,34 @@ public enum DriverType implements DriverSetup {
                     desiredCapabilities.setCapability("platformVersion",
                             PLATFORM_VERSION.getValue());
                 } else {
-                    throw new IllegalArgumentException(
-                            "platformVersion must be specified");
+                    if(PLATFORM
+                            .getValue().equalsIgnoreCase("ios")) {
+                        desiredCapabilities.setCapability("platformVersion",
+                                "8.1");
+                        
+                    } else if(PLATFORM
+                            .getValue().equalsIgnoreCase("android")) {
+                        desiredCapabilities.setCapability("platformVersion",
+                                "5.0");
+                        
+                    }
                 }
 
                 if (DEVICE_NAME.isSpecified()) {
                     desiredCapabilities.setCapability("deviceName",
                             DEVICE_NAME.getValue());
                 } else {
-                    throw new IllegalArgumentException(
-                            "deviceName must be specified");
+                    if(PLATFORM
+                            .getValue().equalsIgnoreCase("ios")) {
+                        desiredCapabilities.setCapability("deviceName",
+                                "iPhone Simulator");
+                        
+                    } else if(PLATFORM
+                            .getValue().equalsIgnoreCase("android")) {
+                        desiredCapabilities.setCapability("deviceName",
+                                "Android Emulator");
+                        
+                    }
                 }
 
                 return new AppiumDriver(seleniumGridURL, desiredCapabilities);
@@ -222,7 +240,7 @@ public enum DriverType implements DriverSetup {
 
         if (isMobile()) {
             throw new IllegalArgumentException(
-                    "seleniumGridURL or sauceUser and sauceKey must be specified when running via Appium.");
+                    "seleniumGridURL or sauce must be specified when running via Appium.");
         } else {
             return getWebDriverObject(desiredCapabilities);
         }
