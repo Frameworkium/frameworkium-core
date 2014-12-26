@@ -21,11 +21,14 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
+import com.bootstrapium.listeners.EventListener;
 import com.opera.core.systems.OperaDriver;
 
 public enum DriverType implements DriverSetup {
@@ -109,6 +112,9 @@ public enum DriverType implements DriverSetup {
         public DesiredCapabilities getDesiredCapabilities() {
             DesiredCapabilities capabilities = DesiredCapabilities.phantomjs();
             capabilities.setCapability("takesScreenshot", true);
+            capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new  String[] {
+                    "--webdriver-loglevel=NONE"
+            });
             return capabilities;
         }
 
@@ -269,7 +275,10 @@ public enum DriverType implements DriverSetup {
         System.out.println("Current Browser Selection: " + this);
 
         try {
-            return instantiateWebDriver();
+            WebDriver driver = instantiateWebDriver();
+            EventFiringWebDriver eventFiringWD= new EventFiringWebDriver(driver);
+            eventFiringWD.register(new EventListener());
+            return eventFiringWD;
         } catch (MalformedURLException urlIsInvalid) {
             urlIsInvalid.printStackTrace();
             return null;

@@ -19,12 +19,13 @@ import com.bootstrapium.config.DriverType;
 import com.bootstrapium.listeners.MethodInterceptor;
 import com.bootstrapium.listeners.SauceLabsListener;
 import com.bootstrapium.listeners.ScreenshotListener;
+import com.bootstrapium.listeners.TestListener;
 import com.bootstrapium.reporting.AllureProperties;
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 
-@Listeners({ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class})
+@Listeners({ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class, TestListener.class})
 public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
     private static List<WebDriver> webDriverPool = Collections

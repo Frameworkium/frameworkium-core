@@ -33,7 +33,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<env.config>local</env.config>
-		<browser/>
+		<browser />
 		<threads>1</threads>
 		<seleniumGridURL />
 		<platform />
@@ -124,9 +124,19 @@
 			<version>1.0.17</version>
 		</dependency>
 		<dependency>
-  			<groupId>com.google.truth</groupId>
-  			<artifactId>truth</artifactId>
-  			<version>0.24</version>
+			<groupId>com.google.truth</groupId>
+			<artifactId>truth</artifactId>
+			<version>0.24</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.1</version>
 		</dependency>
 	</dependencies>
 
