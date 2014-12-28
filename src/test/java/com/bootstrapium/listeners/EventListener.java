@@ -84,7 +84,7 @@ public class EventListener implements WebDriverEventListener {
 
     @Override
     public void onException(Throwable thrw, WebDriver driver) {
-        logger.error(thrw.getMessage());
+        logger.info(thrw.getMessage());
     }
 
     private String elementToString(WebElement element) {
