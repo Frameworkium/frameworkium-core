@@ -9,11 +9,11 @@ The easiest way to get starting is by using [bootstrapium-vagrant](https://githu
 
 If you do not wish to use Vagrant then clone this project and ensure PhantomJS and chrome-driver are on your path.
 
-Open the ``` bootstrapium ``` directory in a terminal window/command prompt and run ``` mvn clean verify ``` to run the example test using PhantomJS.
+Open the ``` bootstrapium ``` directory in a terminal window/command prompt and run ``` mvn clean verify ``` to run the example tests using PhantomJS.
 
 ### Stuff you can do
 
-Want to run your tests on a different browser? No problem, just provide the 'browser' argument:
+Want to run the tests on a different browser? No problem, just provide the 'browser' argument:
 
 ```bash
 mvn clean verify -Dbrowser=chrome 
@@ -21,10 +21,12 @@ mvn clean verify -Dbrowser=chrome
 
 All you need to do is ensure the browser is installed in the default location (bootstrapium-vagrant pre-installs Firefox and Chrome).
 
-Running your mobile web tests using Appium on Sauce Labs is only slightly more involved:
+Running mobile web tests using Appium on Sauce Labs is only slightly more involved:
 
 ```bash
-mvn clean verify -DsauceUser={username} -DsauceKey={accessKey} -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.1 -DdeviceName="iPhone Simulator" 
+export SAUCE_USERNAME=<username>
+export SAUCE_ACCESS_KEY=<access_key>
+mvn clean verify -Dplatform=ios -Dbrowser=safari -Dsauce=true 
 ```
 
 A full list of arguments can be found on the [project wiki](https://github.com/jvanderwee/bootstrapium/wiki).
@@ -35,4 +37,4 @@ After running your tests, you can generate an [Allure](http://allure.qatools.ru)
 mvn site 
 ```
 
-Bootstrapium does other stuff too - check out the [project wiki](https://github.com/jvanderwee/bootstrapium/wiki) for further info.
+Bootstrapium sets you up for other stuff too - check out the [project wiki](https://github.com/jvanderwee/bootstrapium/wiki) for further info.
