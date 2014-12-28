@@ -26,7 +26,6 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import com.bootstrapium.listeners.EventListener;
 import com.opera.core.systems.OperaDriver;
@@ -276,7 +275,7 @@ public enum DriverType implements DriverSetup {
 
         try {
             WebDriver driver = instantiateWebDriver();
-            EventFiringWebDriver eventFiringWD= new EventFiringWebDriver(driver);
+            EFWebDriver eventFiringWD= new EFWebDriver(driver);
             eventFiringWD.register(new EventListener());
             return eventFiringWD;
         } catch (MalformedURLException urlIsInvalid) {

@@ -16,6 +16,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
 
 import com.bootstrapium.config.DriverType;
+import com.bootstrapium.config.EFWebDriver;
 import com.bootstrapium.listeners.MethodInterceptor;
 import com.bootstrapium.listeners.SauceLabsListener;
 import com.bootstrapium.listeners.ScreenshotListener;
@@ -25,49 +26,51 @@ import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 
-@Listeners({ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class, TestListener.class})
-public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
+@Listeners({ ScreenshotListener.class, MethodInterceptor.class,
+        SauceLabsListener.class, TestListener.class })
+public abstract class BaseTest implements SauceOnDemandSessionIdProvider,
+        SauceOnDemandAuthenticationProvider {
 
     private static List<WebDriver> webDriverPool = Collections
             .synchronizedList(new ArrayList<WebDriver>());
     private static ThreadLocal<WebDriver> driverThread;
 
     private static DriverType desiredDriver = determineEffectiveDriverType();
-    
+
     @BeforeSuite(alwaysRun = true)
     public static void instantiateNonNativeDriverObject() {
-    	if(DriverType.isNative()) {
-    		driverThread = new ThreadLocal<WebDriver>();
-    	} else {
-    		driverThread = new ThreadLocal<WebDriver>() {
-    			@Override
-    			protected WebDriver initialValue() {
-    				final WebDriver webDriver = desiredDriver.instantiate();
-    				webDriverPool.add(webDriver);
-    				return webDriver;
-    			}
-    		};
-    	}
+        if (DriverType.isNative()) {
+            driverThread = new ThreadLocal<WebDriver>();
+        } else {
+            driverThread = new ThreadLocal<WebDriver>() {
+                @Override
+                protected WebDriver initialValue() {
+                    final WebDriver webDriver = desiredDriver.instantiate();
+                    webDriverPool.add(webDriver);
+                    return webDriver;
+                }
+            };
+        }
     }
 
     @BeforeMethod(alwaysRun = true)
     public static void instantiateNativeDriverObject() {
-    	if(DriverType.isNative()) {
-    		driverThread.set(desiredDriver.instantiate());
-    	}
+        if (DriverType.isNative()) {
+            driverThread.set(desiredDriver.instantiate());
+        }
     }
-    
+
     public static WebDriver getDriver() {
         return driverThread.get();
     }
 
     @AfterMethod(alwaysRun = true)
     public static void clearSession() {
-    	if(DriverType.isNative()) {
-    		getDriver().quit();
-    	} else {
-    		getDriver().manage().deleteAllCookies();
-    	}
+        if (DriverType.isNative()) {
+            getDriver().quit();
+        } else {
+            getDriver().manage().deleteAllCookies();
+        }
     }
 
     @AfterSuite(alwaysRun = true)
@@ -76,28 +79,30 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
             driver.quit();
         }
     }
-    
+
     @AfterSuite(alwaysRun = true)
     public static void createAllureProperties() {
         AllureProperties.create();
     }
-    
+
     /**
-    *
-    * @return the Sauce Job id for the current thread
-    */
+     *
+     * @return the Sauce Job id for the current thread
+     */
     @Override
     public String getSessionId() {
-        SessionId sessionId = ((RemoteWebDriver)getDriver()).getSessionId();
+        SessionId sessionId = ((RemoteWebDriver) ((EFWebDriver) getDriver())
+                .getWrappedDriver()).getSessionId();
         return (sessionId == null) ? null : sessionId.toString();
     }
-    
+
     /**
-    *
-    * @return the {@link SauceOnDemandAuthentication} instance containing the Sauce username/access key
-    */
-   @Override
-   public SauceOnDemandAuthentication getAuthentication() {
-       return new SauceOnDemandAuthentication();
-   }
+     *
+     * @return the {@link SauceOnDemandAuthentication} instance containing the
+     *         Sauce username/access key
+     */
+    @Override
+    public SauceOnDemandAuthentication getAuthentication() {
+        return new SauceOnDemandAuthentication();
+    }
 }
