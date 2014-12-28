@@ -1,5 +1,8 @@
 package com.bootstrapium.listeners;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -10,20 +13,21 @@ import org.openqa.selenium.support.events.WebDriverEventListener;
 public class EventListener implements WebDriverEventListener {
 
     static final Logger logger = LogManager.getLogger();
-    
+
     @Override
     public void afterChangeValueOf(WebElement element, WebDriver driver) {
-        logger.info("changed value of " + elementToString(element));
+        logger.info("changed value of element with "
+                + getLocatorFromElement(element));
     }
 
     @Override
     public void afterClickOn(WebElement element, WebDriver driver) {
-        logger.info("clicked " + elementToString(element));
+        logger.info("clicked element with " + getLocatorFromElement(element));
     }
 
     @Override
     public void afterFindBy(By by, WebElement arg1, WebDriver arg2) {
-        logger.info("found " + by);
+        logger.info("found element " + by);
     }
 
     @Override
@@ -48,18 +52,19 @@ public class EventListener implements WebDriverEventListener {
 
     @Override
     public void beforeChangeValueOf(WebElement element, WebDriver driver) {
-        logger.info("change value of " + elementToString(element));
-        
+        logger.info("change value of element with "
+                + getLocatorFromElement(element));
+
     }
 
     @Override
     public void beforeClickOn(WebElement element, WebDriver driver) {
-        logger.info("click " + elementToString(element));
+        logger.info("click element with " + getLocatorFromElement(element));
     }
 
     @Override
     public void beforeFindBy(By by, WebElement element, WebDriver arg2) {
-        logger.info("find " + by);
+        logger.info("find element " + by);
     }
 
     @Override
@@ -87,11 +92,11 @@ public class EventListener implements WebDriverEventListener {
         logger.info(thrw.getMessage());
     }
 
-    private String elementToString(WebElement element) {
+    private String getLocatorFromElement(WebElement element) {
         String str = element.toString();
-        if(str.contains("-> ")) {
-            str = str.substring(str.indexOf("-> ") + 3);
-        }
-        return str;
+        Pattern p = Pattern.compile("->\\s(.*)(?=\\])");
+        Matcher m = p.matcher(str);
+        return m.find() && m.groupCount() > 0 ? m.group(1) : str;
     }
 }
+
