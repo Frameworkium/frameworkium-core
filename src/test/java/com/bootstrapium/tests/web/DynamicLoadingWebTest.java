@@ -17,13 +17,13 @@ public class DynamicLoadingWebTest extends BaseTest {
                 .then().clickExample1();
         
       //Assert that the element is hidden
-        assertThat(dynamicLoadingExamplePage.isElementDisplayed()).isFalse();
+        assertThat(dynamicLoadingExamplePage.isElementDisplayed()).named("element visibility").isFalse();
         
         //Click start and wait for element to be displayed
         dynamicLoadingExamplePage.clickStart().then().waitForElementToBeDisplayed();
         
         //Assert that the element is indeed displayed
-        assertThat(dynamicLoadingExamplePage.isElementDisplayed()).isTrue();
+        assertThat(dynamicLoadingExamplePage.isElementDisplayed()).named("element visibility").isTrue();
     }
 
     @Test
@@ -33,12 +33,12 @@ public class DynamicLoadingWebTest extends BaseTest {
                 .then().clickExample2();
         
         //Assert that the element is not present
-        assertThat(dynamicLoadingExamplePage.isElementPresent()).isFalse();
+        assertThat(dynamicLoadingExamplePage.isElementPresent()).named("element presence").isFalse();
         
         //Click start and wait for element to be displayed
         dynamicLoadingExamplePage.clickStart().then().waitForElementToBeDisplayed();
         
         //Assert that the element is indeed present
-        assertThat(dynamicLoadingExamplePage.isElementPresent()).isTrue();
+        assertThat(dynamicLoadingExamplePage.isElementPresent()).named("element presence").isTrue();
     }
 }
