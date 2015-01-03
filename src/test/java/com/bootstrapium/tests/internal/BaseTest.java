@@ -1,6 +1,7 @@
 package com.bootstrapium.tests.internal;
 
 import static com.bootstrapium.config.DriverType.determineEffectiveDriverType;
+import io.appium.java_client.AppiumDriver;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,7 +12,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
 
@@ -39,25 +39,14 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider,
 
     @BeforeSuite(alwaysRun = true)
     public static void instantiateNonNativeDriverObject() {
-        if (DriverType.isNative()) {
-            driverThread = new ThreadLocal<WebDriver>();
-        } else {
-            driverThread = new ThreadLocal<WebDriver>() {
-                @Override
-                protected WebDriver initialValue() {
-                    final WebDriver webDriver = desiredDriver.instantiate();
-                    webDriverPool.add(webDriver);
-                    return webDriver;
-                }
-            };
-        }
-    }
-
-    @BeforeMethod(alwaysRun = true)
-    public static void instantiateNativeDriverObject() {
-        if (DriverType.isNative()) {
-            driverThread.set(desiredDriver.instantiate());
-        }
+        driverThread = new ThreadLocal<WebDriver>() {
+            @Override
+            protected WebDriver initialValue() {
+                final WebDriver webDriver = desiredDriver.instantiate();
+                webDriverPool.add(webDriver);
+                return webDriver;
+            }
+        };
     }
 
     public static WebDriver getDriver() {
@@ -67,7 +56,8 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider,
     @AfterMethod(alwaysRun = true)
     public static void clearSession() {
         if (DriverType.isNative()) {
-            getDriver().quit();
+            ((AppiumDriver) ((EFWebDriver) getDriver()).getWrappedDriver())
+                    .resetApp();
         } else {
             getDriver().manage().deleteAllCookies();
         }
