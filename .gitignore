@@ -52,8 +52,3 @@ Thumbs.db
 \.checkstyle
 \.dorsync
 /nbactions.xml
-
-# Binary Downloads #
-####################
-**/selenium_standalone_binaries/
-**/selenium_standalone_zips/
