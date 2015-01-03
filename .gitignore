@@ -42,7 +42,7 @@ Thumbs.db
 
 # Maven #
 #########
-**/target/*
+target/
 
 # Other IDE's#
 ##############
