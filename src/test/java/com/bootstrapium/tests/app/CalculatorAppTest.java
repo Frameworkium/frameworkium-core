@@ -17,7 +17,7 @@ public class CalculatorAppTest extends BaseTest {
      * 
      * @throws Exception
      */
-    @Test
+    @Test(description = "Test sum computation")
     public void testIOSApp() throws Exception {
 
         Random rand = new Random();

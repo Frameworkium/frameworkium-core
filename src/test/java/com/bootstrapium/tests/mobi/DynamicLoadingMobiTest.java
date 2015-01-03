@@ -10,8 +10,8 @@ import com.bootstrapium.tests.internal.BaseTest;
 
 public class DynamicLoadingMobiTest extends BaseTest {
 
-    @Test
-    public final void testHiddenElement() {
+    @Test(description = "Test element visibility")
+    public final void testElementVisibility() {
         //Navigate to the dynamic loading hidden element page
         DynamicLoadingExamplePage dynamicLoadingExamplePage = WelcomePage.open().then().clickDynamicLoading()
                 .then().clickExample1();
@@ -26,8 +26,8 @@ public class DynamicLoadingMobiTest extends BaseTest {
         assertThat(dynamicLoadingExamplePage.isElementDisplayed()).named("element visibility").isTrue();
     }
 
-    @Test
-    public final void testElementRenderAfterTheFact() {
+    @Test(description = "Test element presence")
+    public final void testElementPresence() {
       //Navigate to the dynamic loading element not yet rendered page
         DynamicLoadingExamplePage dynamicLoadingExamplePage = WelcomePage.open().then().clickDynamicLoading()
                 .then().clickExample2();
