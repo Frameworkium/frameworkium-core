@@ -7,11 +7,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
-import org.testng.annotations.AfterMethod;
+import org.openqa.selenium.remote.SessionNotFoundException;
 import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
 
@@ -37,8 +40,12 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider,
 
     private static DriverType desiredDriver = determineEffectiveDriverType();
 
+    protected static final Logger logger = LogManager.getLogger();
+    
+    private static ThreadLocal<Boolean> requiresReset;
+    
     @BeforeSuite(alwaysRun = true)
-    public static void instantiateNonNativeDriverObject() {
+    public static void instantiateDriverObject() {
         driverThread = new ThreadLocal<WebDriver>() {
             @Override
             protected WebDriver initialValue() {
@@ -47,26 +54,45 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider,
                 return webDriver;
             }
         };
+        requiresReset = new ThreadLocal<Boolean>() {
+            @Override
+            protected Boolean initialValue() {
+                return Boolean.FALSE;
+            }
+
+        };
     }
 
     public static WebDriver getDriver() {
         return driverThread.get();
     }
 
-    @AfterMethod(alwaysRun = true)
+    @BeforeMethod(alwaysRun = true)
     public static void clearSession() {
-        if (DriverType.isNative()) {
-            ((AppiumDriver) ((EFWebDriver) getDriver()).getWrappedDriver())
-                    .resetApp();
+        if(requiresReset.get()) {
+        try {
+            if (DriverType.isNative()) {
+                ((AppiumDriver) ((EFWebDriver) getDriver()).getWrappedDriver())
+                        .resetApp();
+            } else {
+                getDriver().manage().deleteAllCookies();
+            }
+        } catch (SessionNotFoundException e) {
+            logger.error("Session quit unexpectedly.");
+        }
         } else {
-            getDriver().manage().deleteAllCookies();
+            requiresReset.set(Boolean.TRUE);
         }
     }
 
     @AfterSuite(alwaysRun = true)
     public static void closeDriverObject() {
         for (WebDriver driver : webDriverPool) {
-            driver.quit();
+            try {
+                driver.quit();
+            } catch (Exception e) {
+                logger.error("Session quit unexpectedly.");
+            }
         }
     }
 
