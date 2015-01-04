@@ -191,6 +191,11 @@ public enum DriverType implements DriverSetup {
         		
             } else {
             	seleniumGridURL = new URL(GRID_URL.getValue());
+            	
+            	if(isNative()) {
+                    // Set app path
+                    desiredCapabilities.setCapability("app", APP_PATH.getValue());
+                }
             }
 
             if (isMobile()) {
