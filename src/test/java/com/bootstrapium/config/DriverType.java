@@ -7,7 +7,8 @@ import static com.bootstrapium.config.SystemProperty.DEVICE_NAME;
 import static com.bootstrapium.config.SystemProperty.GRID_URL;
 import static com.bootstrapium.config.SystemProperty.PLATFORM;
 import static com.bootstrapium.config.SystemProperty.PLATFORM_VERSION;
-import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -225,11 +226,16 @@ public enum DriverType implements DriverSetup {
                             .getValue().equalsIgnoreCase("android")) {
                         desiredCapabilities.setCapability("deviceName",
                                 "Android Emulator");
-                        
                     }
                 }
-
-                return new AppiumDriver(seleniumGridURL, desiredCapabilities);
+                if(PLATFORM
+                        .getValue().equalsIgnoreCase("ios")) {
+                    return new IOSDriver(seleniumGridURL, desiredCapabilities);
+                    
+                } else if(PLATFORM
+                        .getValue().equalsIgnoreCase("android")) {
+                    return new AndroidDriver(seleniumGridURL, desiredCapabilities);
+                }
             } else {
                 if (PLATFORM.isSpecified()) {
                     desiredCapabilities.setPlatform(Platform.valueOf(PLATFORM
