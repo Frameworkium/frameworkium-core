@@ -2,18 +2,14 @@ package com.bootstrapium.pages.app;
 
 import java.util.List;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.element.Button;
 import ru.yandex.qatools.htmlelements.element.TextBlock;
 import ru.yandex.qatools.htmlelements.element.TextInput;
-import ru.yandex.qatools.htmlelements.loader.HtmlElementLoader;
 
 import com.bootstrapium.pages.internal.BasePage;
-import com.bootstrapium.pages.internal.PageFactory;
 import com.bootstrapium.pages.internal.Visible;
 
 public class CalculatorPage extends BasePage<CalculatorPage>{
