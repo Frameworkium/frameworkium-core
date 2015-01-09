@@ -99,7 +99,7 @@
 		<dependency>
 			<groupId>ru.yandex.qatools.htmlelements</groupId>
 			<artifactId>htmlelements-java</artifactId>
-			<version>1.12</version>
+			<version>1.13</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject</groupId>
@@ -116,7 +116,7 @@
 		<dependency>
 			<groupId>com.saucelabs</groupId>
 			<artifactId>sauce_testng</artifactId>
-			<version>2.1.4</version>
+			<version>2.1.11</version>
 		</dependency>
 		<dependency>
 			<groupId>com.saucelabs</groupId>
