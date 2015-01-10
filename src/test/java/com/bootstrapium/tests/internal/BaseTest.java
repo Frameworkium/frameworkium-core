@@ -1,7 +1,6 @@
 package com.bootstrapium.tests.internal;
 
 import static com.bootstrapium.config.DriverType.determineEffectiveDriverType;
-import io.appium.java_client.AppiumDriver;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +9,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.SessionNotFoundException;
 import org.testng.annotations.AfterSuite;
@@ -19,7 +17,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
 
 import com.bootstrapium.config.DriverType;
-import com.bootstrapium.config.EFWebDriver;
+import com.bootstrapium.config.WebDriverWrapper;
 import com.bootstrapium.listeners.MethodInterceptor;
 import com.bootstrapium.listeners.SauceLabsListener;
 import com.bootstrapium.listeners.ScreenshotListener;
@@ -34,9 +32,9 @@ import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 public abstract class BaseTest implements SauceOnDemandSessionIdProvider,
         SauceOnDemandAuthenticationProvider {
 
-    private static List<WebDriver> webDriverPool = Collections
-            .synchronizedList(new ArrayList<WebDriver>());
-    private static ThreadLocal<WebDriver> driverThread;
+    private static List<WebDriverWrapper> webDriverPool = Collections
+            .synchronizedList(new ArrayList<WebDriverWrapper>());
+    private static ThreadLocal<WebDriverWrapper> driverThread;
 
     private static DriverType desiredDriver = determineEffectiveDriverType();
 
@@ -46,10 +44,10 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider,
     
     @BeforeSuite(alwaysRun = true)
     public static void instantiateDriverObject() {
-        driverThread = new ThreadLocal<WebDriver>() {
+        driverThread = new ThreadLocal<WebDriverWrapper>() {
             @Override
-            protected WebDriver initialValue() {
-                final WebDriver webDriver = desiredDriver.instantiate();
+            protected WebDriverWrapper initialValue() {
+                final WebDriverWrapper webDriver = desiredDriver.instantiate();
                 webDriverPool.add(webDriver);
                 return webDriver;
             }
@@ -59,11 +57,10 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider,
             protected Boolean initialValue() {
                 return Boolean.FALSE;
             }
-
         };
     }
 
-    public static WebDriver getDriver() {
+    public static WebDriverWrapper getDriver() {
         return driverThread.get();
     }
 
@@ -72,8 +69,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider,
         if(requiresReset.get()) {
         try {
             if (DriverType.isNative()) {
-                ((AppiumDriver) ((EFWebDriver) getDriver()).getWrappedDriver())
-                        .resetApp();
+                getDriver().getWrappedAppiumDriver().resetApp();
             } else {
                 getDriver().manage().deleteAllCookies();
             }
@@ -107,8 +103,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider,
      */
     @Override
     public String getSessionId() {
-        SessionId sessionId = ((RemoteWebDriver) ((EFWebDriver) getDriver())
-                .getWrappedDriver()).getSessionId();
+        SessionId sessionId = getDriver().getWrappedRemoteWebDriver().getSessionId();
         return (sessionId == null) ? null : sessionId.toString();
     }
 

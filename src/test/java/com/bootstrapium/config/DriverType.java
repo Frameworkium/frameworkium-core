@@ -281,17 +281,16 @@ public enum DriverType implements DriverSetup {
         return driverType;
     }
 
-    public WebDriver instantiate() {
+    public WebDriverWrapper instantiate() {
         System.out.println("Current Browser Selection: " + this);
 
         try {
             WebDriver driver = instantiateWebDriver();
-            EFWebDriver eventFiringWD= new EFWebDriver(driver);
+            WebDriverWrapper eventFiringWD= new WebDriverWrapper(driver);
             eventFiringWD.register(new EventListener());
             return eventFiringWD;
         } catch (MalformedURLException urlIsInvalid) {
-            urlIsInvalid.printStackTrace();
-            return null;
+            throw new RuntimeException(urlIsInvalid.getMessage());
         }
     }
 
