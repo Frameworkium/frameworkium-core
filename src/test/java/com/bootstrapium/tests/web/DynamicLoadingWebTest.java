@@ -3,6 +3,7 @@ package com.bootstrapium.tests.web;
 import static com.google.common.truth.Truth.assertThat;
 
 import org.testng.annotations.Test;
+import annotations.Jira;
 
 import com.bootstrapium.pages.web.DynamicLoadingExamplePage;
 import com.bootstrapium.pages.web.WelcomePage;
