@@ -18,6 +18,7 @@ import org.testng.annotations.Listeners;
 
 import com.bootstrapium.config.DriverType;
 import com.bootstrapium.config.WebDriverWrapper;
+import com.bootstrapium.listeners.AnnotationListener;
 import com.bootstrapium.listeners.MethodInterceptor;
 import com.bootstrapium.listeners.SauceLabsListener;
 import com.bootstrapium.listeners.ScreenshotListener;
@@ -27,7 +28,7 @@ import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 
-@Listeners({ ScreenshotListener.class, MethodInterceptor.class,
+@Listeners({ AnnotationListener.class, ScreenshotListener.class, MethodInterceptor.class,
         SauceLabsListener.class, TestListener.class })
 public abstract class BaseTest implements SauceOnDemandSessionIdProvider,
         SauceOnDemandAuthenticationProvider {
