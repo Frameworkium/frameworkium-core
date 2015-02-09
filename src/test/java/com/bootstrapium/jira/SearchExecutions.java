@@ -1,4 +1,4 @@
-package jira;
+package com.bootstrapium.jira;
 
 import static com.jayway.restassured.RestAssured.preemptive;
 
@@ -9,8 +9,6 @@ import static com.jayway.restassured.RestAssured.get;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.authentication.AuthenticationScheme;
 import com.jayway.restassured.path.json.JsonPath;
-
-import selenium.Tool;
 
 public class SearchExecutions {
 

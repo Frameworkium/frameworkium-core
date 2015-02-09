@@ -1,4 +1,4 @@
-package capture;
+package com.bootstrapium.capture;
 
 import org.openqa.selenium.WebElement;
 
@@ -19,27 +19,34 @@ public class Command {
 	{
 		this.action = action;
 		
-		String using = null;
-		String value = null;
 		String id;
 		String text;
 		if(!(id = element.getAttribute("id")).isEmpty())
 		{
-			using = "id";
-			value = id;
+			this.using = "id";
+			this.value = id;
 		}
 		else if (!(text = element.getText()).isEmpty())
 		{
-			using = "linktext";
-			value = text;
+			this.using = "linktext";
+			this.value = text;
 		}
 		else
 		{
-			using = "css";
-			value = element.getTagName() + "." + element.getAttribute("class");
+			this.using = "css";
+			this.value = element.getTagName() + "." + element.getAttribute("class");
 		}
-		
-		this.using = using;
-		this.value = value;
+	}
+	
+	public String getAction() {
+	 return action;
+	}
+	 
+	public String getUsing() {
+	 return using;
+	}
+	   
+	public String getValue() {
+	 return value;
 	}
 }

@@ -1,4 +1,4 @@
-package annotations;
+package com.bootstrapium.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

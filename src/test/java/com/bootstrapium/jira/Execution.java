@@ -1,4 +1,4 @@
-package jira;
+package com.bootstrapium.jira;
 
 import java.io.File;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.ITestResult;
+
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.authentication.AuthenticationScheme;

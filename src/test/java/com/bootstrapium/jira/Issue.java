@@ -1,4 +1,4 @@
-package jira;
+package com.bootstrapium.jira;
 
 import java.io.File;
 import java.util.List;
