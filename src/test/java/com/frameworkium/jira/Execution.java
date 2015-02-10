@@ -104,7 +104,7 @@ public class Execution {
 		
 		RestAssured.baseURI = zapiURI;
 		RestAssured.authentication = auth;
-		given().contentType("appliation/json").and().body(obj.toString()).then()
+		given().contentType("application/json").and().body(obj.toString()).then()
 			.put("execution/" + executionId + "/execute");
 	}
 	

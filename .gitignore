@@ -52,3 +52,6 @@ target/
 \.checkstyle
 \.dorsync
 /nbactions.xml
+\*.log
+\null\*
+\test-output

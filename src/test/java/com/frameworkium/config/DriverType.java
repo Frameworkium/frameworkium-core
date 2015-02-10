@@ -166,7 +166,7 @@ public enum DriverType implements DriverSetup {
         }
     };
 
-    public static final DriverType defaultDriverType = PHANTOMJS;
+    public static final DriverType defaultDriverType = FIREFOX;
     public static final boolean useRemoteWebDriver = GRID_URL.isSpecified()
             || Sauce.isDesired();
 

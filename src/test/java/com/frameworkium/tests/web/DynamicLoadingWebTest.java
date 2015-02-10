@@ -28,7 +28,7 @@ public class DynamicLoadingWebTest extends BaseTest {
         assertThat(dynamicLoadingExamplePage.isElementDisplayed()).named("element visibility").isTrue();
     }
 
-    @Jira("KT-1")
+    @Jira("KT-2")
     @Test(description = "Test element presence")
     public final void testElementPresence() {
       //Navigate to the dynamic loading element not yet rendered page

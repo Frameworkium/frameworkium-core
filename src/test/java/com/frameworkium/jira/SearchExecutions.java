@@ -40,6 +40,11 @@ public class SearchExecutions {
 			{
 				executionIds.add(tempExecutionIds.get(idx));
 			}
+			//TODO - This is clearly ridiculous but where it'd go if you wanted to specify the browser/cycle
+			else
+			{
+				executionIds.add(tempExecutionIds.get(idx));
+			}
 		}
 		return executionIds;
 	}
@@ -56,6 +61,11 @@ public class SearchExecutions {
 		for (int idx = 0; idx < cycleNames.size(); idx++)
 		{
 			if (cycleNames.get(idx).contains(browser))
+			{
+				executionStatuses.add(tempExecutionStatuses.get(idx));
+			}
+			//TODO - This is clearly ridiculous but where it'd go if you wanted to specify the browser/cycle
+			else
 			{
 				executionStatuses.add(tempExecutionStatuses.get(idx));
 			}
