@@ -16,6 +16,8 @@ import static com.jayway.restassured.RestAssured.get;
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.preemptive;
 
+import static com.frameworkium.config.SystemProperty.JIRA_RESULT_VERSION;;
+
 
 public class Execution {
 
@@ -34,6 +36,14 @@ public class Execution {
 	private final String issue;
 	private List<Integer> idList;
 	private int status;
+	
+	
+	public Execution(final String issue)
+	{
+		this.version = JIRA_RESULT_VERSION.getValue();
+		this.issue = issue;
+		this.idList = getExecutionIds();
+	}
 	
 	public Execution(final String version, final String issue)
 	{
