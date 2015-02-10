@@ -56,8 +56,11 @@ public class SearchExecutions {
 		final String browser = "FF10";
 		
 		final List<Integer> tempExecutionStatuses = jsonPath.getList("executions.status.id");
+		
 		final List<Integer> executionStatuses = new ArrayList<Integer>();
+		
 		final List<String> cycleNames = jsonPath.getList("executions.cycleName");
+		
 		for (int idx = 0; idx < cycleNames.size(); idx++)
 		{
 			if (cycleNames.get(idx).contains(browser))

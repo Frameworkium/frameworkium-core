@@ -7,7 +7,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.ITestResult;
 
-
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.authentication.AuthenticationScheme;
 import com.jayway.restassured.path.json.JsonPath;
@@ -84,6 +83,7 @@ public class Execution {
 				}
 				
 				System.out.println(String.format("Updated %s to status %s", issue, status));
+				
 			}
 		}
 	}

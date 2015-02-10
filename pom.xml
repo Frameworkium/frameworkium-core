@@ -43,6 +43,7 @@
 		<sauce />
 		<build />
 		<appPath />
+		<jiraResultVersion>AppUnderTest SMOKE</jiraResultVersion>
 		<aspectj.version>1.7.4</aspectj.version>
 		<allure.version>1.4.5</allure.version>
 	</properties>
@@ -181,6 +182,7 @@
 								<sauce>${sauce}</sauce>
 								<build>${build}</build>
 								<appPath>${appPath}</appPath>
+								<jiraResultVersion>${jiraResultVersion}</jiraResultVersion>
 							</systemProperties>
 							<includes>
 								<include>**/*WebTest.java</include>

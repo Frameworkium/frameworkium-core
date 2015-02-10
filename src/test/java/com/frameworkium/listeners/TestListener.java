@@ -1,5 +1,7 @@
 package com.frameworkium.listeners;
 
+import static com.frameworkium.config.SystemProperty.JIRA_RESULT_VERSION;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
@@ -15,6 +17,7 @@ import org.testng.SkipException;
 import com.frameworkium.annotations.Jira;
 import com.frameworkium.jira.Execution;
 import com.jayway.restassured.internal.http.Status;
+
 public class TestListener implements ITestListener {
 
     static final Logger logger = LogManager.getLogger();
@@ -24,27 +27,36 @@ public class TestListener implements ITestListener {
         logger.info(String.format("starting %s.%s", result.getTestClass()
                 .getName(), result.getMethod().getMethodName()));
         
+        
+        
+        System.out.println(String.format("Jira Result Version = %s", JIRA_RESULT_VERSION.getValue()));
+
     
-		String jiraId = result.getMethod().getConstructorOrMethod().getMethod()
+        if(JIRA_RESULT_VERSION.isSpecified() && !result.getMethod().getConstructorOrMethod()
+        		.getMethod().getAnnotation(Jira.class).value().isEmpty())
+		{ 	
+        	String jiraId = result.getMethod().getConstructorOrMethod().getMethod()
 				.getAnnotation(Jira.class).value();	
 
-		new Execution("AppUnderTest SMOKE", jiraId)
-				.update(Execution.STATUS.ZAPI_STATUS_WIP, "log" , null);
-        
+        	new Execution(JIRA_RESULT_VERSION.getValue(), jiraId).update(Execution.STATUS.ZAPI_STATUS_WIP, "log" , null);
+		}
     }
 
     @Override
     public void onTestSuccess(ITestResult result) {
-    	        
+
     	logger.info(String.format("PASS %s.%s",
                 result.getTestClass().getName(), result.getMethod()
                         .getMethodName()));
     	
-		String jiraId = result.getMethod().getConstructorOrMethod().getMethod()
+        if(JIRA_RESULT_VERSION.isSpecified() && !result.getMethod().getConstructorOrMethod()
+        		.getMethod().getAnnotation(Jira.class).value().isEmpty())
+		{ 	
+        	String jiraId = result.getMethod().getConstructorOrMethod().getMethod()
 				.getAnnotation(Jira.class).value();	
 
-		new Execution("Konakart SMOKE", jiraId)
-				.update(Execution.STATUS.ZAPI_STATUS_PASS, "log" , null);
+        	new Execution(JIRA_RESULT_VERSION.getValue(), jiraId).update(Execution.STATUS.ZAPI_STATUS_PASS, "log" , null);
+		}
     }
 
     @Override
@@ -59,11 +71,14 @@ public class TestListener implements ITestListener {
             logger.error(sw.getBuffer().toString());
         }
         
-		String jiraId = result.getMethod().getConstructorOrMethod().getMethod()
+        if(JIRA_RESULT_VERSION.isSpecified() && !result.getMethod().getConstructorOrMethod()
+        		.getMethod().getAnnotation(Jira.class).value().isEmpty())
+		{ 	
+        	String jiraId = result.getMethod().getConstructorOrMethod().getMethod()
 				.getAnnotation(Jira.class).value();	
 
-		new Execution("Konakart SMOKE", jiraId)
-				.update(Execution.STATUS.ZAPI_STATUS_FAIL, "log" , null);
+        	new Execution(JIRA_RESULT_VERSION.getValue(), jiraId).update(Execution.STATUS.ZAPI_STATUS_FAIL, "log" , null);
+		}
     }
 
     @Override
@@ -77,11 +92,15 @@ public class TestListener implements ITestListener {
             logger.error(cause.getMessage());
         }
         
-		String jiraId = result.getMethod().getConstructorOrMethod().getMethod()
+        
+        if(JIRA_RESULT_VERSION.isSpecified() && !result.getMethod().getConstructorOrMethod()
+        		.getMethod().getAnnotation(Jira.class).value().isEmpty())
+		{ 	
+        	String jiraId = result.getMethod().getConstructorOrMethod().getMethod()
 				.getAnnotation(Jira.class).value();	
 
-		new Execution("Konakart SMOKE", jiraId)
-				.update(Execution.STATUS.ZAPI_STATUS_BLOCKED, "log" , null);
+        	new Execution(JIRA_RESULT_VERSION.getValue(), jiraId).update(Execution.STATUS.ZAPI_STATUS_BLOCKED, "log" , null);
+		}
     }
 
     @Override

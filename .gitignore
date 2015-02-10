@@ -55,3 +55,4 @@ target/
 \*.log
 \null\*
 \test-output
+\log
