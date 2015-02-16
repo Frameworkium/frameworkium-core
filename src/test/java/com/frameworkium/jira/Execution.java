@@ -1,4 +1,10 @@
 package com.frameworkium.jira;
+import static com.frameworkium.config.SystemProperty.JIRA_RESULT_VERSION;
+import static com.frameworkium.config.SystemProperty.JIRA_URL;
+import static com.jayway.restassured.RestAssured.delete;
+import static com.jayway.restassured.RestAssured.get;
+import static com.jayway.restassured.RestAssured.given;
+import static com.jayway.restassured.RestAssured.preemptive;
 
 import java.io.File;
 import java.util.List;
@@ -11,26 +17,10 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.authentication.AuthenticationScheme;
 import com.jayway.restassured.path.json.JsonPath;
 
-import static com.jayway.restassured.RestAssured.delete;
-import static com.jayway.restassured.RestAssured.get;
-import static com.jayway.restassured.RestAssured.given;
-import static com.jayway.restassured.RestAssured.preemptive;
-
-import static com.frameworkium.config.SystemProperty.JIRA_RESULT_VERSION;;
-
-
 public class Execution {
 
-	public static class STATUS
-	{
-		public static final int ZAPI_STATUS_PASS = 1;
-		public static final int ZAPI_STATUS_FAIL = 2;
-		public static final int ZAPI_STATUS_WIP = 3;
-		public static final int ZAPI_STATUS_BLOCKED = 4;
-	}
-	
-	private final AuthenticationScheme auth = preemptive().basic("rgates","password1");
-	private final String zapiURI = "http://localhost:8079/rest/zapi/latest";
+	private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername,Config.jiraPassword);
+	private final static String zapiURI = JIRA_URL.getValue() + Config.zapiRestURI;
 	
 	private final String version;
 	private final String issue;
@@ -92,7 +82,7 @@ public class Execution {
 					addAttachment(executionId, attachment);
 				}
 				
-				System.out.println(String.format("Updated %s to status %s", issue, status));
+				System.out.println(String.format("JIRA Updater - Updated %s to status %s", issue, status));
 				
 			}
 		}
@@ -153,13 +143,13 @@ public class Execution {
 		switch (status)
 		{
 		case ITestResult.SUCCESS:
-			return STATUS.ZAPI_STATUS_PASS;
+			return Config.ZAPI_STATUS.ZAPI_STATUS_PASS;
 		case ITestResult.FAILURE:
-			return STATUS.ZAPI_STATUS_FAIL;
+			return Config.ZAPI_STATUS.ZAPI_STATUS_FAIL;
 		case ITestResult.SKIP:
-			return STATUS.ZAPI_STATUS_BLOCKED;
+			return Config.ZAPI_STATUS.ZAPI_STATUS_BLOCKED;
 		default:
-			return STATUS.ZAPI_STATUS_FAIL;
+			return Config.ZAPI_STATUS.ZAPI_STATUS_FAIL;
 		}
 	}
 }

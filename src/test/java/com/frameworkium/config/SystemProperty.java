@@ -11,6 +11,7 @@ public enum SystemProperty {
     BUILD("build"),
     APP_PATH("appPath"),
     SAUCE("sauce"),
+    JIRA_URL("jiraUrl"),
     JIRA_RESULT_VERSION("jiraResultVersion");
 
     private String value;

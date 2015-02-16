@@ -3,11 +3,11 @@ package com.frameworkium.listeners;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-import com.frameworkium.annotations.Jira;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.testng.IAnnotationTransformer;
 import org.testng.annotations.ITestAnnotation;
+
+import com.frameworkium.annotations.Jira;
 
 public class AnnotationListener implements IAnnotationTransformer{
 

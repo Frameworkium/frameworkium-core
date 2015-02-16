@@ -1,7 +1,5 @@
 package com.frameworkium.tests.web;
 
-import static com.google.common.truth.Truth.assertThat;
-
 import org.testng.annotations.Test;
 
 import com.frameworkium.annotations.Jira;

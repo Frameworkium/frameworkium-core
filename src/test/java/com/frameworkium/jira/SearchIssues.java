@@ -1,5 +1,6 @@
 package com.frameworkium.jira;
 
+import static com.frameworkium.config.SystemProperty.JIRA_URL;
 import static com.jayway.restassured.RestAssured.get;
 import static com.jayway.restassured.RestAssured.preemptive;
 
@@ -11,9 +12,9 @@ import com.jayway.restassured.path.json.JsonPath;
 
 public class SearchIssues {
 
-	private final AuthenticationScheme auth = preemptive().basic("rgates","password1");
-	private final String zapiURI = "http://localhost:8079/rest/zapi/latest";
-	
+	private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername,Config.jiraPassword);
+	private final static String zapiURI = JIRA_URL.getValue() + Config.zapiRestURI;
+
 	private final JsonPath jsonPath;
 	
 	public SearchIssues(final String query)

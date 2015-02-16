@@ -1,17 +1,19 @@
 package com.frameworkium.reporting;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Properties;
-
 import static com.frameworkium.config.SystemProperty.APP_PATH;
 import static com.frameworkium.config.SystemProperty.BROWSER;
 import static com.frameworkium.config.SystemProperty.BROWSER_VERSION;
 import static com.frameworkium.config.SystemProperty.BUILD;
 import static com.frameworkium.config.SystemProperty.DEVICE_NAME;
 import static com.frameworkium.config.SystemProperty.GRID_URL;
+import static com.frameworkium.config.SystemProperty.JIRA_RESULT_VERSION;
+import static com.frameworkium.config.SystemProperty.JIRA_URL;
 import static com.frameworkium.config.SystemProperty.PLATFORM;
 import static com.frameworkium.config.SystemProperty.PLATFORM_VERSION;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 public class AllureProperties {
 
@@ -44,6 +46,12 @@ public class AllureProperties {
             }
             if(PLATFORM_VERSION.isSpecified()) {
                 props.setProperty("Platform Version", PLATFORM_VERSION.getValue());
+            }
+            if(JIRA_RESULT_VERSION.isSpecified()) {
+                props.setProperty("Jira Result Version", JIRA_RESULT_VERSION.getValue());
+            }
+            if(JIRA_URL.isSpecified()) {
+                props.setProperty("allure.issues.tracker.pattern", JIRA_URL.getValue() + "/browse/%s");
             }
 
             props.store(fos,

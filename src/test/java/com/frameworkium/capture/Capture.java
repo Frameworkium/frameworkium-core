@@ -1,12 +1,4 @@
 package com.frameworkium.capture;
-import java.util.Properties;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.openqa.selenium.WebDriver;
-
-import com.jayway.restassured.http.ContentType;
-import static com.jayway.restassured.RestAssured.given;
 
 public class Capture {
 /*
