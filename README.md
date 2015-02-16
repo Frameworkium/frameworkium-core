@@ -3,12 +3,9 @@
 Frameworkium
 =======================
 
-This project is based on Ardesco's [Selenium-Maven-Template](https://github.com/Ardesco/Selenium-Maven-Template) with some handy added extras for getting started quickly with Selenium and Appium.
+This project is based on Ardesco's [Selenium-Maven-Template](https://github.com/Ardesco/Selenium-Maven-Template) and Joe VDW's [Bootstrapium](https://github.com/joevanderwee/bootstrapium) with some handy added extras for getting started quickly with Selenium and Appium.
 
-//TODO - Update 
-The easiest way to get starting is by using [bootstrapium-vagrant](https://github.com/jvanderwee/bootstrapium-vagrant) to create a VM with Bootstrapium and its dependencies pre-installed.
-
-If you do not wish to use Vagrant then clone this project and ensure PhantomJS and chrome-driver are on your path.
+Ensure PhantomJS and chrome-driver are on your path.
 
 Open the ``` frameworkium ``` directory in a terminal window/command prompt and run ``` mvn clean verify ``` to run the example tests using PhantomJS.
 
