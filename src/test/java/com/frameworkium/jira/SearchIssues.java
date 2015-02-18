@@ -37,7 +37,7 @@ public class SearchIssues {
 	}
 	
 	
-	public String getKEyForSummary(final String summary)
+	public String getKeyForSummary(final String summary)
 	{
 		return jsonPath.getString(String.format("issues.find {it.fields.summary == '%s'}.key", summary));
 	}
