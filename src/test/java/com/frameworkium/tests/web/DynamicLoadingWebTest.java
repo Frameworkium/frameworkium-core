@@ -4,7 +4,8 @@ import static com.google.common.truth.Truth.assertThat;
 
 import org.testng.annotations.Test;
 
-import com.frameworkium.annotations.Jira;
+import ru.yandex.qatools.allure.annotations.Issue;
+
 import com.frameworkium.pages.web.DynamicLoadingExamplePage;
 import com.frameworkium.pages.web.WelcomePage;
 import com.frameworkium.tests.internal.BaseTest;
@@ -12,7 +13,7 @@ import com.frameworkium.tests.internal.BaseTest;
 public class DynamicLoadingWebTest extends BaseTest {
 
     
-    @Jira("KT-1")
+    @Issue("KT-1")
     @Test(description = "Test element visibility")
     public final void testElementVisibility() {
         //Navigate to the dynamic loading hidden element page
@@ -29,7 +30,7 @@ public class DynamicLoadingWebTest extends BaseTest {
         assertThat(dynamicLoadingExamplePage.isElementDisplayed()).named("element visibility").isTrue();
     }
 
-    @Jira("KT-2")
+    @Issue("KT-2")
     @Test(description = "Test element presence")
     public final void testElementPresence() {
       //Navigate to the dynamic loading element not yet rendered page

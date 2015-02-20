@@ -18,7 +18,8 @@ import org.testng.annotations.Listeners;
 
 import com.frameworkium.config.DriverType;
 import com.frameworkium.config.WebDriverWrapper;
-import com.frameworkium.listeners.AnnotationListener;
+import com.frameworkium.listeners.JiraListener;
+import com.frameworkium.listeners.EventListener;
 import com.frameworkium.listeners.MethodInterceptor;
 import com.frameworkium.listeners.SauceLabsListener;
 import com.frameworkium.listeners.ScreenshotListener;
@@ -28,8 +29,8 @@ import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 
-@Listeners({ AnnotationListener.class, ScreenshotListener.class, MethodInterceptor.class,
-        SauceLabsListener.class, TestListener.class })
+@Listeners({ ScreenshotListener.class, MethodInterceptor.class,
+        SauceLabsListener.class, TestListener.class, JiraListener.class })
 public abstract class BaseTest implements SauceOnDemandSessionIdProvider,
         SauceOnDemandAuthenticationProvider {
 
