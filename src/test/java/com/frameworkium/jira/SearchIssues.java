@@ -13,15 +13,15 @@ import com.jayway.restassured.path.json.JsonPath;
 public class SearchIssues {
 
 	private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername,Config.jiraPassword);
-	private final static String zapiURI = JIRA_URL.getValue() + Config.zapiRestURI;
+	private final static String jiraURI = JIRA_URL.getValue() + Config.jiraRestURI;
 
 	private final JsonPath jsonPath;
 	
 	public SearchIssues(final String query)
 	{
-		RestAssured.baseURI = zapiURI;
+		RestAssured.baseURI = jiraURI;
 		RestAssured.authentication = auth;
-		
+
 		jsonPath = get(String.format("search?jql=%s&maxResults=1000", query)).andReturn().jsonPath();
 	}
 	
