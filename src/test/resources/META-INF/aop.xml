@@ -1,0 +1,5 @@
+<aspectj>
+    <weaver options="">
+        <include within="com.frameworkium.*"/>
+    </weaver>
+ </aspectj>
