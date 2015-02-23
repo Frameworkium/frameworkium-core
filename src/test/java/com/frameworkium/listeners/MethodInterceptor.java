@@ -20,10 +20,12 @@ public class MethodInterceptor implements IMethodInterceptor {
     @Override
     public List<IMethodInstance> intercept(List<IMethodInstance> methods,
             ITestContext context) {
-  
+    	
+    	//TODO - this is all messier than it needs to be - refactor
     	
     	List<IMethodInstance> methodsToRun = new ArrayList<IMethodInstance>();
-        
+    	List<IMethodInstance> methodsToRun2 = new ArrayList<IMethodInstance>();
+
 		if(JQL_QUERY.isSpecified() && JIRA_URL.isSpecified())
 		{
 			System.out.println("Overriding specified tests to run with JQL query results");
@@ -53,30 +55,34 @@ public class MethodInterceptor implements IMethodInterceptor {
 			}
 			
 			System.out.println(String.format("Running %s tests specified by query...", methodsToRun.size()));
-			
-			methods = methodsToRun;
 		} 
-        
-        for (IMethodInstance instance : methods) {
+		else
+		{
+			methodsToRun.addAll(methods);
+		}
+		
+        for (IMethodInstance instance : methodsToRun) {
         	
             String clazz = instance.getMethod().getRealClass().getName();
             if (!DriverType.isMobile()) {
             	if(clazz.endsWith("WebTest")) {
-            		methodsToRun.add(instance);
+            		methodsToRun2.add(instance);
             	}
             } else {
             	if(DriverType.isNative() && clazz.endsWith("AppTest")) {
-            		methodsToRun.add(instance);
+            		methodsToRun2.add(instance);
             	}
             	else if(!DriverType.isNative() && clazz.endsWith("MobiTest")){
-            		methodsToRun.add(instance);
+            		methodsToRun2.add(instance);
             	}
             }   
             
             
         }
   
-        return methodsToRun;
+        return methodsToRun2;
+        
+        
     }
 
 }
