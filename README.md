@@ -1,5 +1,3 @@
-[![Build Status](https://drone.io/github.com/jvanderwee/bootstrapium/status.png)](https://drone.io/github.com/jvanderwee/bootstrapium/latest)
-
 Frameworkium
 =======================
 
