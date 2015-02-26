@@ -1,5 +1,5 @@
 <aspectj>
     <weaver options="">
-        <include within="com.frameworkium.*"/>
+        <exclude within="org.codehaus..*"/>
     </weaver>
  </aspectj>
