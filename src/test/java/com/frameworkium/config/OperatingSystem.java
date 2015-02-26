@@ -1,4 +1,4 @@
- package com.frameworkium.config;
+package com.frameworkium.config;
 
 enum OperatingSystem {
 
@@ -19,13 +19,11 @@ enum OperatingSystem {
         String name = System.getProperties().getProperty("os.name");
 
         for (OperatingSystem operatingSystemName : values()) {
-            if (name.toLowerCase().contains(
-                    operatingSystemName.getOperatingSystemType())) {
+            if (name.toLowerCase().contains(operatingSystemName.getOperatingSystemType())) {
                 return operatingSystemName;
             }
         }
 
-        throw new IllegalArgumentException(
-                "Unrecognised operating system name '" + name + "'");
+        throw new IllegalArgumentException("Unrecognised operating system name '" + name + "'");
     }
 }

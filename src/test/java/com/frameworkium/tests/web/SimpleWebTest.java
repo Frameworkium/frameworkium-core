@@ -10,12 +10,11 @@ import com.frameworkium.tests.internal.BaseTest;
 
 public class SimpleWebTest extends BaseTest {
 
-	@Issue("KT-3")
+    @Issue("KT-3")
     @Test(description = "Test testy")
     public final void testTest() {
-        //Navigate to the dynamic loading hidden element page
+        // Navigate to the dynamic loading hidden element page
         DynamicLoadingExamplePage dynamicLoadingExamplePage = WelcomePage.open().then().clickDynamicLoading()
                 .then().clickExample1();
     }
-  
 }

@@ -28,9 +28,9 @@ public abstract class BasePage<T extends BasePage<T>> {
 
     @SuppressWarnings("unchecked")
     public T get() {
-        HtmlElementLoader.populatePageObject((T) this, driver);
+        HtmlElementLoader.populatePageObject(this, driver);
         try {
-            waitForVisibleElements((T) this);
+            waitForVisibleElements(this);
         } catch (IllegalArgumentException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -42,7 +42,8 @@ public abstract class BasePage<T extends BasePage<T>> {
         return get();
     }
 
-    private void waitForVisibleElements(Object pageObject) throws IllegalArgumentException, IllegalAccessException {
+    private void waitForVisibleElements(Object pageObject) throws IllegalArgumentException,
+            IllegalAccessException {
         for (Field field : pageObject.getClass().getDeclaredFields()) {
             for (Annotation annotation : field.getDeclaredAnnotations()) {
                 if (annotation instanceof Visible) {

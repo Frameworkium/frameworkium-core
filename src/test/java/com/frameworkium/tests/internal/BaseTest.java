@@ -18,8 +18,7 @@ import org.testng.annotations.Listeners;
 
 import com.frameworkium.config.DriverType;
 import com.frameworkium.config.WebDriverWrapper;
-import com.frameworkium.listeners.JiraListener;
-import com.frameworkium.listeners.EventListener;
+import com.frameworkium.listeners.ZAPIListener;
 import com.frameworkium.listeners.MethodInterceptor;
 import com.frameworkium.listeners.SauceLabsListener;
 import com.frameworkium.listeners.ScreenshotListener;
@@ -29,10 +28,9 @@ import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 
-@Listeners({ ScreenshotListener.class, MethodInterceptor.class,
-        SauceLabsListener.class, TestListener.class, JiraListener.class })
-public abstract class BaseTest implements SauceOnDemandSessionIdProvider,
-        SauceOnDemandAuthenticationProvider {
+@Listeners({ ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class, TestListener.class,
+        ZAPIListener.class })
+public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
     private static List<WebDriverWrapper> webDriverPool = Collections
             .synchronizedList(new ArrayList<WebDriverWrapper>());
@@ -41,9 +39,9 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider,
     private static DriverType desiredDriver = determineEffectiveDriverType();
 
     protected static final Logger logger = LogManager.getLogger();
-    
+
     private static ThreadLocal<Boolean> requiresReset;
-    
+
     @BeforeSuite(alwaysRun = true)
     public static void instantiateDriverObject() {
         driverThread = new ThreadLocal<WebDriverWrapper>() {
@@ -68,16 +66,16 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider,
 
     @BeforeMethod(alwaysRun = true)
     public static void clearSession() {
-        if(requiresReset.get()) {
-        try {
-            if (DriverType.isNative()) {
-                getDriver().getWrappedAppiumDriver().resetApp();
-            } else {
-                getDriver().manage().deleteAllCookies();
+        if (requiresReset.get()) {
+            try {
+                if (DriverType.isNative()) {
+                    getDriver().getWrappedAppiumDriver().resetApp();
+                } else {
+                    getDriver().manage().deleteAllCookies();
+                }
+            } catch (SessionNotFoundException e) {
+                logger.error("Session quit unexpectedly.");
             }
-        } catch (SessionNotFoundException e) {
-            logger.error("Session quit unexpectedly.");
-        }
         } else {
             requiresReset.set(Boolean.TRUE);
         }

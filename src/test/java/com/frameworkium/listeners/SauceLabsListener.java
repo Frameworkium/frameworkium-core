@@ -21,34 +21,27 @@ public class SauceLabsListener extends SauceOnDemandTestListener {
     public void onStart(ITestContext testContext) {
         if (isRunningOnSauceLabs) {
             super.onStart(testContext);
-            
-            if(DriverType.isNative()) {
-            	try {
-            		Sauce.uploadFile(new File(APP_PATH.getValue()));
-            	} catch(IOException ioe) {
-            		ioe.printStackTrace();
-            	}
+
+            if (DriverType.isNative()) {
+                try {
+                    Sauce.uploadFile(new File(APP_PATH.getValue()));
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
             }
         }
     }
 
-    /**
-     * @param result
-     */
     @Override
     public void onTestStart(ITestResult result) {
         if (isRunningOnSauceLabs) {
-            Sauce.updateJobName(
-                    (SauceOnDemandSessionIdProvider) result.getInstance(),
-                    result.getTestClass().getRealClass().getSimpleName());
+            Sauce.updateJobName((SauceOnDemandSessionIdProvider) result.getInstance(), result.getTestClass()
+                    .getRealClass().getSimpleName());
 
             super.onTestStart(result);
         }
     }
 
-    /**
-     * @param tr
-     */
     @Override
     public void onTestFailure(ITestResult tr) {
         if (isRunningOnSauceLabs) {

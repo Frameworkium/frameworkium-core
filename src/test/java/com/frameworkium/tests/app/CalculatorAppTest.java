@@ -25,8 +25,7 @@ public class CalculatorAppTest extends BaseTest {
         Integer b = rand.nextInt(100);
         Integer sum = a + b;
 
-        String result = PageFactory.newInstance(CalculatorPage.class).computeSum(a, b)
-                .then().getResult();
+        String result = PageFactory.newInstance(CalculatorPage.class).computeSum(a, b).then().getResult();
 
         assertThat(result).comparesEqualTo(sum.toString());
     }

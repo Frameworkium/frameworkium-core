@@ -12,18 +12,18 @@ import ru.yandex.qatools.htmlelements.element.TextInput;
 import com.frameworkium.pages.internal.BasePage;
 import com.frameworkium.pages.internal.Visible;
 
-public class CalculatorPage extends BasePage<CalculatorPage>{
+public class CalculatorPage extends BasePage<CalculatorPage> {
 
     @FindBy(className = "UIATextField")
     private List<TextInput> fields;
-    
+
     @Visible
     @FindBy(className = "UIAButton")
     private Button computeSumButton;
-    
+
     @FindBy(className = "UIAStaticText")
     private TextBlock resultLabel;
-    
+
     @Step("Compute sum of {0} and {1}.")
     public CalculatorPage computeSum(Integer a, Integer b) {
         fields.get(0).sendKeys(a.toString());
@@ -31,7 +31,7 @@ public class CalculatorPage extends BasePage<CalculatorPage>{
         computeSumButton.click();
         return this;
     }
- 
+
     @Step("Get the result.")
     public String getResult() {
         return resultLabel.getText();

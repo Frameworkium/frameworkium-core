@@ -12,8 +12,7 @@ import ru.yandex.qatools.htmlelements.element.HtmlElement;
 import com.frameworkium.pages.internal.BasePage;
 import com.frameworkium.pages.internal.Visible;
 
-public class DynamicLoadingExamplePage extends
-        BasePage<DynamicLoadingExamplePage> {
+public class DynamicLoadingExamplePage extends BasePage<DynamicLoadingExamplePage> {
 
     @Visible
     @Name("Start button")

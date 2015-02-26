@@ -12,33 +12,37 @@ import com.jayway.restassured.path.json.JsonPath;
 
 public class SearchIssues {
 
-	private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername,Config.jiraPassword);
-	private final static String jiraURI = JIRA_URL.getValue() + Config.jiraRestURI;
+    private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername,
+            Config.jiraPassword);
+    private final static String jiraURI = JIRA_URL.getValue() + Config.jiraRestURI;
 
-	private final JsonPath jsonPath;
-	
-	public SearchIssues(final String query)
-	{
-		RestAssured.baseURI = jiraURI;
-		RestAssured.authentication = auth;
+    private final JsonPath jsonPath;
 
-		jsonPath = get(String.format("search?jql=%s&maxResults=1000", query)).andReturn().jsonPath();
-	}
-	
-	public List<String> getKeys()
-	{
-		return jsonPath.getList("issues.key");
-	}
-	
-	
-	public List<String> getSummaries()
-	{
-		return jsonPath.getList("issues.fields.summary");
-	}
-	
-	
-	public String getKeyForSummary(final String summary)
-	{
-		return jsonPath.getString(String.format("issues.find {it.fields.summary == '%s'}.key", summary));
-	}
+    static {
+        RestAssured.baseURI = jiraURI;
+        RestAssured.authentication = auth;
+    }
+
+    public SearchIssues(final String query) {
+        try {
+            jsonPath = get(String.format("search?jql=%s&maxResults=1000", query)).andReturn().jsonPath();
+        } catch (RuntimeException re) {
+            throw new RuntimeException("Problem with JIRA or JQL.");
+        }
+        if (null == jsonPath || null == jsonPath.getList("issues")) {
+            throw new RuntimeException(String.format("No JIRA issues returned by specified JQL '%s'", query));
+        }
+    }
+
+    public List<String> getKeys() {
+        return jsonPath.getList("issues.key");
+    }
+
+    public List<String> getSummaries() {
+        return jsonPath.getList("issues.fields.summary");
+    }
+
+    public String getKeyForSummary(final String summary) {
+        return jsonPath.getString(String.format("issues.find {it.fields.summary == '%s'}.key", summary));
+    }
 }

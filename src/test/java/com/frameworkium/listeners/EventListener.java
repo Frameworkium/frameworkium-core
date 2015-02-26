@@ -12,12 +12,11 @@ import org.openqa.selenium.support.events.WebDriverEventListener;
 
 public class EventListener implements WebDriverEventListener {
 
-    static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger(EventListener.class);
 
     @Override
     public void afterChangeValueOf(WebElement element, WebDriver driver) {
-        logger.info("changed value of element with "
-                + getLocatorFromElement(element));
+        logger.info("changed value of element with " + getLocatorFromElement(element));
     }
 
     @Override
@@ -52,8 +51,7 @@ public class EventListener implements WebDriverEventListener {
 
     @Override
     public void beforeChangeValueOf(WebElement element, WebDriver driver) {
-        logger.info("change value of element with "
-                + getLocatorFromElement(element));
+        logger.info("change value of element with " + getLocatorFromElement(element));
 
     }
 
@@ -99,4 +97,3 @@ public class EventListener implements WebDriverEventListener {
         return m.find() && m.groupCount() > 0 ? m.group(1) : str;
     }
 }
-

@@ -18,13 +18,10 @@ enum SystemArchitecture {
     }
 
     public static final SystemArchitecture defaultSystemArchitecture = ARCHITECTURE_32_BIT;
-    private static List<String> architecture64bitNames = Arrays.asList("amd64",
-            "x86_64");
+    private static List<String> architecture64bitNames = Arrays.asList("amd64", "x86_64");
 
     static SystemArchitecture getSystemArchitecture() {
-
-        final String currentArchitecture = System.getProperties().getProperty(
-                "os.arch");
+        final String currentArchitecture = System.getProperties().getProperty("os.arch");
 
         SystemArchitecture result = defaultSystemArchitecture;
 

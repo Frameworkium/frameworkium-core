@@ -18,8 +18,8 @@ public class Sauce {
     private static final SauceOnDemandAuthentication authentication = new SauceOnDemandAuthentication(
             System.getenv("SAUCE_USERNAME"), System.getenv("SAUCE_ACCESS_KEY"));
 
-    private static final SauceREST client = new SauceREST(
-            authentication.getUsername(), authentication.getAccessKey());
+    private static final SauceREST client = new SauceREST(authentication.getUsername(),
+            authentication.getAccessKey());
 
     static {
         if (isDesired() && !environmentVariablesSet()) {
@@ -29,8 +29,7 @@ public class Sauce {
     }
 
     public static URL getURL() throws MalformedURLException {
-        return new URL(String.format(
-                "http://%s:%s@ondemand.saucelabs.com:80/wd/hub",
+        return new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub",
                 authentication.getUsername(), authentication.getAccessKey()));
     }
 
@@ -38,8 +37,7 @@ public class Sauce {
         return SAUCE.isSpecified() && Boolean.parseBoolean(SAUCE.getValue());
     }
 
-    public static void updateJobName(
-            SauceOnDemandSessionIdProvider sessionIdProvider, String name) {
+    public static void updateJobName(SauceOnDemandSessionIdProvider sessionIdProvider, String name) {
         Map<String, Object> updates = new HashMap<String, Object>();
         updates.put("name", name);
         client.updateJobInfo(sessionIdProvider.getSessionId(), updates);
@@ -52,7 +50,6 @@ public class Sauce {
     private static boolean environmentVariablesSet() {
         String username = authentication.getUsername();
         String accessKey = authentication.getAccessKey();
-        return username != null && !username.isEmpty() && accessKey != null
-                && !accessKey.isEmpty();
+        return username != null && !username.isEmpty() && accessKey != null && !accessKey.isEmpty();
     }
 }
