@@ -25,7 +25,6 @@
 *.log
 *.sql
 *.sqlite
-ajcore.*.txt
 
 # OS generated files #
 ######################
@@ -45,16 +44,17 @@ Thumbs.db
 #########
 target/
 
-# Other IDE's#
-##############
-\.classpath
-\.project
-\.settings
-\.checkstyle
-\.dorsync
-/nbactions.xml
-\*.log
-\null\*
-\test-output
-\log
-\.metadata
+# IDEs #
+########
+.classpath
+.metadata/
+.project
+.settings
+.checkstyle
+nbactions.xml
+
+# Other things #
+################
+ajcore.*.txt
+test-output/
+logs/
