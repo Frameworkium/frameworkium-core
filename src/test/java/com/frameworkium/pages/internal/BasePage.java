@@ -60,4 +60,14 @@ public abstract class BasePage<T extends BasePage<T>> {
             }
         }
     }
+    
+    public String getTitle()
+    {
+    	return driver.getTitle();
+    }
+    
+    public String getSource()
+    {
+    	return driver.getPageSource();
+    }
 }
