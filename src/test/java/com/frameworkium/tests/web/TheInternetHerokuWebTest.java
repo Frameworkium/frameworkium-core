@@ -36,7 +36,7 @@ import com.frameworkium.tests.internal.BaseTest;
 
 public class TheInternetHerokuWebTest extends BaseTest {
 
-	@Issue("KT-1")
+	@Issue("HEROKU-1")
 	@Test(description = "Basic Auth")
 
 	public final void basicAuth() {
@@ -47,7 +47,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		assertThat(basicAuthSuccess.getSource()).contains("Congratulations! You must have the proper credentials.");
 	}
 
-	@Issue("KT-1")
+	@Issue("HEROKU-2")
 	@Test(description = "Checkboxes")
 	public final void checkBoxes() {
 		
@@ -62,7 +62,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 	}
 
 	@Ignore
-	@Issue("KT-1")
+	@Issue("HEROKU-3")
 	@Test(description = "Drag and Drop")
 	public final void dragAndDrop() {
 		
@@ -76,7 +76,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 	}
 
 
-	@Issue("KT-1")
+	@Issue("HEROKU-4")
 	@Test(description = "Dropdown")
 	public final void dropdown() {
 		
@@ -90,7 +90,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		assertThat(dropdownPage.getSelectedOptionText()).named("selected option in dropdown").isEqualTo("Option 1");
 	}
 	
-	@Issue("KT-1")
+	@Issue("HEROKU-5")
 	@Test(description = "Dynamic loading")
 	public final void dynamicLoading() {
 		// Navigate to the dynamic loading hidden element page
@@ -107,7 +107,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		assertThat(dynamicLoadingExamplePage.isElementDisplayed()).named("element visibility").isTrue();
 	}
 	
-	@Issue("KT-1")
+	@Issue("HEROKU-6")
 	@Test(description = "File Download")
 	public final void fileDownload() {
 		
@@ -128,7 +128,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		
 	}
 	
-	@Issue("KT-1")
+	@Issue("HEROKU-7")
 	@Test(description = "File Upload")
 	public final void fileUpload() {
 		
@@ -146,7 +146,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		
 	}
 	
-	@Issue("KT-1")
+	@Issue("HEROKU-8")
 	@Test(description = "Form Authentication")
 	public final void formAuthentication() {
 		
@@ -161,7 +161,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		
 	}
 
-	@Issue("KT-1")
+	@Issue("HEROKU-9")
 	@Test(description = "Hovers")
 	public final void hovers() {
 		
@@ -172,7 +172,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 			
 	}
 	
-	@Issue("KT-1")
+	@Issue("HEROKU-10")
 	@Test(description = "JQuery UI")
 	public final void jqueryUI() {
 		
@@ -189,7 +189,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		assertThat(jqueryUIMenuPage.getExcelFileURLAsString()).isEqualTo("http://the-internet.herokuapp.com/download/jqueryui/menu/menu.xls");
 	}
 	
-	@Issue("KT-1")
+	@Issue("HEROKU-11")
 	@Test(description = "Javascript Alerts")
 	public final void javascriptAlerts() {
 		
@@ -213,7 +213,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 
 	}
 	
-	@Issue("KT-1")
+	@Issue("HEROKU-12")
 	@Test(description = "Key Presses")
 	public final void keypresses() {
 		
@@ -225,7 +225,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		assertThat(keyPressesPage.getResultText()).isEqualTo("You entered: " + Keys.ENTER.name());
 	}
 
-	@Issue("KT-1")
+	@Issue("HEROKU-13")
 	@Test(description = "Secure file Download")
 	public final void secureFileDownload() {
 		
