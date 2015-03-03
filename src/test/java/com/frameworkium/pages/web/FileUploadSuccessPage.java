@@ -15,11 +15,10 @@ public class FileUploadSuccessPage extends BasePage<FileUploadSuccessPage> {
     @Name("Uploaded Files")
     @FindBy(css = "div#uploaded-files")
     private WebElement uploadedFiles;
-    
+
     @Step("Get uploaded files list")
     public String getUploadedFiles() {	
         return uploadedFiles.getText();
     }
-
    
 }

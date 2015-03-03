@@ -24,7 +24,7 @@ public class HoversPage extends BasePage<HoversPage> {
     @FindBy(css = "div.figure:nth-of-type(1) div.figcaption")
     private WebElement firstFigureCaption;
 
-    
+
     @Step("Get 1st figure caption")
     public String getFirstFigureCaption() {	
     	

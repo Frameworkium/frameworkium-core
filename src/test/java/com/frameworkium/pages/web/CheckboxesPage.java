@@ -15,6 +15,10 @@ import com.frameworkium.pages.internal.Visible;
 
 public class CheckboxesPage extends BasePage<CheckboxesPage> {
 
+    @Name("All checkboxes")
+    @FindBy(css = "form input[type='checkbox']")
+    private List<CheckBox> allCheckboxes;
+    
     @Visible
     @Name("Unchecked checkbox")
     @CacheLookup
@@ -30,6 +34,11 @@ public class CheckboxesPage extends BasePage<CheckboxesPage> {
     @Step("Set all the checkboxes to true")
     public CheckboxesPage checkAllCheckboxes() {
     	
+    	for(CheckBox checkbox : allCheckboxes)
+    	{
+    		checkbox.set(true);
+    	}
+    	
     	//Question - what happens if you don't use the CacheLookup above?
     	uncheckedCheckbox.set(true);
     	uncheckedCheckbox.set(false);
@@ -42,14 +51,29 @@ public class CheckboxesPage extends BasePage<CheckboxesPage> {
     	return this;
     }
     
+    @Step("Set all the checkboxes to true")
+    public CheckboxesPage checkAllCheckboxes2() {
+    	
+    	for(CheckBox checkbox : allCheckboxes)
+    	{
+    		checkbox.set(true);
+    	}
+
+    	return this;
+    }
+    
     @Step("Return the checkedness of the checkboxes")
     public List<Boolean> getCheckednessOfCheckboxes() {
     	
     	List<Boolean> checkedness = new ArrayList<Boolean>();
     	
-    	checkedness.add(uncheckedCheckbox.isSelected());
-    	checkedness.add(checkedCheckbox.isSelected());
-
+    	for(CheckBox checkbox : allCheckboxes)
+    	{
+    		checkedness.add(checkbox.isSelected());
+    	}
+    	
     	return checkedness;
     }
+    
+ 
 }

@@ -55,10 +55,14 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		CheckboxesPage checkboxesPage = WelcomePage.open().then().clickCheckboxesLink();
 
 		// Set both checkboxes to checked
-		checkboxesPage.checkAllCheckboxes();
+		//checkboxesPage.checkAllCheckboxes();
 		
-		// Assert that both checkboxes are checked
+		// Set all checkboxes to checked via alternative method
+		checkboxesPage.checkAllCheckboxes2();
+				
+		// Assert that all checkboxes are checked
 		assertThat(checkboxesPage.getCheckednessOfCheckboxes()).named("checkedness of checkboxes").doesNotContain(false);
+			
 	}
 
 	@Ignore
@@ -167,7 +171,8 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		
 		// Navigate to the hovers page
 		HoversPage hoversPage = WelcomePage.open().then().clickHoversLink();
-	
+		
+		// Confirm that the caption under the first figure contains expected text
 		assertThat(hoversPage.getFirstFigureCaption()).contains("name: user1");
 			
 	}
