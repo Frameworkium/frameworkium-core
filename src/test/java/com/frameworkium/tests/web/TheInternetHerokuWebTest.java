@@ -62,7 +62,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 				
 		// Assert that all checkboxes are checked
 		assertThat(checkboxesPage.getCheckednessOfCheckboxes()).named("checkedness of checkboxes").doesNotContain(false);
-			
+
 	}
 
 	@Ignore
@@ -123,6 +123,9 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		//FileInputStream f = new FileInputStream(testFile.getAbsolutePath());
 		//int size = IOUtils.toByteArray(f).length;
 		//IOUtils.closeQuietly(f);
+		
+		//Confirm that the avatar.jpg file is first in the list
+		assertThat(downloadPage.getListOfDownloadableFiles().get(0)).isEqualTo("avatar.jpg");
 		
 		//If you know the size to expect
 		int size = 7996;
