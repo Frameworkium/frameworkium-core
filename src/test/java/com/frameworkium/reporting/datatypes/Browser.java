@@ -1,15 +1,17 @@
 package com.frameworkium.reporting.datatypes;
 
+import org.openqa.selenium.Platform;
+
 public class Browser {
     public String name;
     public String version;
     public String ua;
-    public String platformOS;
+    public Platform platform;
 
-    public Browser(String name, String version, String ua, String platformOS) {
+    public Browser(String name, String version, String ua, Platform platform) {
         this.name = name;
         this.version = version;
         this.ua = ua;
-        this.platformOS = platformOS;
+        this.platform = platform;
     }
 }
