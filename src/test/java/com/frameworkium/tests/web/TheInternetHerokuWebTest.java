@@ -34,6 +34,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 	@Issue("HEROKU-1")
 	@Test(description = "Basic Auth")
 	public final void basicAuth() {
+
         // Navigate to the basic auth page
 		BasicAuthSuccessPage basicAuthSuccess = WelcomePage.open().then().clickBasicAuth("admin", "admin");
 
@@ -55,7 +56,8 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		checkboxesPage.checkAllCheckboxes2();
 
 		// Assert that all checkboxes are checked
-        assertThat(checkboxesPage.getCheckednessOfCheckboxes()).named("check status of checkboxes")
+        assertThat(checkboxesPage.getAllCheckboxCheckedStatus())
+                .named("check status of checkboxes")
                 .doesNotContain(false);
 	}
 
@@ -81,16 +83,17 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		// Navigate to the checkboxes page
 		DropdownPage dropdownPage = WelcomePage.open().then().clickDropdownLink();
 
-		//Drag A onto B
+        // Drag A onto B
 		dropdownPage.selectFromDropdown("Option 1");
 
-		//Assert selected
+        // Assert selected
 		assertThat(dropdownPage.getSelectedOptionText()).named("selected option in dropdown").isEqualTo("Option 1");
 	}
 
 	@Issue("HEROKU-5")
 	@Test(description = "Dynamic loading")
 	public final void dynamicLoading() {
+
 		// Navigate to the dynamic loading hidden element page
 		DynamicLoadingExamplePage dynamicLoadingExamplePage = WelcomePage.open().then().clickDynamicLoading()
 				.then().clickExample1();
@@ -118,10 +121,10 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		//int size = IOUtils.toByteArray(f).length;
 		//IOUtils.closeQuietly(f);
 
-		//Confirm that the avatar.jpg file is first in the list
+        // Confirm that the avatar.jpg file is first in the list
 		assertThat(downloadPage.getListOfDownloadableFiles().get(0)).isEqualTo("avatar.jpg");
 
-		//If you know the size to expect
+        // If you know the size to expect
 		int size = 7996;
 
 		// Confirm size of the downloaded file is as expected
@@ -136,13 +139,13 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		// Navigate to the upload page
 		FileUploadPage fileUploadPage = WelcomePage.open().then().clickFileUploadLink();
 
-		//Pick a local file we're going to upload
-		File fileToUpload = new File("/Users/robgates55/textfile.txt");
+        // Pick a local file we're going to upload
+        File fileToUpload = new File("textfile.txt");
 
-		//Upload the file and confirm we land on the success page
+        // Upload the file and confirm we land on the success page
 		FileUploadSuccessPage successPage = fileUploadPage.uploadFile(fileToUpload);
 
-		//Confirm that the uploaded files list contains our filename
+        // Confirm that the uploaded files list contains our filename
 		assertThat(successPage.getUploadedFiles()).contains(fileToUpload.getName());
 	}
 
@@ -153,10 +156,10 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		// Navigate to the form authentication page
 		FormAuthenticationPage formAuthenticationPage = WelcomePage.open().then().clickFormAuthenticationLink();
 
-		//Log in with the username password provided
+        // Log in with the username password provided
 		FormAuthenticationSuccessPage successPage = formAuthenticationPage.validLogin("tomsmith", "SuperSecretPassword!");
 
-		//Confirm that we're on the success page
+        // Confirm that we're on the success page
 		assertThat(successPage.getSource()).contains("Welcome to the Secure Area");
 	}
 
@@ -175,16 +178,16 @@ public class TheInternetHerokuWebTest extends BaseTest {
 	@Test(description = "JQuery UI")
 	public final void jqueryUI() {
 
-		// Navigate to the jquery UI page
+        // Navigate to the jQuery UI page
 		JQueryUIMenuPage jqueryUIMenuPage = WelcomePage.open().then().clickJQueryUILink();
 
-		//Browse to the ui page
+        // Browse to the UI page
 		JQueryUIPage UIPage = jqueryUIMenuPage.clickBackToUI();
 
-		//Click the menu link to return to the menu page
+        // Click the menu link to return to the menu page
 		jqueryUIMenuPage = UIPage.clickMenuLink();
 
-		//Check that the excel file link matches the string
+        // Check that the excel file link matches the string
 		assertThat(jqueryUIMenuPage.getExcelFileURLAsString()).isEqualTo("http://the-internet.herokuapp.com/download/jqueryui/menu/menu.xls");
 	}
 
@@ -230,8 +233,8 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		// Navigate to the secure file downloads page
 		SecureFileDownloadPage secureFileDownloadPage = WelcomePage.open().then().clickSecureFileDownloadsLink("admin","admin");
 
-		//Assert that the page contains the text
-		assertThat(secureFileDownloadPage.getSource()).contains("Secure File Downloader");
+        // Assert that the page contains the text
+        assertThat(secureFileDownloadPage.getHeadingText()).isEqualTo("Secure File Downloader");
 	}
 
 }

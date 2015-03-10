@@ -1,15 +1,8 @@
 package com.frameworkium.pages.web;
 
-import static com.jayway.restassured.RestAssured.expect;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.commons.io.IOUtils;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
-import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.element.Link;
 
@@ -19,10 +12,17 @@ import com.frameworkium.pages.internal.Visible;
 public class SecureFileDownloadPage extends BasePage<SecureFileDownloadPage> {
 
     @Visible
+    @Name("Heading")
+    @FindBy(css = "div.example h3")
+    private WebElement heading;
+
+    @Visible
     @Name("First download link")
     @FindBy(css = "div.example a:first-of-type")
     private Link firstDownloadLink;
 
+    public String getHeadingText() {
+        return heading.getText();
+    }
 
-   
 }
