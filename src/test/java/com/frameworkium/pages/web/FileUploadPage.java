@@ -23,7 +23,6 @@ public class FileUploadPage extends BasePage<FileUploadPage> {
     @Name("Upload button")
     @FindBy(css = "input#file-submit")
     private WebElement uploadButton;
-
     
     @Step("Upload a file by choosing file and then clicking upload")
     public FileUploadSuccessPage uploadFile(File filename) {	
@@ -32,5 +31,4 @@ public class FileUploadPage extends BasePage<FileUploadPage> {
         return PageFactory.newInstance(FileUploadSuccessPage.class);
     }
 
-   
 }

@@ -1,7 +1,5 @@
 package com.frameworkium.pages.web;
 
-import java.io.File;
-
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -11,7 +9,6 @@ import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 
 import com.frameworkium.pages.internal.BasePage;
-import com.frameworkium.pages.internal.PageFactory;
 import com.frameworkium.pages.internal.Visible;
 
 public class KeyPressesPage extends BasePage<KeyPressesPage> {

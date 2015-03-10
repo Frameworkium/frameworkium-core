@@ -1,8 +1,5 @@
 package com.frameworkium.pages.web;
 
-import java.io.File;
-import java.net.URL;
-
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
@@ -33,7 +30,6 @@ public class JQueryUIMenuPage extends BasePage<JQueryUIMenuPage> {
     @Name("excel file menu item")
     @FindBy(linkText = "Excel")
     private Link excelFileMenuItem;
-
     
     @Step("click back to UI")
     public JQueryUIPage clickBackToUI() {	
@@ -59,8 +55,6 @@ public class JQueryUIMenuPage extends BasePage<JQueryUIMenuPage> {
     	
     	//Return text from the now-visible caption
     	return excelFileMenuItem.getReference();
-    
     }
-
    
 }

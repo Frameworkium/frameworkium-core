@@ -1,18 +1,13 @@
 package com.frameworkium.pages.web;
 
-import java.io.File;
-
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
-import ru.yandex.qatools.htmlelements.element.Link;
 
 import com.frameworkium.pages.internal.BasePage;
-import com.frameworkium.pages.internal.PageFactory;
 import com.frameworkium.pages.internal.Visible;
 
 public class JavaScriptAlertsPage extends BasePage<JavaScriptAlertsPage> {

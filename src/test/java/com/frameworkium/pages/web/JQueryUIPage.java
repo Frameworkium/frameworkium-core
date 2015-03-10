@@ -1,9 +1,5 @@
 package com.frameworkium.pages.web;
 
-import java.io.File;
-
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 
 import ru.yandex.qatools.allure.annotations.Step;
@@ -21,7 +17,6 @@ public class JQueryUIPage extends BasePage<JQueryUIPage> {
     @FindBy(linkText = "Menu")
     private Link menuLink;
 
-  
     @Step("Click menu")
     public JQueryUIMenuPage clickMenuLink()
     {

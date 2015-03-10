@@ -52,7 +52,6 @@ public class EventListener implements WebDriverEventListener {
     @Override
     public void beforeChangeValueOf(WebElement element, WebDriver driver) {
         logger.info("change value of element with " + getLocatorFromElement(element));
-
     }
 
     @Override

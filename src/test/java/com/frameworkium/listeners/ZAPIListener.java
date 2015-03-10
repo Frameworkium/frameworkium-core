@@ -21,8 +21,8 @@ public class ZAPIListener implements ITestListener {
     @Override
     public void onTestStart(ITestResult result) {
         if (loggingParamsProvided(result)) {
-            String comment = String.format("Starting %s.%s", result.getTestClass().getName(), result
-                    .getMethod().getMethodName());
+            String comment =
+                    String.format("Starting %s.%s", result.getTestClass().getName(), result.getMethod().getMethodName());
 
             new Execution(JIRA_RESULT_VERSION.getValue(), getIssueAnnotation(result)).update(
                     Config.ZAPI_STATUS.ZAPI_STATUS_WIP, comment, null);
@@ -32,9 +32,9 @@ public class ZAPIListener implements ITestListener {
     @Override
     public void onTestSuccess(ITestResult result) {
         if (loggingParamsProvided(result)) {
-            String comment = String.format("%s.%s Passed in %s seconds", result.getTestClass().getName(),
-                    result.getMethod().getMethodName(),
-                    ((result.getEndMillis() - result.getStartMillis()) / 1000));
+            String comment =
+                    String.format("%s.%s Passed in %s seconds", result.getTestClass().getName(), result.getMethod()
+                            .getMethodName(), ((result.getEndMillis() - result.getStartMillis()) / 1000));
 
             new Execution(JIRA_RESULT_VERSION.getValue(), getIssueAnnotation(result)).update(
                     Config.ZAPI_STATUS.ZAPI_STATUS_PASS, comment, null);
@@ -44,9 +44,9 @@ public class ZAPIListener implements ITestListener {
     @Override
     public void onTestFailure(ITestResult result) {
         if (loggingParamsProvided(result)) {
-            String comment = String.format("%s.%s Failed in %s seconds", result.getTestClass().getName(),
-                    result.getMethod().getMethodName(),
-                    ((result.getEndMillis() - result.getStartMillis()) / 1000));
+            String comment =
+                    String.format("%s.%s Failed in %s seconds", result.getTestClass().getName(), result.getMethod()
+                            .getMethodName(), ((result.getEndMillis() - result.getStartMillis()) / 1000));
 
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
@@ -70,9 +70,9 @@ public class ZAPIListener implements ITestListener {
     @Override
     public void onTestSkipped(ITestResult result) {
         if (loggingParamsProvided(result)) {
-            String comment = String.format("%s.%s Skipped in %s seconds", result.getTestClass().getName(),
-                    result.getMethod().getMethodName(),
-                    ((result.getEndMillis() - result.getStartMillis()) / 1000));
+            String comment =
+                    String.format("%s.%s Skipped in %s seconds", result.getTestClass().getName(), result.getMethod()
+                            .getMethodName(), ((result.getEndMillis() - result.getStartMillis()) / 1000));
 
             new Execution(JIRA_RESULT_VERSION.getValue(), getIssueAnnotation(result)).update(
                     Config.ZAPI_STATUS.ZAPI_STATUS_BLOCKED, comment, null);
@@ -80,20 +80,16 @@ public class ZAPIListener implements ITestListener {
     }
 
     @Override
-    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
-    }
+    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {}
 
     @Override
-    public void onStart(ITestContext context) {
-    }
+    public void onStart(ITestContext context) {}
 
     @Override
-    public void onFinish(ITestContext context) {
-    }
+    public void onFinish(ITestContext context) {}
 
     private Boolean loggingParamsProvided(ITestResult result) {
-        return JIRA_URL.isSpecified() && JIRA_RESULT_VERSION.isSpecified()
-                && !getIssueAnnotation(result).isEmpty();
+        return JIRA_URL.isSpecified() && JIRA_RESULT_VERSION.isSpecified() && !getIssueAnnotation(result).isEmpty();
     }
 
     private String getIssueAnnotation(ITestResult result) {
