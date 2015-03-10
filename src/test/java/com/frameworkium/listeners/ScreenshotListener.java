@@ -37,35 +37,36 @@ public class ScreenshotListener extends TestListenerAdapter {
     }
 
     @Attachment(value = "Screenshot on failure", type = "image/png")
-    private byte[] writeScreenshotToFile(WebDriver driver, File screenshot) {
+    private void writeScreenshotToFile(WebDriver driver, File screenshot) {
         try {
             FileOutputStream screenshotStream = new FileOutputStream(screenshot);
             byte[] bytes = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
             screenshotStream.write(bytes);
             screenshotStream.close();
-            return bytes;
         } catch (IOException unableToWriteScreenshot) {
             System.err.println("Unable to write " + screenshot.getAbsolutePath());
             unableToWriteScreenshot.printStackTrace();
         }
-        return null;
     }
 
     private void takeScreenshot(String testName) throws Exception {
-        WebDriver driver = getDriver();
         String screenshotDirectory = System.getProperty("screenshotDirectory");
-        String screenshotAbsolutePath = screenshotDirectory + File.separator + System.currentTimeMillis()
+        if (null == screenshotDirectory) {
+            screenshotDirectory = "screenshots";
+        }
+        String absolutePath = screenshotDirectory + File.separator + System.currentTimeMillis()
                 + "_" + testName + ".png";
-        File screenshot = new File(screenshotAbsolutePath);
+        File screenshot = new File(absolutePath);
         if (createFile(screenshot)) {
+            WebDriver driver = getDriver();
             try {
                 writeScreenshotToFile(driver, screenshot);
             } catch (ClassCastException weNeedToAugmentOurDriverObject) {
                 writeScreenshotToFile(new Augmenter().augment(driver), screenshot);
             }
-            System.out.println("Written screenshot to " + screenshotAbsolutePath);
+            System.out.println("Written screenshot to " + absolutePath);
         } else {
-            System.err.println("Unable to create " + screenshotAbsolutePath);
+            System.err.println("Unable to create " + absolutePath);
         }
     }
 

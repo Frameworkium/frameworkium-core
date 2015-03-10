@@ -1,6 +1,5 @@
 package com.frameworkium.pages.web;
 
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
 
 import ru.yandex.qatools.allure.annotations.Step;
@@ -10,12 +9,8 @@ import ru.yandex.qatools.htmlelements.element.Link;
 import com.frameworkium.pages.internal.BasePage;
 import com.frameworkium.pages.internal.PageFactory;
 import com.frameworkium.pages.internal.Visible;
-import com.google.inject.Inject;
 
 public class WelcomePage extends BasePage<WelcomePage> {
-
-    @Inject
-    protected WebDriver driver;
 
     @Visible
     @Name("Basic auth link")

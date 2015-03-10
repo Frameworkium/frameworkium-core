@@ -121,8 +121,8 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		//int size = IOUtils.toByteArray(f).length;
 		//IOUtils.closeQuietly(f);
 
-        // Confirm that the avatar.jpg file is first in the list
-		assertThat(downloadPage.getListOfDownloadableFiles().get(0)).isEqualTo("avatar.jpg");
+        // Confirm that the avatar.jpg file in the list (as other people might be using it!)
+        assertThat(downloadPage.getListOfDownloadableFiles()).contains("avatar.jpg");
 
         // If you know the size to expect
 		int size = 7996;

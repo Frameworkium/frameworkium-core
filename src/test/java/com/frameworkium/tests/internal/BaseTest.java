@@ -28,8 +28,8 @@ import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 
-@Listeners({ ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class, TestListener.class,
-        ZAPIListener.class })
+@Listeners({ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class, TestListener.class,
+        ZAPIListener.class})
 public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
     private static List<WebDriverWrapper> webDriverPool = Collections
@@ -98,7 +98,6 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     /**
-     *
      * @return the Sauce Job id for the current thread
      */
     @Override
@@ -108,9 +107,8 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     /**
-     *
-     * @return the {@link SauceOnDemandAuthentication} instance containing the
-     *         Sauce username/access key
+     * @return the {@link SauceOnDemandAuthentication} instance containing
+     *         the Sauce username/access key
      */
     @Override
     public SauceOnDemandAuthentication getAuthentication() {
