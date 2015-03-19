@@ -12,7 +12,7 @@ import com.frameworkium.pages.internal.Visible;
 public class DropdownPage extends BasePage<DropdownPage> {
 
     @Visible
-    @Name("Header text")
+    @Name("Dropdown list")
     @FindBy(css = "select#dropdown")
     private Select dropdown;
 
