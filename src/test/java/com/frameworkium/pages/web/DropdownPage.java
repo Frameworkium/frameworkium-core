@@ -17,14 +17,14 @@ public class DropdownPage extends BasePage<DropdownPage> {
     private Select dropdown;
 
     
-    @Step("Return the text displayed in the header")
+    @Step("Select option {0} from dropdown")
     public DropdownPage selectFromDropdown(String option) {
     	dropdown.selectByVisibleText(option);
        return this;
     }
 
     
-    @Step("Return the text displayed in the header")
+    @Step("Return the selected option")
     public String getSelectedOptionText() {
        return dropdown.getFirstSelectedOption().getText();
     }
