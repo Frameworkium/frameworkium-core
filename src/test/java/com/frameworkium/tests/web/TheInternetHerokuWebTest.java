@@ -122,13 +122,13 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		//IOUtils.closeQuietly(f);
 
         // Confirm that the avatar.jpg file in the list (as other people might be using it!)
-        assertThat(downloadPage.getListOfDownloadableFiles()).contains("avatar.jpg");
+		assertThat(downloadPage.getDownloadableFileLinkNames()).contains("avatar.jpg");
 
         // If you know the size to expect
 		int size = 7996;
 
 		// Confirm size of the downloaded file is as expected
-        assertThat(downloadPage.getSizeOfFirstFile()).isEqualTo(size);
+		assertThat(downloadPage.getSizeOfFile("avatar.jpg")).isEqualTo(size);
 	}
 
 	@Issue("HEROKU-7")

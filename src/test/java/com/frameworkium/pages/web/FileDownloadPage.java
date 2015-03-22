@@ -25,45 +25,62 @@ public class FileDownloadPage extends BasePage<FileDownloadPage> {
     @FindBy(css = "div.example a")
     private List<Link> allDownloadLinks;
 
-    
     @Visible
     @Name("First download link")
     @FindBy(css = "div.example a:first-of-type")
     private Link firstDownloadLink;
 
-    
     @Step("Get the size of the first downloadable file")
-    public int getSizeOfFirstFile() {
-    	
-    	String downloadURL = firstDownloadLink.getReference();
+    public long getSizeOfFirstFile() {
+        return getSizeOfFileAtURL(firstDownloadLink.getReference());
+    }
 
-    	final InputStream inputStream = expect().log().headers().when().get(downloadURL).asInputStream();
+    @Step("Return all download links")
+    public List<String> getDownloadableFileLinkNames() {
 
-        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        List<String> listOfFiles = new ArrayList<String>();
+
+        for (Link lnk : allDownloadLinks) {
+            listOfFiles.add(lnk.getText());
+        }
+        return listOfFiles;
+
+    }
+
+    @Step("Get the size of the file {0}")
+    public long getSizeOfFile(String linkText) {
+        return getSizeOfFileAtURL(getURLOfFile(linkText));
+    }
+
+    @Step("Get the URL of the file {0}")
+    public String getURLOfFile(String linkText) {
+        return findLinkByText(linkText).getReference();
+    }
+
+    private Link findLinkByText(String linkText) {
+
+        for (Link link : allDownloadLinks) {
+            if (link.getText().equals(linkText)) {
+                return link;
+            }
+        }
+        return null;
+    }
+
+    private long getSizeOfFileAtURL(String downloadURL) {
+
+        InputStream inputStream = expect().log().headers().when().get(downloadURL).asInputStream();
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
-			IOUtils.copy(inputStream, byteArrayOutputStream);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            IOUtils.copy(inputStream, byteArrayOutputStream);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
         IOUtils.closeQuietly(byteArrayOutputStream);
         IOUtils.closeQuietly(inputStream);
 
         return byteArrayOutputStream.size();
-        
-    }
-    
-    @Step("Return all download links")
-    public List<String> getListOfDownloadableFiles() {
-    	
-    	List<String> listOfFiles = new ArrayList<String>();
-
-    	for(Link lnk : allDownloadLinks) {
-    		listOfFiles.add(lnk.getText());
-    	}
-        return listOfFiles;
-        
     }
 
-   
 }
