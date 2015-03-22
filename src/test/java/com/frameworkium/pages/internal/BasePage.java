@@ -4,6 +4,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
@@ -23,6 +25,8 @@ public abstract class BasePage<T extends BasePage<T>> {
 
     @Inject
     protected WebDriverWait wait;
+
+    protected final Logger logger = LogManager.getLogger(this);
 
     /** @return Returns the current page object, useful for 'fluent' tests e.g. MyPage.get().then().doSomething(); */
     @SuppressWarnings("unchecked")
@@ -47,7 +51,7 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     @SuppressWarnings("unchecked")
-    private void waitForVisibleElements(Object pageObject) throws IllegalArgumentException, IllegalAccessException {
+    private void waitForVisibleElements(BasePage<T> pageObject) throws IllegalArgumentException, IllegalAccessException {
         for (Field field : pageObject.getClass().getDeclaredFields()) {
             for (Annotation annotation : field.getDeclaredAnnotations()) {
                 if (annotation instanceof Visible) {
