@@ -24,8 +24,7 @@ import com.jayway.restassured.path.json.JsonPath;
 public class Execution {
 
     private static final Logger logger = LogManager.getLogger(Execution.class);
-    private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername,
-            Config.jiraPassword);
+    private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername, Config.jiraPassword);
     private final static String zapiURI = JIRA_URL.getValue() + Config.zapiRestURI;
 
     private final String version;
@@ -53,13 +52,13 @@ public class Execution {
     private List<Integer> getExecutionIds() {
         if (null == idList) {
             if (null != version && !version.isEmpty() && null != issue && !issue.isEmpty()) {
-                final String query = String.format("issue='%s' and fixVersion='%s'", issue, version);
+                String query = String.format("issue='%s' and fixVersion='%s'", issue, version);
 
-                final SearchExecutions search = new SearchExecutions(query);
+                SearchExecutions search = new SearchExecutions(query);
                 idList = search.getExecutionIds();
 
-                final List<Integer> statusList = search.getExecutionStatuses();
-                if (statusList.size() > 0) {
+                List<Integer> statusList = search.getExecutionStatuses();
+                if (!statusList.isEmpty()) {
                     status = statusList.get(0);
                 }
             }
@@ -73,7 +72,7 @@ public class Execution {
 
     public void update(final int status, final String comment, final String attachment) {
         if (null != idList) {
-            for (final Integer executionId : idList) {
+            for (Integer executionId : idList) {
                 updateStatusAndComment(executionId, status, comment);
                 replaceExistingAttachment(attachment, executionId);
 
@@ -90,51 +89,47 @@ public class Execution {
     }
 
     private void updateStatusAndComment(final Integer executionId, final int status, final String comment) {
-        final JSONObject obj = new JSONObject();
+        JSONObject obj = new JSONObject();
         try {
             obj.put("status", String.valueOf(status));
             obj.put("comment", comment);
-        } catch (final JSONException e) {
-            e.printStackTrace();
+        } catch (JSONException e) {
+            logger.error(e.getMessage());
         }
 
-        given().contentType("application/json").and().body(obj.toString()).then()
-                .put("execution/" + executionId + "/execute");
+        given().contentType("application/json").and().body(obj).then().put("execution/" + executionId + "/execute");
     }
 
     private void deleteExistingAttachments(final Integer executionId) {
-        final String url = String.format("attachment/attachmentsByEntity?entityId=%s&entityType=EXECUTION",
-                executionId);
+        String url = String.format("attachment/attachmentsByEntity?entityId=%s&entityType=EXECUTION", executionId);
 
-        final JsonPath jsonPath = get(url).andReturn().jsonPath();
+        JsonPath jsonPath = get(url).andReturn().jsonPath();
 
-        final List<String> fileIds = jsonPath.getList("data.fileId", String.class);
+        List<String> fileIds = jsonPath.getList("data.fileId", String.class);
 
         // Iterate over attachments
-        for (final String fileId : fileIds) {
+        for (String fileId : fileIds) {
             delete("attachment/" + fileId);
         }
     }
 
     private void addAttachment(final Integer executionId, final String attachment) {
-        final String url = String.format("attachment?entityId=%s&entityType=EXECUTION", executionId);
+        String url = String.format("attachment?entityId=%s&entityType=EXECUTION", executionId);
 
         given().header("X-Atlassian-Token", "nocheck").and().multiPart(new File(attachment)).when().post(url);
     }
 
-    /**
-     * Converts ITestResult status to ZAPI execution status
-     */
+    /** Converts ITestResult status to ZAPI execution status */
     public static int getZAPIStatus(final int status) {
         switch (status) {
-        case ITestResult.SUCCESS:
-            return Config.ZAPI_STATUS.ZAPI_STATUS_PASS;
-        case ITestResult.FAILURE:
-            return Config.ZAPI_STATUS.ZAPI_STATUS_FAIL;
-        case ITestResult.SKIP:
-            return Config.ZAPI_STATUS.ZAPI_STATUS_BLOCKED;
-        default:
-            return Config.ZAPI_STATUS.ZAPI_STATUS_FAIL;
+            case ITestResult.SUCCESS:
+                return Config.ZAPI_STATUS.ZAPI_STATUS_PASS;
+            case ITestResult.FAILURE:
+                return Config.ZAPI_STATUS.ZAPI_STATUS_FAIL;
+            case ITestResult.SKIP:
+                return Config.ZAPI_STATUS.ZAPI_STATUS_BLOCKED;
+            default:
+                return Config.ZAPI_STATUS.ZAPI_STATUS_FAIL;
         }
     }
 }

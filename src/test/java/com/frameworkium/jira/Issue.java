@@ -27,10 +27,10 @@ public class Issue {
     }
 
     public static void linkIssues(final String type, final String inwardIssue, final String outwardIssue) {
-        final JSONObject obj = new JSONObject();
-        final JSONObject typeObj = new JSONObject();
-        final JSONObject inwardIssueObj = new JSONObject();
-        final JSONObject outwardIssueObj = new JSONObject();
+        JSONObject obj = new JSONObject();
+        JSONObject typeObj = new JSONObject();
+        JSONObject inwardIssueObj = new JSONObject();
+        JSONObject outwardIssueObj = new JSONObject();
 
         try {
             obj.put("type", typeObj);
@@ -39,7 +39,7 @@ public class Issue {
             inwardIssueObj.put("key", inwardIssue);
             obj.put("outwardIssue", outwardIssueObj);
             outwardIssueObj.put("key", outwardIssue);
-        } catch (final JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
@@ -57,7 +57,7 @@ public class Issue {
     }
 
     public void addAttachment(final File attachment) {
-        final String url = String.format("issue/%s/attachments", issue);
+        String url = String.format("issue/%s/attachments", issue);
 
         RestAssured.baseURI = jiraAPIURI;
         RestAssured.authentication = auth;

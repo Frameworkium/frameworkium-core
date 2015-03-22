@@ -47,7 +47,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         driverThread = new ThreadLocal<WebDriverWrapper>() {
             @Override
             protected WebDriverWrapper initialValue() {
-                final WebDriverWrapper webDriver = desiredDriver.instantiate();
+                WebDriverWrapper webDriver = desiredDriver.instantiate();
                 webDriverPool.add(webDriver);
                 return webDriver;
             }

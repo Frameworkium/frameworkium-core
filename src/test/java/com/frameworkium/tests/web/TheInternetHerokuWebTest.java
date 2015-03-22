@@ -33,7 +33,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 
 	@Issue("HEROKU-1")
 	@Test(description = "Basic Auth")
-	public final void basicAuth() {
+    public void basicAuth() {
 
         // Navigate to the basic auth page
 		BasicAuthSuccessPage basicAuthSuccess = WelcomePage.open().then().clickBasicAuth("admin", "admin");
@@ -44,7 +44,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 
 	@Issue("HEROKU-2")
 	@Test(description = "Checkboxes")
-	public final void checkBoxes() {
+    public void checkBoxes() {
 
 		// Navigate to the checkboxes page
 		CheckboxesPage checkboxesPage = WelcomePage.open().then().clickCheckboxesLink();
@@ -63,7 +63,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 
 	@Issue("HEROKU-3")
 	@Test(description = "Drag and Drop")
-	public final void dragAndDrop() {
+    public void dragAndDrop() {
 
 		// Navigate to the checkboxes page
 		DragAndDropPage dragAndDropPage = WelcomePage.open().then().clickDragAndDropLink();
@@ -78,7 +78,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 
 	@Issue("HEROKU-4")
 	@Test(description = "Dropdown")
-	public final void dropdown() {
+    public void dropdown() {
 
 		// Navigate to the checkboxes page
 		DropdownPage dropdownPage = WelcomePage.open().then().clickDropdownLink();
@@ -92,7 +92,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 
 	@Issue("HEROKU-5")
 	@Test(description = "Dynamic loading")
-	public final void dynamicLoading() {
+    public void dynamicLoading() {
 
 		// Navigate to the dynamic loading hidden element page
 		DynamicLoadingExamplePage dynamicLoadingExamplePage = WelcomePage.open().then().clickDynamicLoading()
@@ -110,7 +110,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 
 	@Issue("HEROKU-6")
 	@Test(description = "File Download")
-	public final void fileDownload() {
+    public void fileDownload() {
 
 		// Navigate to the download page
 		FileDownloadPage downloadPage = WelcomePage.open().then().clickFileDownloadLink();
@@ -128,13 +128,12 @@ public class TheInternetHerokuWebTest extends BaseTest {
 		int size = 7996;
 
 		// Confirm size of the downloaded file is as expected
-		assertThat(downloadPage.getSizeOfFirstFile()).isEqualTo(size);
-
+        assertThat(downloadPage.getSizeOfFirstFile()).isEqualTo(size);
 	}
 
 	@Issue("HEROKU-7")
 	@Test(description = "File Upload")
-	public final void fileUpload() {
+    public void fileUpload() {
 
 		// Navigate to the upload page
 		FileUploadPage fileUploadPage = WelcomePage.open().then().clickFileUploadLink();
@@ -151,7 +150,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 
 	@Issue("HEROKU-8")
 	@Test(description = "Form Authentication")
-	public final void formAuthentication() {
+    public void formAuthentication() {
 
 		// Navigate to the form authentication page
 		FormAuthenticationPage formAuthenticationPage = WelcomePage.open().then().clickFormAuthenticationLink();
@@ -165,7 +164,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 
 	@Issue("HEROKU-9")
 	@Test(description = "Hovers")
-	public final void hovers() {
+    public void hovers() {
 
 		// Navigate to the hovers page
 		HoversPage hoversPage = WelcomePage.open().then().clickHoversLink();
@@ -176,7 +175,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 
 	@Issue("HEROKU-10")
 	@Test(description = "JQuery UI")
-	public final void jqueryUI() {
+    public void jqueryUI() {
 
         // Navigate to the jQuery UI page
 		JQueryUIMenuPage jqueryUIMenuPage = WelcomePage.open().then().clickJQueryUILink();
@@ -193,7 +192,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 
 	@Issue("HEROKU-11")
 	@Test(description = "Javascript Alerts")
-	public final void javascriptAlerts() {
+    public void javascriptAlerts() {
 
 		// Navigate to the javascript alerts page
 		JavaScriptAlertsPage javascriptAlerts = WelcomePage.open().then().clickjavascriptAlertsLink();
@@ -216,7 +215,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 
 	@Issue("HEROKU-12")
 	@Test(description = "Key Presses")
-	public final void keypresses() {
+    public void keypresses() {
 
 		// Navigate to the key presses page
 		KeyPressesPage keyPressesPage = WelcomePage.open().then().clickKeyPressesLink();
@@ -228,7 +227,7 @@ public class TheInternetHerokuWebTest extends BaseTest {
 
 	@Issue("HEROKU-13")
 	@Test(description = "Secure file Download")
-	public final void secureFileDownload() {
+    public void secureFileDownload() {
 
 		// Navigate to the secure file downloads page
 		SecureFileDownloadPage secureFileDownloadPage = WelcomePage.open().then().clickSecureFileDownloadsLink("admin","admin");

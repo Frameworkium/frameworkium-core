@@ -159,7 +159,7 @@ public class WelcomePage extends BasePage<WelcomePage> {
 
     @Step("Click the Secure File download link")
     public SecureFileDownloadPage clickSecureFileDownloadsLink(String username, String password) {
-    	// For this sort of authentication, selenium cannot handle the dialog
+        // For this sort of authentication, Selenium cannot handle the dialog
     	// box that appears if you click the link.
     	// Instead, we can provide the username and password in the URL:
     	return PageFactory.newInstance(SecureFileDownloadPage.class,

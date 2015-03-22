@@ -31,12 +31,12 @@ public class SearchExecutions {
      * @return the execution Ids returned by the search.
      */
     public List<Integer> getExecutionIds() {
-        // final String browser = getBrowserNameAndVersion();
-        final String browser = "FF10";
+        // String browser = getBrowserNameAndVersion();
+        String browser = "FF10";
 
-        final List<Integer> tempExecutionIds = jsonPath.getList("executions.id");
-        final List<Integer> executionIds = new ArrayList<Integer>();
-        final List<String> cycleNames = jsonPath.getList("executions.cycleName");
+        List<Integer> tempExecutionIds = jsonPath.getList("executions.id");
+        List<Integer> executionIds = new ArrayList<Integer>();
+        List<String> cycleNames = jsonPath.getList("executions.cycleName");
         for (int idx = 0; idx < cycleNames.size(); idx++) {
             if (cycleNames.get(idx).contains(browser)) {
                 executionIds.add(tempExecutionIds.get(idx));
@@ -54,14 +54,14 @@ public class SearchExecutions {
      * @return the execution statuses returned by the search.
      */
     public List<Integer> getExecutionStatuses() {
-        // TODO final String browser = getBrowserNameAndVersion();
-        final String browser = "FF10";
+        // TODO String browser = getBrowserNameAndVersion();
+        String browser = "FF10";
 
-        final List<Integer> tempExecutionStatuses = jsonPath.getList("executions.status.id");
+        List<Integer> tempExecutionStatuses = jsonPath.getList("executions.status.id");
 
-        final List<Integer> executionStatuses = new ArrayList<Integer>();
+        List<Integer> executionStatuses = new ArrayList<Integer>();
 
-        final List<String> cycleNames = jsonPath.getList("executions.cycleName");
+        List<String> cycleNames = jsonPath.getList("executions.cycleName");
 
         for (int idx = 0; idx < cycleNames.size(); idx++) {
             if (cycleNames.get(idx).contains(browser)) {
