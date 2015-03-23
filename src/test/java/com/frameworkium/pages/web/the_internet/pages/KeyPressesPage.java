@@ -1,4 +1,4 @@
-package com.frameworkium.pages.web;
+package com.frameworkium.pages.web.the_internet.pages;
 
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;

@@ -13,6 +13,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import ru.yandex.qatools.htmlelements.element.HtmlElement;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 import ru.yandex.qatools.htmlelements.loader.HtmlElementLoader;
 
@@ -28,9 +29,15 @@ public abstract class BasePage<T extends BasePage<T>> {
 
     protected final Logger logger = LogManager.getLogger(this);
 
-    /** @return Returns the current page object, useful for 'fluent' tests e.g. MyPage.get().then().doSomething(); */
+    /** @return Returns the current page object. Useful for e.g. MyPage.get().then().doSomething(); */
     @SuppressWarnings("unchecked")
     public T then() {
+        return (T) this;
+    }
+
+    /** @return Returns the current page object. Useful for e.g. MyPage.get().then().with().aComponent().clickHome(); */
+    @SuppressWarnings("unchecked")
+    public T with() {
         return (T) this;
     }
 
@@ -38,7 +45,7 @@ public abstract class BasePage<T extends BasePage<T>> {
     public T get() {
         HtmlElementLoader.populatePageObject(this, driver);
         try {
-            waitForVisibleElements(this);
+            waitForExpectedVisibleElements(this);
         } catch (IllegalArgumentException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -51,7 +58,8 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     @SuppressWarnings("unchecked")
-    private void waitForVisibleElements(BasePage<T> pageObject) throws IllegalArgumentException, IllegalAccessException {
+    private void waitForExpectedVisibleElements(Object pageObject) throws IllegalArgumentException,
+            IllegalAccessException {
         for (Field field : pageObject.getClass().getDeclaredFields()) {
             for (Annotation annotation : field.getDeclaredAnnotations()) {
                 if (annotation instanceof Visible) {
@@ -64,12 +72,22 @@ public abstract class BasePage<T extends BasePage<T>> {
                         obj = ((List<Object>) obj).get(0);
                     }
 
+
+                    // Checks for @Visible tags inside the HtmlElement
+                    if (obj instanceof HtmlElement) {
+                        waitForExpectedVisibleElements(obj);
+                    }
+
                     WebElement element = null;
                     if (obj instanceof TypifiedElement) {
                         element = ((TypifiedElement) obj).getWrappedElement();
                     } else if (obj instanceof WebElement) {
                         element = (WebElement) obj;
+                    } else {
+                        throw new IllegalArgumentException(
+                                "Only elements of type TypifiedElement or WebElement are supported by @Visible.");
                     }
+
                     // Retries when an element is looked up before the previous page has unloaded or before doc ready
                     try {
                         wait.until(ExpectedConditions.visibilityOf(element));

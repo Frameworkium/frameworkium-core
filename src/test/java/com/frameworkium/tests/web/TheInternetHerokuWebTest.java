@@ -10,23 +10,23 @@ import org.testng.annotations.Test;
 
 import ru.yandex.qatools.allure.annotations.Issue;
 
-import com.frameworkium.pages.web.BasicAuthSuccessPage;
-import com.frameworkium.pages.web.CheckboxesPage;
-import com.frameworkium.pages.web.DragAndDropPage;
-import com.frameworkium.pages.web.DropdownPage;
-import com.frameworkium.pages.web.DynamicLoadingExamplePage;
-import com.frameworkium.pages.web.FileDownloadPage;
-import com.frameworkium.pages.web.FileUploadPage;
-import com.frameworkium.pages.web.FileUploadSuccessPage;
-import com.frameworkium.pages.web.FormAuthenticationPage;
-import com.frameworkium.pages.web.FormAuthenticationSuccessPage;
-import com.frameworkium.pages.web.HoversPage;
-import com.frameworkium.pages.web.JQueryUIMenuPage;
-import com.frameworkium.pages.web.JQueryUIPage;
-import com.frameworkium.pages.web.JavaScriptAlertsPage;
-import com.frameworkium.pages.web.KeyPressesPage;
-import com.frameworkium.pages.web.SecureFileDownloadPage;
-import com.frameworkium.pages.web.WelcomePage;
+import com.frameworkium.pages.web.the_internet.pages.BasicAuthSuccessPage;
+import com.frameworkium.pages.web.the_internet.pages.CheckboxesPage;
+import com.frameworkium.pages.web.the_internet.pages.DragAndDropPage;
+import com.frameworkium.pages.web.the_internet.pages.DropdownPage;
+import com.frameworkium.pages.web.the_internet.pages.DynamicLoadingExamplePage;
+import com.frameworkium.pages.web.the_internet.pages.FileDownloadPage;
+import com.frameworkium.pages.web.the_internet.pages.FileUploadPage;
+import com.frameworkium.pages.web.the_internet.pages.FileUploadSuccessPage;
+import com.frameworkium.pages.web.the_internet.pages.FormAuthenticationPage;
+import com.frameworkium.pages.web.the_internet.pages.FormAuthenticationSuccessPage;
+import com.frameworkium.pages.web.the_internet.pages.HoversPage;
+import com.frameworkium.pages.web.the_internet.pages.JQueryUIMenuPage;
+import com.frameworkium.pages.web.the_internet.pages.JQueryUIPage;
+import com.frameworkium.pages.web.the_internet.pages.JavaScriptAlertsPage;
+import com.frameworkium.pages.web.the_internet.pages.KeyPressesPage;
+import com.frameworkium.pages.web.the_internet.pages.SecureFileDownloadPage;
+import com.frameworkium.pages.web.the_internet.pages.WelcomePage;
 import com.frameworkium.tests.internal.BaseTest;
 
 public class TheInternetHerokuWebTest extends BaseTest {

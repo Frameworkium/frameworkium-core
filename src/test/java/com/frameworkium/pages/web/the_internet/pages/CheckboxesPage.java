@@ -1,4 +1,4 @@
-package com.frameworkium.pages.web;
+package com.frameworkium.pages.web.the_internet.pages;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.frameworkium.pages.web;
+package com.frameworkium.pages.web.the_internet.pages;
 
 import static com.jayway.restassured.RestAssured.expect;
 
@@ -74,7 +74,7 @@ public class FileDownloadPage extends BasePage<FileDownloadPage> {
         try {
             IOUtils.copy(inputStream, byteArrayOutputStream);
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            logger.error("Failed to get size of the file at uri: " + downloadURL, e);
         }
         IOUtils.closeQuietly(byteArrayOutputStream);
         IOUtils.closeQuietly(inputStream);

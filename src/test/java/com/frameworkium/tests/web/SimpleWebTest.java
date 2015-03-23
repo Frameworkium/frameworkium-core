@@ -6,8 +6,8 @@ import org.testng.annotations.Test;
 
 import ru.yandex.qatools.allure.annotations.Issue;
 
-import com.frameworkium.pages.web.DynamicLoadingExamplePage;
-import com.frameworkium.pages.web.WelcomePage;
+import com.frameworkium.pages.web.the_internet.pages.DynamicLoadingExamplePage;
+import com.frameworkium.pages.web.the_internet.pages.WelcomePage;
 import com.frameworkium.tests.internal.BaseTest;
 
 public class SimpleWebTest extends BaseTest {
