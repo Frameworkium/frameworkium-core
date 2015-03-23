@@ -94,7 +94,7 @@ public class Execution {
             obj.put("status", String.valueOf(status));
             obj.put("comment", comment);
         } catch (JSONException e) {
-            logger.error(e.getMessage());
+            logger.error("Update status and comment failed", e);
         }
 
         given().contentType("application/json").and().body(obj).then().put("execution/" + executionId + "/execute");

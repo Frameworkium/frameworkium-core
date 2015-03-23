@@ -74,7 +74,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
                     getDriver().manage().deleteAllCookies();
                 }
             } catch (SessionNotFoundException e) {
-                logger.error("Session quit unexpectedly.");
+                logger.error("Session quit unexpectedly.", e);
             }
         } else {
             requiresReset.set(Boolean.TRUE);
@@ -87,7 +87,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
             try {
                 driver.quit();
             } catch (Exception e) {
-                logger.error("Session quit unexpectedly.");
+                logger.error("Session quit unexpectedly.", e);
             }
         }
     }
