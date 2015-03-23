@@ -35,16 +35,15 @@ public class FileDownloadPage extends BasePage<FileDownloadPage> {
         return getSizeOfFileAtURL(firstDownloadLink.getReference());
     }
 
-    @Step("Return all download links")
+    @Step("Return all download link names")
     public List<String> getDownloadableFileLinkNames() {
 
-        List<String> listOfFiles = new ArrayList<String>();
+        List<String> listOfFileLinkNames = new ArrayList<String>();
 
         for (Link lnk : allDownloadLinks) {
-            listOfFiles.add(lnk.getText());
+            listOfFileLinkNames.add(lnk.getText());
         }
-        return listOfFiles;
-
+        return listOfFileLinkNames;
     }
 
     @Step("Get the size of the file {0}")

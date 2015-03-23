@@ -74,7 +74,7 @@ public abstract class BasePage<T extends BasePage<T>> {
                     try {
                         wait.until(ExpectedConditions.visibilityOf(element));
                     } catch (StaleElementReferenceException serex) {
-                        System.out.println("Caught StaleElementReferenceException");
+                        logger.info("Caught StaleElementReferenceException");
                         tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady();
                         wait.until(ExpectedConditions.visibilityOf(element));
                     }
@@ -87,7 +87,7 @@ public abstract class BasePage<T extends BasePage<T>> {
         for (int tries = 0; tries < 3; tries++) {
             Boolean documentReady = (Boolean) executeJS("return document.readyState == 'complete'");
             if (!documentReady) {
-                System.out.println("Document not yet ready");
+                logger.warn("Caught StaleElementReferenceException");
                 tries--;
             }
         }

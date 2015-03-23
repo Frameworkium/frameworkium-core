@@ -16,6 +16,8 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -175,6 +177,8 @@ public enum DriverType implements DriverSetup {
     public static final DriverType defaultDriverType = FIREFOX;
     public static final boolean useRemoteWebDriver = GRID_URL.isSpecified() || Sauce.isDesired();
 
+    private final Logger logger = LogManager.getLogger(DriverType.class);
+
     public WebDriver instantiateWebDriver() throws MalformedURLException {
         DesiredCapabilities desiredCapabilities = getDesiredCapabilities();
 
@@ -271,7 +275,7 @@ public enum DriverType implements DriverSetup {
     }
 
     public WebDriverWrapper instantiate() {
-        System.out.println("Current Browser Selection: " + this);
+        logger.info("Current Browser Selection: " + this);
 
         try {
             WebDriver driver = instantiateWebDriver();
