@@ -13,30 +13,28 @@ import com.frameworkium.pages.internal.Visible;
 
 public class KeyPressesPage extends BasePage<KeyPressesPage> {
 
-	@Visible
-	@Name("Container")
-	@FindBy(css = "div.example")
-	private WebElement container;
+    @Visible
+    @Name("Container")
+    @FindBy(css = "div.example")
+    private WebElement container;
 
+    @Name("Result")
+    @FindBy(css = "p#result")
+    private WebElement result;
 
-	@Name("Result")
-	@FindBy(css = "p#result")
-	private WebElement result;
+    @Step("Enter a key press {0}")
+    public KeyPressesPage enterKeyPress(Keys key) {
 
+        // Press a key
+        (new Actions(driver)).sendKeys(key).perform();
 
-	@Step("Enter a key press {0}")
-	public KeyPressesPage enterKeyPress(Keys key) {	
+        // We're still on this page, so return this
+        return this;
+    }
 
-		//Press a key
-		(new Actions(driver)).sendKeys(key).perform();
-
-		//We're still on this page, so return this
-		return this;
-	}
-
-	@Step("Get result text")
-	public String getResultText() {	
-		return result.getText();
-	}
+    @Step("Get result text")
+    public String getResultText() {
+        return result.getText();
+    }
 
 }

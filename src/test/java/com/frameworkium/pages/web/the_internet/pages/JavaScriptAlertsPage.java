@@ -31,71 +31,62 @@ public class JavaScriptAlertsPage extends BasePage<JavaScriptAlertsPage> {
     @FindBy(css = "p#result")
     private WebElement resultArea;
 
-    
-    
-    
     @Step("Click alert")
-    public JavaScriptAlertsPage clickAlertButtonAndAccept()
-    {
-    	jsAlertButton.click();
-    	
-    	driver.switchTo().alert().accept();
-    	
-    	wait.until(ExpectedConditions.visibilityOf(resultArea));
-    	
-    	return this;
+    public JavaScriptAlertsPage clickAlertButtonAndAccept() {
+        jsAlertButton.click();
+
+        driver.switchTo().alert().accept();
+
+        wait.until(ExpectedConditions.visibilityOf(resultArea));
+
+        return this;
     }
-    
+
     @Step("Click alert")
-    public JavaScriptAlertsPage clickAlertButtonAndDismiss()
-    {
-    	jsAlertButton.click();
-    	
-    	driver.switchTo().alert().dismiss();
-    	
-    	wait.until(ExpectedConditions.visibilityOf(resultArea));
-    	
-    	return this;
+    public JavaScriptAlertsPage clickAlertButtonAndDismiss() {
+        jsAlertButton.click();
+
+        driver.switchTo().alert().dismiss();
+
+        wait.until(ExpectedConditions.visibilityOf(resultArea));
+
+        return this;
     }
-    
+
     @Step("Click confirm and confirm")
-    public JavaScriptAlertsPage clickConfirmButtonAndAccept()
-    {
-    	jsConfirmButton.click();
-    	
-    	driver.switchTo().alert().accept();
-    	
-    	wait.until(ExpectedConditions.visibilityOf(resultArea));
-    	
-    	return this;
+    public JavaScriptAlertsPage clickConfirmButtonAndAccept() {
+        jsConfirmButton.click();
+
+        driver.switchTo().alert().accept();
+
+        wait.until(ExpectedConditions.visibilityOf(resultArea));
+
+        return this;
     }
-    
+
     @Step("Click confirm and dismiss")
-    public JavaScriptAlertsPage clickConfirmButtonAndDismiss()
-    {
-    	jsConfirmButton.click();
-    	
-    	driver.switchTo().alert().dismiss();
-    	
-    	wait.until(ExpectedConditions.visibilityOf(resultArea));
-    	
-    	return this;
+    public JavaScriptAlertsPage clickConfirmButtonAndDismiss() {
+        jsConfirmButton.click();
+
+        driver.switchTo().alert().dismiss();
+
+        wait.until(ExpectedConditions.visibilityOf(resultArea));
+
+        return this;
     }
-    
+
     @Step("Click prompt")
-    public JavaScriptAlertsPage clickPromptButtonAndEnterPrompt(String textToEnter)
-    {
-    	jsPromptButton.click();
-    	
-    	driver.switchTo().alert().sendKeys(textToEnter);
-    	driver.switchTo().alert().accept();
-    	
-    	return this;
+    public JavaScriptAlertsPage clickPromptButtonAndEnterPrompt(String textToEnter) {
+        jsPromptButton.click();
+
+        driver.switchTo().alert().sendKeys(textToEnter);
+        driver.switchTo().alert().accept();
+
+        return this;
     }
-    
+
     @Step("Click prompt")
-    public String getResultText()
-    {
-    	return resultArea.getText();
+    public String getResultText() {
+        return resultArea.getText();
     }
 }

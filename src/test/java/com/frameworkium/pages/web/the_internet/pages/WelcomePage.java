@@ -85,10 +85,10 @@ public class WelcomePage extends BasePage<WelcomePage> {
     @Step("Click the Dynamic Loading link - user: {0}, password {1}")
     public BasicAuthSuccessPage clickBasicAuth(String username, String password) {
         // For this sort of authentication, Selenium cannot handle the dialog
-    	// box that appears if you click the link.
-    	// Instead, we can provide the username and password in the URL:
-        return PageFactory.newInstance(BasicAuthSuccessPage.class, "http://" + username + ":"
-                + password + "@" + basicAuthLink.getReference().split("http://")[1]);
+        // box that appears if you click the link.
+        // Instead, we can provide the username and password in the URL:
+        return PageFactory.newInstance(BasicAuthSuccessPage.class, "http://" + username + ":" + password + "@"
+                + basicAuthLink.getReference().split("http://")[1]);
     }
 
     @Step("Click the Checkboxes link")
@@ -160,11 +160,10 @@ public class WelcomePage extends BasePage<WelcomePage> {
     @Step("Click the Secure File download link")
     public SecureFileDownloadPage clickSecureFileDownloadsLink(String username, String password) {
         // For this sort of authentication, Selenium cannot handle the dialog
-    	// box that appears if you click the link.
-    	// Instead, we can provide the username and password in the URL:
-    	return PageFactory.newInstance(SecureFileDownloadPage.class,
-    			"http://" + username + ":" + password +
-    			"@" + secureFileDownloadLink.getReference().split("http://")[1]);
+        // box that appears if you click the link.
+        // Instead, we can provide the username and password in the URL:
+        return PageFactory.newInstance(SecureFileDownloadPage.class, "http://" + username + ":" + password + "@"
+                + secureFileDownloadLink.getReference().split("http://")[1]);
     }
 
 }

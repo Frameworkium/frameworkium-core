@@ -72,7 +72,6 @@ public abstract class BasePage<T extends BasePage<T>> {
                         obj = ((List<Object>) obj).get(0);
                     }
 
-
                     // Checks for @Visible tags inside the HtmlElement
                     if (obj instanceof HtmlElement) {
                         waitForExpectedVisibleElements(obj);

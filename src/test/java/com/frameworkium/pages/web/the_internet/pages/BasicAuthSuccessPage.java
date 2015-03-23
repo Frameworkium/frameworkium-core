@@ -18,6 +18,6 @@ public class BasicAuthSuccessPage extends BasePage<BasicAuthSuccessPage> {
 
     @Step("Return the text displayed in the header")
     public String getHeaderText() {
-       return headerText.getText();
+        return headerText.getText();
     }
 }

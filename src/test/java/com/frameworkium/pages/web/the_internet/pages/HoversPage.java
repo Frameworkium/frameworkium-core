@@ -25,10 +25,10 @@ public class HoversPage extends BasePage<HoversPage> {
     public String getFirstFigureCaption() {
 
         // Move mouse over the first figure to make caption visible
-    	(new Actions(driver)).moveToElement(firstFigure).perform();
+        (new Actions(driver)).moveToElement(firstFigure).perform();
 
         // Return text from the now-visible caption
-    	return firstFigureCaption.getText();
+        return firstFigureCaption.getText();
     }
 
 }

@@ -38,8 +38,7 @@ public class MethodInterceptor implements IMethodInterceptor {
 
             Map<String, IMethodInstance> testMethods = new HashMap<String, IMethodInstance>();
             for (IMethodInstance instance : methods) {
-                Issue issue = instance.getMethod().getConstructorOrMethod().getMethod()
-                        .getAnnotation(Issue.class);
+                Issue issue = instance.getMethod().getConstructorOrMethod().getMethod().getAnnotation(Issue.class);
                 if (null != issue) {
                     String issueKey = issue.value();
                     testMethods.put(issueKey, instance);

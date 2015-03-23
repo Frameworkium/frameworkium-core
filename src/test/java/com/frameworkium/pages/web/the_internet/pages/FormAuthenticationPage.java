@@ -28,18 +28,17 @@ public class FormAuthenticationPage extends BasePage<FormAuthenticationPage> {
     private WebElement loginButton;
 
     @Step("Successfully Log in")
-    public FormAuthenticationSuccessPage validLogin(String username, String password) {	
-    	
-    	usernameField.clear();
-    	usernameField.sendKeys(username);
-    	
-    	passwordField.clear();
-    	passwordField.sendKeys(password);
-    	
-    	loginButton.click();
-    	
+    public FormAuthenticationSuccessPage validLogin(String username, String password) {
+
+        usernameField.clear();
+        usernameField.sendKeys(username);
+
+        passwordField.clear();
+        passwordField.sendKeys(password);
+
+        loginButton.click();
+
         return PageFactory.newInstance(FormAuthenticationSuccessPage.class);
     }
 
-   
 }

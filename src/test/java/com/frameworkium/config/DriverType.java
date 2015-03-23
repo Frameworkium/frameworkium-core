@@ -121,7 +121,7 @@ public enum DriverType implements DriverSetup {
             DesiredCapabilities capabilities = DesiredCapabilities.phantomjs();
             capabilities.setCapability("takesScreenshot", true);
             capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS,
-                    new String[] { "--webdriver-loglevel=NONE" });
+                    new String[] {"--webdriver-loglevel=NONE"});
             return capabilities;
         }
 
@@ -195,8 +195,8 @@ public enum DriverType implements DriverSetup {
 
                 if (isNative()) {
                     // Set app path
-                    desiredCapabilities.setCapability("app",
-                            "sauce-storage:" + new File(APP_PATH.getValue()).getName());
+                    desiredCapabilities
+                            .setCapability("app", "sauce-storage:" + new File(APP_PATH.getValue()).getName());
                 }
             } else {
                 seleniumGridURL = new URL(GRID_URL.getValue());
@@ -250,8 +250,7 @@ public enum DriverType implements DriverSetup {
         }
 
         if (isMobile()) {
-            throw new IllegalArgumentException(
-                    "seleniumGridURL or sauce must be specified when running via Appium.");
+            throw new IllegalArgumentException("seleniumGridURL or sauce must be specified when running via Appium.");
         } else {
             return getWebDriverObject(desiredCapabilities);
         }

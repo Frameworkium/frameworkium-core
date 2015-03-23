@@ -54,8 +54,8 @@ public class ScreenshotListener extends TestListenerAdapter {
         if (null == screenshotDirectory) {
             screenshotDirectory = "screenshots";
         }
-        String absolutePath = screenshotDirectory + File.separator + System.currentTimeMillis()
-                + "_" + testName + ".png";
+        String absolutePath =
+                screenshotDirectory + File.separator + System.currentTimeMillis() + "_" + testName + ".png";
         File screenshot = new File(absolutePath);
         if (createFile(screenshot)) {
             WebDriver driver = getDriver();

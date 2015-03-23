@@ -13,8 +13,8 @@ public class DynamicLoadingMobiTest extends BaseTest {
     @Test(description = "Test element visibility")
     public final void testElementVisibility() {
         // Navigate to the dynamic loading hidden element page
-        DynamicLoadingExamplePage dynamicLoadingExamplePage = WelcomePage.open().then().clickDynamicLoading()
-                .then().clickExample1();
+        DynamicLoadingExamplePage dynamicLoadingExamplePage =
+                WelcomePage.open().then().clickDynamicLoading().then().clickExample1();
 
         // Assert that the element is hidden
         assertThat(dynamicLoadingExamplePage.isElementDisplayed()).named("element visibility").isFalse();
@@ -29,8 +29,8 @@ public class DynamicLoadingMobiTest extends BaseTest {
     @Test(description = "Test element presence")
     public final void testElementPresence() {
         // Navigate to the dynamic loading element not yet rendered page
-        DynamicLoadingExamplePage dynamicLoadingExamplePage = WelcomePage.open().then().clickDynamicLoading()
-                .then().clickExample2();
+        DynamicLoadingExamplePage dynamicLoadingExamplePage =
+                WelcomePage.open().then().clickDynamicLoading().then().clickExample2();
 
         // Assert that the element is not present
         assertThat(dynamicLoadingExamplePage.isElementPresent()).named("element presence").isFalse();

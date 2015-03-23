@@ -16,10 +16,9 @@ public class FormAuthenticationSuccessPage extends BasePage<FormAuthenticationSu
     @FindBy(css = "a[href='/logout']")
     private WebElement logoutButton;
 
-
     @Step("Log out")
-    public void logout() {		
-    	logoutButton.click();
+    public void logout() {
+        logoutButton.click();
     }
 
 }

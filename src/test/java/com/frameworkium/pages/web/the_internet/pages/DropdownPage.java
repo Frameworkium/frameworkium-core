@@ -16,16 +16,14 @@ public class DropdownPage extends BasePage<DropdownPage> {
     @FindBy(css = "select#dropdown")
     private Select dropdown;
 
-    
     @Step("Select option {0} from dropdown")
     public DropdownPage selectFromDropdown(String option) {
-    	dropdown.selectByVisibleText(option);
-       return this;
+        dropdown.selectByVisibleText(option);
+        return this;
     }
 
-    
     @Step("Return the selected option")
     public String getSelectedOptionText() {
-       return dropdown.getFirstSelectedOption().getText();
+        return dropdown.getFirstSelectedOption().getText();
     }
 }

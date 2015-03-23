@@ -17,8 +17,8 @@ public class FileUploadSuccessPage extends BasePage<FileUploadSuccessPage> {
     private WebElement uploadedFiles;
 
     @Step("Get uploaded files list")
-    public String getUploadedFiles() {	
+    public String getUploadedFiles() {
         return uploadedFiles.getText();
     }
-   
+
 }

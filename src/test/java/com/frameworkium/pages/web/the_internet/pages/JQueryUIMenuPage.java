@@ -30,31 +30,31 @@ public class JQueryUIMenuPage extends BasePage<JQueryUIMenuPage> {
     @Name("excel file menu item")
     @FindBy(linkText = "Excel")
     private Link excelFileMenuItem;
-    
+
     @Step("click back to UI")
-    public JQueryUIPage clickBackToUI() {	
-    	
-    	//Move mouse over the first figure to make caption visible
-    	(new Actions(driver)).moveToElement(enabledMenuItem).perform();
-    	
-    	//Return text from the now-visible caption
-    	backToJQueryUIMenuItem.click();
-    	
-    	//returns us a new page
-    	return PageFactory.newInstance(JQueryUIPage.class);
+    public JQueryUIPage clickBackToUI() {
+
+        // Move mouse over the first figure to make caption visible
+        (new Actions(driver)).moveToElement(enabledMenuItem).perform();
+
+        // Return text from the now-visible caption
+        backToJQueryUIMenuItem.click();
+
+        // returns us a new page
+        return PageFactory.newInstance(JQueryUIPage.class);
     }
 
     @Step("Get excel file URL as String")
-    public String getExcelFileURLAsString() {	
-    	
-    	//Move mouse over the first figure to make caption visible
-    	(new Actions(driver)).moveToElement(enabledMenuItem).perform();
-    	
-    	//Move mouse over the first figure to make caption visible
-    	(new Actions(driver)).moveToElement(downloadsMenuItem).perform();
-    	
-    	//Return text from the now-visible caption
-    	return excelFileMenuItem.getReference();
+    public String getExcelFileURLAsString() {
+
+        // Move mouse over the first figure to make caption visible
+        (new Actions(driver)).moveToElement(enabledMenuItem).perform();
+
+        // Move mouse over the first figure to make caption visible
+        (new Actions(driver)).moveToElement(downloadsMenuItem).perform();
+
+        // Return text from the now-visible caption
+        return excelFileMenuItem.getReference();
     }
-   
+
 }

@@ -14,8 +14,7 @@ import com.jayway.restassured.path.json.JsonPath;
 
 public class SearchExecutions {
 
-    private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername,
-            Config.jiraPassword);
+    private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername, Config.jiraPassword);
     private final static String zapiURI = JIRA_URL.getValue() + Config.zapiRestURI;
 
     private final JsonPath jsonPath;

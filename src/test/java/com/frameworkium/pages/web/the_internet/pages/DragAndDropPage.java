@@ -23,8 +23,7 @@ public class DragAndDropPage extends BasePage<DragAndDropPage> {
 
     private static final String JQUERY_JS_URI = "http://code.jquery.com/jquery-1.11.2.min.js";
     private static final String DRAG_DROP_HELPER_JS_URI = "https://gist.githubusercontent.com/"
-            + "rcorreia/2362544/raw/3319e506e204af262d27f7ff9fca311e693dc342/"
-            + "drag_and_drop_helper.js";
+            + "rcorreia/2362544/raw/3319e506e204af262d27f7ff9fca311e693dc342/" + "drag_and_drop_helper.js";
 
     @Visible
     @Name("Box A")
