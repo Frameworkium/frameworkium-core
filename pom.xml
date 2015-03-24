@@ -101,7 +101,6 @@
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
       <version>3.0</version>
-      <!--type>jar</type-->
     </dependency>
     <dependency>
       <groupId>io.appium</groupId>

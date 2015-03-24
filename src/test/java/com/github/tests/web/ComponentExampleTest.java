@@ -6,10 +6,10 @@ import org.testng.annotations.Test;
 
 import ru.yandex.qatools.allure.annotations.Issue;
 
+import com.frameworkium.tests.internal.BaseTest;
 import com.github.pages.web.ExplorePage;
 import com.github.pages.web.HomePage;
 import com.github.pages.web.SearchResultsPage;
-import com.frameworkium.tests.internal.BaseTest;
 
 public class ComponentExampleTest extends BaseTest {
 

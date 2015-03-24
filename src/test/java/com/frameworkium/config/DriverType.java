@@ -177,7 +177,7 @@ public enum DriverType implements DriverSetup {
     public static final DriverType defaultDriverType = FIREFOX;
     public static final boolean useRemoteWebDriver = GRID_URL.isSpecified() || Sauce.isDesired();
 
-    private final Logger logger = LogManager.getLogger(DriverType.class);
+    private final static Logger logger = LogManager.getLogger(DriverType.class);
 
     public WebDriver instantiateWebDriver() throws MalformedURLException {
         DesiredCapabilities desiredCapabilities = getDesiredCapabilities();
@@ -265,9 +265,9 @@ public enum DriverType implements DriverSetup {
                 driverType = valueOf(com.frameworkium.config.SystemProperty.BROWSER.getValue().toUpperCase());
             }
         } catch (IllegalArgumentException ignored) {
-            System.err.println("Unknown driver specified, defaulting to '" + driverType + "'...");
+            logger.warn("Unknown driver specified, defaulting to '" + driverType + "'...");
         } catch (NullPointerException ignored) {
-            System.err.println("No driver specified, defaulting to '" + driverType + "'...");
+            logger.warn("No driver specified, defaulting to '" + driverType + "'...");
         }
 
         return driverType;

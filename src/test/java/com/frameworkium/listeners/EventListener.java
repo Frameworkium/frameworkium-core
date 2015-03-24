@@ -16,77 +16,77 @@ public class EventListener implements WebDriverEventListener {
 
     @Override
     public void afterChangeValueOf(WebElement element, WebDriver driver) {
-        logger.info("changed value of element with " + getLocatorFromElement(element));
+        logger.debug("changed value of element with " + getLocatorFromElement(element));
     }
 
     @Override
     public void afterClickOn(WebElement element, WebDriver driver) {
-        logger.info("clicked element with " + getLocatorFromElement(element));
+        logger.debug("clicked element with " + getLocatorFromElement(element));
     }
 
     @Override
     public void afterFindBy(By by, WebElement arg1, WebDriver arg2) {
-        logger.info("found element " + by);
+        logger.debug("found element " + by);
     }
 
     @Override
     public void afterNavigateBack(WebDriver driver) {
-        logger.info("after back");
+        logger.debug("after back");
     }
 
     @Override
     public void afterNavigateForward(WebDriver driver) {
-        logger.info("after forward");
+        logger.debug("after forward");
     }
 
     @Override
     public void afterNavigateTo(String url, WebDriver driver) {
-        logger.info("navigated to " + url);
+        logger.debug("navigated to " + url);
     }
 
     @Override
     public void afterScript(String script, WebDriver driver) {
-        logger.info("ran script " + script);
+        logger.debug("ran script " + script);
     }
 
     @Override
     public void beforeChangeValueOf(WebElement element, WebDriver driver) {
-        logger.info("change value of element with " + getLocatorFromElement(element));
+        logger.debug("change value of element with " + getLocatorFromElement(element));
     }
 
     @Override
     public void beforeClickOn(WebElement element, WebDriver driver) {
-        logger.info("click element with " + getLocatorFromElement(element));
+        logger.debug("click element with " + getLocatorFromElement(element));
     }
 
     @Override
     public void beforeFindBy(By by, WebElement element, WebDriver arg2) {
-        logger.info("find element " + by);
+        logger.debug("find element " + by);
     }
 
     @Override
     public void beforeNavigateBack(WebDriver driver) {
-        logger.info("before back");
+        logger.debug("before back");
     }
 
     @Override
     public void beforeNavigateForward(WebDriver driver) {
-        logger.info("before forward");
+        logger.debug("before forward");
     }
 
     @Override
     public void beforeNavigateTo(String url, WebDriver driver) {
-        logger.info("navigate to " + url);
+        logger.debug("navigate to " + url);
     }
 
     @Override
     public void beforeScript(String script, WebDriver driver) {
-        logger.info("running script " + script);
+        logger.debug("running script " + script);
     }
 
     @Override
     public void onException(Throwable thrw, WebDriver driver) {
-        logger.info("Event listener onException().", thrw);
+        logger.debug("Event listener onException().", thrw);
     }
 
     private String getLocatorFromElement(WebElement element) {

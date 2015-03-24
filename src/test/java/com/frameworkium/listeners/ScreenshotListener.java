@@ -1,11 +1,11 @@
 package com.frameworkium.listeners;
 
-import static com.frameworkium.tests.internal.BaseTest.getDriver;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -15,7 +15,11 @@ import org.testng.TestListenerAdapter;
 
 import ru.yandex.qatools.allure.annotations.Attachment;
 
+import com.frameworkium.tests.internal.BaseTest;
+
 public class ScreenshotListener extends TestListenerAdapter {
+
+    private static Logger logger = LogManager.getLogger(ScreenshotListener.class);
 
     private boolean createFile(File screenshot) {
         boolean fileCreated = false;
@@ -27,8 +31,8 @@ public class ScreenshotListener extends TestListenerAdapter {
             if (parentDirectory.exists() || parentDirectory.mkdirs()) {
                 try {
                     fileCreated = screenshot.createNewFile();
-                } catch (IOException errorCreatingScreenshot) {
-                    errorCreatingScreenshot.printStackTrace();
+                } catch (IOException e) {
+                    logger.error("Error creating screenshot", e);
                 }
             }
         }
@@ -43,9 +47,8 @@ public class ScreenshotListener extends TestListenerAdapter {
             byte[] bytes = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
             screenshotStream.write(bytes);
             screenshotStream.close();
-        } catch (IOException unableToWriteScreenshot) {
-            System.err.println("Unable to write " + screenshot.getAbsolutePath());
-            unableToWriteScreenshot.printStackTrace();
+        } catch (IOException e) {
+            logger.error("Unable to write " + screenshot.getAbsolutePath(), e);
         }
     }
 
@@ -58,15 +61,15 @@ public class ScreenshotListener extends TestListenerAdapter {
                 screenshotDirectory + File.separator + System.currentTimeMillis() + "_" + testName + ".png";
         File screenshot = new File(absolutePath);
         if (createFile(screenshot)) {
-            WebDriver driver = getDriver();
+            WebDriver driver = BaseTest.getDriver();
             try {
                 writeScreenshotToFile(driver, screenshot);
             } catch (ClassCastException weNeedToAugmentOurDriverObject) {
                 writeScreenshotToFile(new Augmenter().augment(driver), screenshot);
             }
-            System.out.println("Written screenshot to " + absolutePath);
+            logger.info("Written screenshot to " + absolutePath);
         } else {
-            System.err.println("Unable to create " + absolutePath);
+            logger.error("Unable to create " + absolutePath);
         }
     }
 
@@ -75,7 +78,7 @@ public class ScreenshotListener extends TestListenerAdapter {
         try {
             takeScreenshot(failingTest.getName());
         } catch (Exception e) {
-            System.err.println("Unable to take screenshot - " + e.getMessage());
+            logger.error("Unable to take screenshot - " + e);
         }
     }
 }

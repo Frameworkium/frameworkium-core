@@ -1,8 +1,5 @@
 package com.frameworkium.listeners;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.ITestContext;
@@ -28,12 +25,9 @@ public class TestListener implements ITestListener {
     @Override
     public void onTestFailure(ITestResult result) {
         logger.error(String.format("FAIL %s.%s", result.getTestClass().getName(), result.getMethod().getMethodName()));
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
         Throwable cause = result.getThrowable();
         if (null != cause) {
-            cause.printStackTrace(pw);
-            logger.error(sw.getBuffer().toString());
+            logger.error(cause.getMessage(), cause);
         }
     }
 

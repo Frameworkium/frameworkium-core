@@ -47,7 +47,7 @@ public abstract class BasePage<T extends BasePage<T>> {
         try {
             waitForExpectedVisibleElements(this);
         } catch (IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error("Error while waiting for page to load", e);
         }
         return (T) this;
     }

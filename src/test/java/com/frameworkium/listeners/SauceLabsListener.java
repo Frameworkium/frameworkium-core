@@ -5,6 +5,8 @@ import static com.frameworkium.config.SystemProperty.APP_PATH;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 
@@ -15,6 +17,7 @@ import com.saucelabs.testng.SauceOnDemandTestListener;
 
 public class SauceLabsListener extends SauceOnDemandTestListener {
 
+    private Logger logger = LogManager.getLogger(ScreenshotListener.class);
     private boolean isRunningOnSauceLabs = Sauce.isDesired();
 
     @Override
@@ -26,7 +29,7 @@ public class SauceLabsListener extends SauceOnDemandTestListener {
                 try {
                     Sauce.uploadFile(new File(APP_PATH.getValue()));
                 } catch (IOException ioe) {
-                    ioe.printStackTrace();
+                    logger.error("Error uploading file", ioe);
                 }
             }
         }
