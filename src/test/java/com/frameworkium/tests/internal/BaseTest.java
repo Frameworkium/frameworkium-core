@@ -32,14 +32,10 @@ import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
         ZAPIListener.class})
 public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
-    private static List<WebDriverWrapper> webDriverPool = Collections
-            .synchronizedList(new ArrayList<WebDriverWrapper>());
+    private static List<WebDriverWrapper> driverPool = Collections.synchronizedList(new ArrayList<WebDriverWrapper>());
     private static ThreadLocal<WebDriverWrapper> driverThread;
-
     private static DriverType desiredDriver = determineEffectiveDriverType();
-
-    protected static final Logger logger = LogManager.getLogger();
-
+    private static Logger logger = LogManager.getLogger(BaseTest.class);
     private static ThreadLocal<Boolean> requiresReset;
 
     @BeforeSuite(alwaysRun = true)
@@ -48,7 +44,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
             @Override
             protected WebDriverWrapper initialValue() {
                 WebDriverWrapper webDriver = desiredDriver.instantiate();
-                webDriverPool.add(webDriver);
+                driverPool.add(webDriver);
                 return webDriver;
             }
         };
@@ -83,11 +79,11 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     @AfterSuite(alwaysRun = true)
     public static void closeDriverObject() {
-        for (WebDriver driver : webDriverPool) {
+        for (WebDriver driver : driverPool) {
             try {
                 driver.quit();
             } catch (Exception e) {
-                logger.error("Session quit unexpectedly.", e);
+                logger.warn("Session quit unexpectedly.", e);
             }
         }
     }
@@ -97,19 +93,14 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         AllureProperties.create();
     }
 
-    /**
-     * @return the Sauce Job id for the current thread
-     */
+    /** @return the Sauce Job id for the current thread */
     @Override
     public String getSessionId() {
         SessionId sessionId = getDriver().getWrappedRemoteWebDriver().getSessionId();
         return (sessionId == null) ? null : sessionId.toString();
     }
 
-    /**
-     * @return the {@link SauceOnDemandAuthentication} instance containing
-     *         the Sauce username/access key
-     */
+    /** @return the {@link SauceOnDemandAuthentication} instance containing the Sauce username/access key */
     @Override
     public SauceOnDemandAuthentication getAuthentication() {
         return new SauceOnDemandAuthentication();

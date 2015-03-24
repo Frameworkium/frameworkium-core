@@ -15,12 +15,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class AllureProperties {
+    private static final Logger logger = LogManager.getLogger(AllureProperties.class);
 
     public static void create() {
+        FileOutputStream fos = null;
         try {
             Properties props = new Properties();
-            FileOutputStream fos = new FileOutputStream("target/allure-results/environment.properties");
+            fos = new FileOutputStream("target/allure-results/environment.properties");
 
             if (APP_PATH.isSpecified()) {
                 props.setProperty("App Path", APP_PATH.getValue());
@@ -57,7 +63,9 @@ public class AllureProperties {
 
             fos.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("IO problem when writing allure properties file", e);
+        } finally {
+            IOUtils.closeQuietly(fos);
         }
     }
 }
