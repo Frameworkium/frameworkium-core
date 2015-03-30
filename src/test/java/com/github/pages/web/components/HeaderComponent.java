@@ -21,7 +21,7 @@ public class HeaderComponent extends HtmlElement {
 
     @Name("Home Logo/Link")
     @Visible
-    @FindBy(css = "a.header-logo-wordmark")
+    @FindBy(css = "a.header-logo-invertocat")
     private Link homeLink;
 
     @Name("Search Box")
