@@ -1,5 +1,6 @@
 Frameworkium
 =======================
+[![Build Status](https://drone.io/github.com/robertgates55/frameworkium/status.png)](https://drone.io/github.com/robertgates55/frameworkium/latest)
 
 This project is based on Ardesco's [Selenium-Maven-Template](https://github.com/Ardesco/Selenium-Maven-Template) and Joe VDW's [Bootstrapium](https://github.com/jvanderwee/bootstrapium) with some handy added extras for getting started quickly with Selenium and Appium.
 
