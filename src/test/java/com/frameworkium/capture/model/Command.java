@@ -1,12 +1,12 @@
-package com.frameworkium.capture;
+package com.frameworkium.capture.model;
 
 import org.openqa.selenium.WebElement;
 
 public class Command {
 
-    public String action;
-    public String using;
-    public String value;
+    private String action;
+    private String using;
+    private String value;
 
     public Command(final String action, final String using, final String value) {
         this.action = action;
@@ -17,14 +17,13 @@ public class Command {
     public Command(final String action, final WebElement element) {
         this.action = action;
 
-        String id;
-        String text;
-        if (!(id = element.getAttribute("id")).isEmpty()) {
+        // TODO: Improve this. Use hacky solution in EventListener?
+        if (!(element.getAttribute("id")).isEmpty()) {
             this.using = "id";
-            this.value = id;
-        } else if (!(text = element.getText()).isEmpty()) {
+            this.value = element.getAttribute("id");
+        } else if (!(element.getText()).isEmpty()) {
             this.using = "linktext";
-            this.value = text;
+            this.value = element.getText();
         } else {
             this.using = "css";
             this.value = element.getTagName() + "." + element.getAttribute("class");

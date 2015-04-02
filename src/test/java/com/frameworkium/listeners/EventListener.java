@@ -86,7 +86,8 @@ public class EventListener implements WebDriverEventListener {
 
     @Override
     public void onException(Throwable thrw, WebDriver driver) {
-        logger.debug("Event listener onException().", thrw);
+        // Lots of caught exceptions being logged here
+        logger.trace("Event listener onException().", thrw);
     }
 
     private String getLocatorFromElement(WebElement element) {

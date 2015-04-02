@@ -4,6 +4,7 @@ public enum SystemProperty {
 
     BROWSER("browser"),
     BROWSER_VERSION("desiredBrowserVersion"),
+    CAPTURE_URL("captureURL"),
     PLATFORM("desiredPlatform"),
     PLATFORM_VERSION("desiredPlatformVersion"),
     DEVICE_NAME("desiredDeviceName"),
@@ -13,7 +14,9 @@ public enum SystemProperty {
     SAUCE("sauce"),
     JIRA_URL("jiraURL"),
     JIRA_RESULT_VERSION("jiraResultVersion"),
-    JQL_QUERY("jqlQuery");
+    JQL_QUERY("jqlQuery"),
+    SUT_NAME("sutName"),
+    SUT_VERSION("sutVersion");
 
     private String value;
 

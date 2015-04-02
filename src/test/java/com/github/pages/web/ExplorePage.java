@@ -17,6 +17,9 @@ public class ExplorePage extends BasePage<ExplorePage> {
     @Visible
     private HeaderComponent header;
 
+    // div.explore-pjax-container.explore-page.js-explore-page
+    // div.explore-pjax-container.container.js-explore-page
+    // div.explore-pjax-container.container.explore-page.js-explore-page
     @Name("Explore Content")
     @Visible
     @FindBy(css = "div.explore-pjax-container.explore-page.js-explore-page")
