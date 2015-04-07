@@ -30,6 +30,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 
+import com.frameworkium.capture.ScreenshotCapture;
 import com.frameworkium.listeners.CaptureListener;
 import com.frameworkium.listeners.EventListener;
 import com.opera.core.systems.OperaDriver;
@@ -281,7 +282,9 @@ public enum DriverType implements DriverSetup {
             WebDriver driver = instantiateWebDriver();
             WebDriverWrapper eventFiringWD = new WebDriverWrapper(driver);
             eventFiringWD.register(new EventListener());
-            eventFiringWD.register(new CaptureListener());
+            if (ScreenshotCapture.isRequired()) {
+                eventFiringWD.register(new CaptureListener());
+            }
             return eventFiringWD;
         } catch (MalformedURLException urlIsInvalid) {
             throw new RuntimeException(urlIsInvalid);

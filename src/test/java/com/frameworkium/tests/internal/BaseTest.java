@@ -21,7 +21,6 @@ import ru.yandex.qatools.allure.annotations.Issue;
 
 import com.frameworkium.capture.ScreenshotCapture;
 import com.frameworkium.config.DriverType;
-import com.frameworkium.config.SystemProperty;
 import com.frameworkium.config.WebDriverWrapper;
 import com.frameworkium.listeners.CaptureListener;
 import com.frameworkium.listeners.MethodInterceptor;
@@ -95,10 +94,10 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     @BeforeMethod(alwaysRun = true)
     public void initialiseNewScreenshotCapture(Method testMethod) {
-        if (SystemProperty.CAPTURE_URL.isSpecified()) {
+        if (ScreenshotCapture.isRequired()) {
             Issue issueAnnotation = testMethod.getAnnotation(Issue.class);
             String testID = issueAnnotation.value();
-            capture.set(new ScreenshotCapture(testID));
+            capture.set(new ScreenshotCapture(testID, driver.get()));
         }
     }
 

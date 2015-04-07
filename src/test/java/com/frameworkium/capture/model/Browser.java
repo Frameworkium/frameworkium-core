@@ -7,6 +7,7 @@ public class Browser {
     private String version;
     private String device;
     private String platform;
+    private String platformVersion;
 
     public Browser() {
         if (SystemProperty.BROWSER.isSpecified()) {
@@ -14,6 +15,15 @@ public class Browser {
         }
         if (SystemProperty.BROWSER_VERSION.isSpecified()) {
             this.version = SystemProperty.BROWSER_VERSION.getValue();
+        }
+        if (SystemProperty.DEVICE_NAME.isSpecified()) {
+            this.device = SystemProperty.DEVICE_NAME.getValue();
+        }
+        if (SystemProperty.PLATFORM.isSpecified()) {
+            this.platform = SystemProperty.PLATFORM.getValue();
+        }
+        if (SystemProperty.PLATFORM_VERSION.isSpecified()) {
+            this.platformVersion = SystemProperty.PLATFORM_VERSION.getValue();
         }
     }
 
@@ -23,5 +33,17 @@ public class Browser {
 
     public String getVersion() {
         return version;
+    }
+
+    public String getDevice() {
+        return device;
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public String getPlatformVersion() {
+        return platformVersion;
     }
 }

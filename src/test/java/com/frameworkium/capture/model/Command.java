@@ -2,6 +2,8 @@ package com.frameworkium.capture.model;
 
 import org.openqa.selenium.WebElement;
 
+import com.frameworkium.config.DriverType;
+
 public class Command {
 
     private String action;
@@ -18,15 +20,24 @@ public class Command {
         this.action = action;
 
         // TODO: Improve this. Use hacky solution in EventListener?
-        if (!(element.getAttribute("id")).isEmpty()) {
-            this.using = "id";
-            this.value = element.getAttribute("id");
-        } else if (!(element.getText()).isEmpty()) {
-            this.using = "linktext";
-            this.value = element.getText();
+        if (DriverType.isNative()) {
+            this.using = "n/a";
+            this.value = "n/a";
         } else {
-            this.using = "css";
-            this.value = element.getTagName() + "." + element.getAttribute("class");
+            if (!(element.getAttribute("id")).isEmpty()) {
+                this.using = "id";
+                this.value = element.getAttribute("id");
+            } else if (!(element.getText()).isEmpty()) {
+                this.using = "linktext";
+                this.value = element.getText();
+            } else if (!element.getTagName().isEmpty()) {
+                this.using = "css";
+                this.value = element.getTagName() + "." + element.getAttribute("class");
+            } else {
+                // must be something weird
+                this.using = "n/a";
+                this.value = "n/a";
+            }
         }
     }
 

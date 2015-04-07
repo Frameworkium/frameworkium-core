@@ -8,8 +8,12 @@ public class SoftwareUnderTest {
     private String version;
 
     public SoftwareUnderTest() {
-        this.name = SystemProperty.SUT_NAME.getValue();
-        this.version = SystemProperty.SUT_VERSION.getValue();
+        if (SystemProperty.SUT_NAME.isSpecified()) {
+            this.name = SystemProperty.SUT_NAME.getValue();
+        }
+        if (SystemProperty.SUT_VERSION.isSpecified()) {
+            this.version = SystemProperty.SUT_VERSION.getValue();
+        }
     }
 
     public String getName() {

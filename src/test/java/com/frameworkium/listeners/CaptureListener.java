@@ -11,6 +11,7 @@ import org.testng.ITestListener;
 import org.testng.ITestResult;
 
 import com.frameworkium.capture.ElementHighlighter;
+import com.frameworkium.capture.ScreenshotCapture;
 import com.frameworkium.capture.model.Command;
 import com.frameworkium.config.DriverType;
 import com.frameworkium.config.WebDriverWrapper;
@@ -21,6 +22,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     private static final Logger logger = LogManager.getLogger(CaptureListener.class);
 
     private void takeScreenshotAndSendToCapture(Command command, WebDriver driver) {
+        logger.debug("takeScreenshotAndSendToCapture");
         BaseTest.getCapture().takeAndSendScreenshot(command, driver, null);
     }
 
@@ -31,8 +33,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private void takeScreenshotAndSendToCaptureWithException(String action, WebDriver driver, Throwable thrw) {
         Command command = new Command(action, "n/a", "n/a");
-        BaseTest.getCapture().takeAndSendScreenshot(command, driver,
-                thrw.getMessage() + "\n" + thrw.getStackTrace().toString());
+        BaseTest.getCapture().takeAndSendScreenshot(command, driver, thrw.getMessage());
     }
 
     private void sendFinalScreenshot(ITestResult result, String action) {
@@ -47,15 +48,17 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     private void highlightElementTakeScreenshotAndSendToCapture(String action, WebDriver driver, WebElement element) {
-        ElementHighlighter eh = null;
+        logger.debug(String.format("highlightElementTakeScreenshotAndSendToCapture: action=%s", action));
+        ElementHighlighter highlighter = null;
         if (!DriverType.isNative()) {
-            eh = new ElementHighlighter(driver);
-            eh.highlightElement(element);
+            logger.debug("Not an app, trying to highlight the element");
+            highlighter = new ElementHighlighter(driver);
+            highlighter.highlightElement(element);
         }
         Command command = new Command(action, element);
         takeScreenshotAndSendToCapture(command, driver);
-        if (!DriverType.isNative()) {
-            eh.unhighlightLast();
+        if (null != highlighter) {
+            highlighter.unhighlightLast();
         }
     }
 
@@ -68,11 +71,6 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     @Override
     public void afterChangeValueOf(WebElement element, WebDriver driver) {
         highlightElementTakeScreenshotAndSendToCapture("change", driver, element);
-    }
-
-    @Override
-    public void beforeChangeValueOf(WebElement element, WebDriver driver) {
-        // highlightElementTakeScreenshotAndSendToCapture("beforeChangeValue", driver, element);
     }
 
     @Override
@@ -100,17 +98,23 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     @Override
     public void onTestSuccess(ITestResult result) {
-        sendFinalScreenshot(result, "pass");
+        if (ScreenshotCapture.isRequired()) {
+            sendFinalScreenshot(result, "pass");
+        }
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
-        sendFinalScreenshot(result, "fail");
+        if (ScreenshotCapture.isRequired()) {
+            sendFinalScreenshot(result, "fail");
+        }
     }
 
     @Override
     public void onTestSkipped(ITestResult result) {
-        sendFinalScreenshot(result, "skip");
+        if (ScreenshotCapture.isRequired()) {
+            sendFinalScreenshot(result, "skip");
+        }
     }
 
     /*
@@ -122,6 +126,9 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     @Override
     public void afterClickOn(WebElement element, WebDriver driver) {}
+
+    @Override
+    public void beforeChangeValueOf(WebElement element, WebDriver driver) {}
 
     @Override
     public void afterFindBy(By by, WebElement arg1, WebDriver arg2) {}

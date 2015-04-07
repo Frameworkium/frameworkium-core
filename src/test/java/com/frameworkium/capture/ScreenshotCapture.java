@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import com.frameworkium.capture.model.Command;
 import com.frameworkium.capture.model.message.CreateExecution;
@@ -20,16 +21,20 @@ public class ScreenshotCapture {
 
     private String executionID;
 
-    public ScreenshotCapture(String testID) {
-        initExecution(new CreateExecution(testID, "TODO"));
+    public ScreenshotCapture(String testID, WebDriver webdriver) {
+        String node = "TODO";
+        if (DriverType.useRemoteWebDriver) {
+            RemoteWebDriver r = (RemoteWebDriver) webdriver;
+            // TODO: get remote address etc.
+        }
+        initExecution(new CreateExecution(testID, node));
     }
 
     public void takeAndSendScreenshot(Command command, WebDriver webdriver, String errorMessage) {
 
         String url = DriverType.isNative() ? "" : webdriver.getCurrentUrl();
-        // String node = webdriver.getNodeAddress();
-        String screenshotBase64 = ((TakesScreenshot) webdriver).getScreenshotAs(OutputType.BASE64);
-        logger.info("screenshot length: " + screenshotBase64.length());
+        TakesScreenshot ts = ((TakesScreenshot) webdriver);
+        String screenshotBase64 = ts.getScreenshotAs(OutputType.BASE64);
         CreateScreenshot message = new CreateScreenshot(executionID, command, url, errorMessage, screenshotBase64);
         sendScreenshot(message);
     }
@@ -38,7 +43,7 @@ public class ScreenshotCapture {
 
         String uri = SystemProperty.CAPTURE_URL.getValue() + "/screenshot";
         RestAssured.given().contentType(ContentType.JSON).body(createScreenshotmessage).when().post(uri)
-                .then().statusCode(201);
+                .then().log().headers().statusCode(201);
     }
 
     private void initExecution(CreateExecution createExecutionMessage) {
@@ -46,8 +51,12 @@ public class ScreenshotCapture {
         String uri = SystemProperty.CAPTURE_URL.getValue() + "/execution";
         executionID =
                 RestAssured.given().log().body().contentType(ContentType.JSON).body(createExecutionMessage).when()
-                        .post(uri).then().log().body().statusCode(201).extract().path("executionID").toString();
+                        .post(uri).then().statusCode(201).extract().path("executionID").toString();
         logger.info("executionID = " + executionID);
+    }
+
+    public static boolean isRequired() {
+        return SystemProperty.CAPTURE_URL.isSpecified() && !DriverType.isNative();
     }
 
 }
