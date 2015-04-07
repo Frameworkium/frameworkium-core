@@ -7,6 +7,7 @@ import static com.jayway.restassured.RestAssured.preemptive;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.frameworkium.config.SystemProperty;
 import com.frameworkium.jira.Config;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.authentication.AuthenticationScheme;
@@ -30,48 +31,34 @@ public class SearchExecutions {
      * @return the execution Ids returned by the search.
      */
     public List<Integer> getExecutionIds() {
-        // String browser = getBrowserNameAndVersion();
-        String browser = "FF10";
 
-        List<Integer> tempExecutionIds = jsonPath.getList("executions.id");
-        List<Integer> executionIds = new ArrayList<Integer>();
-        List<String> cycleNames = jsonPath.getList("executions.cycleName");
-        for (int idx = 0; idx < cycleNames.size(); idx++) {
-            if (cycleNames.get(idx).contains(browser)) {
-                executionIds.add(tempExecutionIds.get(idx));
-            }
-            // TODO - This is clearly ridiculous but where it'd go if you wanted
-            // to specify the browser/cycle
-            else {
-                executionIds.add(tempExecutionIds.get(idx));
-            }
-        }
-        return executionIds;
+        return getIDs("executions.id");
     }
 
     /**
-     * @return the execution statuses returned by the search.
+     * @return the execution status Ids returned by the search.
      */
     public List<Integer> getExecutionStatuses() {
-        // TODO String browser = getBrowserNameAndVersion();
-        String browser = "FF10";
 
-        List<Integer> tempExecutionStatuses = jsonPath.getList("executions.status.id");
+        return getIDs("executions.status.id");
+    }
 
-        List<Integer> executionStatuses = new ArrayList<Integer>();
+    private List<Integer> getIDs(String path) {
 
-        List<String> cycleNames = jsonPath.getList("executions.cycleName");
+        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> tempList = jsonPath.getList(path);
 
-        for (int idx = 0; idx < cycleNames.size(); idx++) {
-            if (cycleNames.get(idx).contains(browser)) {
-                executionStatuses.add(tempExecutionStatuses.get(idx));
+        if (SystemProperty.JIRA_CYCLE_REGEX.isSpecified()) {
+            String jiraCycleRegEx = SystemProperty.JIRA_CYCLE_REGEX.getValue();
+            List<String> cycleNames = jsonPath.getList("executions.cycleName");
+            for (int i = 0; i < cycleNames.size(); i++) {
+                if (cycleNames.get(i).contains(jiraCycleRegEx)) {
+                    list.add(tempList.get(i));
+                }
             }
-            // TODO - This is clearly ridiculous but where it'd go if you wanted
-            // to specify the browser/cycle
-            else {
-                executionStatuses.add(tempExecutionStatuses.get(idx));
-            }
+        } else {
+            list = tempList;
         }
-        return executionStatuses;
+        return list;
     }
 }

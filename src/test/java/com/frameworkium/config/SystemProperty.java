@@ -3,17 +3,18 @@ package com.frameworkium.config;
 public enum SystemProperty {
 
     BROWSER("browser"),
-    BROWSER_VERSION("desiredBrowserVersion"),
+    BROWSER_VERSION("browserVersion"),
     CAPTURE_URL("captureURL"),
-    PLATFORM("desiredPlatform"),
-    PLATFORM_VERSION("desiredPlatformVersion"),
-    DEVICE_NAME("desiredDeviceName"),
+    PLATFORM("platform"),
+    PLATFORM_VERSION("platformVersion"),
+    DEVICE_NAME("deviceName"),
     GRID_URL("gridURL"),
     BUILD("build"),
     APP_PATH("appPath"),
     SAUCE("sauce"),
     JIRA_URL("jiraURL"),
     JIRA_RESULT_VERSION("jiraResultVersion"),
+    JIRA_CYCLE_REGEX("jiraCycleRegEx"),
     JQL_QUERY("jqlQuery"),
     SUT_NAME("sutName"),
     SUT_VERSION("sutVersion");

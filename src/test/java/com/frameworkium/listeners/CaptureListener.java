@@ -10,7 +10,9 @@ import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
+import com.frameworkium.capture.ElementHighlighter;
 import com.frameworkium.capture.model.Command;
+import com.frameworkium.config.DriverType;
 import com.frameworkium.config.WebDriverWrapper;
 import com.frameworkium.tests.internal.BaseTest;
 
@@ -44,37 +46,54 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
         }
     }
 
+    private void highlightElementTakeScreenshotAndSendToCapture(String action, WebDriver driver, WebElement element) {
+        ElementHighlighter eh = null;
+        if (!DriverType.isNative()) {
+            eh = new ElementHighlighter(driver);
+            eh.highlightElement(element);
+        }
+        Command command = new Command(action, element);
+        takeScreenshotAndSendToCapture(command, driver);
+        if (!DriverType.isNative()) {
+            eh.unhighlightLast();
+        }
+    }
+
     /* WebDriver events */
     @Override
     public void beforeClickOn(WebElement element, WebDriver driver) {
-        Command command = new Command("click", element);
-        takeScreenshotAndSendToCapture(command, driver);
+        highlightElementTakeScreenshotAndSendToCapture("click", driver, element);
+    }
+
+    @Override
+    public void afterChangeValueOf(WebElement element, WebDriver driver) {
+        highlightElementTakeScreenshotAndSendToCapture("change", driver, element);
+    }
+
+    @Override
+    public void beforeChangeValueOf(WebElement element, WebDriver driver) {
+        // highlightElementTakeScreenshotAndSendToCapture("beforeChangeValue", driver, element);
     }
 
     @Override
     public void beforeNavigateBack(WebDriver driver) {
-        takeScreenshotAndSendToCapture("navigate back", driver);
+        takeScreenshotAndSendToCapture("nav back", driver);
     }
 
     @Override
     public void beforeNavigateForward(WebDriver driver) {
-        takeScreenshotAndSendToCapture("navigate forward", driver);
+        takeScreenshotAndSendToCapture("nav forward", driver);
     }
 
     @Override
     public void beforeNavigateTo(String url, WebDriver driver) {
-        Command command = new Command("navigate", "url", url);
+        Command command = new Command("nav", "url", url);
         takeScreenshotAndSendToCapture(command, driver);
     }
 
     @Override
     public void beforeScript(String script, WebDriver driver) {
-        takeScreenshotAndSendToCapture("run script", driver);
-    }
-
-    @Override
-    public void onException(Throwable thrw, WebDriver driver) {
-        // takeScreenshotAndSendToCaptureWithException("onException()", driver, thrw);
+        takeScreenshotAndSendToCapture("script", driver);
     }
 
     /* Test end methods */
@@ -99,7 +118,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
      */
 
     @Override
-    public void afterChangeValueOf(WebElement element, WebDriver driver) {}
+    public void onException(Throwable thrw, WebDriver driver) {}
 
     @Override
     public void afterClickOn(WebElement element, WebDriver driver) {}
@@ -118,9 +137,6 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     @Override
     public void afterScript(String script, WebDriver driver) {}
-
-    @Override
-    public void beforeChangeValueOf(WebElement element, WebDriver driver) {}
 
     @Override
     public void beforeFindBy(By by, WebElement element, WebDriver arg2) {}

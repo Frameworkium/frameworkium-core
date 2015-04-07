@@ -9,6 +9,7 @@ import org.openqa.selenium.WebDriver;
 import com.frameworkium.capture.model.Command;
 import com.frameworkium.capture.model.message.CreateExecution;
 import com.frameworkium.capture.model.message.CreateScreenshot;
+import com.frameworkium.config.DriverType;
 import com.frameworkium.config.SystemProperty;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
@@ -25,9 +26,10 @@ public class ScreenshotCapture {
 
     public void takeAndSendScreenshot(Command command, WebDriver webdriver, String errorMessage) {
 
-        String url = webdriver.getCurrentUrl();
+        String url = DriverType.isNative() ? "" : webdriver.getCurrentUrl();
         // String node = webdriver.getNodeAddress();
         String screenshotBase64 = ((TakesScreenshot) webdriver).getScreenshotAs(OutputType.BASE64);
+        logger.info("screenshot length: " + screenshotBase64.length());
         CreateScreenshot message = new CreateScreenshot(executionID, command, url, errorMessage, screenshotBase64);
         sendScreenshot(message);
     }
@@ -35,8 +37,8 @@ public class ScreenshotCapture {
     private void sendScreenshot(CreateScreenshot createScreenshotmessage) {
 
         String uri = SystemProperty.CAPTURE_URL.getValue() + "/screenshot";
-        RestAssured.given().log().body().contentType(ContentType.JSON).body(createScreenshotmessage).when().post(uri)
-                .then().log().body().statusCode(201);
+        RestAssured.given().contentType(ContentType.JSON).body(createScreenshotmessage).when().post(uri)
+                .then().statusCode(201);
     }
 
     private void initExecution(CreateExecution createExecutionMessage) {

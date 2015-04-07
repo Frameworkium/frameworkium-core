@@ -191,14 +191,15 @@
               <parallel>methods</parallel>
               <threadCount>${threads}</threadCount>
               <systemProperties>
+              <!-- TODO: Can we remove these? -->
                 <env.config>${env.config}</env.config>
                 <browser>${browser}</browser>
                 <screenshotDirectory>${project.build.directory}/screenshots</screenshotDirectory>
                 <gridURL>${seleniumGridURL}</gridURL>
-                <desiredPlatform>${platform}</desiredPlatform>
-                <desiredPlatformVersion>${platformVersion}</desiredPlatformVersion>
-                <desiredBrowserVersion>${browserVersion}</desiredBrowserVersion>
-                <desiredDeviceName>${deviceName}</desiredDeviceName>
+                <platform>${platform}</platform>
+                <platformVersion>${platformVersion}</platformVersion>
+                <browserVersion>${browserVersion}</browserVersion>
+                <deviceName>${deviceName}</deviceName>
                 <sauce>${sauce}</sauce>
                 <build>${build}</build>
                 <appPath>${appPath}</appPath>
