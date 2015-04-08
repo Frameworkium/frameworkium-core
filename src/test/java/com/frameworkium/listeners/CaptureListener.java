@@ -4,6 +4,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.WebDriverEventListener;
@@ -51,15 +52,19 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     private void highlightElementTakeScreenshotAndSendToCapture(String action, WebDriver driver, WebElement element) {
         logger.debug(String.format("highlightElementTakeScreenshotAndSendToCapture: action=%s", action));
         ElementHighlighter highlighter = null;
-        if (!DriverType.isNative()) {
-            logger.debug("Not an app, trying to highlight the element");
-            highlighter = new ElementHighlighter(driver);
-            highlighter.highlightElement(element);
-        }
-        Command command = new Command(action, element);
-        takeScreenshotAndSendToCapture(command, driver);
-        if (null != highlighter) {
-            highlighter.unhighlightLast();
+        try {
+            if (!DriverType.isNative()) {
+                logger.debug("Trying to highlight the element");
+                highlighter = new ElementHighlighter(driver);
+                highlighter.highlightElement(element);
+            }
+            Command command = new Command(action, element);
+            takeScreenshotAndSendToCapture(command, driver);
+            if (null != highlighter) {
+                highlighter.unhighlightLast();
+            }
+        } catch (StaleElementReferenceException serex) {
+            logger.debug("Caught StaleElementReferenceException when trying to (un)highlight an element.");
         }
     }
 
