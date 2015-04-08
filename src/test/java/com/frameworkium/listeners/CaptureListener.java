@@ -1,5 +1,6 @@
 package com.frameworkium.listeners;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -33,7 +34,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private void takeScreenshotAndSendToCaptureWithException(String action, WebDriver driver, Throwable thrw) {
         Command command = new Command(action, "n/a", "n/a");
-        BaseTest.getCapture().takeAndSendScreenshot(command, driver, thrw.getMessage());
+        BaseTest.getCapture().takeAndSendScreenshot(command, driver, thrw.getMessage() + "\n" + ExceptionUtils.getStackTrace(thrw));
     }
 
     private void sendFinalScreenshot(ITestResult result, String action) {
