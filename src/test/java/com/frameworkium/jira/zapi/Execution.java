@@ -19,11 +19,10 @@ import org.testng.ITestResult;
 import com.frameworkium.jira.Config;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.authentication.AuthenticationScheme;
-import com.jayway.restassured.path.json.JsonPath;
 
 public class Execution {
 
-    private static final Logger logger = LogManager.getLogger(Execution.class);
+    private final static Logger logger = LogManager.getLogger(Execution.class);
     private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername, Config.jiraPassword);
     private final static String zapiURI = JIRA_URL.getValue() + Config.zapiRestURI;
 
@@ -101,11 +100,9 @@ public class Execution {
     }
 
     private void deleteExistingAttachments(final Integer executionId) {
-        String url = String.format("attachment/attachmentsByEntity?entityId=%s&entityType=EXECUTION", executionId);
 
-        JsonPath jsonPath = get(url).andReturn().jsonPath();
-
-        List<String> fileIds = jsonPath.getList("data.fileId", String.class);
+        String url = "attachment/attachmentsByEntity?entityType=EXECUTION&entityId=" + executionId;
+        List<String> fileIds = get(url).andReturn().jsonPath().getList("data.fileId", String.class);
 
         // Iterate over attachments
         for (String fileId : fileIds) {
@@ -114,8 +111,8 @@ public class Execution {
     }
 
     private void addAttachment(final Integer executionId, final String attachment) {
-        String url = String.format("attachment?entityId=%s&entityType=EXECUTION", executionId);
 
+        String url = "attachment?entityType=EXECUTION&entityId=" + executionId;
         given().header("X-Atlassian-Token", "nocheck").and().multiPart(new File(attachment)).when().post(url);
     }
 
