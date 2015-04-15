@@ -3,7 +3,7 @@ package com.frameworkium.config;
 import static com.frameworkium.config.SystemProperty.APP_PATH;
 import static com.frameworkium.config.SystemProperty.BROWSER_VERSION;
 import static com.frameworkium.config.SystemProperty.BUILD;
-import static com.frameworkium.config.SystemProperty.DEVICE_NAME;
+import static com.frameworkium.config.SystemProperty.DEVICE;
 import static com.frameworkium.config.SystemProperty.GRID_URL;
 import static com.frameworkium.config.SystemProperty.PLATFORM;
 import static com.frameworkium.config.SystemProperty.PLATFORM_VERSION;
@@ -59,9 +59,9 @@ public enum DriverType implements DriverSetup {
             
             //Use Chrome's built in device emulators
             //Specify browser=chrome, but also provide device name to use chrome's emulator
-            if(DEVICE_NAME.isSpecified()){
+            if(DEVICE.isSpecified()){
                 Map<String, String> mobileEmulation = new HashMap<String, String>();
-                mobileEmulation.put("deviceName", DEVICE_NAME.getValue());
+                mobileEmulation.put("deviceName", DEVICE.getValue());
     
                 Map<String, Object> chromeOptions = new HashMap<String, Object>();
                 chromeOptions.put("mobileEmulation", mobileEmulation);
@@ -182,7 +182,8 @@ public enum DriverType implements DriverSetup {
             }
             else if(BrowserStack.isDesired()){
                 capabilities.setCapability("os", "iOS");
-                capabilities.setCapability("browser", DEVICE_NAME.getValue().split(" ")[0]);
+                //BrowserStack expects iPhone devices to use the 'browser = iPhone' etc:
+                capabilities.setCapability("browser", DEVICE.getValue().split(" ")[0]);
             }
             
             return capabilities;
@@ -254,8 +255,8 @@ public enum DriverType implements DriverSetup {
                 if(PLATFORM_VERSION.isSpecified())
                     desiredCapabilities.setCapability("os_version", PLATFORM_VERSION.getValue());
                 //Set Device (rather than deviceName) (browserstack specific input)
-                if (DEVICE_NAME.isSpecified())
-                    desiredCapabilities.setCapability("device", DEVICE_NAME.getValue());
+                if (DEVICE.isSpecified())
+                    desiredCapabilities.setCapability("device", DEVICE.getValue());
                 
             } else {
                 seleniumGridURL = new URL(GRID_URL.getValue());
@@ -293,8 +294,8 @@ public enum DriverType implements DriverSetup {
                 
                 //Set Device Name (only currently possible if using Sauce or BrowserStack)
                 if(Sauce.isDesired()) {
-                    if (DEVICE_NAME.isSpecified()) {
-                        desiredCapabilities.setCapability("deviceName", DEVICE_NAME.getValue());
+                    if (DEVICE.isSpecified()) {
+                        desiredCapabilities.setCapability("deviceName", DEVICE.getValue());
                     } else {
                         if (PLATFORM.getValue().equalsIgnoreCase("ios")) {
                             desiredCapabilities.setCapability("deviceName", "iPhone Simulator");
@@ -304,8 +305,8 @@ public enum DriverType implements DriverSetup {
                     }
                 }
                 else if (BrowserStack.isDesired()) {
-                    if (DEVICE_NAME.isSpecified()) {
-                        desiredCapabilities.setCapability("device", DEVICE_NAME.getValue());
+                    if (DEVICE.isSpecified()) {
+                        desiredCapabilities.setCapability("device", DEVICE.getValue());
                     } else {
                         if (PLATFORM.getValue().equalsIgnoreCase("ios")) {
                             desiredCapabilities.setCapability("device", "iPhone 5");

@@ -4,7 +4,7 @@ import static com.frameworkium.config.SystemProperty.APP_PATH;
 import static com.frameworkium.config.SystemProperty.BROWSER;
 import static com.frameworkium.config.SystemProperty.BROWSER_VERSION;
 import static com.frameworkium.config.SystemProperty.BUILD;
-import static com.frameworkium.config.SystemProperty.DEVICE_NAME;
+import static com.frameworkium.config.SystemProperty.DEVICE;
 import static com.frameworkium.config.SystemProperty.GRID_URL;
 import static com.frameworkium.config.SystemProperty.JIRA_RESULT_VERSION;
 import static com.frameworkium.config.SystemProperty.JIRA_URL;
@@ -40,8 +40,8 @@ public class AllureProperties {
             if (BUILD.isSpecified()) {
                 props.setProperty("Build", BUILD.getValue());
             }
-            if (DEVICE_NAME.isSpecified()) {
-                props.setProperty("Device Name", DEVICE_NAME.getValue());
+            if (DEVICE.isSpecified()) {
+                props.setProperty("Device Name", DEVICE.getValue());
             }
             if (GRID_URL.isSpecified()) {
                 props.setProperty("Grid URL", GRID_URL.getValue());

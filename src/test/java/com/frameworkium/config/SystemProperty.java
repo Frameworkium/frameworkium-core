@@ -6,7 +6,7 @@ public enum SystemProperty {
     BROWSER_VERSION("browserVersion"),
     PLATFORM("platform"),
     PLATFORM_VERSION("platformVersion"),
-    DEVICE_NAME("device"),
+    DEVICE("device"),
     GRID_URL("gridURL"),
     BUILD("build"),
     APP_PATH("appPath"),
