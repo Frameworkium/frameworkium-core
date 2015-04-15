@@ -81,4 +81,13 @@ public class ScreenshotListener extends TestListenerAdapter {
             logger.error("Unable to take screenshot - " + e);
         }
     }
+    
+    @Override
+    public void onTestSkipped(ITestResult skippedTest) {
+        try {
+            takeScreenshot(skippedTest.getName());
+        } catch (Exception e) {
+            logger.error("Unable to take screenshot - " + e);
+        }
+    }
 }
