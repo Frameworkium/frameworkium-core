@@ -17,6 +17,7 @@ import ru.yandex.qatools.htmlelements.element.HtmlElement;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 import ru.yandex.qatools.htmlelements.loader.HtmlElementLoader;
 
+import com.frameworkium.reporting.AllureLogger;
 import com.google.inject.Inject;
 
 public abstract class BasePage<T extends BasePage<T>> {
@@ -46,6 +47,7 @@ public abstract class BasePage<T extends BasePage<T>> {
         HtmlElementLoader.populatePageObject(this, driver);
         try {
             waitForExpectedVisibleElements(this);
+            AllureLogger.logToAllure("Page '" + this.getClass().getName() + "' successfully loaded");
         } catch (IllegalArgumentException | IllegalAccessException e) {
             logger.error("Error while waiting for page to load", e);
         }

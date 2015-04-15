@@ -28,10 +28,13 @@ public class MethodInterceptor implements IMethodInterceptor {
     @Override
     public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context) {
         List<IMethodInstance> methodsToRun = filterTestsToRunBasedOnJQL(methods);
-        if(!interceptMethodsBasedOnName)
+        if(interceptMethodsBasedOnName) {
+            logger.info("Filtered tests down based on their name");
             return filterTestsToRunBasedOnDriverAndTestClassName(methodsToRun);
-        else
+        }
+        else {
             return methodsToRun;
+        }
     }
 
     private List<IMethodInstance> filterTestsToRunBasedOnJQL(List<IMethodInstance> methods) {
