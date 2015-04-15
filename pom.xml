@@ -38,6 +38,7 @@
     <browserVersion/>
     <groups/>
     <sauce/>
+    <browserStack/>
     <build/>
     <appPath/>
     <jiraURL/>
@@ -47,7 +48,6 @@
     <allure.issues.tracker.pattern/>
   </properties>
 
-  <dependencyManagement/>
   <dependencies>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
@@ -137,6 +137,11 @@
       <artifactId>rest-assured</artifactId>
       <version>2.4.0</version>
     </dependency>
+    <dependency>
+    	<groupId>joda-time</groupId>
+    	<artifactId>joda-time</artifactId>
+    	<version>2.7</version>
+    </dependency>
   </dependencies>
 
   <repositories>
@@ -200,6 +205,7 @@
                 <desiredBrowserVersion>${browserVersion}</desiredBrowserVersion>
                 <desiredDeviceName>${deviceName}</desiredDeviceName>
                 <sauce>${sauce}</sauce>
+                <browserStack>${browserStack}</browserStack>
                 <build>${build}</build>
                 <appPath>${appPath}</appPath>
                 <jiraURL>${jiraURL}</jiraURL>

@@ -11,6 +11,7 @@ public enum SystemProperty {
     BUILD("build"),
     APP_PATH("appPath"),
     SAUCE("sauce"),
+    BROWSER_STACK("browserStack"),
     JIRA_URL("jiraURL"),
     JIRA_RESULT_VERSION("jiraResultVersion"),
     JQL_QUERY("jqlQuery");

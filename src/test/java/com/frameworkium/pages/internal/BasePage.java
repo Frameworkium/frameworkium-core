@@ -96,6 +96,8 @@ public abstract class BasePage<T extends BasePage<T>> {
                         wait.until(ExpectedConditions.visibilityOf(element));
                     }
                 }
+                
+
             }
         }
     }

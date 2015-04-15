@@ -21,8 +21,7 @@ public class ZAPIListener implements ITestListener {
     @Override
     public void onTestStart(ITestResult result) {
         if (loggingParamsProvided(result)) {
-            String comment =
-                    String.format("Starting %s.%s", result.getTestClass().getName(), result.getMethod().getMethodName());
+            String comment = String.format("Starting %s.%s", result.getTestClass().getName(), result.getMethod().getMethodName());
 
             new Execution(JIRA_RESULT_VERSION.getValue(), getIssueAnnotation(result)).update(
                     Config.ZAPI_STATUS.ZAPI_STATUS_WIP, comment, null);
@@ -32,9 +31,7 @@ public class ZAPIListener implements ITestListener {
     @Override
     public void onTestSuccess(ITestResult result) {
         if (loggingParamsProvided(result)) {
-            String comment =
-                    String.format("%s.%s Passed in %s seconds", result.getTestClass().getName(), result.getMethod()
-                            .getMethodName(), ((result.getEndMillis() - result.getStartMillis()) / 1000));
+            String comment = this.baseComment(result);
 
             new Execution(JIRA_RESULT_VERSION.getValue(), getIssueAnnotation(result)).update(
                     Config.ZAPI_STATUS.ZAPI_STATUS_PASS, comment, null);
@@ -44,18 +41,7 @@ public class ZAPIListener implements ITestListener {
     @Override
     public void onTestFailure(ITestResult result) {
         if (loggingParamsProvided(result)) {
-            String comment =
-                    String.format("%s.%s Failed in %s seconds", result.getTestClass().getName(), result.getMethod()
-                            .getMethodName(), ((result.getEndMillis() - result.getStartMillis()) / 1000));
-
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            Throwable cause = result.getThrowable();
-            if (null != cause) {
-                cause.printStackTrace(pw);
-                String stacktrace = sw.getBuffer().toString();
-                comment = comment + System.lineSeparator() + System.lineSeparator() + stacktrace;
-            }
+            String comment = this.baseComment(result);
 
             if (!(result.getThrowable() instanceof AssertionError) && Config.FailTestOnlyIfAssertionError) {
                 new Execution(JIRA_RESULT_VERSION.getValue(), getIssueAnnotation(result)).update(
@@ -70,10 +56,8 @@ public class ZAPIListener implements ITestListener {
     @Override
     public void onTestSkipped(ITestResult result) {
         if (loggingParamsProvided(result)) {
-            String comment =
-                    String.format("%s.%s Skipped in %s seconds", result.getTestClass().getName(), result.getMethod()
-                            .getMethodName(), ((result.getEndMillis() - result.getStartMillis()) / 1000));
-
+            String comment = this.baseComment(result);
+            
             new Execution(JIRA_RESULT_VERSION.getValue(), getIssueAnnotation(result)).update(
                     Config.ZAPI_STATUS.ZAPI_STATUS_BLOCKED, comment, null);
         }
@@ -99,5 +83,34 @@ public class ZAPIListener implements ITestListener {
             return StringUtils.EMPTY;
         }
     }
+    
+    private String getOSInfo() {
+        return System.getProperty("os.name") + " - " + System.getProperty("os.version") + " (" + System.getProperty("os.arch") + ")";
+    }
+    
+    private String getStackTraceFromThrowable(Throwable cause) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
 
+        cause.printStackTrace(pw);
+        return sw.getBuffer().toString();
+    }
+    
+    private String baseComment(ITestResult result) {
+        
+        StringBuilder comment = new StringBuilder();
+
+        comment.append(String.format("Test: %s.%s", result.getTestClass().getName(), result.getMethod().getMethodName()));
+        comment.append(System.lineSeparator());
+        comment.append(String.format("Duration: %s seconds", ((result.getEndMillis() - result.getStartMillis()) / 1000)));
+        comment.append(System.lineSeparator());
+        comment.append("OS: " + this.getOSInfo());
+        if(result.getThrowable() != null) {
+            comment.append(System.lineSeparator());
+            comment.append("Stacktrace: " + this.getStackTraceFromThrowable(result.getThrowable()));
+        }
+        
+        return comment.toString();
+        
+    }
 }

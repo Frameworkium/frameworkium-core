@@ -93,7 +93,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         AllureProperties.create();
     }
 
-    /** @return the Sauce Job id for the current thread */
+    /** @return the Job id for the current thread */
     @Override
     public String getSessionId() {
         SessionId sessionId = getDriver().getWrappedRemoteWebDriver().getSessionId();
