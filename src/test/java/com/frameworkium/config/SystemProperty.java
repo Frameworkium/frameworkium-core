@@ -3,10 +3,10 @@ package com.frameworkium.config;
 public enum SystemProperty {
 
     BROWSER("browser"),
-    BROWSER_VERSION("desiredBrowserVersion"),
-    PLATFORM("desiredPlatform"),
-    PLATFORM_VERSION("desiredPlatformVersion"),
-    DEVICE_NAME("desiredDeviceName"),
+    BROWSER_VERSION("browserVersion"),
+    PLATFORM("platform"),
+    PLATFORM_VERSION("platformVersion"),
+    DEVICE_NAME("device"),
     GRID_URL("gridURL"),
     BUILD("build"),
     APP_PATH("appPath"),
