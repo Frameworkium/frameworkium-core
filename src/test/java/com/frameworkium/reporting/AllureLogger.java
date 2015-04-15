@@ -11,6 +11,6 @@ public class AllureLogger {
    @Step("{0}")
    public static void logToAllure(String log)
    {
-       logger.info("Logged to allure: " + log);
+       logger.debug("Logged to allure: " + log);
    }
 }
