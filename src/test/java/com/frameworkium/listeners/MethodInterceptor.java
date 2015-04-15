@@ -22,11 +22,16 @@ import com.frameworkium.jira.SearchIssues;
 public class MethodInterceptor implements IMethodInterceptor {
 
     private static final Logger logger = LogManager.getLogger(MethodInterceptor.class);
-
+    private static Boolean interceptMethodsBasedOnName = false;
+    
+    
     @Override
     public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context) {
         List<IMethodInstance> methodsToRun = filterTestsToRunBasedOnJQL(methods);
-        return filterTestsToRunBasedOnDriverAndTestClassName(methodsToRun);
+        if(!interceptMethodsBasedOnName)
+            return filterTestsToRunBasedOnDriverAndTestClassName(methodsToRun);
+        else
+            return methodsToRun;
     }
 
     private List<IMethodInstance> filterTestsToRunBasedOnJQL(List<IMethodInstance> methods) {

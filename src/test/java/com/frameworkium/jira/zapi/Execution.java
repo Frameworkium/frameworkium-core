@@ -75,7 +75,7 @@ public class Execution {
             for (Integer executionId : idList) {
                 updateStatusAndComment(executionId, status, comment);
                 replaceExistingAttachment(attachment, executionId);
-
+                
                 logger.debug("ZAPI Updater - Updated %s to status %s", issue, status);
             }
         }
@@ -88,10 +88,14 @@ public class Execution {
         }
     }
 
-    private void updateStatusAndComment(final Integer executionId, final int status, final String comment) {
+    private void updateStatusAndComment(final Integer executionId, final int status, String comment) {
         JSONObject obj = new JSONObject();
         try {
             obj.put("status", String.valueOf(status));
+            //Limit on Zephyr's comment field capacity
+            if (comment.length()>750) {
+                comment = comment.substring(0, 747) + "...";
+            }
             obj.put("comment", comment);
         } catch (JSONException e) {
             logger.error("Update status and comment failed", e);

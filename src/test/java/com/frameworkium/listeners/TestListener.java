@@ -17,7 +17,6 @@ public class TestListener implements ITestListener {
     public void onTestStart(ITestResult result) {
         logger.info(String
                 .format("starting %s.%s", result.getTestClass().getName(), result.getMethod().getMethodName()));
-stepLogger("Hells YEAH <a href='http://www.google.com'>AND YEAH!</a>");
     }
 
     @Override
