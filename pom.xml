@@ -204,11 +204,7 @@
                 <platform>${platform}</platform>
                 <platformVersion>${platformVersion}</platformVersion>
                 <browserVersion>${browserVersion}</browserVersion>
-<<<<<<< HEAD
                 <device>${device}</device>
-=======
-                <deviceName>${deviceName}</deviceName>
->>>>>>> origin/capture
                 <sauce>${sauce}</sauce>
                 <browserStack>${browserStack}</browserStack>
                 <build>${build}</build>

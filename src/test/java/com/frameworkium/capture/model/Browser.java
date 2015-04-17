@@ -16,8 +16,8 @@ public class Browser {
         if (SystemProperty.BROWSER_VERSION.isSpecified()) {
             this.version = SystemProperty.BROWSER_VERSION.getValue();
         }
-        if (SystemProperty.DEVICE_NAME.isSpecified()) {
-            this.device = SystemProperty.DEVICE_NAME.getValue();
+        if (SystemProperty.DEVICE.isSpecified()) {
+            this.device = SystemProperty.DEVICE.getValue();
         }
         if (SystemProperty.PLATFORM.isSpecified()) {
             this.platform = SystemProperty.PLATFORM.getValue();

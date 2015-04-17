@@ -4,16 +4,10 @@ public enum SystemProperty {
 
     BROWSER("browser"),
     BROWSER_VERSION("browserVersion"),
-<<<<<<< HEAD
     PLATFORM("platform"),
     PLATFORM_VERSION("platformVersion"),
     DEVICE("device"),
-=======
     CAPTURE_URL("captureURL"),
-    PLATFORM("platform"),
-    PLATFORM_VERSION("platformVersion"),
-    DEVICE_NAME("deviceName"),
->>>>>>> origin/capture
     GRID_URL("gridURL"),
     BUILD("build"),
     APP_PATH("appPath"),
