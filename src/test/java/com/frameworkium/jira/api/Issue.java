@@ -1,4 +1,4 @@
-package com.frameworkium.jira;
+package com.frameworkium.jira.api;
 
 import static com.frameworkium.config.SystemProperty.JIRA_URL;
 import static com.jayway.restassured.RestAssured.get;
@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.frameworkium.jira.Config;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.authentication.AuthenticationScheme;
 

@@ -196,6 +196,7 @@
               <parallel>methods</parallel>
               <threadCount>${threads}</threadCount>
               <systemProperties>
+              <!-- TODO: Can we remove these? -->
                 <env.config>${env.config}</env.config>
                 <browser>${browser}</browser>
                 <screenshotDirectory>${project.build.directory}/screenshots</screenshotDirectory>
@@ -203,7 +204,11 @@
                 <platform>${platform}</platform>
                 <platformVersion>${platformVersion}</platformVersion>
                 <browserVersion>${browserVersion}</browserVersion>
+<<<<<<< HEAD
                 <device>${device}</device>
+=======
+                <deviceName>${deviceName}</deviceName>
+>>>>>>> origin/capture
                 <sauce>${sauce}</sauce>
                 <browserStack>${browserStack}</browserStack>
                 <build>${build}</build>

@@ -6,6 +6,8 @@ import java.util.Random;
 
 import org.testng.annotations.Test;
 
+import ru.yandex.qatools.allure.annotations.Issue;
+
 import com.calcapp.pages.app.CalculatorPage;
 import com.frameworkium.pages.internal.PageFactory;
 import com.frameworkium.tests.internal.BaseTest;
@@ -14,10 +16,11 @@ public class CalculatorAppTest extends BaseTest {
 
     /**
      * Example test for https://appium.s3.amazonaws.com/TestApp7.1.app.zip
-     * 
+     *
      * @throws Exception
      */
     @Test(description = "Test sum computation")
+    @Issue("CALC-1")
     public void testIOSApp() throws Exception {
 
         Random rand = new Random();

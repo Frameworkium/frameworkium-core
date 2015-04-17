@@ -15,6 +15,7 @@ import org.testng.TestListenerAdapter;
 
 import ru.yandex.qatools.allure.annotations.Attachment;
 
+import com.frameworkium.config.SystemProperty;
 import com.frameworkium.tests.internal.BaseTest;
 
 public class ScreenshotListener extends TestListenerAdapter {
@@ -75,10 +76,13 @@ public class ScreenshotListener extends TestListenerAdapter {
 
     @Override
     public void onTestFailure(ITestResult failingTest) {
-        try {
-            takeScreenshot(failingTest.getName());
-        } catch (Exception e) {
-            logger.error("Unable to take screenshot - " + e);
+        // Take a local screenshot if capture is not enabled
+        if (!SystemProperty.CAPTURE_URL.isSpecified()) {
+            try {
+                takeScreenshot(failingTest.getName());
+            } catch (Exception e) {
+                logger.error("Unable to take screenshot", e);
+            }
         }
     }
     

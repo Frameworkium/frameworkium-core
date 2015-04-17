@@ -17,7 +17,7 @@ import org.testng.ITestContext;
 import ru.yandex.qatools.allure.annotations.Issue;
 
 import com.frameworkium.config.DriverType;
-import com.frameworkium.jira.SearchIssues;
+import com.frameworkium.jira.api.SearchIssues;
 
 public class MethodInterceptor implements IMethodInterceptor {
 
