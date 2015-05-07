@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
@@ -17,7 +18,10 @@ import ru.yandex.qatools.htmlelements.element.HtmlElement;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 import ru.yandex.qatools.htmlelements.loader.HtmlElementLoader;
 
+import com.frameworkium.capture.model.Command;
+import com.frameworkium.config.SystemProperty;
 import com.frameworkium.reporting.AllureLogger;
+import com.frameworkium.tests.internal.BaseTest;
 import com.google.inject.Inject;
 
 public abstract class BasePage<T extends BasePage<T>> {
@@ -47,7 +51,13 @@ public abstract class BasePage<T extends BasePage<T>> {
         HtmlElementLoader.populatePageObject(this, driver);
         try {
             waitForExpectedVisibleElements(this);
-            AllureLogger.logToAllure("Page '" + this.getClass().getName() + "' successfully loaded");
+            try{
+                AllureLogger.logToAllure("Page '" + this.getClass().getName() + "' successfully loaded");
+                if(SystemProperty.CAPTURE_URL.isSpecified()) 
+                    BaseTest.getCapture().takeAndSendScreenshot(new Command("load",null,null), driver, null);
+            } catch (Exception e){
+                logger.error("Error logging page load, but loaded successfully");
+            }
         } catch (IllegalArgumentException | IllegalAccessException e) {
             logger.error("Error while waiting for page to load", e);
         }
@@ -59,51 +69,69 @@ public abstract class BasePage<T extends BasePage<T>> {
         return get();
     }
 
-    @SuppressWarnings("unchecked")
     private void waitForExpectedVisibleElements(Object pageObject) throws IllegalArgumentException,
+    IllegalAccessException {
+        waitForExpectedVisibleElements(pageObject, StringUtils.EMPTY);
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void waitForExpectedVisibleElements(Object pageObject, String visibleGroupName) throws IllegalArgumentException,
             IllegalAccessException {
         for (Field field : pageObject.getClass().getDeclaredFields()) {
             for (Annotation annotation : field.getDeclaredAnnotations()) {
                 if (annotation instanceof Visible) {
-                    field.setAccessible(true);
-                    Object obj = field.get(pageObject);
-
-                    // This handles Lists of elements e.g. List<WebElement>
-                    if (obj instanceof List) {
-                        // We'll only check visibility of first match in list
-                        obj = ((List<Object>) obj).get(0);
-                    }
-
-                    // Checks for @Visible tags inside the HtmlElement
-                    if (obj instanceof HtmlElement) {
-                        waitForExpectedVisibleElements(obj);
-                    }
-
-                    WebElement element = null;
-                    if (obj instanceof TypifiedElement) {
-                        element = ((TypifiedElement) obj).getWrappedElement();
-                    } else if (obj instanceof WebElement) {
-                        element = (WebElement) obj;
-                    } else {
-                        throw new IllegalArgumentException(
-                                "Only elements of type TypifiedElement or WebElement are supported by @Visible.");
-                    }
-
-                    // Retries when an element is looked up before the previous page has unloaded or before doc ready
-                    try {
-                        wait.until(ExpectedConditions.visibilityOf(element));
-                    } catch (StaleElementReferenceException serex) {
-                        logger.info("Caught StaleElementReferenceException");
-                        tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady();
-                        wait.until(ExpectedConditions.visibilityOf(element));
+                    //If the group name matches, then check for visibility
+                    if(((Visible) annotation).value().equalsIgnoreCase(visibleGroupName)) {
+                        field.setAccessible(true);
+                        Object obj = field.get(pageObject);
+    
+                        // This handles Lists of WebElements e.g. List<WebElement>
+                        if (obj instanceof List) {
+                            //TODO - where to handle List<Link>, for example?
+                            try {
+                                wait.until(ExpectedConditions.visibilityOfAllElements((List<WebElement>) obj));
+                            } catch (StaleElementReferenceException serex) {
+                                logger.info("Caught StaleElementReferenceException");
+                                tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady();
+                                wait.until(ExpectedConditions.visibilityOfAllElements((List<WebElement>) obj));
+                            }
+                        }
+                        //Otherwise, it's a single object - HtmlElement, WebElement or TypifiedElement
+                        else {
+                            // Checks for @Visible tags inside the HtmlElement
+                            if (obj instanceof HtmlElement) {
+                                waitForExpectedVisibleElements(obj);
+                            }
+        
+                            WebElement element = null;
+                            if (obj instanceof TypifiedElement) {
+                                element = ((TypifiedElement) obj).getWrappedElement();
+                            } else if (obj instanceof WebElement) {
+                                element = (WebElement) obj;
+                            } else {
+                                throw new IllegalArgumentException(
+                                        "Only elements of type TypifiedElement, WebElement or List<WebElement> are supported by @Visible.");
+                            }
+        
+                            // Retries when an element is looked up before the previous page has unloaded or before doc ready
+                            try {
+                                wait.until(ExpectedConditions.visibilityOf(element));
+                            } catch (StaleElementReferenceException serex) {
+                                logger.info("Caught StaleElementReferenceException");
+                                tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady();
+                                wait.until(ExpectedConditions.visibilityOf(element));
+                            }
+                        }
                     }
                 }
+            
+                
                 
 
             }
         }
     }
-
+    
     private void tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady() {
         for (int tries = 0; tries < 3; tries++) {
             Boolean documentReady = (Boolean) executeJS("return document.readyState == 'complete'");
@@ -132,4 +160,5 @@ public abstract class BasePage<T extends BasePage<T>> {
     public String getSource() {
         return driver.getPageSource();
     }
+    
 }
