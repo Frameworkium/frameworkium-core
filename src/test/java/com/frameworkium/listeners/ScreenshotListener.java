@@ -40,17 +40,20 @@ public class ScreenshotListener extends TestListenerAdapter {
 
         return fileCreated;
     }
-
+    
     @Attachment(value = "Screenshot on failure", type = "image/png")
-    private void writeScreenshotToFile(WebDriver driver, File screenshot) {
+    private byte[] writeScreenshotToFile(WebDriver driver, File screenshot) {
         try {
             FileOutputStream screenshotStream = new FileOutputStream(screenshot);
-            byte[] bytes = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+            byte[] bytes = ((TakesScreenshot) driver)
+                    .getScreenshotAs(OutputType.BYTES);
             screenshotStream.write(bytes);
             screenshotStream.close();
+            return bytes;
         } catch (IOException e) {
             logger.error("Unable to write " + screenshot.getAbsolutePath(), e);
         }
+        return null;
     }
 
     private void takeScreenshot(String testName) throws Exception {
