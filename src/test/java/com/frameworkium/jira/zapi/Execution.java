@@ -1,7 +1,7 @@
 package com.frameworkium.jira.zapi;
 
-import static com.frameworkium.config.SystemProperty.JIRA_RESULT_VERSION;
 import static com.frameworkium.config.SystemProperty.JIRA_URL;
+import static com.frameworkium.config.SystemProperty.ZAPI_RESULT_VERSION;
 import static com.jayway.restassured.RestAssured.delete;
 import static com.jayway.restassured.RestAssured.get;
 import static com.jayway.restassured.RestAssured.given;
@@ -37,7 +37,7 @@ public class Execution {
     }
 
     public Execution(final String issue) {
-        this.version = JIRA_RESULT_VERSION.getValue();
+        this.version = ZAPI_RESULT_VERSION.getValue();
         this.issue = issue;
         this.idList = getExecutionIds();
     }

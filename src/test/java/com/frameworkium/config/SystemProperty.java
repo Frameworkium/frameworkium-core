@@ -14,11 +14,14 @@ public enum SystemProperty {
     SAUCE("sauce"),
     BROWSER_STACK("browserStack"),
     JIRA_URL("jiraURL"),
-    JIRA_RESULT_VERSION("jiraResultVersion"),
+    ZAPI_RESULT_VERSION("zapiResultVersion"),
     JIRA_CYCLE_REGEX("jiraCycleRegEx"),
     JQL_QUERY("jqlQuery"),
     SUT_NAME("sutName"),
-    SUT_VERSION("sutVersion");
+    SUT_VERSION("sutVersion"),
+    JIRA_RESULT_FIELDNAME("jiraResultFieldName"),
+    JIRA_RESULT_TRANSITION("jiraResultTransition");
+
 
     private String value;
 

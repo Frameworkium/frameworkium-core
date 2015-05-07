@@ -25,17 +25,17 @@ import com.frameworkium.config.DriverType;
 import com.frameworkium.config.WebDriverWrapper;
 import com.frameworkium.listeners.CaptureListener;
 import com.frameworkium.listeners.MethodInterceptor;
+import com.frameworkium.listeners.ResultLoggerListener;
 import com.frameworkium.listeners.SauceLabsListener;
 import com.frameworkium.listeners.ScreenshotListener;
 import com.frameworkium.listeners.TestListener;
-import com.frameworkium.listeners.ZAPIListener;
 import com.frameworkium.reporting.AllureProperties;
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 
 @Listeners({CaptureListener.class, ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class,
-        TestListener.class, ZAPIListener.class})
+        TestListener.class, ResultLoggerListener.class})
 public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
     private static List<WebDriverWrapper> activeDrivers = Collections
