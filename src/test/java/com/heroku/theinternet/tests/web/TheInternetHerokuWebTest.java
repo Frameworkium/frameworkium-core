@@ -27,6 +27,7 @@ import com.heroku.theinternet.pages.web.JQueryUIPage;
 import com.heroku.theinternet.pages.web.JavaScriptAlertsPage;
 import com.heroku.theinternet.pages.web.KeyPressesPage;
 import com.heroku.theinternet.pages.web.SecureFileDownloadPage;
+import com.heroku.theinternet.pages.web.SortableDataTablesPage;
 import com.heroku.theinternet.pages.web.WelcomePage;
 
 public class TheInternetHerokuWebTest extends BaseTest {
@@ -238,4 +239,26 @@ public class TheInternetHerokuWebTest extends BaseTest {
         assertThat(secureFileDownloadPage.getHeadingText()).isEqualTo("Secure File Downloader");
     }
 
+    @Issue("HEROKU-14")
+    @Test(description = "Table Manipulation & Validation")
+    public void sortDataTable() {
+
+        // Navigate to the sortable data tables page
+        SortableDataTablesPage sortableDataTablesPage =
+                WelcomePage.open().then().clickSortableDataTablesLink();
+ 
+        //Assert that Table 1 contains "http://www.jdoe.com" in the web site column
+        assertThat(sortableDataTablesPage.getTable1ColumnContents("Web Site")).contains("http://www.jdoe.com");
+        
+        //Sort Table 2 by last name column
+        sortableDataTablesPage.sortTable2ByColumnName("Last Name");
+        
+        //Confirm that the column is then ordered by the last name
+        assertThat(sortableDataTablesPage.getTable2ColumnContents("Last Name")).isOrdered();
+        
+        //Confirm that "Bach" is then the first surname in table 2
+        assertThat(sortableDataTablesPage.getTable2ColumnContents("Last Name").get(0)).isEqualTo("Bach");
+
+     
+    }
 }

@@ -77,6 +77,11 @@ public class WelcomePage extends BasePage<WelcomePage> {
     @FindBy(linkText = "Secure File Download")
     private Link secureFileDownloadLink;
 
+    @Visible
+    @Name("Sortable Data Tables Link")
+    @FindBy(linkText = "Sortable Data Tables")
+    private Link sortableDataTablesLink;
+
     @Step("Navigate to http://the-internet.herokuapp.com")
     public static WelcomePage open() {
         return PageFactory.newInstance(WelcomePage.class, "http://the-internet.herokuapp.com");
@@ -166,4 +171,9 @@ public class WelcomePage extends BasePage<WelcomePage> {
                 + secureFileDownloadLink.getReference().split("http://")[1]);
     }
 
+    @Step("Click the Sortable Data Table link")
+    public SortableDataTablesPage clickSortableDataTablesLink() {
+        sortableDataTablesLink.click();
+        return PageFactory.newInstance(SortableDataTablesPage.class);
+    }
 }
