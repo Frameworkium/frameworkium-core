@@ -50,11 +50,8 @@ public class TheInternetExampleTests extends BaseTest {
         // Navigate to the checkboxes page
         CheckboxesPage checkboxesPage = WelcomePage.open().then().clickCheckboxesLink();
 
-        // Set both checkboxes to checked
-        // checkboxesPage.checkAllCheckboxes();
-
         // Set all checkboxes to checked via alternative method
-        checkboxesPage.checkAllCheckboxes2();
+        checkboxesPage.checkAllCheckboxes();
 
         // Assert that all checkboxes are checked
         assertThat(checkboxesPage.getAllCheckboxCheckedStatus()).named("check status of checkboxes").doesNotContain(
