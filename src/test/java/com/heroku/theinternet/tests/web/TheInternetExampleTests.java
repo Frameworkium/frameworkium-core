@@ -30,8 +30,8 @@ import com.heroku.theinternet.pages.web.SecureFileDownloadPage;
 import com.heroku.theinternet.pages.web.SortableDataTablesPage;
 import com.heroku.theinternet.pages.web.WelcomePage;
 
-public class TheInternetHerokuWebTest extends BaseTest {
-
+public class TheInternetExampleTests extends BaseTest {
+    
     @Issue("HEROKU-1")
     @Test(description = "Basic Auth")
     public void basicAuth() {
