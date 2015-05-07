@@ -17,7 +17,7 @@ import com.saucelabs.testng.SauceOnDemandTestListener;
 
 public class SauceLabsListener extends SauceOnDemandTestListener {
 
-    private Logger logger = LogManager.getLogger(ScreenshotListener.class);
+    private Logger logger = LogManager.getLogger(SauceLabsListener.class);
     private boolean isRunningOnSauceLabs = Sauce.isDesired();
 
     @Override
