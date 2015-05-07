@@ -59,6 +59,7 @@ public class AllureProperties {
                 props.setProperty("allure.issues.tracker.pattern", JIRA_URL.getValue() + "/browse/%s");
             }
 
+            props.setProperty("UserAgent", BaseTest.userAgent);
             props.store(fos, "See https://github.com/allure-framework/allure-core/wiki/Environment");
 
             fos.close();

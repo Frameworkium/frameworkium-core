@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -46,6 +47,8 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     private static Logger logger = LogManager.getLogger(BaseTest.class);
 
+    public static String userAgent;
+    
     @BeforeSuite(alwaysRun = true)
     public static void instantiateDriverObject() {
         driver = new ThreadLocal<WebDriverWrapper>() {
@@ -93,6 +96,11 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     @BeforeMethod(alwaysRun = true)
+    public static void setUserAgent() {
+        userAgent = getUserAgent();
+    }
+    
+    @BeforeMethod(alwaysRun = true)
     public void initialiseNewScreenshotCapture(Method testMethod) {
         if (ScreenshotCapture.isRequired()) {
             Issue issueAnnotation = testMethod.getAnnotation(Issue.class);
@@ -124,6 +132,18 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         return (sessionId == null) ? null : sessionId.toString();
     }
 
+    public static String getUserAgent() {
+        String ua = StringUtils.EMPTY;
+        try {
+            ua = (String) getDriver().executeScript("return navigator.userAgent;");
+        }
+        catch (Exception e) {
+            ua = "Unable to fetch UserAgent";
+        }
+        logger.debug("User agent is: '" + ua + "'");
+        return ua;
+    }
+    
     /** @return the {@link SauceOnDemandAuthentication} instance containing the Sauce username/access key */
     @Override
     public SauceOnDemandAuthentication getAuthentication() {
