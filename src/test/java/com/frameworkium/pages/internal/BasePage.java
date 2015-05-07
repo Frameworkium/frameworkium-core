@@ -94,33 +94,15 @@ public abstract class BasePage<T extends BasePage<T>> {
                                 logger.info("Caught StaleElementReferenceException");
                                 tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady();
                                 wait.until(ExpectedConditions.visibilityOfAllElements((List<WebElement>) obj));
+                            } catch (ClassCastException ccex) {
+                                logger.debug("Caught ClassCastException - will try to get the first object in the List instead");
+                                obj = ((List<Object>) obj).get(0);
+                                waitForObjectToBeVisible(obj);
                             }
                         }
                         //Otherwise, it's a single object - HtmlElement, WebElement or TypifiedElement
                         else {
-                            // Checks for @Visible tags inside the HtmlElement
-                            if (obj instanceof HtmlElement) {
-                                waitForExpectedVisibleElements(obj);
-                            }
-        
-                            WebElement element = null;
-                            if (obj instanceof TypifiedElement) {
-                                element = ((TypifiedElement) obj).getWrappedElement();
-                            } else if (obj instanceof WebElement) {
-                                element = (WebElement) obj;
-                            } else {
-                                throw new IllegalArgumentException(
-                                        "Only elements of type TypifiedElement, WebElement or List<WebElement> are supported by @Visible.");
-                            }
-        
-                            // Retries when an element is looked up before the previous page has unloaded or before doc ready
-                            try {
-                                wait.until(ExpectedConditions.visibilityOf(element));
-                            } catch (StaleElementReferenceException serex) {
-                                logger.info("Caught StaleElementReferenceException");
-                                tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady();
-                                wait.until(ExpectedConditions.visibilityOf(element));
-                            }
+                            waitForObjectToBeVisible(obj);
                         }
                     }
                 }
@@ -131,6 +113,34 @@ public abstract class BasePage<T extends BasePage<T>> {
             }
         }
     }
+    
+    private void waitForObjectToBeVisible(Object obj) throws IllegalArgumentException, IllegalAccessException {
+        // Checks for @Visible tags inside the HtmlElement
+        if (obj instanceof HtmlElement) {
+            logger.debug("Checking for visible elements inside an HtmlElement Component");
+            waitForExpectedVisibleElements(obj);
+        }
+
+        WebElement element = null;
+        if (obj instanceof TypifiedElement) {
+            element = ((TypifiedElement) obj).getWrappedElement();
+        } else if (obj instanceof WebElement) {
+            element = (WebElement) obj;
+        } else {
+            throw new IllegalArgumentException(
+                    "Only elements of type TypifiedElement, WebElement or List<WebElement> are supported by @Visible.");
+        }
+
+        // Retries when an element is looked up before the previous page has unloaded or before doc ready
+        try {
+            wait.until(ExpectedConditions.visibilityOf(element));
+        } catch (StaleElementReferenceException serex) {
+            logger.info("Caught StaleElementReferenceException");
+            tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady();
+            wait.until(ExpectedConditions.visibilityOf(element));
+        }
+    }
+    
     
     private void tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady() {
         for (int tries = 0; tries < 3; tries++) {

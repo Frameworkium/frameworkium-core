@@ -31,28 +31,28 @@ public class SortableDataTablesPage extends BasePage<SortableDataTablesPage> {
     private Table table2;
 
     
-    @Step("Get table 1 column '{0}' contents")
+    @Step("Get table 1 column {0} contents")
     public List<String> getTable1ColumnContents(String colHeader) {
         return getColumnContents(table1, colHeader);
     }
     
-    @Step("Get table 2 column '{0}' contents")
+    @Step("Get table 2 column {0} contents")
     public List<String> getTable2ColumnContents(String colHeader) {
         return getColumnContents(table2, colHeader);
     }
     
-    @Step("Sort table 2 by column with header '{0}'")
+    @Step("Sort table 2 by column with header {0}")
     public SortableDataTablesPage sortTable2ByColumnName(String colHeader) { 
         sortTableByColumnName(table2, colHeader);
         return this;
     }
     
-    @Step("Sort table ({0}) by column name '{1}'")
+    @Step("Sort table {0} by column name {1}")
     private void sortTableByColumnName(Table table, String colHeader) {
         table.getHeadings().get(table.getHeadingsAsString().indexOf(colHeader)).click();
     }
     
-    @Step("Get column contents of column '{1}' in table '{0}'")
+    @Step("Get column contents of column {1} in table {0}")
     private List<String> getColumnContents(Table table, String colHeader) {
         //We should be able to use the built in methods to achieve this, but
         //because the table contains a blank row, the methods fail.
