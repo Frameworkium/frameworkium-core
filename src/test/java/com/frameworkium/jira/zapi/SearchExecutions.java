@@ -48,8 +48,8 @@ public class SearchExecutions {
         List<Integer> list = new ArrayList<Integer>();
         List<Integer> tempList = jsonPath.getList(path);
 
-        if (SystemProperty.JIRA_CYCLE_REGEX.isSpecified()) {
-            String jiraCycleRegEx = SystemProperty.JIRA_CYCLE_REGEX.getValue();
+        if (SystemProperty.ZAPI_CYCLE_REGEX.isSpecified()) {
+            String jiraCycleRegEx = SystemProperty.ZAPI_CYCLE_REGEX.getValue();
             List<String> cycleNames = jsonPath.getList("executions.cycleName");
             for (int i = 0; i < cycleNames.size(); i++) {
                 if (cycleNames.get(i).contains(jiraCycleRegEx)) {

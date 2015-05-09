@@ -15,7 +15,7 @@ public enum SystemProperty {
     BROWSER_STACK("browserStack"),
     JIRA_URL("jiraURL"),
     ZAPI_RESULT_VERSION("zapiResultVersion"),
-    JIRA_CYCLE_REGEX("jiraCycleRegEx"),
+    ZAPI_CYCLE_REGEX("zapiCycleRegEx"),
     JQL_QUERY("jqlQuery"),
     SUT_NAME("sutName"),
     SUT_VERSION("sutVersion"),
