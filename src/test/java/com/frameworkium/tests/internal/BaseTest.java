@@ -19,6 +19,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
 
 import ru.yandex.qatools.allure.annotations.Issue;
+import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import com.frameworkium.capture.ScreenshotCapture;
 import com.frameworkium.config.DriverType;
@@ -103,8 +104,14 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     @BeforeMethod(alwaysRun = true)
     public void initialiseNewScreenshotCapture(Method testMethod) {
         if (ScreenshotCapture.isRequired()) {
-            Issue issueAnnotation = testMethod.getAnnotation(Issue.class);
-            String testID = issueAnnotation.value();
+            String testID = StringUtils.EMPTY;
+            try {
+                Issue issueAnnotation = testMethod.getAnnotation(Issue.class);
+                testID = issueAnnotation.value();
+            } catch (NullPointerException e) {
+                TestCaseId testCaseIdAnnotation = testMethod.getAnnotation(TestCaseId.class);
+                testID = testCaseIdAnnotation.value();
+            }
             capture.set(new ScreenshotCapture(testID, driver.get()));
         }
     }

@@ -15,6 +15,7 @@ import org.testng.IMethodInterceptor;
 import org.testng.ITestContext;
 
 import ru.yandex.qatools.allure.annotations.Issue;
+import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import com.frameworkium.config.DriverType;
 import com.frameworkium.jira.api.SearchIssues;
@@ -49,6 +50,11 @@ public class MethodInterceptor implements IMethodInterceptor {
                 Issue issue = instance.getMethod().getConstructorOrMethod().getMethod().getAnnotation(Issue.class);
                 if (null != issue) {
                     String issueKey = issue.value();
+                    testMethods.put(issueKey, instance);
+                }
+                TestCaseId testCaseId = instance.getMethod().getConstructorOrMethod().getMethod().getAnnotation(TestCaseId.class);
+                if (null == issue && null != testCaseId) {
+                    String issueKey = testCaseId.value();
                     testMethods.put(issueKey, instance);
                 }
             }
