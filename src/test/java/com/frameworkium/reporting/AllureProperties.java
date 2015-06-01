@@ -71,8 +71,9 @@ public class AllureProperties {
             if(System.getenv("BUILD_URL") != null) {
                 props.setProperty("Jenkins build URL", System.getenv("BUILD_URL"));
             }
-            props.setProperty("UserAgent", BaseTest.userAgent);
-            
+            if(BaseTest.userAgent != null) {
+                props.setProperty("UserAgent", BaseTest.userAgent);
+            }
             
             props.store(fos, "See https://github.com/allure-framework/allure-core/wiki/Environment");
 
