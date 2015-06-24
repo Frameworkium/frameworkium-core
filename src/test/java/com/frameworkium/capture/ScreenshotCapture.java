@@ -26,6 +26,11 @@ public class ScreenshotCapture {
 
     private String executionID;
 
+    //Uncomment if needing to use with a proxy
+    //static {
+    //    RestAssured.proxy("1.2.3.4",8080);
+    //}
+
     public ScreenshotCapture(String testID, WebDriver webdriver) {
         initExecution(new CreateExecution(testID, getNode(webdriver)));
     }
