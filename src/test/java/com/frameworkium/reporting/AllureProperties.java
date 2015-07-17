@@ -11,7 +11,7 @@ import static com.frameworkium.config.SystemProperty.JIRA_RESULT_TRANSITION;
 import static com.frameworkium.config.SystemProperty.JIRA_URL;
 import static com.frameworkium.config.SystemProperty.PLATFORM;
 import static com.frameworkium.config.SystemProperty.PLATFORM_VERSION;
-import static com.frameworkium.config.SystemProperty.ZAPI_RESULT_VERSION;
+import static com.frameworkium.config.SystemProperty.RESULT_VERSION;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -56,8 +56,8 @@ public class AllureProperties {
             if (PLATFORM_VERSION.isSpecified()) {
                 props.setProperty("Platform Version", PLATFORM_VERSION.getValue());
             }
-            if (ZAPI_RESULT_VERSION.isSpecified()) {
-                props.setProperty("Jira Result Version", ZAPI_RESULT_VERSION.getValue());
+            if (RESULT_VERSION.isSpecified()) {
+                props.setProperty("Jira Result Version", RESULT_VERSION.getValue());
             }
             if (JIRA_URL.isSpecified()) {
                 props.setProperty("allure.issues.tracker.pattern", JIRA_URL.getValue() + "/browse/%s");

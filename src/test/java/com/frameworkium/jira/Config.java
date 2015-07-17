@@ -38,5 +38,13 @@ public class Config {
         public static final String[] JIRA_TRANSITION_BLOCKED = { "Done" };
     }
     
+    public static class SPIRA_STATUS {
+        //These should correspond to your field options if logging a test result to a field
+        public static final int SPIRA_STATUS_PASS = 2;
+        public static final int SPIRA_STATUS_FAIL = 1;
+        public static final int SPIRA_STATUS_WIP = 4;
+        public static final int SPIRA_STATUS_BLOCKED = 5;
+    }
+    
 
 }
