@@ -56,6 +56,11 @@ public class WelcomePage extends BasePage<WelcomePage> {
     @Name("Hovers Link")
     @FindBy(linkText = "Hovers")
     private Link hoversLink;
+    
+    @Visible
+    @Name("Frames Link")
+    @FindBy(linkText = "Frames")
+    private Link framesLink;
 
     @Visible
     @Name("JQuery UI Link")
@@ -137,7 +142,13 @@ public class WelcomePage extends BasePage<WelcomePage> {
         formAuthenticationLink.click();
         return PageFactory.newInstance(FormAuthenticationPage.class);
     }
-
+    
+    @Step("Click the Frames link")
+    public FramesPage clickFramesLink() {
+        framesLink.click();
+        return PageFactory.newInstance(FramesPage.class);
+    }
+    
     @Step("Click the Hovers link")
     public HoversPage clickHoversLink() {
         hoversLink.click();

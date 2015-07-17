@@ -21,7 +21,9 @@ import com.heroku.theinternet.pages.web.FileUploadPage;
 import com.heroku.theinternet.pages.web.FileUploadSuccessPage;
 import com.heroku.theinternet.pages.web.FormAuthenticationPage;
 import com.heroku.theinternet.pages.web.FormAuthenticationSuccessPage;
+import com.heroku.theinternet.pages.web.FramesPage;
 import com.heroku.theinternet.pages.web.HoversPage;
+import com.heroku.theinternet.pages.web.IFramePage;
 import com.heroku.theinternet.pages.web.JQueryUIMenuPage;
 import com.heroku.theinternet.pages.web.JQueryUIPage;
 import com.heroku.theinternet.pages.web.JavaScriptAlertsPage;
@@ -160,6 +162,31 @@ public class TheInternetExampleTests extends BaseTest {
         assertThat(successPage.getSource()).contains("Welcome to the Secure Area");
     }
 
+
+    @Issue("HEROKU-15")
+    @Test(description = "iFrames test")
+    public void iframes() {
+
+        //Navigate to the frames page
+        FramesPage framesPage = WelcomePage.open().then().clickFramesLink();
+
+        //Browse to iframes page
+        IFramePage iframePage = framesPage.clickIFrameLink();
+
+        //Clear text
+        iframePage.clearTextInEditor();
+        
+        //Enter some text in the editor
+        iframePage.enterTextInEditor("hellllllllo");
+        
+        //Assert that it entered it correctly
+        assertThat(iframePage.getTextInEditor()).isEqualTo("hellllllllo");
+        
+        //Enter some bold text in the editor
+        iframePage.enterBoldTextInEditor(" some more text");
+        
+    }
+    
     @Issue("HEROKU-9")
     @Test(description = "Hovers")
     public void hovers() {
