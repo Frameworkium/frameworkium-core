@@ -48,8 +48,9 @@ public class ScreenshotCapture {
     private void sendScreenshot(CreateScreenshot createScreenshotmessage) {
 
         String uri = SystemProperty.CAPTURE_URL.getValue() + "/screenshot";
+
         RestAssured.given().contentType(ContentType.JSON).body(createScreenshotmessage).when()
-                .post(uri).then().log().headers().statusCode(201);
+                .post(uri);
     }
 
     public static boolean isRequired() {
@@ -59,8 +60,9 @@ public class ScreenshotCapture {
     private void initExecution(CreateExecution createExecutionMessage) {
 
         String uri = SystemProperty.CAPTURE_URL.getValue() + "/execution";
+
         executionID =
-                RestAssured.given().log().body().contentType(ContentType.JSON)
+                RestAssured.given().contentType(ContentType.JSON)
                         .body(createExecutionMessage).when().post(uri).then().statusCode(201)
                         .extract().path("executionID").toString();
         logger.info("executionID = " + executionID);
@@ -76,7 +78,7 @@ public class ScreenshotCapture {
                 String url =
                         gridURL.getProtocol() + "://" + gridURL.getHost() + ":" + gridURL.getPort()
                                 + "/grid/api/testsession?session=" + r.getSessionId();
-                node = RestAssured.post(url).then().log().all().and().extract().path("proxyId");
+                node = RestAssured.post(url).then().extract().path("proxyId");
             } catch (Throwable t) {
                 logger.warn("Failed to get node address of remote web driver", t);
             }
