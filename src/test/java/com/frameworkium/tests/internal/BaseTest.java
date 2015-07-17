@@ -72,6 +72,17 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
                 return null;
             }
         };
+        if (ScreenshotCapture.isRequired()) {
+            String testID = "N/S";
+            try {
+                testID= testMethod.getAnnotation(Issue.class).value();
+            } catch (NullPointerException e) {}
+            try {
+                testID= testMethod.getAnnotation(TestCaseId.class).value();
+            } catch (NullPointerException e) {}
+            
+            capture.set(new ScreenshotCapture(testID, driver.get()));
+        }
     }
 
     public static WebDriverWrapper getDriver() {
@@ -104,14 +115,14 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     @BeforeMethod(alwaysRun = true)
     public void initialiseNewScreenshotCapture(Method testMethod) {
         if (ScreenshotCapture.isRequired()) {
-            String testID = StringUtils.EMPTY;
+            String testID = "N/S";
             try {
-                Issue issueAnnotation = testMethod.getAnnotation(Issue.class);
-                testID = issueAnnotation.value();
-            } catch (NullPointerException e) {
-                TestCaseId testCaseIdAnnotation = testMethod.getAnnotation(TestCaseId.class);
-                testID = testCaseIdAnnotation.value();
-            }
+                testID= testMethod.getAnnotation(Issue.class).value();
+            } catch (NullPointerException e) {}
+            try {
+                testID= testMethod.getAnnotation(TestCaseId.class).value();
+            } catch (NullPointerException e) {}
+            
             capture.set(new ScreenshotCapture(testID, driver.get()));
         }
     }

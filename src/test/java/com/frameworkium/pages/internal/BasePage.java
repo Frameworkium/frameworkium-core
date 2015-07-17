@@ -54,7 +54,7 @@ public abstract class BasePage<T extends BasePage<T>> {
             try{
                 AllureLogger.logToAllure("Page '" + this.getClass().getName() + "' successfully loaded");
                 if(SystemProperty.CAPTURE_URL.isSpecified()) 
-                    BaseTest.getCapture().takeAndSendScreenshot(new Command("load",null,null), driver, null);
+                    BaseTest.getCapture().takeAndSendScreenshot(new Command("load",null,this.getClass().getName()), driver, null);
             } catch (Exception e){
                 logger.error("Error logging page load, but loaded successfully");
             }

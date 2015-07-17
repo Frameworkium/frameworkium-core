@@ -220,7 +220,7 @@ public class ResultLoggerListener implements ITestListener {
             comment.append(System.lineSeparator());
         }
         if(CAPTURE_URL.isSpecified()) {
-            comment.append("Capture: " + BaseTest.getCapture().toString());
+        //    comment.append("Capture: " + BaseTest.getCapture().toString());
             comment.append(System.lineSeparator());
         }
         comment.append("OS: " + this.getOSInfo());
