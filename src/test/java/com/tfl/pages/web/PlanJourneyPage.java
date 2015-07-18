@@ -9,13 +9,8 @@ import ru.yandex.qatools.htmlelements.annotations.Name;
 import com.frameworkium.pages.internal.BasePage;
 import com.frameworkium.pages.internal.PageFactory;
 import com.frameworkium.pages.internal.Visible;
-import com.tfl.pages.web.components.NavBar;
 
 public class PlanJourneyPage extends BasePage<PlanJourneyPage> {
-
-    @Name("NavBar")
-    @Visible
-    private NavBar navBar;
 
     @Name("From Field")
     @Visible
@@ -41,8 +36,5 @@ public class PlanJourneyPage extends BasePage<PlanJourneyPage> {
         planJourneyButton.click();
         return PageFactory.newInstance(JourneyPlannerResultsPage.class);
     }
-    
-    public NavBar theNavBar() {
-        return navBar;
-    }
+
 }
