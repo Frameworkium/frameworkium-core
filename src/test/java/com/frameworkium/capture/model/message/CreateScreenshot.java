@@ -13,14 +13,20 @@ public class CreateScreenshot {
     private String errorMessage;
     private String screenshotBase64;
 
+    // transient to prevent logger getting serialised to JSON!
     private transient Logger logger = LogManager.getLogger(CreateScreenshot.class);
 
-    public CreateScreenshot(String executionID, Command command, String url, String errorMessage,
-            String screenshotBase64) {
+    public CreateScreenshot(
+            String executionID, Command command, String url,
+            String errorMessage, String screenshotBase64) {
 
-        logger.debug(String.format("Creating screenshot: executionID = '%s', Command.action = '%s', "
-                + "url = '%s', errorMessage = '%s', screenshotBase64.length = %d",
-                executionID, command.getAction(), url, errorMessage, screenshotBase64.length()));
+        logger.debug(
+                String.format("Creating screenshot: executionID='%s', " +
+                                "Command.action='%s', url='%s', " +
+                                "errorMessage='%s', screenshotBase64.length=%d",
+                        executionID,
+                        command.getAction(), url,
+                        errorMessage, screenshotBase64.length()));
         this.executionID = executionID;
         this.command = command;
         this.url = url;

@@ -7,24 +7,25 @@ import org.openqa.selenium.WebElement;
 
 public class ElementHighlighter {
     private JavascriptExecutor js;
-    private WebElement lastElem = null;
+    private WebElement previousElem;
 
     public ElementHighlighter(WebDriver driver) {
         js = (JavascriptExecutor) driver;
     }
 
     public void highlightElement(WebElement elem) {
-        // remember the new element
-        lastElem = elem;
+
+        previousElem = elem; // remember the new element
         js.executeScript("arguments[0].style.border='3px solid red'", elem);
     }
 
-    public void unhighlightLast() {
+    public void unhighlightPrevious() {
+
         try {
-            // if there already is a highlighted element, unhighlight it
-            js.executeScript("arguments[0].style.border='none'", lastElem);
+            // unhighlight the previously highlighted element
+            js.executeScript("arguments[0].style.border='none'", previousElem);
         } catch (StaleElementReferenceException ignored) {
-            // the page got reloaded, the element isn't there
+            // the page was reloaded, the element isn't there
         }
     }
 }

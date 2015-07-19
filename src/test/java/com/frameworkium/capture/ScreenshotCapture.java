@@ -35,7 +35,12 @@ public class ScreenshotCapture {
         initExecution(new CreateExecution(testID, getNode(webdriver)));
     }
 
-    public void takeAndSendScreenshot(Command command, WebDriver webdriver, String errorMessage) {
+    public static boolean isRequired() {
+        return SystemProperty.CAPTURE_URL.isSpecified() && !DriverType.isNative();
+    }
+
+    public void takeAndSendScreenshot(
+            Command command, WebDriver webdriver, String errorMessage) {
 
         String url = DriverType.isNative() ? "" : webdriver.getCurrentUrl();
         TakesScreenshot ts = ((TakesScreenshot) webdriver);
@@ -45,27 +50,25 @@ public class ScreenshotCapture {
         sendScreenshot(message);
     }
 
-    private void sendScreenshot(CreateScreenshot createScreenshotmessage) {
+    private void sendScreenshot(CreateScreenshot createScreenshotMessage) {
 
         String uri = SystemProperty.CAPTURE_URL.getValue() + "/screenshot";
 
-        RestAssured.given().contentType(ContentType.JSON).body(createScreenshotmessage).when()
+        RestAssured.given().contentType(ContentType.JSON)
+                .body(createScreenshotMessage)
                 .post(uri);
-    }
-
-    public static boolean isRequired() {
-        return SystemProperty.CAPTURE_URL.isSpecified() && !DriverType.isNative();
     }
 
     private void initExecution(CreateExecution createExecutionMessage) {
 
-        String uri = SystemProperty.CAPTURE_URL.getValue() + "/execution";
+        String uri = SystemProperty.CAPTURE_URL.getValue() + "/executions";
 
         executionID =
                 RestAssured.given().contentType(ContentType.JSON)
-                        .body(createExecutionMessage).when().post(uri).then().statusCode(201)
+                        .body(createExecutionMessage).post(uri)
+                        .then().statusCode(201)
                         .extract().path("executionID").toString();
-        logger.info("executionID = " + executionID);
+        logger.debug("executionID=" + executionID);
     }
 
     private String getNode(WebDriver webdriver) {
@@ -76,8 +79,9 @@ public class ScreenshotCapture {
                 RemoteWebDriver r = ((WebDriverWrapper) webdriver).getWrappedRemoteWebDriver();
                 URL gridURL = new URL(SystemProperty.GRID_URL.getValue());
                 String url =
-                        gridURL.getProtocol() + "://" + gridURL.getHost() + ":" + gridURL.getPort()
-                                + "/grid/api/testsession?session=" + r.getSessionId();
+                        String.format("%s://%s:%d/grid/api/testsession?session=%s",
+                                gridURL.getProtocol(), gridURL.getHost(),
+                                gridURL.getPort(), r.getSessionId());
                 node = RestAssured.post(url).then().extract().path("proxyId");
             } catch (Throwable t) {
                 logger.warn("Failed to get node address of remote web driver", t);
@@ -91,5 +95,4 @@ public class ScreenshotCapture {
         }
         return node;
     }
-
 }

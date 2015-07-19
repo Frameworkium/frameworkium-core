@@ -4,7 +4,6 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.WebDriverEventListener;
@@ -33,38 +32,41 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
         takeScreenshotAndSendToCapture(command, driver);
     }
 
-    private void takeScreenshotAndSendToCaptureWithException(String action, WebDriver driver, Throwable thrw) {
+    private void takeScreenshotAndSendToCaptureWithException(
+            String action, WebDriver driver, Throwable thrw) {
         Command command = new Command(action, "n/a", "n/a");
-        BaseTest.getCapture().takeAndSendScreenshot(command, driver, thrw.getMessage() + "\n" + ExceptionUtils.getStackTrace(thrw));
+        BaseTest.getCapture().takeAndSendScreenshot(
+                command, driver,
+                thrw.getMessage() + "\n" + ExceptionUtils.getStackTrace(thrw));
     }
 
     private void sendFinalScreenshot(ITestResult result, String action) {
-        WebDriverWrapper webDriver = BaseTest.getDriver();
-        Throwable thrw = result.getThrowable();
-        if (null != thrw) {
-            takeScreenshotAndSendToCaptureWithException(action, webDriver, thrw);
-        } else {
-            Command command = new Command(action, "n/a", "n/a");
-            takeScreenshotAndSendToCapture(command, webDriver);
+        if (ScreenshotCapture.isRequired()) {
+            WebDriverWrapper webDriver = BaseTest.getDriver();
+            Throwable thrw = result.getThrowable();
+            if (null != thrw) {
+                takeScreenshotAndSendToCaptureWithException(
+                        action, webDriver, thrw);
+            } else {
+                Command command = new Command(action, "n/a", "n/a");
+                takeScreenshotAndSendToCapture(command, webDriver);
+            }
         }
     }
 
-    private void highlightElementTakeScreenshotAndSendToCapture(String action, WebDriver driver, WebElement element) {
-        logger.debug(String.format("highlightElementTakeScreenshotAndSendToCapture: action=%s", action));
+    private void highlightElementTakeScreenshotAndSendToCapture(
+            String action, WebDriver driver, WebElement element) {
+        logger.debug("highlightElementTakeScreenshotSendToCapture: action="+ action);
         ElementHighlighter highlighter = null;
-        try {
-            if (!DriverType.isNative()) {
-                logger.debug("Trying to highlight the element");
-                highlighter = new ElementHighlighter(driver);
-                highlighter.highlightElement(element);
-            }
-            Command command = new Command(action, element);
-            takeScreenshotAndSendToCapture(command, driver);
-            if (null != highlighter) {
-                highlighter.unhighlightLast();
-            }
-        } catch (StaleElementReferenceException serex) {
-            logger.debug("Caught StaleElementReferenceException when trying to (un)highlight an element.");
+        if (!DriverType.isNative()) {
+            logger.debug("Trying to highlight the element");
+            highlighter = new ElementHighlighter(driver);
+            highlighter.highlightElement(element);
+        }
+        Command command = new Command(action, element);
+        takeScreenshotAndSendToCapture(command, driver);
+        if (null != highlighter) {
+            highlighter.unhighlightPrevious();
         }
     }
 
@@ -104,28 +106,20 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     @Override
     public void onTestSuccess(ITestResult result) {
-        if (ScreenshotCapture.isRequired()) {
-            sendFinalScreenshot(result, "pass");
-        }
+        sendFinalScreenshot(result, "pass");
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
-        if (ScreenshotCapture.isRequired()) {
-            sendFinalScreenshot(result, "fail");
-        }
+        sendFinalScreenshot(result, "fail");
     }
 
     @Override
     public void onTestSkipped(ITestResult result) {
-        if (ScreenshotCapture.isRequired()) {
-            sendFinalScreenshot(result, "skip");
-        }
+        sendFinalScreenshot(result, "skip");
     }
 
-    /*
-     * Methods we don't really want screenshots for.
-     */
+    /* Methods we don't really want screenshots for. */
 
     @Override
     public void onException(Throwable thrw, WebDriver driver) {}
