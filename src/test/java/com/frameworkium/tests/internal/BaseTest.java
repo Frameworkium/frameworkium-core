@@ -105,16 +105,15 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     @BeforeMethod(alwaysRun = true)
     public void initialiseNewScreenshotCapture(Method testMethod) {
         if (ScreenshotCapture.isRequired()) {
-            String testID = "N/S";
+            String testID = "n/a";
             try {
-                testID= testMethod.getAnnotation(Issue.class).value();
+                testID = testMethod.getAnnotation(Issue.class).value();
             } catch (NullPointerException e) {}
             try {
-                testID= testMethod.getAnnotation(TestCaseId.class).value();
+                testID = testMethod.getAnnotation(TestCaseId.class).value();
             } catch (NullPointerException e) {}
             
             capture.set(new ScreenshotCapture(testID, driver.get()));
-       
         }
     }
 
@@ -142,11 +141,10 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     public static String getUserAgent() {
-        String ua = StringUtils.EMPTY;
+        String ua;
         try {
             ua = (String) getDriver().executeScript("return navigator.userAgent;");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             ua = "Unable to fetch UserAgent";
         }
         logger.debug("User agent is: '" + ua + "'");

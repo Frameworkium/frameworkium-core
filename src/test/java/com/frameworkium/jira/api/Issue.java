@@ -22,7 +22,7 @@ public class Issue {
     private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername, Config.jiraPassword);
     private final static String jiraAPIURI = JIRA_URL.getValue() + Config.jiraRestURI;
 
-    protected final String issueKey; // Jira Key e.g. KT-123
+    private final String issueKey; // Jira Key e.g. KT-123
 
     private final static Logger logger = LogManager.getLogger(Issue.class);
 

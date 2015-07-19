@@ -28,19 +28,24 @@ public abstract class BasePage<T extends BasePage<T>> {
 
     @Inject
     protected WebDriver driver;
-
     @Inject
     protected WebDriverWait wait;
 
     protected final Logger logger = LogManager.getLogger(this);
 
-    /** @return Returns the current page object. Useful for e.g. MyPage.get().then().doSomething(); */
+    /**
+     * @return Returns the current page object.
+     * Useful for e.g. MyPage.get().then().doSomething();
+     */
     @SuppressWarnings("unchecked")
     public T then() {
         return (T) this;
     }
 
-    /** @return Returns the current page object. Useful for e.g. MyPage.get().then().with().aComponent().clickHome(); */
+    /**
+     * @return Returns the current page object.
+     * Useful for e.g. MyPage.get().then().with().aComponent().clickHome();
+     */
     @SuppressWarnings("unchecked")
     public T with() {
         return (T) this;
@@ -51,11 +56,11 @@ public abstract class BasePage<T extends BasePage<T>> {
         HtmlElementLoader.populatePageObject(this, driver);
         try {
             waitForExpectedVisibleElements(this);
-            try{
+            try {
                 AllureLogger.logToAllure("Page '" + this.getClass().getName() + "' successfully loaded");
-                if(SystemProperty.CAPTURE_URL.isSpecified()) 
-                    BaseTest.getCapture().takeAndSendScreenshot(new Command("load",null,this.getClass().getName()), driver, null);
-            } catch (Exception e){
+                if (SystemProperty.CAPTURE_URL.isSpecified())
+                    BaseTest.getCapture().takeAndSendScreenshot(new Command("load", null, this.getClass().getName()), driver, null);
+            } catch (Exception e) {
                 logger.error("Error logging page load, but loaded successfully");
             }
         } catch (IllegalArgumentException | IllegalAccessException e) {
@@ -69,11 +74,11 @@ public abstract class BasePage<T extends BasePage<T>> {
         return get();
     }
 
-    private void waitForExpectedVisibleElements(Object pageObject) throws IllegalArgumentException,
-    IllegalAccessException {
+    private void waitForExpectedVisibleElements(Object pageObject)
+            throws IllegalArgumentException, IllegalAccessException {
         waitForExpectedVisibleElements(pageObject, StringUtils.EMPTY);
     }
-    
+
     @SuppressWarnings("unchecked")
     private void waitForExpectedVisibleElements(Object pageObject, String visibleGroupName) throws IllegalArgumentException,
             IllegalAccessException {
@@ -81,10 +86,10 @@ public abstract class BasePage<T extends BasePage<T>> {
             for (Annotation annotation : field.getDeclaredAnnotations()) {
                 if (annotation instanceof Visible) {
                     //If the group name matches, then check for visibility
-                    if(((Visible) annotation).value().equalsIgnoreCase(visibleGroupName)) {
+                    if (((Visible) annotation).value().equalsIgnoreCase(visibleGroupName)) {
                         field.setAccessible(true);
                         Object obj = field.get(pageObject);
-    
+
                         // This handles Lists of WebElements e.g. List<WebElement>
                         if (obj instanceof List) {
                             //TODO - where to handle List<Link>, for example?
@@ -100,48 +105,45 @@ public abstract class BasePage<T extends BasePage<T>> {
                                 waitForObjectToBeVisible(obj);
                             }
                         }
-                        //Otherwise, it's a single object - HtmlElement, WebElement or TypifiedElement
+                        // Otherwise, it's a single object
+                        // - HtmlElement, WebElement or TypifiedElement
                         else {
                             waitForObjectToBeVisible(obj);
                         }
                     }
                 }
-            
-                
-                
-
             }
         }
     }
-    
+
     private void waitForObjectToBeVisible(Object obj) throws IllegalArgumentException, IllegalAccessException {
-        // Checks for @Visible tags inside the HtmlElement
+        // Checks for @Visible tags inside an HtmlElement Component
         if (obj instanceof HtmlElement) {
-            logger.debug("Checking for visible elements inside an HtmlElement Component");
+            logger.debug("Checking for visible elements inside HtmlElement");
             waitForExpectedVisibleElements(obj);
         }
 
-        WebElement element = null;
+        WebElement element;
         if (obj instanceof TypifiedElement) {
             element = ((TypifiedElement) obj).getWrappedElement();
         } else if (obj instanceof WebElement) {
             element = (WebElement) obj;
         } else {
             throw new IllegalArgumentException(
-                    "Only elements of type TypifiedElement, WebElement or List<WebElement> are supported by @Visible.");
+                    "Only elements of type TypifiedElement, WebElement or " +
+                            "List<WebElement> are supported by @Visible.");
         }
 
         // Retries when an element is looked up before the previous page has unloaded or before doc ready
         try {
             wait.until(ExpectedConditions.visibilityOf(element));
-        } catch (StaleElementReferenceException serex) {
+        } catch (StaleElementReferenceException e) {
             logger.info("Caught StaleElementReferenceException");
             tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady();
             wait.until(ExpectedConditions.visibilityOf(element));
         }
     }
-    
-    
+
     private void tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady() {
         for (int tries = 0; tries < 3; tries++) {
             Boolean documentReady = (Boolean) executeJS("return document.readyState == 'complete'");
@@ -161,14 +163,18 @@ public abstract class BasePage<T extends BasePage<T>> {
         return jsExecutor.executeScript(javascript);
     }
 
-    /** @return Returns the title of the web page */
+    /**
+     * @return Returns the title of the web page
+     */
     public String getTitle() {
         return driver.getTitle();
     }
 
-    /** @return Returns the source code of the current page */
+    /**
+     * @return Returns the source code of the current page
+     */
     public String getSource() {
         return driver.getPageSource();
     }
-    
+
 }

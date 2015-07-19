@@ -6,12 +6,11 @@ import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 import org.testng.SkipException;
-
 import ru.yandex.qatools.allure.annotations.Step;
 
 public class TestListener implements ITestListener {
 
-    static final Logger logger = LogManager.getLogger(TestListener.class);
+    private static final Logger logger = LogManager.getLogger(TestListener.class);
 
     @Override
     public void onTestStart(ITestResult result) {
@@ -43,19 +42,20 @@ public class TestListener implements ITestListener {
     }
 
     @Override
-    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {}
+    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
+    }
 
     @Override
-    public void onStart(ITestContext context) {}
+    public void onStart(ITestContext context) {
+    }
 
     @Override
-    public void onFinish(ITestContext context) {}
-    
+    public void onFinish(ITestContext context) {
+    }
+
     @Step("{0}")
-    private void stepLogger(String toLog)
-    {
+    private void stepLogger(String toLog) {
         logger.info(toLog);
     }
-    
-    
+
 }

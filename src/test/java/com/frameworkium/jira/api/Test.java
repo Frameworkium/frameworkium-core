@@ -21,7 +21,7 @@ public class Test {
     private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername, Config.jiraPassword);
     private final static String jiraAPIURI = JIRA_URL.getValue() + Config.jiraRestURI;
 
-    protected final String issueKey; // Jira Key e.g. KT-123
+    private final String issueKey; // Jira Key e.g. KT-123
 
     private final static Logger logger = LogManager.getLogger(Test.class);
 
@@ -35,7 +35,6 @@ public class Test {
         JSONObject setObj = new JSONObject();
         JSONArray setArr = new JSONArray();
         JSONObject valueObj = new JSONObject();
-
 
         try {
             obj.put("update", fieldObj);
@@ -51,12 +50,11 @@ public class Test {
         RestAssured.baseURI = jiraAPIURI;
         RestAssured.authentication = auth;
 
-        System.out.print(obj.toString());
-        
-        given().contentType("application/json").and().body(obj.toString()).then().put("/issue/" + issueKey);
+        given().contentType("application/json").and().body(obj.toString())
+                .then().put("/issue/" + issueKey);
     }
     
-    public static void addComment(final String issueKey, final String commentToAdd) {
+    public static void addComment(String issueKey, String commentToAdd) {
         JSONObject obj = new JSONObject();
         
         try {
@@ -68,10 +66,11 @@ public class Test {
         RestAssured.baseURI = jiraAPIURI;
         RestAssured.authentication = auth;
 
-        given().contentType("application/json").and().body(obj.toString()).then().post("/issue/" + issueKey + "/comment");
+        given().contentType("application/json").and().body(obj.toString())
+                .then().post("/issue/" + issueKey + "/comment");
     }
     
-    public static String getFieldId(final String fieldName) {
+    public static String getFieldId(String fieldName) {
         RestAssured.baseURI = jiraAPIURI;
         RestAssured.authentication = auth;
         
@@ -80,20 +79,23 @@ public class Test {
         return jsonPath.getString(String.format("find {it.name == '%s'}.id", fieldName));
     }
 
-    public static int getTransitionId(final String issueKey, final String transitionName) {
+    public static int getTransitionId(String issueKey, String transitionName) {
         RestAssured.baseURI = jiraAPIURI;
         RestAssured.authentication = auth;
         
-        JsonPath jsonPath = get("/issue/" + issueKey + "?expand=transitions.fields").andReturn().jsonPath();
-        return Integer.parseInt(jsonPath.getString(String.format("transitions.find {it -> it.name == '%s'}.id", transitionName)));
+        JsonPath jsonPath = get("/issue/" + issueKey + "?expand=transitions.fields")
+                .andReturn().jsonPath();
+        String jsonPathToTransitionId =String.format(
+                "transitions.find {it -> it.name == '%s'}.id", transitionName);
+        return Integer.parseInt(jsonPath.getString(jsonPathToTransitionId));
     }
     
-    public static void transitionIssue(final String issueKey, final String transitionName) {
+    public static void transitionIssue(String issueKey, String transitionName) {
         logger.debug("Transition name: " + transitionName);
         transitionIssue(issueKey, getTransitionId(issueKey,transitionName));
     }
     
-    public static void transitionIssue(final String issueKey, final int transitionId) {
+    public static void transitionIssue(String issueKey, int transitionId) {
         logger.debug("Transition id: " + transitionId);
         JSONObject obj = new JSONObject();
         JSONObject idObj = new JSONObject();
@@ -108,6 +110,7 @@ public class Test {
         RestAssured.baseURI = jiraAPIURI;
         RestAssured.authentication = auth;
 
-        given().contentType("application/json").and().body(obj.toString()).then().post("/issue/" + issueKey + "/transitions");
+        given().contentType("application/json").and().body(obj.toString())
+                .then().post("/issue/" + issueKey + "/transitions");
     }
 }
