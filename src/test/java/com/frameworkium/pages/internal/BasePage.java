@@ -140,16 +140,36 @@ public abstract class BasePage<T extends BasePage<T>> {
         } catch (StaleElementReferenceException e) {
             logger.info("Caught StaleElementReferenceException");
             tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady();
+            // If the below throws a StaleElementReferenceException try
+            // increasing the sleep time or count in:
+            // tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady()
             wait.until(ExpectedConditions.visibilityOf(element));
         }
     }
 
+
+    /**
+     * Will wait up to ~10 seconds for the document to be ready.
+     */
     private void tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady() {
-        for (int tries = 0; tries < 3; tries++) {
-            Boolean documentReady = (Boolean) executeJS("return document.readyState == 'complete'");
-            if (!documentReady) {
-                logger.warn("Caught StaleElementReferenceException");
-                tries--;
+        int notReadyCount = 0;
+        int readyCount = 0;
+        while (notReadyCount < 20 && readyCount < 3) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {}
+            boolean docReady = (boolean) executeJS(
+                    "return document.readyState == 'complete'");
+            if (docReady) {
+                readyCount++;
+                logger.info(String.format(
+                        "Document ready. Not ready %d times, ready %d times.",
+                        notReadyCount, readyCount));
+            } else {
+                notReadyCount++;
+                logger.warn(String.format(
+                        "Document not ready. Not ready %d times, ready %d times.",
+                        notReadyCount, readyCount));
             }
         }
     }
