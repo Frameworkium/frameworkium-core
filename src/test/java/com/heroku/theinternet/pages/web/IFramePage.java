@@ -22,9 +22,10 @@ public class IFramePage extends BasePage<IFramePage> {
     private WebElement boldButton;
     
     @Name("Wysiwyg editor")
-    //This is within the iframe so while it'll be visible
-    //when the page loads, it WILL NOT be visible within the
-    //driver context until we switchTo it - see below
+    //This is within the iframe so while it'll be physically visible
+    //when the page loads, it WILL NOT be 'visible' to the
+    //driver (ie selenium will not be able to 'see' it) until we
+    //switchTo it - see below
     @FindBy(id = "tinymce")
     private WebElement wysiwygTextBox;
     
