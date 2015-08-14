@@ -7,7 +7,7 @@ import com.heroku.theinternet.pages.web.WelcomePage;
 
 import org.testng.annotations.Test;
 
-public class TheInternetExampleTests extends BaseTest {
+public class TheInternetExampleTest extends BaseTest {
 
     @Test
     public void basicAuth() {
