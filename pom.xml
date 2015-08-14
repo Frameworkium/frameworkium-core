@@ -6,7 +6,7 @@
   <version>1.0.1</version>
 
   <name>Frameworkium-core</name>
-  <description>Frameworkium core code. Referenced by the frameworkium project, with example tests.</description>
+  <description>Frameworkium core code. Referenced by the com.frameworkium project, with example tests.</description>
   <url/>
   <inceptionYear/>
   <organization/>
@@ -150,7 +150,7 @@
 
   <profiles>
     <profile>
-      <id>frameworkium-core</id>
+      <id>com.frameworkium-core</id>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
