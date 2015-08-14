@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.frameworkium</groupId>
-  <artifactId>Frameworkium</artifactId>
+  <artifactId>Frameworkium-core</artifactId>
   <version>1.0.2</version>
 
   <name>Frameworkium-core</name>
