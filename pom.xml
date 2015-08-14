@@ -3,10 +3,10 @@
 
   <groupId>com.frameworkium</groupId>
   <artifactId>Frameworkium</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
 
-  <name>Frameworkium</name>
-  <description>A template designed to get up and running quickly with Selenium and Appium.</description>
+  <name>Frameworkium-core</name>
+  <description>Frameworkium core code. Referenced by the frameworkium project, with example tests.</description>
   <url/>
   <inceptionYear/>
   <organization/>
@@ -27,23 +27,6 @@
   <distributionManagement/>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <env.config>local</env.config>
-    <browser/>
-    <threads>1</threads>
-    <seleniumGridURL/>
-    <platform/>
-    <platformVersion/>
-    <deviceName/>
-    <browserVersion/>
-    <groups/>
-    <sauce/>
-    <browserStack/>
-    <build/>
-    <appPath/>
-    <jiraURL/>
-    <jiraResultVersion/>
-    <aspectj.version>1.8.5</aspectj.version>
     <allure.version>1.4.11</allure.version>
     <allure.issues.tracker.pattern/>
   </properties>
@@ -159,78 +142,5 @@
   <pluginRepositories/>
 
   <build/>
-  
-  <reporting>
-    <excludeDefaults>true</excludeDefaults>
-    <plugins>
-      <plugin>
-        <groupId>ru.yandex.qatools.allure</groupId>
-        <artifactId>allure-maven-plugin</artifactId>
-        <version>2.0</version>
-      </plugin>
-    </plugins>
-  </reporting>
 
-  <profiles>
-    <profile>
-      <id>selenium-tests</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.2</version>
-            <configuration>
-              <source>1.7</source>
-              <target>1.7</target>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.18.1</version>
-            <configuration>
-              <parallel>methods</parallel>
-              <threadCount>${threads}</threadCount>
-              <systemProperties>
-              <!-- TODO: Can we remove these? -->
-                <env.config>${env.config}</env.config>
-                <browser>${browser}</browser>
-                <screenshotDirectory>${project.build.directory}/screenshots</screenshotDirectory>
-                <gridURL>${seleniumGridURL}</gridURL>
-                <platform>${platform}</platform>
-                <platformVersion>${platformVersion}</platformVersion>
-                <browserVersion>${browserVersion}</browserVersion>
-                <device>${device}</device>
-                <sauce>${sauce}</sauce>
-                <browserStack>${browserStack}</browserStack>
-                <build>${build}</build>
-                <appPath>${appPath}</appPath>
-                <jiraURL>${jiraURL}</jiraURL>
-                <jiraResultVersion>${jiraResultVersion}</jiraResultVersion>
-                <allure.issues.tracker.pattern>${allure.issues.tracker.pattern}/browse/%s</allure.issues.tracker.pattern>
-              </systemProperties>
-              <includes>
-                <include>**/*Test.java</include>
-                <include>**/*Tests.java</include>
-              </includes>
-              <groups>${groups}</groups>
-              <testFailureIgnore>false</testFailureIgnore>
-              <argLine>-javaagent:'${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar'</argLine>
-            </configuration>
-            <dependencies>
-              <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjweaver</artifactId>
-                <version>${aspectj.version}</version>
-              </dependency>
-            </dependencies>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
