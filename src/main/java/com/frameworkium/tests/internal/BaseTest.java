@@ -34,6 +34,8 @@ import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 
+import static com.frameworkium.config.SystemProperty.MAXIMISE;
+
 @Listeners({CaptureListener.class, ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class,
         TestListener.class, ResultLoggerListener.class})
 public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
@@ -48,7 +50,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     private static Logger logger = LogManager.getLogger(BaseTest.class);
 
     public static String userAgent;
-    
+
     @BeforeSuite(alwaysRun = true)
     public static void instantiateDriverObject() {
         driver = new ThreadLocal<WebDriverWrapper>() {
@@ -79,6 +81,13 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     @BeforeMethod(alwaysRun = true)
+    public static void maximiseBrowserWindow() {
+        if (!MAXIMISE.isSpecified() || Boolean.parseBoolean(MAXIMISE.getValue())) {
+            getDriver().manage().window().maximize();
+        }
+    }
+
+    @BeforeMethod(alwaysRun = true)
     public static void clearSession() {
         // Reset browser or app
         if (requiresReset.get()) {
@@ -100,7 +109,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     public static void setUserAgent() {
         userAgent = getUserAgent();
     }
-    
+
     @BeforeMethod(alwaysRun = true)
     public void initialiseNewScreenshotCapture(Method testMethod) {
         if (ScreenshotCapture.isRequired()) {
@@ -111,7 +120,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
             try {
                 testID = testMethod.getAnnotation(TestCaseId.class).value();
             } catch (NullPointerException e) {}
-            
+
             capture.set(new ScreenshotCapture(testID, driver.get()));
         }
     }
@@ -149,7 +158,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         logger.debug("User agent is: '" + ua + "'");
         return ua;
     }
-    
+
     /** @return the {@link SauceOnDemandAuthentication} instance containing the Sauce username/access key */
     @Override
     public SauceOnDemandAuthentication getAuthentication() {

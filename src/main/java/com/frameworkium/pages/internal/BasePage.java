@@ -3,6 +3,7 @@ package com.frameworkium.pages.internal;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -55,6 +56,9 @@ public abstract class BasePage<T extends BasePage<T>> {
     public T get() {
         HtmlElementLoader.populatePageObject(this, driver);
         try {
+            if(isPageAngularJS()) {
+                waitForAngularJSToBeReady();
+            }
             waitForExpectedVisibleElements(this);
             try {
                 AllureLogger.logToAllure("Page '" + this.getClass().getName() + "' successfully loaded");
@@ -175,12 +179,56 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
+     * Executes a javascript snippet to determine whether a page uses AngularJS
+     * @return boolean - AngularJS true/false
+     */
+    private boolean isPageAngularJS() {
+        return executeJS("return typeof angular;").equals("object");
+    }
+
+    /**
+     * Uses Javascript to determine whether every AngularJS action on page load
+     * has completed before selenium actions on page
+     */
+    protected void waitForAngularJSToBeReady() {
+        executeAsyncJS("var callback = arguments[arguments.length - 1]; " +
+                "angular.element(document.body).injector().get('$browser')" +
+                ".notifyWhenNoOutstandingRequests(callback);");
+    }
+
+    /**
      * @param javascript the Javascript to execute on the current page
      * @return Returns an Object returned by the Javascript provided
      */
     public Object executeJS(String javascript) {
-        JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
-        return jsExecutor.executeScript(javascript);
+        Object returnObj = null;
+        try {
+            JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+            returnObj = jsExecutor.executeScript(javascript);
+        } catch(Exception e) {
+            logger.error("Javascript execution failed! Please investigate into the issue.");
+            logger.debug("Failed Javascript:" + javascript);
+        }
+        return returnObj;
+    }
+
+    /**
+     * Method which executes an async JS call
+     *
+     * @param javascript
+     * @return
+     */
+    public Object executeAsyncJS(String javascript) {
+        Object returnObj = null;
+        try {
+            driver.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
+            JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+            returnObj = jsExecutor.executeAsyncScript(javascript);
+        } catch(Exception e) {
+            logger.error("Async javascript execution failed! Please investigate into the issue.");
+            logger.debug("Failed Javascript:" + javascript);
+        }
+        return returnObj;
     }
 
     /**
