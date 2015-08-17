@@ -3,7 +3,7 @@
 
   <groupId>com.frameworkium</groupId>
   <artifactId>Frameworkium-core</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4-SNAPSHOT</version>
 
   <name>Frameworkium-core</name>
   <description>Frameworkium core code. Referenced by the com.frameworkium project, with example tests.</description>
