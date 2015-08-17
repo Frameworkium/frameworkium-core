@@ -1,12 +1,11 @@
 package com.frameworkium.tests.internal;
 
-import static com.frameworkium.config.DriverType.determineEffectiveDriverType;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.frameworkium.config.DriverType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -21,7 +20,6 @@ import ru.yandex.qatools.allure.annotations.Issue;
 import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import com.frameworkium.capture.ScreenshotCapture;
-import com.frameworkium.config.DriverType;
 import com.frameworkium.config.WebDriverWrapper;
 import com.frameworkium.listeners.CaptureListener;
 import com.frameworkium.listeners.MethodInterceptor;
@@ -34,6 +32,7 @@ import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 
+import static com.frameworkium.config.DriverSetup.returnDesiredDriverType;
 import static com.frameworkium.config.SystemProperty.MAXIMISE;
 
 @Listeners({CaptureListener.class, ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class,
@@ -43,7 +42,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     private static List<WebDriverWrapper> activeDrivers = Collections
             .synchronizedList(new ArrayList<WebDriverWrapper>());
     private static ThreadLocal<WebDriverWrapper> driver;
-    private static DriverType desiredDriverType = determineEffectiveDriverType();
+    private static DriverType desiredDriverType = returnDesiredDriverType();
     private static ThreadLocal<Boolean> requiresReset;
     private static ThreadLocal<ScreenshotCapture> capture;
 

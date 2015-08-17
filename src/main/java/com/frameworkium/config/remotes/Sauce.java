@@ -1,4 +1,4 @@
-package com.frameworkium.config;
+package com.frameworkium.config.remotes;
 
 import static com.frameworkium.config.SystemProperty.SAUCE;
 
