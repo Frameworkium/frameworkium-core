@@ -2,6 +2,8 @@ package com.frameworkium.config.browsers;
 
 import com.frameworkium.config.DriverType;
 import com.frameworkium.config.remotes.Sauce;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -65,7 +67,14 @@ public class SauceImpl extends DriverType {
     }
 
     public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
-        return new RemoteWebDriver(remoteURL, capabilities);
+        switch(supportedPlatforms) {
+            case ANDROID:
+                return new AndroidDriver(remoteURL, capabilities);
+            case IOS:
+                return new IOSDriver(remoteURL, capabilities);
+            default:
+                return new RemoteWebDriver(remoteURL, capabilities);
+        }
     }
 
     private DesiredCapabilities setCapabilitiesBasedOnPlatform(DesiredCapabilities desiredCapabilities) {
