@@ -23,7 +23,7 @@ public class BrowserStack {
     }
 
     private static boolean environmentVariablesSet() {
-        String username = System.getenv("BROWSER_STACK_USER");
+        String username = System.getenv("BROWSER_STACK_USERNAME");
         String accessKey = System.getenv("BROWSER_STACK_ACCESS_KEY");
         return username != null && !username.isEmpty() && accessKey != null && !accessKey.isEmpty();
     }
