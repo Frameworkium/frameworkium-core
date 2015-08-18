@@ -15,21 +15,21 @@ public class DriverSetup {
     /**
      * List of supported browsers
      */
-    private static enum SupportedBrowsers {
+    private enum SupportedBrowsers {
         FIREFOX,CHROME,OPERA,IE,PHANTOMJS,SAFARI
     }
 
     /**
      * List of supported remote grids
      */
-    private static enum SupportedRemotes {
+    private enum SupportedRemotes {
         SAUCE,BROWSERSTACK,GRID
     }
 
     /**
      * List of supported platforms on remote grids
      */
-    public static enum SupportedPlatforms {
+    public enum SupportedPlatforms {
         IOS,ANDROID,BROWSER
     }
 

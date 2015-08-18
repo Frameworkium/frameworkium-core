@@ -8,11 +8,15 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.SessionNotFoundException;
 
 import static com.frameworkium.config.SystemProperty.*;
 import static com.frameworkium.config.SystemProperty.BROWSER_VERSION;
+import static com.frameworkium.config.DriverSetup.useRemoteDriver;
 
 public abstract class DriverType {
+
+    private static WebDriverWrapper webDriverWrapper;
 
     protected final static Logger logger = LogManager.getLogger(DriverType.class);
 
@@ -21,7 +25,7 @@ public abstract class DriverType {
      *
      * @return - Wrapped WebDriver object
      */
-    public WebDriverWrapper instantiate() {
+    public void instantiate() {
         logger.info("Current Browser Selection: " + this);
 
         DesiredCapabilities caps = getDesiredCapabilities();
@@ -32,7 +36,16 @@ public abstract class DriverType {
         if (ScreenshotCapture.isRequired()) {
             eventFiringWD.register(new CaptureListener());
         }
-        return eventFiringWD;
+        webDriverWrapper = eventFiringWD;
+    }
+
+    /**
+     * Returns the WebDriverWrapper with the initialised driver inside
+     *
+     * @return - Initialised WebDriverWrapper
+     */
+    public WebDriverWrapper getDriver() {
+        return webDriverWrapper;
     }
 
     /**
@@ -42,6 +55,56 @@ public abstract class DriverType {
      */
     public static boolean isMobile() {
         return "ios".equalsIgnoreCase(PLATFORM.getValue()) || "android".equalsIgnoreCase(PLATFORM.getValue());
+    }
+
+    /**
+     * Maximises the browser window based on paramaters
+     */
+    public void maximiseBrowserWindow() {
+        if (!MAXIMISE.isSpecified() || Boolean.parseBoolean(MAXIMISE.getValue())) {
+            if (DriverType.isNative()) {
+                webDriverWrapper.getWrappedAppiumDriver().manage().window().maximize();
+            }
+            if(useRemoteDriver()) {
+                webDriverWrapper.getWrappedRemoteWebDriver().quit();
+            }
+            else {
+                webDriverWrapper.getWrappedDriver().manage().window().maximize();
+            }
+        }
+    }
+
+    /**
+     * Method to tear down the driver object, can be overiden
+     */
+    public void tearDownDriver() {
+        if(isNative()) {
+            webDriverWrapper.getWrappedAppiumDriver().quit();
+        }
+        if(useRemoteDriver()) {
+            webDriverWrapper.getWrappedRemoteWebDriver().quit();
+        }
+        else {
+            webDriverWrapper.quit();
+        }
+    }
+
+    /**
+     * Reset the browser session based on whether it's been reset before
+     */
+    public boolean clearSession(boolean requiresReset) {
+        if (requiresReset) {
+            try {
+                if (DriverType.isNative()) {
+                    webDriverWrapper.getWrappedAppiumDriver().resetApp();
+                } else {
+                    webDriverWrapper.manage().deleteAllCookies();
+                }
+            } catch (SessionNotFoundException e) {
+                logger.error("Session quit unexpectedly.", e);
+            }
+        }
+        return true;
     }
 
     /**
