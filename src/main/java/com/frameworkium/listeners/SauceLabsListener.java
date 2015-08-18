@@ -11,7 +11,7 @@ import org.testng.ITestContext;
 import org.testng.ITestResult;
 
 import com.frameworkium.config.DriverType;
-import com.frameworkium.config.Sauce;
+import com.frameworkium.config.remotes.Sauce;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandTestListener;
 
