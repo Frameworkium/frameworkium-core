@@ -9,7 +9,9 @@ import java.util.List;
 import com.frameworkium.config.DriverType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.SessionNotFoundException;
 import org.testng.annotations.AfterSuite;
@@ -34,6 +36,8 @@ import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 
 import static com.frameworkium.config.DriverSetup.returnDesiredDriverType;
+import static com.frameworkium.config.DriverSetup.useRemoteDriver;
+import static com.frameworkium.config.DriverType.isMobile;
 import static com.frameworkium.config.SystemProperty.MAXIMISE;
 
 @Listeners({CaptureListener.class, ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class,
@@ -157,12 +161,11 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         AllureProperties.create();
     }
 
-    /**
-     *  @return the Job id for the current thread
-     */
+    /** @return the Job id for the current thread */
     @Override
     public String getSessionId() {
-        SessionId sessionId = getDriver().getWrappedRemoteWebDriver().getSessionId();
+        WebDriverWrapper driver = getDriver();
+        SessionId sessionId = driver.getWrappedRemoteWebDriver().getSessionId();
         return (sessionId == null) ? null : sessionId.toString();
     }
 
@@ -172,8 +175,9 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      */
     private static String getUserAgent() {
         String ua;
+        JavascriptExecutor js = (JavascriptExecutor)getDriver();
         try {
-            ua = (String) getDriver().executeScript("return navigator.userAgent;");
+            ua = (String) js.executeScript("return navigator.userAgent;");
         } catch (Exception e) {
             ua = "Unable to fetch UserAgent";
         }

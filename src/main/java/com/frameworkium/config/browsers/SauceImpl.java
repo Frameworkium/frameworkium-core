@@ -7,6 +7,7 @@ import io.appium.java_client.ios.IOSDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import sun.security.krb5.internal.crypto.Des;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -21,9 +22,11 @@ public class SauceImpl extends DriverType {
 
     private static URL remoteURL;
     private static SupportedPlatforms supportedPlatforms;
+    private static DesiredCapabilities desiredCapabilities;
 
-    public SauceImpl(SupportedPlatforms platform) {
+    public SauceImpl(SupportedPlatforms platform, DesiredCapabilities browserDesiredCapabilities) {
         supportedPlatforms = platform;
+        desiredCapabilities = browserDesiredCapabilities;
         try {
             remoteURL = Sauce.getURL();
         }
@@ -33,7 +36,6 @@ public class SauceImpl extends DriverType {
     }
 
     public DesiredCapabilities getDesiredCapabilities() {
-        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
         desiredCapabilities = setGeneralRemoteCapabilities(desiredCapabilities);
         desiredCapabilities = setCapabilitiesBasedOnPlatform(desiredCapabilities);
 

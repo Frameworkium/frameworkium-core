@@ -66,7 +66,7 @@ public abstract class DriverType {
                 webDriverWrapper.getWrappedAppiumDriver().manage().window().maximize();
             }
             if(useRemoteDriver()) {
-                webDriverWrapper.getWrappedRemoteWebDriver().quit();
+                webDriverWrapper.getWrappedRemoteWebDriver().manage().window().maximize();
             }
             else {
                 webDriverWrapper.getWrappedDriver().manage().window().maximize();

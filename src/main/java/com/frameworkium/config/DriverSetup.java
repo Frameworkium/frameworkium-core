@@ -5,6 +5,8 @@ import com.frameworkium.config.remotes.BrowserStack;
 import com.frameworkium.config.remotes.Sauce;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import sun.security.krb5.internal.crypto.Des;
 
 import static com.frameworkium.config.SystemProperty.*;
 
@@ -49,33 +51,40 @@ public class DriverSetup {
      *
      * @return - The correct driver type based on parameters
      */
-    private static DriverType initialiseDesiredDriverType() {
+    private static DriverType initialiseDesiredDriverType() throws NullPointerException {
+        DriverType browserDriver = returnBrowserObject();
+        DesiredCapabilities browserDesiredCapabilities = browserDriver.getDesiredCapabilities();
         if (useRemoteDriver()) {
             SupportedPlatforms platform = returnPlatformType();
             switch(returnRemoteType()) {
                 case SAUCE:
-                    return new SauceImpl(platform);
+                    return new SauceImpl(platform, browserDesiredCapabilities);
                 case BROWSERSTACK:
-                    return new BrowserStackImpl(platform);
+                    return new BrowserStackImpl(platform, browserDesiredCapabilities);
                 case GRID:
-                    return new GridImpl();
+                    return new GridImpl(browserDesiredCapabilities);
             }
         }
-        else {
-            switch (returnBrowserType()) {
-                case FIREFOX:
-                    return new FirefoxImpl();
-                case CHROME:
-                    return new ChromeImpl();
-                case OPERA:
-                    return new OperaImpl();
-                case IE:
-                    return new InternetExporerImpl();
-                case PHANTOMJS:
-                    return new PhantomJSImpl();
-                case SAFARI:
-                    return new SafariImpl();
-            }
+        return browserDriver;
+    }
+
+    /**
+     * @return the browser driver type object based on the browser passed in
+     */
+    private static DriverType returnBrowserObject() {
+        switch (returnBrowserType()) {
+            case FIREFOX:
+                return new FirefoxImpl();
+            case CHROME:
+                return new ChromeImpl();
+            case OPERA:
+                return new OperaImpl();
+            case IE:
+                return new InternetExporerImpl();
+            case PHANTOMJS:
+                return new PhantomJSImpl();
+            case SAFARI:
+                return new SafariImpl();
         }
         return null;
     }
@@ -95,7 +104,12 @@ public class DriverSetup {
      * @return - Platform type
      */
     private static SupportedPlatforms returnPlatformType() {
-        return SupportedPlatforms.valueOf(SystemProperty.PLATFORM.getValue().toUpperCase());
+        if (SystemProperty.PLATFORM.isSpecified()) {
+            return SupportedPlatforms.valueOf(SystemProperty.PLATFORM.getValue().toUpperCase());
+        }
+        else {
+            return null;
+        }
     }
 
     /**

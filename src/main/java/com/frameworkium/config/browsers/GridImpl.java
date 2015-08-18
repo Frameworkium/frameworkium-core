@@ -14,8 +14,10 @@ import static com.frameworkium.config.DriverSetup.SupportedPlatforms;
 public class GridImpl extends DriverType {
 
     private static URL remoteURL;
+    private static DesiredCapabilities desiredCapabilities;
 
-    public GridImpl() {
+    public GridImpl(DesiredCapabilities browserDesiredCapabilities) {
+        desiredCapabilities = browserDesiredCapabilities;
         try {
             remoteURL = new URL(GRID_URL.getValue());
         }
@@ -25,7 +27,6 @@ public class GridImpl extends DriverType {
     }
 
     public DesiredCapabilities getDesiredCapabilities() {
-        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
         desiredCapabilities = setGeneralRemoteCapabilities(desiredCapabilities);
         return desiredCapabilities;
     }

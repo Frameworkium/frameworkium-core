@@ -18,9 +18,11 @@ public class BrowserStackImpl extends DriverType {
 
     private static URL remoteURL;
     private static SupportedPlatforms supportedPlatform;
+    private static DesiredCapabilities desiredCapabilities;
 
-    public BrowserStackImpl(SupportedPlatforms platform) {
+    public BrowserStackImpl(SupportedPlatforms platform, DesiredCapabilities browserDesiredCapabilities) {
         supportedPlatform = platform;
+        desiredCapabilities = browserDesiredCapabilities;
         try {
             remoteURL = BrowserStack.getURL();
         }
@@ -30,7 +32,6 @@ public class BrowserStackImpl extends DriverType {
     }
 
     public DesiredCapabilities getDesiredCapabilities() {
-        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
         desiredCapabilities = setGeneralRemoteCapabilities(desiredCapabilities);
         desiredCapabilities = setCapabilitiesBasedOnPlatform(desiredCapabilities);
 
