@@ -115,6 +115,9 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         if (ScreenshotCapture.isRequired()) {
             String testID = "n/a";
             try {
+                testID = testMethod.getName();
+            } catch (NullPointerException e) {}
+            try {
                 testID = testMethod.getAnnotation(Issue.class).value();
             } catch (NullPointerException e) {}
             try {
