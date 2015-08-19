@@ -22,7 +22,8 @@ public enum SystemProperty {
     SUT_VERSION("sutVersion"),
     JIRA_RESULT_FIELDNAME("jiraResultFieldName"),
     JIRA_RESULT_TRANSITION("jiraResultTransition"),
-    MAXIMISE("maximise");
+    MAXIMISE("maximise"),
+    RESOLUTION("resolution");
 
 
     private String value;

@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 
+import com.frameworkium.config.DriverSetup;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;
@@ -74,7 +75,7 @@ public class ScreenshotCapture {
     private String getNode(WebDriver webdriver) {
 
         String node = "n/a";
-        if (DriverType.useRemoteWebDriver) {
+        if (DriverSetup.useRemoteDriver()) {
             try {
                 RemoteWebDriver r = ((WebDriverWrapper) webdriver).getWrappedRemoteWebDriver();
                 URL gridURL = new URL(SystemProperty.GRID_URL.getValue());
