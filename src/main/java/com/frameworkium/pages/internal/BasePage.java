@@ -25,6 +25,8 @@ import com.frameworkium.reporting.AllureLogger;
 import com.frameworkium.tests.internal.BaseTest;
 import com.google.inject.Inject;
 
+import static com.paulhammant.ngwebdriver.WaitForAngularRequestsToFinish.waitForAngularRequestsToFinish;
+
 public abstract class BasePage<T extends BasePage<T>> {
 
     @Inject
@@ -57,7 +59,7 @@ public abstract class BasePage<T extends BasePage<T>> {
         HtmlElementLoader.populatePageObject(this, driver);
         try {
             if(isPageAngularJS()) {
-                waitForAngularJSToBeReady();
+                waitForAngularRequestsToFinish((JavascriptExecutor) driver);
             }
             waitForExpectedVisibleElements(this);
             try {
@@ -184,16 +186,6 @@ public abstract class BasePage<T extends BasePage<T>> {
      */
     private boolean isPageAngularJS() {
         return executeJS("return typeof angular;").equals("object");
-    }
-
-    /**
-     * Uses Javascript to determine whether every AngularJS action on page load
-     * has completed before selenium actions on page
-     */
-    protected void waitForAngularJSToBeReady() {
-        executeAsyncJS("var callback = arguments[arguments.length - 1]; " +
-                "angular.element(document.body).injector().get('$browser')" +
-                ".notifyWhenNoOutstandingRequests(callback);");
     }
 
     /**
