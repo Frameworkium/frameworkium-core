@@ -1,4 +1,4 @@
-package com.frameworkium.config.browsers;
+package com.frameworkium.config.drivers;
 
 import com.frameworkium.config.DriverType;
 import org.openqa.selenium.WebDriver;

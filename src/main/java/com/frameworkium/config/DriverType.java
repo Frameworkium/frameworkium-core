@@ -5,13 +5,11 @@ import com.frameworkium.listeners.CaptureListener;
 import com.frameworkium.listeners.EventListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionNotFoundException;
 
 import static com.frameworkium.config.SystemProperty.*;
-import static com.frameworkium.config.SystemProperty.BROWSER_VERSION;
 import static com.frameworkium.config.DriverSetup.useRemoteDriver;
 
 public abstract class DriverType {
@@ -54,7 +52,7 @@ public abstract class DriverType {
      * @return - Boolean, whether using mobile or not
      */
     public static boolean isMobile() {
-        return "ios".equalsIgnoreCase(PLATFORM.getValue()) || "android".equalsIgnoreCase(PLATFORM.getValue());
+        return false;
     }
 
     /**
@@ -62,13 +60,7 @@ public abstract class DriverType {
      */
     public void maximiseBrowserWindow() {
         if (!MAXIMISE.isSpecified() || Boolean.parseBoolean(MAXIMISE.getValue())) {
-            if (DriverType.isNative()) {
-                webDriverWrapper.getWrappedAppiumDriver().manage().window().maximize();
-            }
-            if(useRemoteDriver()) {
-                webDriverWrapper.getWrappedRemoteWebDriver().manage().window().maximize();
-            }
-            else {
+            if((!useRemoteDriver() && !isNative()) || GRID_URL.isSpecified()) {
                 webDriverWrapper.getWrappedDriver().manage().window().maximize();
             }
         }
@@ -114,22 +106,6 @@ public abstract class DriverType {
      */
     public static boolean isNative() {
         return APP_PATH.isSpecified();
-    }
-
-    /**
-     * Used by the drivers which are remote, as common desired capabilities
-     *
-     * @param desiredCapabilities - The browser desired capabilities
-     * @return - The browser desired capabilities
-     */
-    protected static DesiredCapabilities setGeneralRemoteCapabilities(DesiredCapabilities desiredCapabilities) {
-        if (PLATFORM.isSpecified()) {
-            desiredCapabilities.setPlatform(Platform.valueOf(PLATFORM.getValue().toUpperCase()));
-        }
-        if (BROWSER_VERSION.isSpecified()) {
-            desiredCapabilities.setVersion(BROWSER_VERSION.getValue());
-        }
-        return desiredCapabilities;
     }
 
     /**

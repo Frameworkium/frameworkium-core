@@ -134,7 +134,6 @@
       <groupId>com.paulhammant</groupId>
       <artifactId>ngwebdriver</artifactId>
       <version>0.9.1</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 

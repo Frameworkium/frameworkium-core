@@ -1,12 +1,11 @@
 package com.frameworkium.config;
 
-import com.frameworkium.config.browsers.*;
+import com.frameworkium.config.drivers.*;
 import com.frameworkium.config.remotes.BrowserStack;
 import com.frameworkium.config.remotes.Sauce;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import sun.security.krb5.internal.crypto.Des;
 
 import static com.frameworkium.config.SystemProperty.*;
 
@@ -15,10 +14,10 @@ public class DriverSetup {
     private static final SupportedBrowsers DEFAULT_BROWSER = SupportedBrowsers.FIREFOX;
 
     /**
-     * List of supported browsers
+     * List of supported drivers
      */
     private enum SupportedBrowsers {
-        FIREFOX,CHROME,OPERA,IE,PHANTOMJS,SAFARI
+        FIREFOX,CHROME,OPERA,IE,PHANTOMJS,SAFARI,IOS
     }
 
     /**
@@ -32,7 +31,7 @@ public class DriverSetup {
      * List of supported platforms on remote grids
      */
     public enum SupportedPlatforms {
-        IOS,ANDROID,BROWSER
+        WINDOWS,OSX,IOS,ANDROID,NONE
     }
 
     protected final static Logger logger = LogManager.getLogger(DriverType.class);
@@ -108,7 +107,7 @@ public class DriverSetup {
             return SupportedPlatforms.valueOf(SystemProperty.PLATFORM.getValue().toUpperCase());
         }
         else {
-            return null;
+            return SupportedPlatforms.NONE;
         }
     }
 

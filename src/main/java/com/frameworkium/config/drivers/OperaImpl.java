@@ -1,10 +1,9 @@
-package com.frameworkium.config.browsers;
+package com.frameworkium.config.drivers;
 
 import com.frameworkium.config.DriverType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.opera.OperaDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.safari.SafariDriver;
 
 public class OperaImpl extends DriverType {
 

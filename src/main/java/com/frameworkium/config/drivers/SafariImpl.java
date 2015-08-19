@@ -1,19 +1,9 @@
-package com.frameworkium.config.browsers;
+package com.frameworkium.config.drivers;
 
 import com.frameworkium.config.DriverType;
-import com.frameworkium.config.remotes.BrowserStack;
-import com.frameworkium.config.remotes.Sauce;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariDriver;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.frameworkium.config.SystemProperty.DEVICE;
 
 public class SafariImpl extends DriverType {
 

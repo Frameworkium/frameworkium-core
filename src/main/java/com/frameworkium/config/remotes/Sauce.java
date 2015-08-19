@@ -20,12 +20,6 @@ public class Sauce {
 
     private static final SauceREST client = new SauceREST(authentication.getUsername(), authentication.getAccessKey());
 
-    static {
-        if (isDesired() && !environmentVariablesSet()) {
-            throw new RuntimeException("SAUCE_USERNAME and SAUCE_ACCESS_KEY environment variables must be set.");
-        }
-    }
-
     public static URL getURL() throws MalformedURLException {
         return new URL(String.format("http://%s:%s@ondemand.saucelabs.com:80/wd/hub", authentication.getUsername(),
                 authentication.getAccessKey()));

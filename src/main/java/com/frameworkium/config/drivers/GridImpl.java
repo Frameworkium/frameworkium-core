@@ -1,4 +1,4 @@
-package com.frameworkium.config.browsers;
+package com.frameworkium.config.drivers;
 
 import com.frameworkium.config.DriverType;
 import org.openqa.selenium.WebDriver;
@@ -9,7 +9,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import static com.frameworkium.config.SystemProperty.*;
-import static com.frameworkium.config.DriverSetup.SupportedPlatforms;
 
 public class GridImpl extends DriverType {
 
@@ -27,7 +26,12 @@ public class GridImpl extends DriverType {
     }
 
     public DesiredCapabilities getDesiredCapabilities() {
-        desiredCapabilities = setGeneralRemoteCapabilities(desiredCapabilities);
+        if(BROWSER_VERSION.isSpecified()) {
+            desiredCapabilities.setCapability("version", BROWSER_VERSION.getValue());
+        }
+        if(PLATFORM.isSpecified()) {
+            desiredCapabilities.setCapability("platform", PLATFORM_VERSION.getValue());
+        }
         return desiredCapabilities;
     }
 

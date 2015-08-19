@@ -1,8 +1,7 @@
-package com.frameworkium.config.browsers;
+package com.frameworkium.config.drivers;
 
 import com.frameworkium.config.DriverType;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
