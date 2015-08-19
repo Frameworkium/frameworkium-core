@@ -17,7 +17,7 @@ public class DriverSetup {
      * List of supported drivers
      */
     private enum SupportedBrowsers {
-        FIREFOX,CHROME,OPERA,IE,PHANTOMJS,SAFARI,IOS
+        FIREFOX,CHROME,OPERA,IE,PHANTOMJS,SAFARI
     }
 
     /**
