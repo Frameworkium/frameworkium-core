@@ -98,7 +98,9 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
             String testID = "n/a";
             try {
                 testID = testMethod.getName();
-            } catch (NullPointerException e) {}
+            } catch (NullPointerException e) {
+                logger.debug("No test method defined.");
+            }
             try {
                 testID = testMethod.getAnnotation(Issue.class).value();
             } catch (NullPointerException e) {
