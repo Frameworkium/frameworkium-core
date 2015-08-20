@@ -3,7 +3,7 @@
 
   <groupId>com.frameworkium</groupId>
   <artifactId>Frameworkium-core</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.2</version>
 
   <name>Frameworkium-core</name>
   <description>Frameworkium core code. Referenced by the com.frameworkium project, with example tests.</description>
@@ -121,9 +121,9 @@
       <version>2.4.0</version>
     </dependency>
     <dependency>
-    	<groupId>joda-time</groupId>
-    	<artifactId>joda-time</artifactId>
-    	<version>2.7</version>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>2.7</version>
     </dependency>
     <dependency>
       <groupId>org.aspectj</groupId>
@@ -135,6 +135,11 @@
       <artifactId>ngwebdriver</artifactId>
       <version>0.9.1</version>
     </dependency>
+      <dependency>
+          <groupId>net.sf.uadetector</groupId>
+          <artifactId>uadetector-resources</artifactId>
+          <version>2014.04</version>
+      </dependency>
   </dependencies>
 
   <repositories>

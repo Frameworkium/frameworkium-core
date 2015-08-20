@@ -14,7 +14,7 @@ import static com.frameworkium.config.DriverSetup.useRemoteDriver;
 
 public abstract class DriverType {
 
-    private static WebDriverWrapper webDriverWrapper;
+    private WebDriverWrapper webDriverWrapper;
 
     protected final static Logger logger = LogManager.getLogger(DriverType.class);
 
@@ -61,7 +61,7 @@ public abstract class DriverType {
     public void maximiseBrowserWindow() {
         if (!MAXIMISE.isSpecified() || Boolean.parseBoolean(MAXIMISE.getValue())) {
             if((!useRemoteDriver() && !isNative()) || GRID_URL.isSpecified()) {
-                webDriverWrapper.getWrappedDriver().manage().window().maximize();
+                webDriverWrapper.manage().window().maximize();
             }
         }
     }
@@ -70,15 +70,7 @@ public abstract class DriverType {
      * Method to tear down the driver object, can be overiden
      */
     public void tearDownDriver() {
-        if(isNative()) {
-            webDriverWrapper.getWrappedAppiumDriver().quit();
-        }
-        if(useRemoteDriver()) {
-            webDriverWrapper.getWrappedRemoteWebDriver().quit();
-        }
-        else {
-            webDriverWrapper.quit();
-        }
+        webDriverWrapper.getWrappedDriver().quit();
     }
 
     /**
