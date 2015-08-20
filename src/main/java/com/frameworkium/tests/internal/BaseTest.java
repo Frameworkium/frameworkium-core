@@ -1,23 +1,16 @@
 package com.frameworkium.tests.internal;
 
 import java.lang.reflect.Method;
-import java.sql.Driver;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import com.frameworkium.config.DriverSetup;
 import com.frameworkium.config.DriverType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.SessionNotFoundException;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Listeners;
+import org.testng.annotations.*;
 
 import ru.yandex.qatools.allure.annotations.Issue;
 import ru.yandex.qatools.allure.annotations.TestCaseId;
@@ -35,11 +28,6 @@ import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 
-import static com.frameworkium.config.DriverSetup.returnDesiredDriverType;
-import static com.frameworkium.config.DriverSetup.useRemoteDriver;
-import static com.frameworkium.config.DriverType.isMobile;
-import static com.frameworkium.config.SystemProperty.MAXIMISE;
-
 @Listeners({CaptureListener.class, ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class,
         TestListener.class, ResultLoggerListener.class})
 
@@ -48,8 +36,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     private static ThreadLocal<Boolean> requiresReset;
     private static ThreadLocal<ScreenshotCapture> capture;
     private static ThreadLocal<DriverType> driverType;
-    private static List<DriverType> activeDriverTypes
-            = Collections.synchronizedList(new ArrayList<DriverType>());
+    private static List<DriverType> activeDriverTypes = new ArrayList<>();
     private static Logger logger = LogManager.getLogger(BaseTest.class);
 
     public static String userAgent;
@@ -61,12 +48,13 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      *  - Initialise the screenshot capture
      *  - Configure the browser based on paramaters (maximise window, session resets, user agent)
      */
-    @BeforeSuite(alwaysRun = true)
+    @BeforeSuite
     public static void instantiateDriverObject() {
         driverType = new ThreadLocal<DriverType>() {
             @Override
             protected DriverType initialValue() {
-                DriverType driverType = returnDesiredDriverType();
+                DriverType driverType = new DriverSetup()
+                        .returnDesiredDriverType();
                 driverType.instantiate();
                 activeDriverTypes.add(driverType);
                 return driverType;
@@ -84,7 +72,21 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
                 return null;
             }
         };
+    }
+
+    /**
+     * The methods which configure the browser once a test runs
+     *  - Maximises browser based on the driver type
+     *  - Initialises screenshot capture if needed
+     *  - Clears the session if another test ran prior
+     *  - Sets the user agent of the browser
+     *
+     * @param testMethod - The test method name of the test
+     */
+    @BeforeMethod
+    public static void configureBrowserBeforeTest(Method testMethod) {
         configureDriverBasedOnParams();
+        initialiseNewScreenshotCapture(testMethod);
     }
 
     /**
@@ -92,8 +94,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      *
      * @param testMethod - Test method passed from the test script
      */
-    @BeforeMethod
-    public static void initialiseNewScreenshotCapture(Method testMethod) {
+    private static void initialiseNewScreenshotCapture(Method testMethod) {
         if (ScreenshotCapture.isRequired()) {
             String testID = "n/a";
             try {
@@ -111,7 +112,6 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
             } catch (NullPointerException e) {
                 logger.debug("No Test Case ID defined.");
             }
-
             capture.set(new ScreenshotCapture(testID, driverType.get().getDriver()));
         }
     }
@@ -144,14 +144,14 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     /**
      * Loops through all active driver types and tears down the driver object
      */
-    @AfterSuite(alwaysRun = true)
+    @AfterSuite
     public static void closeDriverObject() {
-        for (DriverType driverType : activeDriverTypes) {
-            try {
+        try {
+            for (DriverType driverType : activeDriverTypes) {
                 driverType.tearDownDriver();
-            } catch (Exception e) {
-                logger.warn("Session quit unexpectedly.", e);
             }
+        } catch (Exception e) {
+            logger.warn("Session quit unexpectedly.", e);
         }
     }
 
@@ -177,7 +177,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      */
     private static String getUserAgent() {
         String ua;
-        JavascriptExecutor js = (JavascriptExecutor)getDriver();
+        JavascriptExecutor js = getDriver();
         try {
             ua = (String) js.executeScript("return navigator.userAgent;");
         } catch (Exception e) {

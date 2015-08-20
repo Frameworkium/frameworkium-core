@@ -41,7 +41,7 @@ public class DriverSetup {
      *
      * @return - Driver Type
      */
-    public static DriverType returnDesiredDriverType() {
+    public DriverType returnDesiredDriverType() {
         return initialiseDesiredDriverType();
     }
 
@@ -50,7 +50,7 @@ public class DriverSetup {
      *
      * @return - The correct driver type based on parameters
      */
-    private static DriverType initialiseDesiredDriverType() throws NullPointerException {
+    private DriverType initialiseDesiredDriverType() throws NullPointerException {
         DriverType browserDriver = returnBrowserObject();
         DesiredCapabilities browserDesiredCapabilities = browserDriver.getDesiredCapabilities();
         if (useRemoteDriver()) {
