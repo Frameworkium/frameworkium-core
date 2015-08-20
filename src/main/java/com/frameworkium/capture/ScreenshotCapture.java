@@ -20,6 +20,9 @@ import com.frameworkium.config.SystemProperty;
 import com.frameworkium.config.WebDriverWrapper;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
+import com.frameworkium.config.remotes.Sauce;
+import com.frameworkium.config.remotes.BrowserStack;
+
 
 public class ScreenshotCapture {
 
@@ -76,16 +79,20 @@ public class ScreenshotCapture {
 
         String node = "n/a";
         if (DriverSetup.useRemoteDriver()) {
-            try {
-                RemoteWebDriver r = ((WebDriverWrapper) webdriver).getWrappedRemoteWebDriver();
-                URL gridURL = new URL(SystemProperty.GRID_URL.getValue());
-                String url =
-                        String.format("%s://%s:%d/grid/api/testsession?session=%s",
-                                gridURL.getProtocol(), gridURL.getHost(),
-                                gridURL.getPort(), r.getSessionId());
-                node = RestAssured.post(url).then().extract().path("proxyId");
-            } catch (Throwable t) {
-                logger.warn("Failed to get node address of remote web driver", t);
+            if(Sauce.isDesired()) {node = "SauceLabs" ; }
+            else if (BrowserStack.isDesired()) {node = "BrowserStack" ; }
+            else {
+                try {
+                    RemoteWebDriver r = ((WebDriverWrapper) webdriver).getWrappedRemoteWebDriver();
+                    URL gridURL = new URL(SystemProperty.GRID_URL.getValue());
+                    String url =
+                            String.format("%s://%s:%d/grid/api/testsession?session=%s",
+                                    gridURL.getProtocol(), gridURL.getHost(),
+                                    gridURL.getPort(), r.getSessionId());
+                    node = RestAssured.post(url).then().extract().path("proxyId");
+                } catch (Throwable t) {
+                    logger.warn("Failed to get node address of remote web driver", t);
+                }
             }
         } else {
             try {
