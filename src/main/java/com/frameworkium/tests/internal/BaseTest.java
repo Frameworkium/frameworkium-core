@@ -74,6 +74,15 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         };
     }
 
+    /**
+     * The methods which configure the browser once a test runs
+     *  - Maximises browser based on the driver type
+     *  - Initialises screenshot capture if needed
+     *  - Clears the session if another test ran prior
+     *  - Sets the user agent of the browser
+     *
+     * @param testMethod - The test method name of the test
+     */
     @BeforeMethod
     public static void configureBrowserBeforeTest(Method testMethod) {
         configureDriverBasedOnParams();
@@ -86,7 +95,6 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      * @param testMethod - Test method passed from the test script
      */
     private static void initialiseNewScreenshotCapture(Method testMethod) {
-        configureDriverBasedOnParams();
         if (ScreenshotCapture.isRequired()) {
             String testID = "n/a";
             try {
