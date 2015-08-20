@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.paulhammant.ngwebdriver.WaitForAngularRequestsToFinish;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,8 +25,6 @@ import com.frameworkium.config.SystemProperty;
 import com.frameworkium.reporting.AllureLogger;
 import com.frameworkium.tests.internal.BaseTest;
 import com.google.inject.Inject;
-
-import static com.paulhammant.ngwebdriver.WaitForAngularRequestsToFinish.waitForAngularRequestsToFinish;
 
 public abstract class BasePage<T extends BasePage<T>> {
 
@@ -59,7 +58,7 @@ public abstract class BasePage<T extends BasePage<T>> {
         HtmlElementLoader.populatePageObject(this, driver);
         try {
             if(isPageAngularJS()) {
-                waitForAngularRequestsToFinish((JavascriptExecutor) driver);
+                waitForAngularRequestsToFinish();
             }
             waitForExpectedVisibleElements(this);
             try {
@@ -202,6 +201,15 @@ public abstract class BasePage<T extends BasePage<T>> {
             logger.debug("Failed Javascript:" + javascript);
         }
         return returnObj;
+    }
+
+    /**
+     * Method to wait for AngularJS requests to finish on the page
+     */
+    public void waitForAngularRequestsToFinish() {
+        driver.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
+        WaitForAngularRequestsToFinish
+                .waitForAngularRequestsToFinish((JavascriptExecutor) driver);
     }
 
     /**
