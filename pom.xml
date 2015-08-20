@@ -3,7 +3,7 @@
 
   <groupId>com.frameworkium</groupId>
   <artifactId>Frameworkium-core</artifactId>
-  <version>1.1.1</version>
+  <version>1.1.0</version>
 
   <name>Frameworkium-core</name>
   <description>Frameworkium core code. Referenced by the com.frameworkium project, with example tests.</description>
@@ -27,25 +27,6 @@
   <distributionManagement/>
 
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <env.config>local</env.config>
-    <browser/>
-    <threads/>
-    <seleniumGridURL/>
-    <platform/>
-    <platformVersion/>
-    <device />
-    <deviceName/>
-    <browserVersion/>
-    <groups/>
-    <sauce/>
-    <browserStack/>
-    <maximise/>
-    <build/>
-    <appPath/>
-    <jiraURL/>
-    <jiraResultVersion/>
-    <aspectj.version>1.8.5</aspectj.version>
     <allure.version>1.4.11</allure.version>
     <allure.issues.tracker.pattern/>
   </properties>
@@ -140,9 +121,9 @@
       <version>2.4.0</version>
     </dependency>
     <dependency>
-    	<groupId>joda-time</groupId>
-    	<artifactId>joda-time</artifactId>
-    	<version>2.7</version>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>2.7</version>
     </dependency>
     <dependency>
       <groupId>org.aspectj</groupId>
@@ -174,7 +155,7 @@
 
   <profiles>
     <profile>
-      <id>selenium-tests</id>
+      <id>com.frameworkium-core</id>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
@@ -187,40 +168,6 @@
             <configuration>
               <source>1.7</source>
               <target>1.7</target>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.18.1</version>
-            <configuration>
-              <parallel>methods</parallel>
-              <threadCount>${threads}</threadCount>
-              <systemProperties>
-                <!-- TODO: Can we remove these? -->
-                <env.config>${env.config}</env.config>
-                <browser>${browser}</browser>
-                <screenshotDirectory>${project.build.directory}/screenshots</screenshotDirectory>
-                <gridURL>${seleniumGridURL}</gridURL>
-                <platform>${platform}</platform>
-                <platformVersion>${platformVersion}</platformVersion>
-                <browserVersion>${browserVersion}</browserVersion>
-                <device>${device}</device>
-                <sauce>${sauce}</sauce>
-                <browserStack>${browserStack}</browserStack>
-                <maximise>${maximise}</maximise>
-                <build>${build}</build>
-                <appPath>${appPath}</appPath>
-                <jiraURL>${jiraURL}</jiraURL>
-                <jiraResultVersion>${jiraResultVersion}</jiraResultVersion>
-                <allure.issues.tracker.pattern>${allure.issues.tracker.pattern}/browse/%s</allure.issues.tracker.pattern>
-              </systemProperties>
-              <includes>
-                <include>**/*Test.java</include>
-                <include>**/*Tests.java</include>
-              </includes>
-              <groups>${groups}</groups>
-              <testFailureIgnore>false</testFailureIgnore>
             </configuration>
           </plugin>
         </plugins>
