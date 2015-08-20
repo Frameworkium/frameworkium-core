@@ -99,7 +99,9 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     @Override
     public void beforeScript(String script, WebDriver driver) {
-        takeScreenshotAndSendToCapture("script", driver);
+        if(!script.contains("navigator.userAgent")){
+            takeScreenshotAndSendToCapture("script", driver);
+        }
     }
 
     /* Test end methods */
