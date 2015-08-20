@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 public class TheInternetExampleTest extends BaseTest {
 
     @Test
-    public void basicAuth() {
+    public void smokeTest() {
 
         assertThat(WelcomePage.open().then().getTitle()).isEqualTo("The Internet");
     }
