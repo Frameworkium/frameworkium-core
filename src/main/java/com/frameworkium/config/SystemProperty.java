@@ -1,5 +1,9 @@
 package com.frameworkium.config;
 
+import org.yaml.snakeyaml.Yaml;
+
+import java.util.Map;
+
 public enum SystemProperty {
 
     BROWSER("browser"),
@@ -25,11 +29,11 @@ public enum SystemProperty {
     MAXIMISE("maximise"),
     RESOLUTION("resolution");
 
-
     private String value;
+    private static Map configMap = null;
 
-    private SystemProperty(String key) {
-        this.value = System.getProperty(key);
+    SystemProperty(String key) {
+        this.value = retrieveValue(key);
     }
 
     public String getValue() {
@@ -38,5 +42,23 @@ public enum SystemProperty {
 
     public boolean isSpecified() {
         return null != value && !value.isEmpty();
+    }
+
+    private String retrieveValue(String key) {
+        if(System.getProperty(key) != null) {
+            return System.getProperty(key);
+        }
+        if (System.getProperty("config") != null && configMap == null) {
+            configMap = (Map) new Yaml().load(
+                    ClassLoader.getSystemResourceAsStream(System.getProperty("config"))
+            );
+        }
+        if(configMap != null) {
+            Object configValue = configMap.get(key);
+            if (configValue != null) {
+                return configValue.toString();
+            }
+        }
+        return null;
     }
 }
