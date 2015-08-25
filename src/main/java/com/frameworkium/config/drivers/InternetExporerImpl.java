@@ -21,18 +21,4 @@ public class InternetExporerImpl extends DriverType {
     public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
         return new InternetExplorerDriver(capabilities);
     }
-
-    /**
-     * IE unfortunately doesn't clearing anything.
-     * Browser teardown and re-build is needed
-     */
-    @Override
-    public boolean clearSession(boolean requiresReset) {
-        if (requiresReset) {
-            tearDownDriver();
-            instantiate();
-        }
-        return true;
-    }
-
 }

@@ -1,32 +1,28 @@
 package com.frameworkium.tests.internal;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.frameworkium.capture.ScreenshotCapture;
 import com.frameworkium.config.DriverSetup;
 import com.frameworkium.config.DriverType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.remote.SessionId;
-import org.testng.annotations.*;
-
-import ru.yandex.qatools.allure.annotations.Issue;
-import ru.yandex.qatools.allure.annotations.TestCaseId;
-
-import com.frameworkium.capture.ScreenshotCapture;
 import com.frameworkium.config.WebDriverWrapper;
-import com.frameworkium.listeners.CaptureListener;
-import com.frameworkium.listeners.MethodInterceptor;
-import com.frameworkium.listeners.ResultLoggerListener;
-import com.frameworkium.listeners.SauceLabsListener;
-import com.frameworkium.listeners.ScreenshotListener;
-import com.frameworkium.listeners.TestListener;
+import com.frameworkium.listeners.*;
 import com.frameworkium.reporting.AllureProperties;
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.remote.SessionId;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Listeners;
+import ru.yandex.qatools.allure.annotations.Issue;
+import ru.yandex.qatools.allure.annotations.TestCaseId;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 @Listeners({CaptureListener.class, ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class,
         TestListener.class, ResultLoggerListener.class})
@@ -120,7 +116,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      * Ran as part of the initialiseDriverObject, configures parts of the driver
      */
     private static void configureDriverBasedOnParams() {
-        requiresReset.set(driverType.get().clearSession(requiresReset.get()));
+        requiresReset.set(driverType.get().resetBrowser(requiresReset.get()));
         driverType.get().maximiseBrowserWindow();
         setUserAgent();
     }
