@@ -9,12 +9,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.SessionNotFoundException;
 
-import static com.frameworkium.config.SystemProperty.*;
 import static com.frameworkium.config.DriverSetup.useRemoteDriver;
+import static com.frameworkium.config.SystemProperty.*;
 
 public abstract class DriverType {
 
-    private WebDriverWrapper webDriverWrapper;
+    protected WebDriverWrapper webDriverWrapper;
 
     protected final static Logger logger = LogManager.getLogger(DriverType.class);
 

@@ -17,4 +17,17 @@ public class FirefoxImpl extends DriverType {
         return new FirefoxDriver(capabilities);
     }
 
+    /**
+     * Firefox unfortunately doesn't clear sessions, only cookies.
+     * Browser teardown and re-build is needed
+     */
+    @Override
+    public boolean clearSession(boolean requiresReset) {
+        if (requiresReset) {
+            tearDownDriver();
+            instantiate();
+        }
+        return true;
+    }
+
 }
