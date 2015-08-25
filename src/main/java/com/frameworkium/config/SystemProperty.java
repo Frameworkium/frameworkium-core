@@ -45,7 +45,7 @@ public enum SystemProperty {
     }
 
     private String retrieveValue(String key) {
-        if(System.getProperty(key) != null) {
+        if (System.getProperty(key) != null) {
             return System.getProperty(key);
         }
         if (System.getProperty("config") != null && configMap == null) {
@@ -53,7 +53,7 @@ public enum SystemProperty {
                     ClassLoader.getSystemResourceAsStream(System.getProperty("config"))
             );
         }
-        if(configMap != null) {
+        if (configMap != null) {
             Object configValue = configMap.get(key);
             if (configValue != null) {
                 return configValue.toString();
