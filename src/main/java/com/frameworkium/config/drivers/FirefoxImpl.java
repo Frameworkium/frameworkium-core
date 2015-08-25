@@ -16,5 +16,4 @@ public class FirefoxImpl extends DriverType {
     public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
         return new FirefoxDriver(capabilities);
     }
-
 }
