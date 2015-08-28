@@ -1,21 +1,29 @@
 package com.frameworkium.config;
 
+import static com.frameworkium.config.DriverSetup.useRemoteDriver;
+import static com.frameworkium.config.SystemProperty.APP_PATH;
+import static com.frameworkium.config.SystemProperty.GRID_URL;
+import static com.frameworkium.config.SystemProperty.MAXIMISE;
+import static com.frameworkium.config.SystemProperty.PROXY;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.Proxy.ProxyType;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
 import com.frameworkium.capture.ScreenshotCapture;
 import com.frameworkium.listeners.CaptureListener;
 import com.frameworkium.listeners.EventListener;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
-import static com.frameworkium.config.DriverSetup.useRemoteDriver;
-import static com.frameworkium.config.SystemProperty.*;
 
 public abstract class DriverType {
 
     protected WebDriverWrapper webDriverWrapper;
 
     protected final static Logger logger = LogManager.getLogger(DriverType.class);
+    private static final String HOSTNAME_OR_IP_AND_PORT_REGEX = "[\\dA-Za-z.:%-]+";
 
     /**
      * Creates the Wrapped Driver object, and returns to the test
@@ -26,6 +34,12 @@ public abstract class DriverType {
         logger.info("Current Browser Selection: " + this);
 
         DesiredCapabilities caps = getDesiredCapabilities();
+
+        Proxy currentProxy = getProxy();
+        if (currentProxy != null) {
+            caps.setCapability(CapabilityType.PROXY, currentProxy);
+        }
+
         logger.info("Caps: " + caps.toString());
 
         WebDriverWrapper eventFiringWD = new WebDriverWrapper(getWebDriverObject(caps));
@@ -33,7 +47,60 @@ public abstract class DriverType {
         if (ScreenshotCapture.isRequired()) {
             eventFiringWD.register(new CaptureListener());
         }
-        webDriverWrapper = eventFiringWD;
+        this.webDriverWrapper = eventFiringWD;
+    }
+
+    /**
+     * This method returns a proxy object with settings set by the system properties. If no valid proxy argument is set
+     * then it returns null.
+     *
+     * @return A Selenium proxy object for the current system properties or null if no valid proxy settings
+     */
+    public Proxy getProxy() {
+        if (PROXY.isSpecified()) {
+            Proxy proxy = new Proxy();
+            String proxyString = PROXY.getValue().toLowerCase();
+            switch (proxyString) {
+
+                case "system":
+                    proxy.setProxyType(ProxyType.SYSTEM);
+                    logger.info("Using system proxy");
+                    break;
+                case "autodetect":
+                    proxy.setProxyType(ProxyType.AUTODETECT);
+                    logger.info("Using autodetected proxy");
+                    break;
+                case "direct":
+                    proxy.setProxyType(ProxyType.DIRECT);
+                    logger.info("Using direct (no) proxy");
+                    break;
+                default:
+                    proxy.setProxyType(ProxyType.MANUAL);
+                    if (verifyProxyAddress(proxyString)) {
+                        proxy.setHttpProxy(proxyString).setFtpProxy(proxyString).setSslProxy(proxyString);
+                        String logMessage = String
+                                .format("Set all protocols to use proxy with address %s", proxyString);
+                        logger.info(logMessage);
+                    } else {
+                        logger.error("Invalid proxy setting specified, acceptable values are: system, autodetect, direct or {hostname}:{port}. Tests will now use default setting for your browser");
+                        return null;
+                    }
+                    break;
+            }
+            return proxy;
+        }
+        return null;
+    }
+
+    /**
+     * This helper method verifies that a value is suitable for usage as a proxy address. Selenium expects values of the
+     * format hostname:port or ip:port
+     *
+     * @param proxyAddress The proxy value to verify
+     * @return true if value is acceptable as a proxy, false otherwise
+     */
+    private boolean verifyProxyAddress(final String proxyAddress) {
+        return proxyAddress.matches(HOSTNAME_OR_IP_AND_PORT_REGEX);
     }
 
     /**
@@ -42,7 +109,7 @@ public abstract class DriverType {
      * @return - Initialised WebDriverWrapper
      */
     public WebDriverWrapper getDriver() {
-        return webDriverWrapper;
+        return this.webDriverWrapper;
     }
 
     /**
@@ -59,8 +126,8 @@ public abstract class DriverType {
      */
     public void maximiseBrowserWindow() {
         if (!MAXIMISE.isSpecified() || Boolean.parseBoolean(MAXIMISE.getValue())) {
-            if((!useRemoteDriver() && !isNative()) || GRID_URL.isSpecified()) {
-                webDriverWrapper.manage().window().maximize();
+            if (!useRemoteDriver() && !isNative() || GRID_URL.isSpecified()) {
+                this.webDriverWrapper.manage().window().maximize();
             }
         }
     }
@@ -69,13 +136,13 @@ public abstract class DriverType {
      * Method to tear down the driver object, can be overiden
      */
     public void tearDownDriver() {
-        webDriverWrapper.getWrappedDriver().quit();
+        this.webDriverWrapper.getWrappedDriver().quit();
     }
 
     /**
      * Reset the browser based on whether it's been reset before
      */
-    public boolean resetBrowser(boolean requiresReset) {
+    public boolean resetBrowser(final boolean requiresReset) {
         if (requiresReset) {
             tearDownDriver();
             instantiate();
