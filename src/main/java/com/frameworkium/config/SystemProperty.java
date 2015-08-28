@@ -23,20 +23,21 @@ public enum SystemProperty {
     JIRA_RESULT_FIELDNAME("jiraResultFieldName"),
     JIRA_RESULT_TRANSITION("jiraResultTransition"),
     MAXIMISE("maximise"),
-    RESOLUTION("resolution");
-
+    RESOLUTION("resolution"),
+    PROXY_TYPE("proxyType"),
+    PROXY_ADDRESS("proxyAddress");
 
     private String value;
 
-    private SystemProperty(String key) {
+    private SystemProperty(final String key) {
         this.value = System.getProperty(key);
     }
 
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     public boolean isSpecified() {
-        return null != value && !value.isEmpty();
+        return null != this.value && !this.value.isEmpty();
     }
 }
