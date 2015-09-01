@@ -1,6 +1,8 @@
 package com.frameworkium.config.remotes;
 
-import static com.frameworkium.config.SystemProperty.SAUCE;
+import com.saucelabs.common.SauceOnDemandAuthentication;
+import com.saucelabs.common.SauceOnDemandSessionIdProvider;
+import com.saucelabs.saucerest.SauceREST;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,9 +11,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.saucelabs.common.SauceOnDemandAuthentication;
-import com.saucelabs.common.SauceOnDemandSessionIdProvider;
-import com.saucelabs.saucerest.SauceREST;
+import static com.frameworkium.config.SystemProperty.SAUCE;
 
 public class Sauce {
 

@@ -1,11 +1,14 @@
 package com.frameworkium.jira;
 
+import static com.frameworkium.config.SystemProperty.JIRA_PASSWORD;
+import static com.frameworkium.config.SystemProperty.JIRA_USERNAME;
+
 public class Config {
 
     public static final boolean FailTestOnlyIfAssertionError = true;
 
-    public static final String jiraUsername = "automation";
-    public static final String jiraPassword = "password";
+    public static final String jiraUsername = JIRA_USERNAME.getValue();
+    public static final String jiraPassword = JIRA_PASSWORD.getValue();
 
     public static final String jiraRestURI = "/rest/api/latest";
     public static final String zapiRestURI = "/rest/zapi/latest";

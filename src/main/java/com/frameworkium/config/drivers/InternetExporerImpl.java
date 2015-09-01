@@ -21,5 +21,4 @@ public class InternetExporerImpl extends DriverType {
     public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
         return new InternetExplorerDriver(capabilities);
     }
-
 }

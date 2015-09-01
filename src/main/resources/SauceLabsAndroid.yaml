@@ -1,0 +1,17 @@
+browser:
+browserVersion:
+platform: Android
+platformVersion: 5.1
+sauce: true
+browserStack:
+jiraURL:
+spiraURL:
+resultVersion:
+zapiCycleRegEx:
+jqlQuery:
+sutName:
+sutVersion:
+jiraResultFieldName:
+jiraResultTransition:
+maximise:
+resolution:

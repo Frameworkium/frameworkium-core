@@ -1,0 +1,22 @@
+browser:
+browserVersion:
+platform: iOS
+platformVersion:
+device: iPad Air
+captureURL:
+gridURL:
+build:
+appPath:
+sauce:
+browserStack: true
+jiraURL:
+spiraURL:
+resultVersion:
+zapiCycleRegEx:
+jqlQuery:
+sutName:
+sutVersion:
+jiraResultFieldName:
+jiraResultTransition:
+maximise:
+resolution:
