@@ -22,6 +22,8 @@ public enum SystemProperty {
     RESULT_VERSION("resultVersion"),
     ZAPI_CYCLE_REGEX("zapiCycleRegEx"),
     JQL_QUERY("jqlQuery"),
+    JIRA_USERNAME("jiraUsername"),
+    JIRA_PASSWORD("jiraPassword"),
     SUT_NAME("sutName"),
     SUT_VERSION("sutVersion"),
     JIRA_RESULT_FIELDNAME("jiraResultFieldName"),
