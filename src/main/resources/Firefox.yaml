@@ -1,0 +1,24 @@
+browser: Firefox
+browserVersion:
+platform:
+platformVersion:
+device:
+captureURL:
+gridURL:
+build:
+appPath:
+sauce:
+browserStack:
+jiraURL:
+spiraURL:
+resultVersion:
+zapiCycleRegEx:
+jqlQuery:
+sutName:
+sutVersion:
+jiraResultFieldName:
+jiraResultTransition:
+jiraUsername:
+jiraPassword:
+maximise:
+resolution:

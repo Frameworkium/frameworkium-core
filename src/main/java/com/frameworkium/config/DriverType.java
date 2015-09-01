@@ -7,14 +7,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.SessionNotFoundException;
 
-import static com.frameworkium.config.SystemProperty.*;
 import static com.frameworkium.config.DriverSetup.useRemoteDriver;
+import static com.frameworkium.config.SystemProperty.*;
 
 public abstract class DriverType {
 
-    private WebDriverWrapper webDriverWrapper;
+    protected WebDriverWrapper webDriverWrapper;
 
     protected final static Logger logger = LogManager.getLogger(DriverType.class);
 
@@ -74,19 +73,12 @@ public abstract class DriverType {
     }
 
     /**
-     * Reset the browser session based on whether it's been reset before
+     * Reset the browser based on whether it's been reset before
      */
-    public boolean clearSession(boolean requiresReset) {
+    public boolean resetBrowser(boolean requiresReset) {
         if (requiresReset) {
-            try {
-                if (DriverType.isNative()) {
-                    webDriverWrapper.getWrappedAppiumDriver().resetApp();
-                } else {
-                    webDriverWrapper.manage().deleteAllCookies();
-                }
-            } catch (SessionNotFoundException e) {
-                logger.error("Session quit unexpectedly.", e);
-            }
+            tearDownDriver();
+            instantiate();
         }
         return true;
     }
