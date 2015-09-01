@@ -1,8 +1,8 @@
 package com.frameworkium.config;
 
-import org.yaml.snakeyaml.Yaml;
-
 import java.util.Map;
+
+import org.yaml.snakeyaml.Yaml;
 
 public enum SystemProperty {
 
@@ -29,31 +29,30 @@ public enum SystemProperty {
     JIRA_RESULT_FIELDNAME("jiraResultFieldName"),
     JIRA_RESULT_TRANSITION("jiraResultTransition"),
     MAXIMISE("maximise"),
-    RESOLUTION("resolution");
+    RESOLUTION("resolution"),
+    PROXY("proxy");
 
     private String value;
     private static Map configMap = null;
 
-    SystemProperty(String key) {
+    SystemProperty(final String key) {
         this.value = retrieveValue(key);
     }
 
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     public boolean isSpecified() {
-        return null != value && !value.isEmpty();
+        return null != this.value && !this.value.isEmpty();
     }
 
-    private String retrieveValue(String key) {
+    private String retrieveValue(final String key) {
         if (System.getProperty(key) != null) {
             return System.getProperty(key);
         }
         if (System.getProperty("config") != null && configMap == null) {
-            configMap = (Map) new Yaml().load(
-                    ClassLoader.getSystemResourceAsStream(System.getProperty("config"))
-            );
+            configMap = (Map) new Yaml().load(ClassLoader.getSystemResourceAsStream(System.getProperty("config")));
         }
         if (configMap != null) {
             Object configValue = configMap.get(key);
