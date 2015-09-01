@@ -18,5 +18,7 @@ sutName:
 sutVersion:
 jiraResultFieldName:
 jiraResultTransition:
+jiraUsername:
+jiraPassword:
 maximise:
 resolution:
