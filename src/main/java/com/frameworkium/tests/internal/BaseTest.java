@@ -44,7 +44,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      *  - Initialise the screenshot capture
      *  - Configure the browser based on paramaters (maximise window, session resets, user agent)
      */
-    @BeforeSuite
+    @BeforeSuite(alwaysRun = true)
     public static void instantiateDriverObject() {
         driverType = new ThreadLocal<DriverType>() {
             @Override
@@ -79,7 +79,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      *
      * @param testMethod - The test method name of the test
      */
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public static void configureBrowserBeforeTest(Method testMethod) {
         configureDriverBasedOnParams();
         initialiseNewScreenshotCapture(testMethod);
@@ -140,7 +140,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     /**
      * Loops through all active driver types and tears down the driver object
      */
-    @AfterSuite
+    @AfterSuite(alwaysRun = true)
     public static void closeDriverObject() {
         try {
             for (DriverType driverType : activeDriverTypes) {
