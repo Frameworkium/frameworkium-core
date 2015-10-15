@@ -1,27 +1,15 @@
 package com.frameworkium.reporting;
 
-import static com.frameworkium.config.SystemProperty.APP_PATH;
-import static com.frameworkium.config.SystemProperty.BROWSER;
-import static com.frameworkium.config.SystemProperty.BROWSER_VERSION;
-import static com.frameworkium.config.SystemProperty.BUILD;
-import static com.frameworkium.config.SystemProperty.DEVICE;
-import static com.frameworkium.config.SystemProperty.GRID_URL;
-import static com.frameworkium.config.SystemProperty.JIRA_RESULT_FIELDNAME;
-import static com.frameworkium.config.SystemProperty.JIRA_RESULT_TRANSITION;
-import static com.frameworkium.config.SystemProperty.JIRA_URL;
-import static com.frameworkium.config.SystemProperty.PLATFORM;
-import static com.frameworkium.config.SystemProperty.PLATFORM_VERSION;
-import static com.frameworkium.config.SystemProperty.RESULT_VERSION;
+import com.frameworkium.tests.internal.BaseTest;
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import com.frameworkium.tests.internal.BaseTest;
+import static com.frameworkium.config.SystemProperty.*;
 
 public class AllureProperties {
     private static final Logger logger = LogManager.getLogger(AllureProperties.class);
@@ -61,6 +49,7 @@ public class AllureProperties {
             }
             if (JIRA_URL.isSpecified()) {
                 props.setProperty("allure.issues.tracker.pattern", JIRA_URL.getValue() + "/browse/%s");
+                props.setProperty("allure.tests.management.pattern", JIRA_URL.getValue() + "/browse/%s");
             }
             if (JIRA_RESULT_FIELDNAME.isSpecified()) {
                 props.setProperty("Jira Result Field Name", JIRA_RESULT_FIELDNAME.getValue());
