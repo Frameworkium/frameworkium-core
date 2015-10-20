@@ -17,7 +17,7 @@ public class DriverSetup {
      * List of supported drivers
      */
     private enum SupportedBrowsers {
-        FIREFOX,CHROME,OPERA,IE,PHANTOMJS,SAFARI
+        FIREFOX,CHROME,OPERA,IE,PHANTOMJS,SAFARI,ELECTRON
     }
 
     /**
@@ -84,6 +84,8 @@ public class DriverSetup {
                 return new PhantomJSImpl();
             case SAFARI:
                 return new SafariImpl();
+            case ELECTRON:
+                return new ElectronImpl();
         }
         return null;
     }
