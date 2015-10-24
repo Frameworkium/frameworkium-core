@@ -190,10 +190,10 @@ public class ResultLoggerListener implements ITestListener {
         String annotation = StringUtils.EMPTY;
         try {
             annotation = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(Issue.class).value();
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) { /* ignored */ }
         try {
             annotation = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(TestCaseId.class).value();
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) { /* ignored */}
         return annotation;
     }
 

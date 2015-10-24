@@ -48,6 +48,5 @@ public class Config {
         public static final int SPIRA_STATUS_WIP = 4;
         public static final int SPIRA_STATUS_BLOCKED = 5;
     }
-    
 
 }

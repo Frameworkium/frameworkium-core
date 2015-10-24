@@ -46,7 +46,7 @@ public class DriverSetup {
     }
 
     /**
-     * Uses the paramaters given to determine which browser/remote/platform to use
+     * Uses the parameters given to determine which browser/remote/platform to use
      *
      * @return - The correct driver type based on parameters
      */
@@ -79,7 +79,7 @@ public class DriverSetup {
             case OPERA:
                 return new OperaImpl();
             case IE:
-                return new InternetExporerImpl();
+                return new InternetExplorerImpl();
             case PHANTOMJS:
                 return new PhantomJSImpl();
             case SAFARI:
@@ -87,7 +87,7 @@ public class DriverSetup {
             case ELECTRON:
                 return new ElectronImpl();
         }
-        return null;
+        throw new IllegalStateException("Invalid browser type.");
     }
 
     /**

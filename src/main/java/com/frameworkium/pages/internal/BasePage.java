@@ -64,7 +64,8 @@ public abstract class BasePage<T extends BasePage<T>> {
             try {
                 AllureLogger.logToAllure("Page '" + this.getClass().getName() + "' successfully loaded");
                 if (SystemProperty.CAPTURE_URL.isSpecified())
-                    BaseTest.getCapture().takeAndSendScreenshot(new Command("load", null, this.getClass().getName()), driver, null);
+                    BaseTest.getCapture().takeAndSendScreenshot(
+                            new Command("load", null, this.getClass().getName()), driver, null);
             } catch (Exception e) {
                 logger.error("Error logging page load, but loaded successfully");
             }
@@ -90,7 +91,7 @@ public abstract class BasePage<T extends BasePage<T>> {
         for (Field field : pageObject.getClass().getDeclaredFields()) {
             for (Annotation annotation : field.getDeclaredAnnotations()) {
                 if (annotation instanceof Visible) {
-                    //If the group name matches, then check for visibility
+                    // If the group name matches, then check for visibility
                     if (((Visible) annotation).value().equalsIgnoreCase(visibleGroupName)) {
                         field.setAccessible(true);
                         Object obj = field.get(pageObject);
@@ -152,7 +153,6 @@ public abstract class BasePage<T extends BasePage<T>> {
         }
     }
 
-
     /**
      * Will wait up to ~10 seconds for the document to be ready.
      */
@@ -162,12 +162,12 @@ public abstract class BasePage<T extends BasePage<T>> {
         while (notReadyCount < 20 && readyCount < 3) {
             try {
                 Thread.sleep(500);
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) { /* don't care */ }
             boolean docReady = (boolean) executeJS(
                     "return document.readyState == 'complete'");
             if (docReady) {
                 readyCount++;
-                logger.info(String.format(
+                logger.debug(String.format(
                         "Document ready. Not ready %d times, ready %d times.",
                         notReadyCount, readyCount));
             } else {
@@ -215,8 +215,8 @@ public abstract class BasePage<T extends BasePage<T>> {
     /**
      * Method which executes an async JS call
      *
-     * @param javascript
-     * @return
+     * @param javascript the JavaScript code to execute
+     * @return the object returned from the executed JavaScript
      */
     public Object executeAsyncJS(String javascript) {
         Object returnObj = null;
@@ -225,7 +225,7 @@ public abstract class BasePage<T extends BasePage<T>> {
             JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
             returnObj = jsExecutor.executeAsyncScript(javascript);
         } catch(Exception e) {
-            logger.error("Async javascript execution failed! Please investigate into the issue.");
+            logger.error("Async javascript execution failed! Please investigate the issue.");
             logger.debug("Failed Javascript:" + javascript);
         }
         return returnObj;

@@ -27,8 +27,6 @@ public abstract class DriverType {
 
     /**
      * Creates the Wrapped Driver object, and returns to the test
-     *
-     * @return - Wrapped WebDriver object
      */
     public void instantiate() {
         logger.info("Current Browser Selection: " + this);
@@ -122,7 +120,7 @@ public abstract class DriverType {
     }
 
     /**
-     * Maximises the browser window based on paramaters
+     * Maximises the browser window based on parameters
      */
     public void maximiseBrowserWindow() {
         if (!MAXIMISE.isSpecified() || Boolean.parseBoolean(MAXIMISE.getValue())) {
@@ -133,7 +131,7 @@ public abstract class DriverType {
     }
 
     /**
-     * Method to tear down the driver object, can be overiden
+     * Method to tear down the driver object, can be overridden
      */
     public void tearDownDriver() {
         this.webDriverWrapper.getWrappedDriver().quit();

@@ -26,7 +26,7 @@ public class SpiraExecution {
 
     private final static String spiraURI = SPIRA_URL.getValue() + Config.spiraRestURI;
     private final String username = Config.spiraUsername;
-    private final String apikey = Config.spiraApiKey;
+    private final String apiKey = Config.spiraApiKey;
 
     public void recordTestResult(final String issue, final int resultId, final String comment,final ITestResult result) {
 
@@ -59,7 +59,7 @@ public class SpiraExecution {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         HttpPost request = new HttpPost(spiraURI + "/test-runs/record?" +
                 "username=" + username + "&" +
-                "api-key=" + apikey.replace("{", "%7B").replace("}", "%7D"));
+                "api-key=" + apiKey.replace("{", "%7B").replace("}", "%7D"));
         StringEntity jsonBody;
         try {
             jsonBody = new StringEntity(json);
@@ -83,7 +83,7 @@ public class SpiraExecution {
         
         JsonPath jsonPath = given().contentType("application/json")
                 .with().parameter("username", username)
-                .and().parameter("api-key",apikey)
+                .and().parameter("api-key", apiKey)
                 .get("/releases").andReturn().jsonPath();
 
         return jsonPath.getString(String.format("find {it.FullName == '%s'}.ReleaseId", releaseName));

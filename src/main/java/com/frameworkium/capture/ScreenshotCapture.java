@@ -79,9 +79,11 @@ public class ScreenshotCapture {
 
         String node = "n/a";
         if (DriverSetup.useRemoteDriver()) {
-            if(Sauce.isDesired()) {node = "SauceLabs" ; }
-            else if (BrowserStack.isDesired()) {node = "BrowserStack" ; }
-            else {
+            if (Sauce.isDesired()) {
+                node = "SauceLabs";
+            } else if (BrowserStack.isDesired()) {
+                node = "BrowserStack";
+            } else {
                 try {
                     RemoteWebDriver r = ((WebDriverWrapper) webdriver).getWrappedRemoteWebDriver();
                     URL gridURL = new URL(SystemProperty.GRID_URL.getValue());
