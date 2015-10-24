@@ -30,7 +30,7 @@ public class Sauce {
     }
 
     public static void updateJobName(SauceOnDemandSessionIdProvider sessionIdProvider, String name) {
-        Map<String, Object> updates = new HashMap<String, Object>();
+        Map<String, Object> updates = new HashMap<>();
         updates.put("name", name);
         client.updateJobInfo(sessionIdProvider.getSessionId(), updates);
     }

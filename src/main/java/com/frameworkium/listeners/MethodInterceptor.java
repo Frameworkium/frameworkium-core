@@ -39,13 +39,13 @@ public class MethodInterceptor implements IMethodInterceptor {
     }
 
     private List<IMethodInstance> filterTestsToRunBasedOnJQL(List<IMethodInstance> methods) {
-        List<IMethodInstance> methodsToRun = new ArrayList<IMethodInstance>();
+        List<IMethodInstance> methodsToRun = new ArrayList<>();
 
         // gets list of tests to run from JIRA based on the JQL
         if (JQL_QUERY.isSpecified() && JIRA_URL.isSpecified()) {
             logger.info("Overriding specified tests to run with JQL query results");
 
-            Map<String, IMethodInstance> testMethods = new HashMap<String, IMethodInstance>();
+            Map<String, IMethodInstance> testMethods = new HashMap<>();
             for (IMethodInstance instance : methods) {
                 Issue issue = instance.getMethod().getConstructorOrMethod().getMethod().getAnnotation(Issue.class);
                 if (null != issue) {
@@ -78,7 +78,7 @@ public class MethodInterceptor implements IMethodInterceptor {
     }
 
     private List<IMethodInstance> filterTestsToRunBasedOnDriverAndTestClassName(List<IMethodInstance> methods) {
-        List<IMethodInstance> methodsToRun = new ArrayList<IMethodInstance>();
+        List<IMethodInstance> methodsToRun = new ArrayList<>();
         for (IMethodInstance instance : methods) {
             String clazz = instance.getMethod().getRealClass().getName();
 

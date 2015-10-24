@@ -17,18 +17,19 @@ public class ChromeImpl extends DriverType {
     @Override
     public DesiredCapabilities getDesiredCapabilities() {
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-        capabilities.setCapability("chrome.switches", Arrays.asList("--no-default-browser-check"));
-        HashMap<String, String> chromePreferences = new HashMap<String, String>();
+        capabilities.setCapability(
+                "chrome.switches", Arrays.asList("--no-default-browser-check"));
+        HashMap<String, String> chromePreferences = new HashMap<>();
         chromePreferences.put("profile.password_manager_enabled", "false");
         capabilities.setCapability("chrome.prefs", chromePreferences);
 
-        //Use Chrome's built in device emulators
-        //Specify browser=chrome, but also provide device name to use chrome's emulator
+        // Use Chrome's built in device emulators
+        // Specify browser=chrome, but also provide device name to use chrome's emulator
         if (DEVICE.isSpecified()) {
-            Map<String, String> mobileEmulation = new HashMap<String, String>();
+            Map<String, String> mobileEmulation = new HashMap<>();
             mobileEmulation.put("deviceName", DEVICE.getValue());
 
-            Map<String, Object> chromeOptions = new HashMap<String, Object>();
+            Map<String, Object> chromeOptions = new HashMap<>();
             chromeOptions.put("mobileEmulation", mobileEmulation);
 
             capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);

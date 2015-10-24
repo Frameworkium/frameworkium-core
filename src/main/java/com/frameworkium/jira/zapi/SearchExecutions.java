@@ -45,7 +45,7 @@ public class SearchExecutions {
 
     private List<Integer> getIDs(String path) {
 
-        List<Integer> list = new ArrayList<Integer>();
+        List<Integer> list = new ArrayList<>();
         List<Integer> tempList = jsonPath.getList(path);
 
         if (SystemProperty.ZAPI_CYCLE_REGEX.isSpecified()) {
