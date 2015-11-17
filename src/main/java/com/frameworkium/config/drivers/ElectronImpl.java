@@ -14,23 +14,23 @@ public class ElectronImpl extends DriverType {
 
     @Override
     public DesiredCapabilities getDesiredCapabilities() {
-        Map<String, String> chromeOptions = new HashMap<>();
+
+        ChromeOptions options = new ChromeOptions();
         if (!APP_PATH.isSpecified()) {
             logger.error("App path must be specified when using Electron!");
         } else {
-            chromeOptions.put("binary", APP_PATH.getValue());
+            options.setBinary(APP_PATH.getValue());
         }
-        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+        DesiredCapabilities desiredCapabilities = new DesiredCapabilities().chrome();
         desiredCapabilities.setCapability("host", "localhost");
         desiredCapabilities.setCapability("port", 9515);
-        desiredCapabilities.setCapability("browserName", "chrome");
-        desiredCapabilities.setCapability("chromeOptions", chromeOptions);
+        desiredCapabilities.setCapability("chromeOptions", options);
         return desiredCapabilities;
     }
 
     @Override
     public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
-        return new RemoteWebDriver(capabilities);
+        return new ChromeDriver(capabilities);
     }
 
 }
