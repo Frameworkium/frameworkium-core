@@ -2,11 +2,9 @@ package com.frameworkium.config.drivers;
 
 import com.frameworkium.config.DriverType;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.frameworkium.config.SystemProperty.APP_PATH;
 
