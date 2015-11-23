@@ -36,7 +36,7 @@ public class ElectronImpl extends DriverType {
         catch(MalformedURLException e) {
             throw new RuntimeException(e);
         }
-        DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+        DesiredCapabilities desiredCapabilities = DesiredCapabilities.chrome();
         desiredCapabilities.setCapability("browserName", "chrome");
         desiredCapabilities.setCapability("chromeOptions", chromeOptions);
         return desiredCapabilities;
