@@ -26,7 +26,12 @@ public class ElectronImpl extends DriverType {
             chromeOptions.put("binary", APP_PATH.getValue());
         }
         try {
-            remoteURL = new URL(GRID_URL.getValue());
+            if (GRID_URL.isSpecified()) {
+                remoteURL = new URL(GRID_URL.getValue());
+            }
+            else {
+                remoteURL = new URL("http://localhost:9515");
+            }
         }
         catch(MalformedURLException e) {
             throw new RuntimeException(e);
