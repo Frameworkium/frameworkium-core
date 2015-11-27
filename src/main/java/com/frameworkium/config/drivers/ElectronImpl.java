@@ -11,11 +11,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.frameworkium.config.SystemProperty.APP_PATH;
-import static com.frameworkium.config.SystemProperty.GRID_URL;
 
 public class ElectronImpl extends DriverType {
 
     private static URL remoteURL;
+
+    static {
+        try {
+            remoteURL = new URL("http://localhost:9515");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public DesiredCapabilities getDesiredCapabilities() {
@@ -25,17 +32,6 @@ public class ElectronImpl extends DriverType {
         } else {
             chromeOptions.put("binary", APP_PATH.getValue());
         }
-        try {
-            if (GRID_URL.isSpecified()) {
-                remoteURL = new URL(GRID_URL.getValue());
-            }
-            else {
-                remoteURL = new URL("http://localhost:9515");
-            }
-        }
-        catch(MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
         DesiredCapabilities desiredCapabilities = DesiredCapabilities.chrome();
         desiredCapabilities.setCapability("browserName", "chrome");
         desiredCapabilities.setCapability("chromeOptions", chromeOptions);
@@ -44,6 +40,6 @@ public class ElectronImpl extends DriverType {
 
     @Override
     public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
-        return new RemoteWebDriver(remoteURL ,capabilities);
+        return new RemoteWebDriver(remoteURL, capabilities);
     }
 }

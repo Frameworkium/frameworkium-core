@@ -1,10 +1,10 @@
 package com.frameworkium.pages.internal;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
+import com.frameworkium.capture.model.Command;
+import com.frameworkium.config.SystemProperty;
+import com.frameworkium.reporting.AllureLogger;
+import com.frameworkium.tests.internal.BaseTest;
+import com.google.inject.Inject;
 import com.paulhammant.ngwebdriver.WaitForAngularRequestsToFinish;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -15,16 +15,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 import ru.yandex.qatools.htmlelements.loader.HtmlElementLoader;
 
-import com.frameworkium.capture.model.Command;
-import com.frameworkium.config.SystemProperty;
-import com.frameworkium.reporting.AllureLogger;
-import com.frameworkium.tests.internal.BaseTest;
-import com.google.inject.Inject;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public abstract class BasePage<T extends BasePage<T>> {
 
@@ -184,7 +182,13 @@ public abstract class BasePage<T extends BasePage<T>> {
      * @return boolean - AngularJS true/false
      */
     private boolean isPageAngularJS() {
-        return executeJS("return typeof angular;").equals("object");
+        try {
+            return executeJS("return typeof angular;").equals("object");
+        } catch (NullPointerException e) {
+            logger.error("Detecting whether the page was angular returned a null object. This means your browser" +
+                    "hasn't started! Investigate into the issue.");
+            return false;
+        }
     }
 
     /**
