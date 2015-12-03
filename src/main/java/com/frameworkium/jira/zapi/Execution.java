@@ -96,11 +96,12 @@ public class Execution {
                 comment = comment.substring(0, 747) + "...";
             }
             obj.put("comment", comment);
+            
+            given().contentType("application/json").and().body(obj.toString()).then().put("execution/" + executionId + "/execute");
+
         } catch (JSONException e) {
             logger.error("Update status and comment failed", e);
         }
-
-        given().contentType("application/json").and().body(obj).then().put("execution/" + executionId + "/execute");
     }
 
     private void deleteExistingAttachments(final Integer executionId) {
