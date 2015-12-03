@@ -17,8 +17,11 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
+import ru.yandex.qatools.allure.Allure;
 import ru.yandex.qatools.allure.annotations.Issue;
 import ru.yandex.qatools.allure.annotations.TestCaseId;
+import ru.yandex.qatools.allure.events.StepFinishedEvent;
+import ru.yandex.qatools.allure.events.StepStartedEvent;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -196,5 +199,13 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      */
     public static ScreenshotCapture getCapture() {
         return capture.get();
+    }
+
+    public static void startStep(String stepName){
+        Allure.LIFECYCLE.fire(new StepStartedEvent(stepName));
+    }
+
+    public static void finishStep(){
+        Allure.LIFECYCLE.fire(new StepFinishedEvent());
     }
 }
