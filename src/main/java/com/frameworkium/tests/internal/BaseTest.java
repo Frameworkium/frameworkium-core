@@ -201,11 +201,11 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         return capture.get();
     }
 
-    public void startStep(String stepName){
+    public void stepStart(String stepName){
         Allure.LIFECYCLE.fire(new StepStartedEvent(stepName));
     }
 
-    public void finishStep(){
+    public void stepFinish(){
         Allure.LIFECYCLE.fire(new StepFinishedEvent());
     }
 }
