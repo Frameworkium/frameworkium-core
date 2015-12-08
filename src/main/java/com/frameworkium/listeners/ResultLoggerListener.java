@@ -10,7 +10,6 @@ import static com.frameworkium.config.SystemProperty.SPIRA_URL;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import com.frameworkium.config.SystemProperty;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,7 +22,7 @@ import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import com.frameworkium.jira.Config;
 import com.frameworkium.jira.api.Test;
-import com.frameworkium.jira.zapi.Execution;
+import com.frameworkium.jira.zapi.TestExecution;
 import com.frameworkium.spira.SpiraExecution;
 import com.frameworkium.tests.internal.BaseTest;
 
@@ -40,7 +39,7 @@ public class ResultLoggerListener implements ITestListener {
 
             if (zapiLoggingParamsProvided(result)) {
                 logger.info("Logging WIP to zapi");
-                new Execution(RESULT_VERSION.getValue(), getIssueOrTestCaseIdAnnotation(result)).update(
+                new TestExecution(RESULT_VERSION.getValue(), getIssueOrTestCaseIdAnnotation(result)).update(
                             Config.ZAPI_STATUS.ZAPI_STATUS_WIP, comment, null);
             }
             if (jiraTransitionLoggingParamsProvided(result)) {
@@ -79,7 +78,7 @@ public class ResultLoggerListener implements ITestListener {
 
             if (zapiLoggingParamsProvided(result)) {
                 logger.info("Logging PASS to zapi");
-                new Execution(RESULT_VERSION.getValue(), getIssueOrTestCaseIdAnnotation(result)).update(
+                new TestExecution(RESULT_VERSION.getValue(), getIssueOrTestCaseIdAnnotation(result)).update(
                             Config.ZAPI_STATUS.ZAPI_STATUS_PASS, comment, null);
             }
             if (jiraTransitionLoggingParamsProvided(result)) {
@@ -110,7 +109,7 @@ public class ResultLoggerListener implements ITestListener {
 
             if (zapiLoggingParamsProvided(result)) {
                 logger.info("Logging FAIL to zapi");
-                new Execution(RESULT_VERSION.getValue(), getIssueOrTestCaseIdAnnotation(result)).update(
+                new TestExecution(RESULT_VERSION.getValue(), getIssueOrTestCaseIdAnnotation(result)).update(
                             Config.ZAPI_STATUS.ZAPI_STATUS_FAIL, comment, null);
             }
             if (jiraTransitionLoggingParamsProvided(result)) {
@@ -142,7 +141,7 @@ public class ResultLoggerListener implements ITestListener {
 
             if (zapiLoggingParamsProvided(result)) {
                 logger.info("Logging BLOCKED to zapi");
-                new Execution(RESULT_VERSION.getValue(), getIssueOrTestCaseIdAnnotation(result)).update(
+                new TestExecution(RESULT_VERSION.getValue(), getIssueOrTestCaseIdAnnotation(result)).update(
                             Config.ZAPI_STATUS.ZAPI_STATUS_BLOCKED, comment, null);
             }
             if (jiraTransitionLoggingParamsProvided(result)) {

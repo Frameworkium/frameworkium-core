@@ -20,9 +20,9 @@ import com.frameworkium.jira.Config;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.authentication.AuthenticationScheme;
 
-public class Execution {
+public class TestExecution {
 
-    private final static Logger logger = LogManager.getLogger(Execution.class);
+    private final static Logger logger = LogManager.getLogger(TestExecution.class);
     private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername, Config.jiraPassword);
     private final static String zapiURI = JIRA_URL.getValue() + Config.zapiRestURI;
 
@@ -36,13 +36,13 @@ public class Execution {
         RestAssured.authentication = auth;
     }
 
-    public Execution(final String issue) {
+    public TestExecution(final String issue) {
         this.version = RESULT_VERSION.getValue();
         this.issue = issue;
         this.idList = getExecutionIds();
     }
 
-    public Execution(final String version, final String issue) {
+    public TestExecution(final String version, final String issue) {
         this.version = version;
         this.issue = issue;
         this.idList = getExecutionIds();
