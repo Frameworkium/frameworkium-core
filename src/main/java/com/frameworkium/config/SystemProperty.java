@@ -1,8 +1,8 @@
 package com.frameworkium.config;
 
-import java.util.Map;
-
 import org.yaml.snakeyaml.Yaml;
+
+import java.util.Map;
 
 public enum SystemProperty {
 
@@ -30,7 +30,8 @@ public enum SystemProperty {
     JIRA_RESULT_TRANSITION("jiraResultTransition"),
     MAXIMISE("maximise"),
     RESOLUTION("resolution"),
-    PROXY("proxy");
+    PROXY("proxy"),
+    FIREFOX_PROFILE("firefoxProfile");
 
     private String value;
     private static Map configMap = null;
