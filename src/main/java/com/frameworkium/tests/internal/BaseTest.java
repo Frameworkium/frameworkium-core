@@ -45,7 +45,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      *  - Retrieve the desired driver type and initialise the driver
      *  - Initialise whether the browser needs resetting
      *  - Initialise the screenshot capture
-     *  - Configure the browser based on paramaters (maximise window, session resets, user agent)
+     *  - Configure the browser based on parameters (maximise window, session resets, user agent)
      */
     @BeforeSuite(alwaysRun = true)
     public static void instantiateDriverObject() {
@@ -146,9 +146,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     @AfterSuite(alwaysRun = true)
     public static void closeDriverObject() {
         try {
-            for (DriverType driverType : activeDriverTypes) {
-                driverType.tearDownDriver();
-            }
+            activeDriverTypes.forEach(DriverType::tearDownDriver);
         } catch (Exception e) {
             logger.warn("Session quit unexpectedly.", e);
         }
