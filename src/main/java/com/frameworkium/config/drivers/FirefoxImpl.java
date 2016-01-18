@@ -23,7 +23,7 @@ public class FirefoxImpl extends DriverType {
         if (FIREFOX_PROFILE.isSpecified()) {
             File profileFile = new File(FIREFOX_PROFILE.getValue());
             FirefoxProfile firefoxProfile;
-            if (profileFile.isFile() && !profileFile.isDirectory()) {
+            if (profileFile.isFile() || profileFile.isDirectory()) {
                 firefoxProfile = new FirefoxProfile(profileFile);
             }
             else {
