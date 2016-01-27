@@ -1,30 +1,28 @@
 package com.frameworkium.jira.zapi;
 
 import static com.frameworkium.config.SystemProperty.JIRA_URL;
-import static com.jayway.restassured.RestAssured.get;
-import static com.jayway.restassured.RestAssured.preemptive;
+import static com.jayway.restassured.RestAssured.given;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.frameworkium.config.SystemProperty;
 import com.frameworkium.jira.Config;
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.authentication.AuthenticationScheme;
 import com.jayway.restassured.path.json.JsonPath;
 
 public class SearchExecutions {
 
-    private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername, Config.jiraPassword);
     private final static String zapiURI = JIRA_URL.getValue() + Config.zapiRestURI;
 
     private final JsonPath jsonPath;
 
     public SearchExecutions(final String query) {
-        RestAssured.baseURI = zapiURI;
-        RestAssured.authentication = auth;
 
-        jsonPath = get(String.format("zql/executeSearch?zqlQuery=%s", query)).andReturn().jsonPath();
+        jsonPath = given()
+                .auth(). preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+                .baseUri(zapiURI)
+                .get(String.format("zql/executeSearch?zqlQuery=%s", query))
+                .andReturn().jsonPath();
     }
 
     /**
@@ -43,10 +41,14 @@ public class SearchExecutions {
         return getIDs("executions.status.id");
     }
 
-    private List<Integer> getIDs(String path) {
+    public List<String> getIssueIds(){
+        return getIDs("executions.issueId");
+    }
 
-        List<Integer> list = new ArrayList<>();
-        List<Integer> tempList = jsonPath.getList(path);
+    private <T> List<T> getIDs(String path) {
+
+        List<T> list = new ArrayList<>();
+        List<T> tempList = jsonPath.getList(path);
 
         if (SystemProperty.ZAPI_CYCLE_REGEX.isSpecified()) {
             String jiraCycleRegEx = SystemProperty.ZAPI_CYCLE_REGEX.getValue();

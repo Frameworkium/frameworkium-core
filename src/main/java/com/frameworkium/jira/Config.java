@@ -20,6 +20,8 @@ public class Config {
         public static final int ZAPI_STATUS_FAIL = 2;
         public static final int ZAPI_STATUS_WIP = 3;
         public static final int ZAPI_STATUS_BLOCKED = 4;
+        public static final int ZAPI_STATUS_UNEXECUTED = -1;
+
     }
     
     public static class JIRA_FIELD_STATUS {
