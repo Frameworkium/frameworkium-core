@@ -1,8 +1,6 @@
 package com.frameworkium.jira.zapi;
 
 import com.frameworkium.jira.Config;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.jayway.restassured.internal.mapper.ObjectMapperType;
 import com.jayway.restassured.path.json.JsonPath;
@@ -17,9 +15,7 @@ import java.util.List;
 import static com.frameworkium.config.SystemProperty.JIRA_URL;
 import static com.jayway.restassured.RestAssured.given;
 
-/**
- * Created by civie21 on 08/12/2015.
- */
+
 public class StepExecution {
 
 
