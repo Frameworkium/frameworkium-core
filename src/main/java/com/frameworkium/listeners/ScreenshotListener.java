@@ -1,10 +1,9 @@
 package com.frameworkium.listeners;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
+import com.frameworkium.config.DriverSetup.SupportedBrowsers;
+import com.frameworkium.config.SystemProperty;
 import com.frameworkium.config.WebDriverWrapper;
+import com.frameworkium.tests.internal.BaseTest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;
@@ -13,11 +12,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Augmenter;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
-
 import ru.yandex.qatools.allure.annotations.Attachment;
 
-import com.frameworkium.config.SystemProperty;
-import com.frameworkium.tests.internal.BaseTest;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import static com.frameworkium.config.SystemProperty.BROWSER;
+import static com.frameworkium.config.DriverSetup.SupportedBrowsers.ELECTRON;
 
 public class ScreenshotListener extends TestListenerAdapter {
 
@@ -85,13 +87,27 @@ public class ScreenshotListener extends TestListenerAdapter {
         }
     }
 
+    /**
+     * Are screenshots supported by the browser type being used
+     *
+     * @return boolean - true/false to whether screenshots are supported
+     */
+    private boolean isScreenshotSupported() {
+        if (BROWSER.isSpecified()) {
+            return !SupportedBrowsers.valueOf(BROWSER.getValue().toUpperCase()).equals(ELECTRON);
+        }
+        else {
+            return false;
+        }
+    }
+
     @Override
     public void onTestFailure(ITestResult failingTest) {
-        takeScreenshot(failingTest.getName());
+        if (isScreenshotSupported()) takeScreenshot(failingTest.getName());
     }
 
     @Override
     public void onTestSkipped(ITestResult skippedTest) {
-        takeScreenshot(skippedTest.getName());
+        if (isScreenshotSupported()) takeScreenshot(skippedTest.getName());
     }
 }

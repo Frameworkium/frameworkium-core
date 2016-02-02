@@ -1,11 +1,8 @@
 package com.frameworkium.config;
 
-import static com.frameworkium.config.DriverSetup.useRemoteDriver;
-import static com.frameworkium.config.SystemProperty.APP_PATH;
-import static com.frameworkium.config.SystemProperty.GRID_URL;
-import static com.frameworkium.config.SystemProperty.MAXIMISE;
-import static com.frameworkium.config.SystemProperty.PROXY;
-
+import com.frameworkium.capture.ScreenshotCapture;
+import com.frameworkium.listeners.CaptureListener;
+import com.frameworkium.listeners.EventListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Proxy;
@@ -14,9 +11,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import com.frameworkium.capture.ScreenshotCapture;
-import com.frameworkium.listeners.CaptureListener;
-import com.frameworkium.listeners.EventListener;
+import static com.frameworkium.config.DriverSetup.useRemoteDriver;
+import static com.frameworkium.config.SystemProperty.*;
 
 public abstract class DriverType {
 
@@ -134,7 +130,7 @@ public abstract class DriverType {
      * Method to tear down the driver object, can be overridden
      */
     public void tearDownDriver() {
-        this.webDriverWrapper.getWrappedDriver().quit();
+        this.webDriverWrapper.quit();
     }
 
     /**

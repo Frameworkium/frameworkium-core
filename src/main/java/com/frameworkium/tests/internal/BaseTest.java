@@ -84,8 +84,12 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      */
     @BeforeMethod(alwaysRun = true)
     public static void configureBrowserBeforeTest(Method testMethod) {
-        configureDriverBasedOnParams();
-        initialiseNewScreenshotCapture(testMethod);
+        try {
+            configureDriverBasedOnParams();
+            initialiseNewScreenshotCapture(testMethod);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
