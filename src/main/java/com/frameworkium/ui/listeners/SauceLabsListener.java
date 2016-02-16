@@ -1,6 +1,6 @@
-package com.frameworkium.listeners;
+package com.frameworkium.ui.listeners;
 
-import static com.frameworkium.config.SystemProperty.APP_PATH;
+import static com.frameworkium.ui.config.SystemProperty.APP_PATH;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,8 +10,8 @@ import org.apache.logging.log4j.Logger;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 
-import com.frameworkium.config.DriverType;
-import com.frameworkium.config.remotes.Sauce;
+import com.frameworkium.ui.config.DriverType;
+import com.frameworkium.ui.config.remotes.Sauce;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandTestListener;
 

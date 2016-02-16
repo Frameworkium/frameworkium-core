@@ -1,4 +1,4 @@
-package com.frameworkium.listeners;
+package com.frameworkium.ui.listeners;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
@@ -14,9 +14,9 @@ import org.testng.ITestResult;
 import com.frameworkium.capture.ElementHighlighter;
 import com.frameworkium.capture.ScreenshotCapture;
 import com.frameworkium.capture.model.Command;
-import com.frameworkium.config.DriverType;
-import com.frameworkium.config.WebDriverWrapper;
-import com.frameworkium.tests.internal.BaseTest;
+import com.frameworkium.ui.config.DriverType;
+import com.frameworkium.ui.config.WebDriverWrapper;
+import com.frameworkium.ui.tests.internal.BaseTest;
 
 public class CaptureListener implements WebDriverEventListener, ITestListener {
 

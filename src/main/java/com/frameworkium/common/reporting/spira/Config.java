@@ -1,4 +1,4 @@
-package com.frameworkium.reporting.spira;
+package com.frameworkium.common.reporting.spira;
 
 public class Config {
 

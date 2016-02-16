@@ -1,4 +1,4 @@
-package com.frameworkium.reporting.jira.zapi;
+package com.frameworkium.common.reporting.jira.zapi;
 
 import static com.frameworkium.config.SystemProperty.JIRA_URL;
 import static com.frameworkium.config.SystemProperty.RESULT_VERSION;

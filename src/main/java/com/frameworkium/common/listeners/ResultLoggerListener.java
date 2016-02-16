@@ -1,4 +1,4 @@
-package com.frameworkium.listeners;
+package com.frameworkium.common.listeners;
 
 import static com.frameworkium.config.SystemProperty.CAPTURE_URL;
 import static com.frameworkium.config.SystemProperty.JIRA_RESULT_FIELDNAME;
@@ -21,11 +21,11 @@ import org.testng.ITestResult;
 import ru.yandex.qatools.allure.annotations.Issue;
 import ru.yandex.qatools.allure.annotations.TestCaseId;
 
-import com.frameworkium.jira.Config;
-import com.frameworkium.jira.api.Test;
-import com.frameworkium.jira.zapi.Execution;
-import com.frameworkium.spira.SpiraExecution;
-import com.frameworkium.tests.internal.BaseTest;
+import com.frameworkium.reporting.jira.Config;
+import com.frameworkium.common.reporting.jira.api.Test;
+import com.frameworkium.common.reporting.jira.zapi.Execution;
+import com.frameworkium.common.reporting.spira.SpiraExecution;
+import com.frameworkium.ui.tests.internal.BaseTest;
 
 public class ResultLoggerListener implements ITestListener {
 

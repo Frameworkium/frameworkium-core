@@ -1,4 +1,4 @@
-package com.frameworkium.reporting.jira.api;
+package com.frameworkium.common.reporting.jira.api;
 
 import static com.frameworkium.ui.config.SystemProperty.JIRA_URL;
 import static com.jayway.restassured.RestAssured.get;

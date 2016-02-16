@@ -1,4 +1,4 @@
-package com.frameworkium.listeners;
+package com.frameworkium.common.listeners;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

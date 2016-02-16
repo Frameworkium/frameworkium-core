@@ -1,4 +1,4 @@
-package com.frameworkium.listeners;
+package com.frameworkium.common.listeners;
 
 import static com.frameworkium.config.SystemProperty.JIRA_URL;
 import static com.frameworkium.config.SystemProperty.JQL_QUERY;
@@ -18,7 +18,7 @@ import ru.yandex.qatools.allure.annotations.Issue;
 import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import com.frameworkium.config.DriverType;
-import com.frameworkium.jira.api.SearchIssues;
+import com.frameworkium.common.reporting.jira.api.SearchIssues;
 
 public class MethodInterceptor implements IMethodInterceptor {
 

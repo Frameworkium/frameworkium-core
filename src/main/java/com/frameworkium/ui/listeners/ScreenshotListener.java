@@ -1,9 +1,9 @@
-package com.frameworkium.listeners;
+package com.frameworkium.ui.listeners;
 
 import com.frameworkium.config.DriverSetup.SupportedBrowsers;
 import com.frameworkium.config.SystemProperty;
 import com.frameworkium.config.WebDriverWrapper;
-import com.frameworkium.tests.internal.BaseTest;
+import com.frameworkium.ui.tests.internal.BaseTest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;

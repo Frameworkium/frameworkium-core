@@ -1,4 +1,4 @@
-package com.frameworkium.jira;
+package com.frameworkium.common.reporting.jira;
 
 import static com.frameworkium.config.SystemProperty.JIRA_PASSWORD;
 import static com.frameworkium.config.SystemProperty.JIRA_USERNAME;

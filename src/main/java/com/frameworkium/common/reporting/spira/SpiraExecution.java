@@ -1,4 +1,4 @@
-package com.frameworkium.reporting.spira;
+package com.frameworkium.common.reporting.spira;
 
 import static com.frameworkium.config.SystemProperty.RESULT_VERSION;
 import static com.frameworkium.config.SystemProperty.SPIRA_URL;

@@ -1,4 +1,4 @@
-package com.frameworkium.reporting;
+package com.frameworkium.common.reporting;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

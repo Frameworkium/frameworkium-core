@@ -1,6 +1,6 @@
-package com.frameworkium.reporting;
+package com.frameworkium.common.reporting;
 
-import com.frameworkium.tests.internal.BaseTest;
+import com.frameworkium.ui.tests.internal.BaseTest;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

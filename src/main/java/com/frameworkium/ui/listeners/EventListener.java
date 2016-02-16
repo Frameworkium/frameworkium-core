@@ -1,4 +1,4 @@
-package com.frameworkium.listeners;
+package com.frameworkium.ui.listeners;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,7 +24,7 @@ public class EventListener implements WebDriverEventListener {
         logger.debug("clicked element with " + getLocatorFromElement(element));
     }
 
-    @Override
+    @Overrides
     public void afterFindBy(By by, WebElement arg1, WebDriver arg2) {
         logger.debug("found element " + by);
     }
