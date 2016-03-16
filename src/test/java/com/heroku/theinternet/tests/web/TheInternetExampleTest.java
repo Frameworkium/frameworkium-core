@@ -1,8 +1,8 @@
 package com.heroku.theinternet.tests.web;
 
+import com.frameworkium.core.ui.tests.BaseTest;
 import ru.yandex.qatools.allure.annotations.Issue;
 
-import com.frameworkium.tests.internal.BaseTest;
 import com.heroku.theinternet.pages.web.WelcomePage;
 import org.testng.annotations.Test;
 
