@@ -2,17 +2,19 @@ package com.frameworkium.core.api.services;
 
 import com.frameworkium.core.api.annotations.FindBy;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
-import com.frameworkium.core.ui.annotations.Visible;
-import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.path.json.JsonPath;
+import com.jayway.restassured.response.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 public abstract class BaseService<T extends BaseService<T>> {
 
     protected final Logger logger = LogManager.getLogger(this);
+
+    protected Response response;
+    protected JsonPath jsonPath;
 
     /**
      * @return Returns the current page object.
@@ -33,18 +35,13 @@ public abstract class BaseService<T extends BaseService<T>> {
     }
 
     @SuppressWarnings("unchecked")
-    public T get(String url) {
-        RestAssured.get(url);
-        return get();
-    }
+    public T get(Response response) {
 
-    @SuppressWarnings("unchecked")
-    public T get() {
+        this.response = response;
+        jsonPath = response.jsonPath();
+        setFieldsBasedUponAnnotations();
 
-        System.out.println("HERE!!!!!");
-        populateFindBys(this);
-
-        try{
+        try {
             AllureLogger.logToAllure("Service '" + this.getClass().getName() + "' successfully loaded");
         } catch (Exception e) {
             logger.error("Error logging page load, but loaded successfully");
@@ -52,22 +49,21 @@ public abstract class BaseService<T extends BaseService<T>> {
         return (T) this;
     }
 
-    private void populateFindBys(Object serviceObject){
-        for (Field field : serviceObject.getClass().getDeclaredFields()) {
-            for (Annotation annotation : field.getDeclaredAnnotations()) {
-                if (annotation instanceof FindBy) {
+    private void setFieldsBasedUponAnnotations() {
+        Field[] fields = this.getClass().getDeclaredFields();
 
-                    Object a = ((FindBy) annotation).jsonPath();
+        for (Field field : fields) {
+            FindBy[] annotations = field.getAnnotationsByType(FindBy.class);
+            if (annotations.length == 1) {
+                String jp = annotations[0].jsonPath();
+                Object value = jsonPath.get(jp);
+                if (value != null) {
                     try {
                         field.setAccessible(true);
-                        field.set(serviceObject, a);
-                        field.setAccessible(false);
-
+                        field.set(this, value);
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
-
-
                 }
             }
         }
