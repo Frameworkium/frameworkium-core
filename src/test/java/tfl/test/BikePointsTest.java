@@ -2,8 +2,8 @@ package tfl.test;
 
 import com.frameworkium.core.api.tests.BaseTest;
 import org.testng.annotations.Test;
-import tfl.service.bikepoint.AllBikePointsService;
-import tfl.service.bikepoint.BikePointByLatLongService;
+import tfl.services.bikepoint.AllBikePointsService;
+import tfl.services.bikepoint.BikePointByLatLongService;
 
 import java.util.List;
 import java.util.Random;

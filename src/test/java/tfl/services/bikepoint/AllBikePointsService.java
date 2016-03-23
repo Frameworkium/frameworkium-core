@@ -1,23 +1,32 @@
-package tfl.service.bikepoint;
+package tfl.services.bikepoint;
 
 import com.frameworkium.core.api.annotations.FindBy;
 import com.frameworkium.core.api.services.BaseService;
 import com.frameworkium.core.api.services.ServiceFactory;
 import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.builder.RequestSpecBuilder;
 import com.jayway.restassured.response.Response;
+import com.jayway.restassured.specification.RequestSpecification;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static com.jayway.restassured.RestAssured.given;
 
 public class AllBikePointsService extends BaseService<AllBikePointsService> {
 
     @FindBy(jsonPath = "commonName")
     private List<String> allNames;
 
+    @FindBy(jsonPath = "lat")
+    private List<String> allLats;
+
+    @FindBy(jsonPath = "lon")
+    private List<String> allLongs;
+
     public static AllBikePointsService newInstance() {
-        Response r = RestAssured.get(BikePointResource.END_POINT);
-        return ServiceFactory.newInstance(AllBikePointsService.class, r);
+        return ServiceFactory.newInstance(AllBikePointsService.class, BikePointResource.END_POINT);
     }
 
     /**
@@ -47,13 +56,11 @@ public class AllBikePointsService extends BaseService<AllBikePointsService> {
      * @return a list of {@see BikePoints}
      */
     public List<BikePoint> getAllBikePoints() {
-        List<String> lats = jsonPath.getList("lat", String.class);
-        List<String> lons = jsonPath.getList("lon", String.class);
 
         return IntStream
                 .range(0, allNames.size())
                 .mapToObj(i -> new BikePoint(
-                        allNames.get(i), lats.get(i), lons.get(i)))
+                        allNames.get(i), allLats.get(i), allLongs.get(i)))
                 .collect(Collectors.toList());
     }
 

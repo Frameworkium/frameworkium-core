@@ -1,4 +1,4 @@
-package tfl.service.bikepoint;
+package tfl.services.bikepoint;
 
 class BikePointResource {
     private static final String PATH = "/BikePoint";
