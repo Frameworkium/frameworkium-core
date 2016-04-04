@@ -9,16 +9,15 @@ import com.paulhammant.ngwebdriver.WaitForAngularRequestsToFinish;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 import ru.yandex.qatools.htmlelements.loader.HtmlElementLoader;
 
+import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -115,6 +114,15 @@ public abstract class BasePage<T extends BasePage<T>> {
                             waitForObjectToBeVisible(obj);
                         }
                     }
+                } else if (annotation instanceof Invisible) {
+                    field.setAccessible(true);
+                    Object obj = field.get(pageObject);
+                    if (obj instanceof WebElement) {
+                        wait.until(invisibilityOfElement((WebElement)obj));
+                    }
+                    else if(obj instanceof TypifiedElement ){
+                        wait.until(invisibilityOfElement(((TypifiedElement) obj).getWrappedElement()));
+                    }
                 }
             }
         }
@@ -150,6 +158,31 @@ public abstract class BasePage<T extends BasePage<T>> {
             wait.until(ExpectedConditions.visibilityOf(element));
         }
     }
+
+    private void waitForInvisibleElement(WebElement element){
+        wait.until(invisibilityOfElement(element));
+    }
+
+    private ExpectedCondition<Boolean> invisibilityOfElement(WebElement element){
+        return new ExpectedCondition<Boolean>() {
+            @Nullable
+            @Override
+            public Boolean apply(WebDriver input) {
+                try {
+                    return !element.isDisplayed();
+                } catch (NoSuchElementException var3) {
+                    return Boolean.valueOf(true);
+                } catch (StaleElementReferenceException var4) {
+                    return Boolean.valueOf(true);
+                }
+            }
+            public String toString() {
+                return "element to no longer be visible: " + element;
+            }
+        };
+
+    }
+
 
     /**
      * Will wait up to ~10 seconds for the document to be ready.
