@@ -18,7 +18,7 @@ import static com.jayway.restassured.RestAssured.*;
 public class Execution {
 
     private final static Logger logger = LogManager.getLogger(Execution.class);
-    private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername, Config.jiraPassword);
+//    private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername, Config.jiraPassword);
     private final static String zapiURI = CommonProperty.JIRA_URL.getValue() + Config.zapiRestURI;
 
     private final String version;
@@ -26,11 +26,11 @@ public class Execution {
     private List<Integer> idList;
     private int status;
 
-    //TODO - make JIRA calls non-static so it plays nice with API
-    static {
-        RestAssured.baseURI = zapiURI;
-        RestAssured.authentication = auth;
-    }
+//    TODO - make JIRA calls non-static so it plays nice with API
+//    static {
+//        RestAssured.baseURI = zapiURI;
+//        RestAssured.authentication = auth;
+//    }
 
     public Execution(final String issue) {
         this.version = CommonProperty.RESULT_VERSION.getValue();
@@ -93,8 +93,11 @@ public class Execution {
             }
             obj.put("comment", comment);
             
-            given().contentType("application/json").and().body(obj.toString()).then().put("execution/" + executionId + "/execute");
+//            given().contentType("application/json").and().body(obj.toString()).then().put("execution/" + executionId + "/execute");
 
+            given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+                    .contentType("application/json").and().body(obj.toString()).then()
+                    .put(zapiURI + "execution/" + executionId + "/execute");
         } catch (JSONException e) {
             logger.error("Update status and comment failed", e);
         }
@@ -103,11 +106,20 @@ public class Execution {
     private void deleteExistingAttachments(final Integer executionId) {
 
         String url = "attachment/attachmentsByEntity?entityType=EXECUTION&entityId=" + executionId;
-        List<String> fileIds = get(url).andReturn().jsonPath().getList("data.fileId", String.class);
+//        List<String> fileIds = get(url).andReturn().jsonPath().getList("data.fileId", String.class);
+
+        List<String> fileIds =
+                given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+                .then()
+                .get(zapiURI + url).andReturn().jsonPath().getList("data.fileId", String.class);
 
         // Iterate over attachments
         for (String fileId : fileIds) {
-            delete("attachment/" + fileId);
+//            delete("attachment/" + fileId);
+
+            given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+                .then()
+                .delete(zapiURI + "attachment/" + fileId);
         }
     }
 

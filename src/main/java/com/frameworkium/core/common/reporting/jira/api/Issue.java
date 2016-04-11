@@ -16,7 +16,7 @@ import static com.jayway.restassured.RestAssured.*;
 
 public class Issue {
 
-    private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername, Config.jiraPassword);
+    //private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername, Config.jiraPassword);
     private final static String jiraAPIURI = CommonProperty.JIRA_URL.getValue() + Config.jiraRestURI;
 
     private final String issueKey; // Jira Key e.g. KT-123
@@ -44,26 +44,43 @@ public class Issue {
             logger.error("Can't create JSON Object for linkIssues", e);
         }
 
-        RestAssured.baseURI = jiraAPIURI;
-        RestAssured.authentication = auth;
+//        RestAssured.baseURI = jiraAPIURI;
+//        RestAssured.authentication = auth;
 
-        given().contentType("application/json").and().body(obj.toString()).then().post("issueLink");
+        given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword).and()
+                .contentType("application/json").and()
+                .body(obj.toString())
+                .then()
+                .post(jiraAPIURI + "/issueLink");
     }
 
     public List<String> getAttachmentIds() {
-        RestAssured.baseURI = jiraAPIURI;
-        RestAssured.authentication = auth;
 
-        return get("issue/" + issueKey).andReturn().jsonPath().getList("fields.attachment.id");
+        return given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+                .then()
+                .get("issue/" + issueKey).andReturn().jsonPath().getList("fields.attachment.id");
+
+//        RestAssured.baseURI = jiraAPIURI;
+//        RestAssured.authentication = auth;
+//
+//        return get("issue/" + issueKey).andReturn().jsonPath().getList("fields.attachment.id");
     }
 
     public void addAttachment(final File attachment) {
         String url = String.format("issue/%s/attachments", issueKey);
+//
+//        RestAssured.baseURI = jiraAPIURI;
+//        RestAssured.authentication = auth;
+//
+//        given().header("X-Atlassian-Token", "nocheck").and().multiPart(attachment).and().log().all().when().post(url)
+//                .andReturn().statusLine();
 
-        RestAssured.baseURI = jiraAPIURI;
-        RestAssured.authentication = auth;
-
-        given().header("X-Atlassian-Token", "nocheck").and().multiPart(attachment).and().log().all().when().post(url)
+        given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword).and()
+                .header("X-Atlassian-Token", "nocheck").and()
+                .multiPart(attachment).and()
+                .then()
+                .post(jiraAPIURI + url)
                 .andReturn().statusLine();
+
     }
 }

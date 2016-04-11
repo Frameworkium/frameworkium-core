@@ -9,23 +9,29 @@ import com.jayway.restassured.path.json.JsonPath;
 import java.util.List;
 
 import static com.jayway.restassured.RestAssured.get;
+import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.preemptive;
 
 public class SearchIssues {
 
-    private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername, Config.jiraPassword);
-    private final static String jiraURI = CommonProperty.JIRA_URL.getValue() + Config.jiraRestURI;
+//    private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername, Config.jiraPassword);
+    private final static String jiraAPIURI = CommonProperty.JIRA_URL.getValue() + Config.jiraRestURI;
 
     private final JsonPath jsonPath;
 
-    static {
-        RestAssured.baseURI = jiraURI;
-        RestAssured.authentication = auth;
-    }
+//    static {
+//        RestAssured.baseURI = jiraURI;
+//        RestAssured.authentication = auth;
+//    }
 
     public SearchIssues(final String query) {
         try {
-            jsonPath = get(String.format("search?jql=%s&maxResults=1000", query)).andReturn().jsonPath();
+            jsonPath = given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+                    .then()
+                    .get(jiraAPIURI + String.format("search?jql=%s&maxResults=1000", query))
+                    .andReturn().jsonPath();
+
+//            jsonPath = get(String.format("search?jql=%s&maxResults=1000", query)).andReturn().jsonPath();
         } catch (RuntimeException re) {
             throw new RuntimeException("Problem with JIRA or JQL.");
         }

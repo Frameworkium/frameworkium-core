@@ -3,16 +3,10 @@ package tfl.services.bikepoint;
 import com.frameworkium.core.api.annotations.FindBy;
 import com.frameworkium.core.api.services.BaseService;
 import com.frameworkium.core.api.services.ServiceFactory;
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.builder.RequestSpecBuilder;
-import com.jayway.restassured.response.Response;
-import com.jayway.restassured.specification.RequestSpecification;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static com.jayway.restassured.RestAssured.given;
 
 public class AllBikePointsService extends BaseService<AllBikePointsService> {
 
@@ -26,7 +20,7 @@ public class AllBikePointsService extends BaseService<AllBikePointsService> {
     private List<String> allLongs;
 
     public static AllBikePointsService newInstance() {
-        return ServiceFactory.newInstance(AllBikePointsService.class, BikePointResource.END_POINT);
+        return ServiceFactory.newInstance(AllBikePointsService.class, "http://api.tfl.gov.uk/BikePoint");
     }
 
     /**

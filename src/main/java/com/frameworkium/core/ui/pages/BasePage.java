@@ -7,6 +7,7 @@ import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.properties.UIProperty;
 import com.frameworkium.core.ui.tests.BaseTest;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
+import com.gargoylesoftware.htmlunit.Page;
 import com.google.common.truth.Expect;
 import com.google.inject.Inject;
 import com.paulhammant.ngwebdriver.WaitForAngularRequestsToFinish;
@@ -72,7 +73,8 @@ public abstract class BasePage<T extends BasePage<T>> {
                 logger.error("Error logging page load, but loaded successfully");
             }
         } catch (IllegalArgumentException | IllegalAccessException e) {
-            logger.error("Error while waiting for page to load", e);
+            logger.error("Error while waiting for page " + this.getClass().getName()  + " to load", e);
+            //throw new PageNotLoadedException("Error while waiting for page " + this.getClass().getName()  + " to load");
         }
         return (T) this;
     }

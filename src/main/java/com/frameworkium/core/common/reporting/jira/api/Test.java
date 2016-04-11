@@ -15,7 +15,7 @@ import static com.jayway.restassured.RestAssured.*;
 
 public class Test {
 
-    private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername, Config.jiraPassword);
+//    private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername, Config.jiraPassword);
     private final static String jiraAPIURI = CommonProperty.JIRA_URL.getValue() + Config.jiraRestURI;
 
     private final String issueKey; // Jira Key e.g. KT-123
@@ -44,11 +44,17 @@ public class Test {
             logger.error("Can't create JSON Object for test case result update", e);
         }
 
-        RestAssured.baseURI = jiraAPIURI;
-        RestAssured.authentication = auth;
+//        RestAssured.baseURI = jiraAPIURI;
+//        RestAssured.authentication = auth;
 
-        given().contentType("application/json").and().body(obj.toString())
-                .then().put("/issue/" + issueKey);
+        given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword).and()
+                .contentType("application/json").and()
+                .body(obj.toString())
+                .then()
+                .put(jiraAPIURI + "/issue/" + issueKey);
+
+//        given().contentType("application/json").and().body(obj.toString())
+//                .then().put("/issue/" + issueKey);
     }
     
     public static void addComment(String issueKey, String commentToAdd) {
@@ -60,28 +66,45 @@ public class Test {
             logger.error("Can't create JSON Object for comment update", e);
         }
 
-        RestAssured.baseURI = jiraAPIURI;
-        RestAssured.authentication = auth;
+//        RestAssured.baseURI = jiraAPIURI;
+//        RestAssured.authentication = auth;
 
-        given().contentType("application/json").and().body(obj.toString())
-                .then().post("/issue/" + issueKey + "/comment");
+        given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword).and()
+                .contentType("application/json").and()
+                .body(obj.toString())
+                .then()
+                .post(jiraAPIURI + "/issue/" + issueKey + "/comment");
+
+//        given().contentType("application/json").and().body(obj.toString())
+//                .then().post("/issue/" + issueKey + "/comment");
     }
     
     public static String getFieldId(String fieldName) {
-        RestAssured.baseURI = jiraAPIURI;
-        RestAssured.authentication = auth;
-        
-        JsonPath jsonPath = get("/field").andReturn().jsonPath();
+//        RestAssured.baseURI = jiraAPIURI;
+//        RestAssured.authentication = auth;
+
+//        JsonPath jsonPath = get("/field").andReturn().jsonPath();
+
+        JsonPath jsonPath = given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+                .then()
+                .get(jiraAPIURI + "/field")
+                .andReturn().jsonPath();
 
         return jsonPath.getString(String.format("find {it.name == '%s'}.id", fieldName));
     }
 
     public static int getTransitionId(String issueKey, String transitionName) {
-        RestAssured.baseURI = jiraAPIURI;
-        RestAssured.authentication = auth;
+//        RestAssured.baseURI = jiraAPIURI;
+//        RestAssured.authentication = auth;
         
-        JsonPath jsonPath = get("/issue/" + issueKey + "?expand=transitions.fields")
+//        JsonPath jsonPath = get("/issue/" + issueKey + "?expand=transitions.fields")
+//                .andReturn().jsonPath();
+
+        JsonPath jsonPath = given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+                .then()
+                .get(jiraAPIURI + "/issue/" + issueKey + "?expand=transitions.fields")
                 .andReturn().jsonPath();
+
         String jsonPathToTransitionId =String.format(
                 "transitions.find {it -> it.name == '%s'}.id", transitionName);
         return Integer.parseInt(jsonPath.getString(jsonPathToTransitionId));
@@ -104,10 +127,17 @@ public class Test {
             logger.error("Can't create JSON Object for transition change", e);
         }
 
-        RestAssured.baseURI = jiraAPIURI;
-        RestAssured.authentication = auth;
+//        RestAssured.baseURI = jiraAPIURI;
+//        RestAssured.authentication = auth;
+//        given().contentType("application/json").and().body(obj.toString())
+//                .then().post("/issue/" + issueKey + "/transitions");
 
-        given().contentType("application/json").and().body(obj.toString())
-                .then().post("/issue/" + issueKey + "/transitions");
+        given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword).and()
+                .contentType("application/json").and()
+                .body(obj.toString())
+                .then()
+                .post(jiraAPIURI + "/issue/" + issueKey + "/transitions");
+
+//
     }
 }
