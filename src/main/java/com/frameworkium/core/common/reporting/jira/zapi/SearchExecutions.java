@@ -11,21 +11,15 @@ import static com.jayway.restassured.RestAssured.given;
 
 public class SearchExecutions {
 
-//    private final static AuthenticationScheme auth = preemptive().basic(Config.jiraUsername, Config.jiraPassword);
     private final static String zapiURI = CommonProperty.JIRA_URL.getValue() + Config.zapiRestURI;
-
     private final JsonPath jsonPath;
 
     public SearchExecutions(final String query) {
-//        RestAssured.baseURI = zapiURI;
-//        RestAssured.authentication = auth;
 
-        //jsonPath = get(String.format("zql/executeSearch?zqlQuery=%s", query)).andReturn().jsonPath();
         jsonPath = given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
                 .then()
                 .get(zapiURI + String.format("zql/executeSearch?zqlQuery=%s", query))
                 .andReturn().jsonPath();
-
     }
 
     /**

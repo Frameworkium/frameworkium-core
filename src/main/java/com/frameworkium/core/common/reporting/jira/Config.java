@@ -9,8 +9,8 @@ public class Config {
     public static final String jiraUsername = CommonProperty.JIRA_USERNAME.getValue();
     public static final String jiraPassword = CommonProperty.JIRA_PASSWORD.getValue();
 
-    public static final String jiraRestURI = "/rest/api/latest";
-    public static final String zapiRestURI = "/rest/zapi/latest";
+    public static final String jiraRestURI = "/rest/api/latest/";
+    public static final String zapiRestURI = "/rest/zapi/latest/";
 
     public static class ZAPI_STATUS {
         //These should correspond to your ZAPI result IDs
