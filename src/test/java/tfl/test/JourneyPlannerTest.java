@@ -2,14 +2,7 @@ package tfl.test;
 
 import com.frameworkium.core.api.tests.BaseTest;
 import org.testng.annotations.Test;
-import tfl.services.bikepoint.AllBikePointsService;
-import tfl.services.bikepoint.BikePointByLatLongService;
 import tfl.services.journey.JourneyPlannerService;
-
-import java.util.List;
-import java.util.Random;
-
-import static com.google.common.truth.Truth.assertThat;
 
 public class JourneyPlannerTest extends BaseTest {
 
