@@ -75,6 +75,7 @@ public class Execution {
     }
 
     private void updateStatusAndComment(final Integer executionId, final int status, String comment) {
+
         JSONObject obj = new JSONObject();
         try {
             obj.put("status", String.valueOf(status));
