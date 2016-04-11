@@ -2,6 +2,7 @@ package tfl.test;
 
 import com.frameworkium.core.api.tests.BaseTest;
 import org.testng.annotations.Test;
+import ru.yandex.qatools.allure.annotations.TestCaseId;
 import tfl.services.bikepoint.AllBikePointsService;
 import tfl.services.bikepoint.BikePointByLatLongService;
 
@@ -22,6 +23,7 @@ public class BikePointsTest extends BaseTest {
     }
 
     @Test
+    @TestCaseId("TEST-1")
     public void given_lat_long_of_point_point_appears_in_lat_long_search() {
 
         // Get random bike point

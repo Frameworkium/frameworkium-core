@@ -11,7 +11,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class TheInternetExampleTest extends BaseTest {
 
     @Test
-    @Issue("TEST-1")
+    //@Issue("TEST-1")
     public void smokeTest() {
 
         assertThat(WelcomePage.open().then().getTitle()).isEqualTo("The Internet");
