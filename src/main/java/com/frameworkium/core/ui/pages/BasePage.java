@@ -59,7 +59,9 @@ public abstract class BasePage<T extends BasePage<T>> {
             if(isPageAngularJS()) {
                 waitForAngularRequestsToFinish();
             }
-            waitForExpectedVisibleElements(this);
+
+            waitForVisibleAndInvisibleElements(this);
+
             try {
                 AllureLogger.logToAllure("Page '" + this.getClass().getName() + "' successfully loaded");
                 if (UIProperty.CAPTURE_URL.isSpecified())
@@ -80,63 +82,58 @@ public abstract class BasePage<T extends BasePage<T>> {
         return get();
     }
 
-    private void waitForExpectedVisibleElements(Object pageObject)
+    private void waitForVisibleAndInvisibleElements(Object pageObject)
             throws IllegalArgumentException, IllegalAccessException {
-        waitForExpectedVisibleElements(pageObject, StringUtils.EMPTY);
+        waitForVisibleAndInvisibleElements(pageObject, StringUtils.EMPTY);
     }
 
     @SuppressWarnings("unchecked")
-    private void waitForExpectedVisibleElements(Object pageObject, String visibleGroupName) throws IllegalArgumentException,
+    private void waitForVisibleAndInvisibleElements(Object pageObject, String groupName) throws IllegalArgumentException,
             IllegalAccessException {
         for (Field field : pageObject.getClass().getDeclaredFields()) {
             for (Annotation annotation : field.getDeclaredAnnotations()) {
+
+                field.setAccessible(true);
+                Object obj = field.get(pageObject);
+
                 if (annotation instanceof Visible) {
                     // If the group name matches, then check for visibility
-                    if (((Visible) annotation).value().equalsIgnoreCase(visibleGroupName)) {
-                        field.setAccessible(true);
-                        Object obj = field.get(pageObject);
-
-                        // This handles Lists of WebElements e.g. List<WebElement>
-                        if (obj instanceof List) {
-                            //TODO - where to handle List<Link>, for example?
-                            try {
-                                wait.until(ExpectedConditions.visibilityOfAllElements((List<WebElement>) obj));
-                            } catch (StaleElementReferenceException serex) {
-                                logger.info("Caught StaleElementReferenceException");
-                                tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady();
-                                wait.until(ExpectedConditions.visibilityOfAllElements((List<WebElement>) obj));
-                            } catch (ClassCastException ccex) {
-                                logger.debug("Caught ClassCastException - will try to get the first object in the List instead");
-                                obj = ((List<Object>) obj).get(0);
-                                waitForObjectToBeVisible(obj);
-                            }
-                        }
-                        // Otherwise, it's a single object
-                        // - HtmlElement, WebElement or TypifiedElement
-                        else {
-                            waitForObjectToBeVisible(obj);
-                        }
+                    if (((Visible) annotation).value().equalsIgnoreCase(groupName)) {
+                        waitForObjectToBeVisible(obj);
                     }
                 } else if (annotation instanceof Invisible) {
-                    field.setAccessible(true);
-                    Object obj = field.get(pageObject);
-                    if (obj instanceof WebElement) {
-                        wait.until(invisibilityOfElement((WebElement)obj));
-                    }
-                    else if(obj instanceof TypifiedElement ){
-                        wait.until(invisibilityOfElement(((TypifiedElement) obj).getWrappedElement()));
-                    }
+                    waitForObjectToBeInvisible(obj);
                 }
+
             }
         }
     }
 
     private void waitForObjectToBeVisible(Object obj) throws IllegalArgumentException, IllegalAccessException {
+
         // Checks for @Visible tags inside an HtmlElement Component
         if (obj instanceof HtmlElement) {
             logger.debug("Checking for visible elements inside HtmlElement");
-            waitForExpectedVisibleElements(obj);
+            waitForVisibleAndInvisibleElements(obj);
         }
+
+
+        // This handles Lists of WebElements e.g. List<WebElement>
+        if (obj instanceof List) {
+            //TODO - where to handle List<Link>, for example?
+            try {
+                wait.until(ExpectedConditions.visibilityOfAllElements((List<WebElement>) obj));
+            } catch (StaleElementReferenceException serex) {
+                logger.info("Caught StaleElementReferenceException");
+                tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady();
+                wait.until(ExpectedConditions.visibilityOfAllElements((List<WebElement>) obj));
+            } catch (ClassCastException ccex) {
+                logger.debug("Caught ClassCastException - will try to get the first object in the List instead");
+                obj = ((List<Object>) obj).get(0);
+                waitForObjectToBeVisible(obj);
+            }
+        }
+
 
         WebElement element;
         if (obj instanceof TypifiedElement) {
@@ -148,7 +145,6 @@ public abstract class BasePage<T extends BasePage<T>> {
                     "Only elements of type TypifiedElement, WebElement or " +
                             "List<WebElement> are supported by @Visible.");
         }
-
         // Retries when an element is looked up before the previous page has unloaded or before doc ready
         try {
             wait.until(ExpectedConditions.visibilityOf(element));
@@ -160,6 +156,20 @@ public abstract class BasePage<T extends BasePage<T>> {
             // tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady()
             wait.until(ExpectedConditions.visibilityOf(element));
         }
+    }
+
+    private void waitForObjectToBeInvisible(Object obj) throws IllegalArgumentException, IllegalAccessException {
+
+        WebElement element;
+        if (obj instanceof TypifiedElement) {
+            element = ((TypifiedElement) obj).getWrappedElement();
+        } else if (obj instanceof WebElement) {
+            element = (WebElement) obj;
+        } else {
+            throw new IllegalArgumentException(
+                    "Only elements of type TypifiedElement or WebElement are supported by @Invisible at present.");
+        }
+        wait.until(invisibilityOfElement(element));
     }
 
     /**
@@ -188,10 +198,7 @@ public abstract class BasePage<T extends BasePage<T>> {
         }
     }
 
-    private void waitForInvisibleElement(WebElement element){
-        wait.until(invisibilityOfElement(element));
-    }
-
+    //TODO - move to helper methods section instead
     private ExpectedCondition<Boolean> invisibilityOfElement(WebElement element){
         return new ExpectedCondition<Boolean>() {
             @Nullable
@@ -209,7 +216,6 @@ public abstract class BasePage<T extends BasePage<T>> {
                 return "element to no longer be visible: " + element;
             }
         };
-
     }
 
 
@@ -228,6 +234,18 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
+     * Method to wait for AngularJS requests to finish on the page
+     */
+    public void waitForAngularRequestsToFinish() {
+        driver.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
+        WaitForAngularRequestsToFinish
+                .waitForAngularRequestsToFinish((JavascriptExecutor) driver);
+    }
+
+
+
+
+    /**
      * @param javascript the Javascript to execute on the current page
      * @return Returns an Object returned by the Javascript provided
      */
@@ -241,15 +259,6 @@ public abstract class BasePage<T extends BasePage<T>> {
             logger.debug("Failed Javascript:" + javascript);
         }
         return returnObj;
-    }
-
-    /**
-     * Method to wait for AngularJS requests to finish on the page
-     */
-    public void waitForAngularRequestsToFinish() {
-        driver.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
-        WaitForAngularRequestsToFinish
-                .waitForAngularRequestsToFinish((JavascriptExecutor) driver);
     }
 
     /**
@@ -270,6 +279,7 @@ public abstract class BasePage<T extends BasePage<T>> {
         }
         return returnObj;
     }
+
 
     /**
      * @return Returns the title of the web page
