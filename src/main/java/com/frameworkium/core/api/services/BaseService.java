@@ -2,27 +2,19 @@ package com.frameworkium.core.api.services;
 
 import com.frameworkium.core.api.annotations.FindBy;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
-import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.Method;
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
-import com.sun.javafx.binding.StringFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jboss.netty.handler.codec.http.HttpMethod;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static com.jayway.restassured.RestAssured.given;
-import static com.jayway.restassured.RestAssured.requestSpecification;
-import static com.jayway.restassured.config.LogConfig.logConfig;
-import static com.jayway.restassured.filter.log.LogDetail.HEADERS;
 import static com.jayway.restassured.http.Method.*;
 
 public abstract class BaseService<T extends BaseService<T>> {

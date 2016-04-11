@@ -3,7 +3,7 @@ package com.frameworkium.core.ui.tests;
 import com.frameworkium.core.common.listeners.MethodInterceptor;
 import com.frameworkium.core.common.listeners.ResultLoggerListener;
 import com.frameworkium.core.common.listeners.TestListener;
-import com.frameworkium.core.common.reporting.allure.AllureProperties;
+import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.driver.DriverSetup;
 import com.frameworkium.core.ui.driver.DriverType;
@@ -18,15 +18,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.remote.SessionId;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Listeners;
-import ru.yandex.qatools.allure.Allure;
+import org.testng.annotations.*;
 import ru.yandex.qatools.allure.annotations.Issue;
 import ru.yandex.qatools.allure.annotations.TestCaseId;
-import ru.yandex.qatools.allure.events.StepFinishedEvent;
-import ru.yandex.qatools.allure.events.StepStartedEvent;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -52,7 +46,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      *  - Initialise the screenshot capture
      *  - Configure the browser based on parameters (maximise window, session resets, user agent)
      */
-    @BeforeSuite(alwaysRun = true)
+    @BeforeClass(alwaysRun = true)
     public static void instantiateDriverObject() {
         driverType = new ThreadLocal<DriverType>() {
             @Override
@@ -76,6 +70,8 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
                 return null;
             }
         };
+
+        //configureBrowserBeforeTest(testMethod);
     }
 
     /**
@@ -87,7 +83,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      *
      * @param testMethod - The test method name of the test
      */
-    @BeforeMethod(alwaysRun = true)
+    @BeforeMethod
     public static void configureBrowserBeforeTest(Method testMethod) {
         try {
             configureDriverBasedOnParams();
@@ -152,7 +148,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     /**
      * Loops through all active driver types and tears down the driver object
      */
-    @AfterSuite(alwaysRun = true)
+    @AfterMethod(alwaysRun = true)
     public static void closeDriverObject() {
         try {
             activeDriverTypes.forEach(DriverType::tearDownDriver);
@@ -166,7 +162,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      */
     @AfterSuite(alwaysRun = true)
     public static void createAllureProperties() {
-        AllureProperties.create();
+        com.frameworkium.core.common.reporting.allure.AllureProperties.create();
     }
 
     /** @return the Job id for the current thread */
@@ -208,12 +204,20 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         return capture.get();
     }
 
-//    public void __stepStart(String stepName){
-//        Allure.LIFECYCLE.fire(new StepStartedEvent(stepName));
-//    }
-//
-//    public void __stepFinish(){
-//        Allure.LIFECYCLE.fire(new StepFinishedEvent());
-//    }
+    /**
+     * Logs the start of a step to your allure report
+     * Other steps will be substeps until you call stepFinish
+     * @param stepName
+     */
+    public void __stepStart(String stepName){
+        AllureLogger.__stepStart(stepName);
+    }
+
+    /**
+     * Logs the end of a step
+     */
+    public void __stepFinish(){
+        AllureLogger.__stepFinish();
+    }
 
 }

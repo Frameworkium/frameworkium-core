@@ -107,17 +107,20 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     @Override
     public void onTestSuccess(ITestResult result) {
-        sendFinalScreenshot(result, "pass");
+        if(result.getTestClass().getRealClass().getSuperclass().isInstance(BaseTest.class))
+            sendFinalScreenshot(result, "pass");
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
-        sendFinalScreenshot(result, "fail");
+        if(result.getTestClass().getRealClass().getSuperclass().isInstance(BaseTest.class))
+            sendFinalScreenshot(result, "fail");
     }
 
     @Override
     public void onTestSkipped(ITestResult result) {
-        sendFinalScreenshot(result, "skip");
+        if(result.getTestClass().getRealClass().getSuperclass().isInstance(BaseTest.class))
+            sendFinalScreenshot(result, "skip");
     }
 
     /* Methods we don't really want screenshots for. */

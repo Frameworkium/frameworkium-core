@@ -1,8 +1,6 @@
 package com.frameworkium.core.common.reporting.allure;
 
 import com.frameworkium.core.common.properties.CommonProperty;
-import com.frameworkium.core.ui.properties.UIProperty;
-import com.frameworkium.core.ui.tests.BaseTest;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,52 +16,12 @@ public class AllureProperties {
         FileOutputStream fos = null;
         try {
             Properties props = new Properties();
-            fos = new FileOutputStream("target/allure-results/environment.properties");
+            fos = new FileOutputStream("target/allure-results/environment-common.properties");
 
-            if (UIProperty.APP_PATH.isSpecified()) {
-                props.setProperty("App Path", UIProperty.APP_PATH.getValue());
-            }
-            if (UIProperty.BROWSER.isSpecified()) {
-                props.setProperty("Browser", UIProperty.BROWSER.getValue());
-            }
-            if (UIProperty.BROWSER_VERSION.isSpecified()) {
-                props.setProperty("Browser Version", UIProperty.BROWSER_VERSION.getValue());
-            }
-            if (CommonProperty.BUILD.isSpecified()) {
-                props.setProperty("Build", CommonProperty.BUILD.getValue());
-            }
-            if (UIProperty.DEVICE.isSpecified()) {
-                props.setProperty("Device Name", UIProperty.DEVICE.getValue());
-            }
-            if (UIProperty.GRID_URL.isSpecified()) {
-                props.setProperty("Grid URL", UIProperty.GRID_URL.getValue());
-            }
-            if (UIProperty.PLATFORM.isSpecified()) {
-                props.setProperty("Platform", UIProperty.PLATFORM.getValue());
-            }
-            if (UIProperty.PLATFORM_VERSION.isSpecified()) {
-                props.setProperty("Platform Version", UIProperty.PLATFORM_VERSION.getValue());
-            }
-            if (CommonProperty.RESULT_VERSION.isSpecified()) {
-                props.setProperty("Jira Result Version", CommonProperty.RESULT_VERSION.getValue());
-            }
-            if (CommonProperty.JIRA_URL.isSpecified()) {
-                props.setProperty("allure.issues.tracker.pattern", CommonProperty.JIRA_URL.getValue() + "/browse/%s");
-                props.setProperty("allure.tests.management.pattern", CommonProperty.JIRA_URL.getValue() + "/browse/%s");
-            }
-            if (CommonProperty.JIRA_RESULT_FIELDNAME.isSpecified()) {
-                props.setProperty("Jira Result Field Name", CommonProperty.JIRA_RESULT_FIELDNAME.getValue());
-            }
-            if (CommonProperty.JIRA_RESULT_TRANSITION.isSpecified()) {
-                props.setProperty("Jira Result Field Name", CommonProperty.JIRA_RESULT_TRANSITION.getValue());
-            }
-            if(System.getenv("BUILD_URL") != null) {
-                props.setProperty("Jenkins build URL", System.getenv("BUILD_URL"));
-            }
-            if(BaseTest.userAgent != null) {
-                props.setProperty("UserAgent", BaseTest.userAgent);
-            }
-            
+            props.putAll(getCommonProps());
+            props.putAll(com.frameworkium.core.api.reporting.allure.AllureProperties.getApiProperties());
+            props.putAll(com.frameworkium.core.ui.reporting.allure.AllureProperties.getUIProperties());
+
             props.store(fos, "See https://github.com/allure-framework/allure-core/wiki/Environment");
 
             fos.close();
@@ -73,4 +31,31 @@ public class AllureProperties {
             IOUtils.closeQuietly(fos);
         }
     }
+
+
+    public static Properties getCommonProps() {
+        Properties props = new Properties();
+
+        if (CommonProperty.BUILD.isSpecified()) {
+            props.setProperty("Build", CommonProperty.BUILD.getValue());
+        }
+        if (CommonProperty.RESULT_VERSION.isSpecified()) {
+            props.setProperty("Jira Result Version", CommonProperty.RESULT_VERSION.getValue());
+        }
+        if (CommonProperty.JIRA_URL.isSpecified()) {
+            props.setProperty("allure.issues.tracker.pattern", CommonProperty.JIRA_URL.getValue() + "/browse/%s");
+            props.setProperty("allure.tests.management.pattern", CommonProperty.JIRA_URL.getValue() + "/browse/%s");
+        }
+        if (CommonProperty.JIRA_RESULT_FIELDNAME.isSpecified()) {
+            props.setProperty("Jira Result Field Name", CommonProperty.JIRA_RESULT_FIELDNAME.getValue());
+        }
+        if (CommonProperty.JIRA_RESULT_TRANSITION.isSpecified()) {
+            props.setProperty("Jira Result Field Name", CommonProperty.JIRA_RESULT_TRANSITION.getValue());
+        }
+        if(System.getenv("BUILD_URL") != null) {
+            props.setProperty("Jenkins build URL", System.getenv("BUILD_URL"));
+        }
+        return props;
+    }
+
 }

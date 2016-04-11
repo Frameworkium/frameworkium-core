@@ -2,15 +2,11 @@ package com.frameworkium.core.common.reporting.jira.api;
 
 import com.frameworkium.core.common.properties.CommonProperty;
 import com.frameworkium.core.common.reporting.jira.Config;
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.authentication.AuthenticationScheme;
 import com.jayway.restassured.path.json.JsonPath;
 
 import java.util.List;
 
-import static com.jayway.restassured.RestAssured.get;
 import static com.jayway.restassured.RestAssured.given;
-import static com.jayway.restassured.RestAssured.preemptive;
 
 public class SearchIssues {
 

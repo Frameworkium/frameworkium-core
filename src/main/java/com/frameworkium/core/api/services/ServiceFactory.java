@@ -2,9 +2,7 @@ package com.frameworkium.core.api.services;
 
 import com.google.inject.Guice;
 import com.jayway.restassured.http.Method;
-import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
-import com.sun.org.apache.regexp.internal.RE;
 
 public class ServiceFactory {
 

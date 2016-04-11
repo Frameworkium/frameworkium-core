@@ -1,7 +1,6 @@
 package com.frameworkium.core.common.reporting.spira;
 
 import com.frameworkium.core.common.properties.CommonProperty;
-import com.frameworkium.core.ui.properties.UIProperty;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.path.json.JsonPath;
 import org.apache.http.client.methods.HttpPost;

@@ -1,7 +1,6 @@
 package com.frameworkium.core.ui.capture.model;
 
 import com.frameworkium.core.common.properties.CommonProperty;
-import com.frameworkium.core.ui.properties.UIProperty;
 
 public class SoftwareUnderTest {
 
