@@ -59,7 +59,7 @@ public abstract class BaseService<T extends BaseService<T>> {
     @SuppressWarnings("unchecked")
     public T get(String url, Method httpVerb, RequestSpecification requestSpec) {
 
-        //Store these in case you want to re-fire the request unmodified within reinstantiating
+        //Store these in case you want to re-fire the request unmodified without reinstantiating
         this.url = url;
         this.httpVerb = httpVerb;
         this.reqSpec = requestSpec;
@@ -85,7 +85,7 @@ public abstract class BaseService<T extends BaseService<T>> {
         Response resp = null;
 
         logger.info("Making request: " + httpVerb.toString() + " " + url);
-        requestSpec = requestSpec.log().all();
+        //requestSpec = requestSpec.log().all();
 
         if(httpVerb.equals(GET))
             resp = requestSpec.get(url);

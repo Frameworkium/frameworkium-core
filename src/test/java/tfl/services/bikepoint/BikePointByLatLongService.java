@@ -4,6 +4,7 @@ import com.frameworkium.core.api.annotations.FindBy;
 import com.frameworkium.core.api.services.BaseService;
 import com.frameworkium.core.api.services.ServiceFactory;
 import com.jayway.restassured.specification.RequestSpecification;
+import tfl.services.bikepoint.objects.BikePoint;
 
 import java.util.List;
 
@@ -14,13 +15,6 @@ public class BikePointByLatLongService extends BaseService<BikePointByLatLongSer
     @FindBy(jsonPath = "places.commonName")
     private List<String> allNames;
 
-    /**
-     * Create a list of common names from the response.
-     * @return a list of common names
-     */
-    public List<String> getAllNames() {
-        return allNames;
-    }
 
     public static BikePointByLatLongService newInstance(String lat, String lon, String radius) {
         RequestSpecification reqSpec = given()
@@ -28,5 +22,13 @@ public class BikePointByLatLongService extends BaseService<BikePointByLatLongSer
                 .param("lon", lon)
                 .param("radius", radius);
         return ServiceFactory.newInstance(BikePointByLatLongService.class, "http://api.tfl.gov.uk/BikePoint", reqSpec);
+    }
+
+    /**
+     * Create a list of common names from the response.
+     * @return a list of common names
+     */
+    public List<String> getAllNames() {
+        return allNames;
     }
 }
