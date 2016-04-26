@@ -1,17 +1,10 @@
 package tfl.test;
 
 import com.frameworkium.core.api.tests.BaseTest;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.testng.annotations.Test;
-import ru.yandex.qatools.allure.annotations.TestCaseId;
-import tfl.services.bikepoint.AllBikePointsService;
-import tfl.services.bikepoint.BikePointByLatLongService;
-import tfl.services.bikepoint.objects.BikePoint;
+import tfl.entities.CarParkOccupancy;
 import tfl.services.carparkoccupancy.CarParkOccupancyService;
-import tfl.services.carparkoccupancy.objects.CarParkOccupancy;
 
-import java.util.List;
 import java.util.Random;
 
 import static com.google.common.truth.Truth.assertThat;

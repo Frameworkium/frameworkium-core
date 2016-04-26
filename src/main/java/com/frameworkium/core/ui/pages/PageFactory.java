@@ -12,4 +12,8 @@ public class PageFactory {
     public static <T extends BasePage<T>> T newInstance(Class<T> clazz, String url) {
         return Guice.createInjector(new WebDriverGuiceModule()).getInstance(clazz).get(url);
     }
+
+    public static <T extends BasePage<T>> T newInstance(Class<T> clazz, String url, Integer timeoutInSeconds) {
+        return Guice.createInjector(new WebDriverGuiceModule()).getInstance(clazz).get(url, timeoutInSeconds);
+    }
 }

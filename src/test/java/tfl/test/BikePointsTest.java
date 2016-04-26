@@ -3,9 +3,9 @@ package tfl.test;
 import com.frameworkium.core.api.tests.BaseTest;
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.TestCaseId;
-import tfl.services.bikepoint.BikePointByLatLongService;
+import tfl.entities.Place;
 import tfl.services.bikepoint.AllBikePointsService;
-import tfl.services.bikepoint.objects.BikePoint;
+import tfl.services.bikepoint.BikePointByLatLongService;
 
 import java.util.List;
 import java.util.Random;
@@ -40,15 +40,13 @@ public class BikePointsTest extends BaseTest {
 
         // Get random bike point
         AllBikePointsService allBikePoints = AllBikePointsService.newInstance();
-        List<BikePoint> bps = allBikePoints.getAllBikePoints();
+        List<Place> bikePoints = allBikePoints.getAllBikePoints();
 
-        BikePoint randomBP = bps.get(new Random().nextInt(bps.size()));
-        String lat = randomBP.lat;
-        String lon = randomBP.lon;
+        Place randomBP = bikePoints.get(new Random().nextInt(bikePoints.size()));
 
         // Search for lat long of said bike point with 200m radius
         BikePointByLatLongService latLongBikePoints =
-                BikePointByLatLongService.newInstance(lat, lon, "200");
+                BikePointByLatLongService.newInstance(randomBP.lat, randomBP.lon, "200");
 
         // Then said bike point is part of result set
         assertThat(latLongBikePoints.getAllNames()).contains(randomBP.commonName);

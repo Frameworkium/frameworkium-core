@@ -82,6 +82,11 @@ public abstract class BasePage<T extends BasePage<T>> {
         return get();
     }
 
+    public T get(String url, Integer timeout) {
+        wait = new WebDriverWait(driver, timeout);
+        return get(url);
+    }
+
     private void waitForVisibleAndInvisibleElements(Object pageObject)
             throws IllegalArgumentException, IllegalAccessException {
         waitForVisibleAndInvisibleElements(pageObject, StringUtils.EMPTY);

@@ -19,6 +19,6 @@ public class WelcomePage extends BasePage<WelcomePage> {
 
     @Step("Navigate to http://the-internet.herokuapp.com")
     public static WelcomePage open() {
-        return PageFactory.newInstance(WelcomePage.class, "http://the-internet.herokuapp.com");
+        return PageFactory.newInstance(WelcomePage.class, "http://the-internet.herokuapp.com",30);
     }
 }

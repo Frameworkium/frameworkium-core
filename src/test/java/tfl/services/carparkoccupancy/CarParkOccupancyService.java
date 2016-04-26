@@ -2,7 +2,9 @@ package tfl.services.carparkoccupancy;
 
 import com.frameworkium.core.api.services.BaseService;
 import com.frameworkium.core.api.services.ServiceFactory;
-import tfl.services.carparkoccupancy.objects.CarParkOccupancy;
+import ru.yandex.qatools.allure.annotations.Step;
+import tfl.entities.Bay;
+import tfl.entities.CarParkOccupancy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +23,7 @@ public class CarParkOccupancyService extends BaseService<CarParkOccupancyService
         return ServiceFactory.newInstance(CarParkOccupancyService.class, String.format("https://api.tfl.gov.uk/Occupancy/CarPark/%s",id));
     }
 
+    @Step
     public List<CarParkOccupancy> getCarParkOccupancies(){
         try {
             return Arrays.asList(this.response.body().as(CarParkOccupancy[].class));
@@ -29,6 +32,7 @@ public class CarParkOccupancyService extends BaseService<CarParkOccupancyService
         }
     }
 
+    @Step
     public List<String> getCarParkNames(){
         List<String> carParkNames = new ArrayList<>();
         for(CarParkOccupancy cpo : getCarParkOccupancies()){
@@ -37,10 +41,11 @@ public class CarParkOccupancyService extends BaseService<CarParkOccupancyService
         return carParkNames;
     }
 
+    @Step
     public int sumFreeSpaces(List<CarParkOccupancy> carParkOccupancies){
         int totalFree = 0;
         for(CarParkOccupancy cpo : getCarParkOccupancies()){
-            for(CarParkOccupancy.Bay bay : cpo.bays) {
+            for(Bay bay : cpo.bays) {
                 totalFree += bay.free;
             }
         }

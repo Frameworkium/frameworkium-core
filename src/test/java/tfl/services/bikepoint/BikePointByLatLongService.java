@@ -4,7 +4,7 @@ import com.frameworkium.core.api.annotations.FindBy;
 import com.frameworkium.core.api.services.BaseService;
 import com.frameworkium.core.api.services.ServiceFactory;
 import com.jayway.restassured.specification.RequestSpecification;
-import tfl.services.bikepoint.objects.BikePoint;
+import ru.yandex.qatools.allure.annotations.Step;
 
 import java.util.List;
 
@@ -28,6 +28,7 @@ public class BikePointByLatLongService extends BaseService<BikePointByLatLongSer
      * Create a list of common names from the response.
      * @return a list of common names
      */
+    @Step
     public List<String> getAllNames() {
         return allNames;
     }

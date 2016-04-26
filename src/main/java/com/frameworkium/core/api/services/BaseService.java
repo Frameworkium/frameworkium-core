@@ -85,7 +85,7 @@ public abstract class BaseService<T extends BaseService<T>> {
         Response resp = null;
 
         logger.info("Making request: " + httpVerb.toString() + " " + url);
-        //requestSpec = requestSpec.log().all();
+//        requestSpec = requestSpec.log().all();
 
         if(httpVerb.equals(GET))
             resp = requestSpec.get(url);

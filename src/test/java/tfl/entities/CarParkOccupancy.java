@@ -1,4 +1,4 @@
-package tfl.services.carparkoccupancy.objects;
+package tfl.entities;
 
 /**
  * Created by robertgates55 on 25/04/2016.
@@ -8,8 +8,4 @@ public class CarParkOccupancy {
     public Bay[] bays;
     public String name;
 
-    public class Bay{
-        public String bayType;
-        public int free;
-    }
 }

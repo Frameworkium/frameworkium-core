@@ -2,23 +2,33 @@ package tfl.test;
 
 import com.frameworkium.core.api.tests.BaseTest;
 import org.testng.annotations.Test;
-import tfl.services.journey.JourneyPlannerService;
+import tfl.services.journeyplanner.JourneyPlannerService;
+
+import static com.google.common.truth.Truth.assertThat;
 
 public class JourneyPlannerTest extends BaseTest {
 
     @Test
-    public void journey_planner_test_no_delays_on_journey() {
+    public void journey_planner_london_search_journey_duration() {
 
-        JourneyPlannerService journeyPlannerService = JourneyPlannerService.newInstance("-0.2180,51.5114","-0.1388,51.5416");
+        JourneyPlannerService journeyPlannerService = JourneyPlannerService.newInstance("Blue Fin Building, Southwark", "Waterloo Station, London");
 
-        String b =
-                journeyPlannerService.prettyPrintResponse();
+        String from = journeyPlannerService.getDisambiguatedFrom();
+        String to = journeyPlannerService.getDisambiguatedTo();
 
-        journeyPlannerService.resendLastRequest();
+        journeyPlannerService = journeyPlannerService.newInstance(from, to);
 
-       // assertThat(journeyPlannerService.getAllNames()).contains("Evesham Street, Avondale");
+        assertThat(journeyPlannerService.getShortestJourneyDuration()).isLessThan(30);
+    }
 
-//        assertThat(journeyPlannerService.getAllNames().size()).isAtLeast(700);
+    @Test
+    public void journey_planner_national_search_journey_duration() {
+
+        JourneyPlannerService journeyPlannerService = JourneyPlannerService
+                .newInstance("Blue Fin Building, Southwark", "Surrey Research Park, Guildford", new String[][]{{"nationalSearch","True"}});
+
+        assertThat(journeyPlannerService.getShortestJourneyDuration()).isGreaterThan(45);
+
     }
 
 }
