@@ -35,7 +35,7 @@ public class WelcomePage extends BasePage<WelcomePage> {
 
 
         DriverType dt = DriverSetup.initialiseDesiredDriverType(DriverSetup.returnBrowserObject(DriverSetup.SupportedBrowsers.FIREFOX));
-        dt.instantiate2(new DesiredCapabilities.);
+       // dt.instantiate2(new DesiredCapabilities.);
 
 
 
