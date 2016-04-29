@@ -1,4 +1,4 @@
-package tfl.entities;
+package jira.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -6,7 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * Created by robertgates55 on 26/04/2016.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Bay {
-    public String bayType;
-    public int free;
+public class Issue {
+    public String id;
+    public String self;
+    public String key;
 }

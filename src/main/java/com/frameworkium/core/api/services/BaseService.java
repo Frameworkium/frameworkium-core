@@ -1,5 +1,7 @@
 package com.frameworkium.core.api.services;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.frameworkium.core.api.annotations.DeserialiseAs;
 import com.frameworkium.core.api.annotations.FindBy;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.jayway.restassured.http.Method;
@@ -114,6 +116,26 @@ public abstract class BaseService<T extends BaseService<T>> {
         Field[] fields = this.getClass().getDeclaredFields();
 
         for (Field field : fields) {
+
+            Object value = null;
+
+            DeserialiseAs[] deserialiseAsAnnotations = field.getAnnotationsByType(DeserialiseAs.class);
+            if (deserialiseAsAnnotations.length == 1) {
+                Class fieldClass = field.getType();
+                try {
+                    value = response.as(fieldClass);
+                } catch(Exception e){
+                    logger.error("Error deserialising the response:");
+                    logger.error(e.toString());
+                    e.printStackTrace();
+                    logger.error("Response received was:");
+                    logger.error(response.toString());
+                    logger.error(response.body().asString());
+
+                    response.prettyPrint();
+                }
+            }
+
             FindBy[] annotations = field.getAnnotationsByType(FindBy.class);
             if (annotations.length == 1) {
                 String jp = annotations[0].jsonPath();
@@ -121,7 +143,6 @@ public abstract class BaseService<T extends BaseService<T>> {
                 //Force to get a list of the specified type
                 // if a list is specified
                 Class fieldClass = field.getType();
-                Object value = null;
                 if(fieldClass.equals(List.class)){
                     ParameterizedType listType = (ParameterizedType) field.getGenericType();
                     Class fieldSubClass = (Class) listType.getActualTypeArguments()[0];
@@ -141,14 +162,14 @@ public abstract class BaseService<T extends BaseService<T>> {
                     value = String.valueOf(value);
                 }
 
+            }
 
-                if (value != null) {
-                    try {
-                        field.setAccessible(true);
-                        field.set(this, value);
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
+            if (value != null) {
+                try {
+                    field.setAccessible(true);
+                    field.set(this, value);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }

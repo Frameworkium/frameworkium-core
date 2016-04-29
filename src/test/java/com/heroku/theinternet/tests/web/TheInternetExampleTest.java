@@ -14,6 +14,6 @@ public class TheInternetExampleTest extends BaseTest {
     //@Issue("TEST-1")
     public void smokeTest() {
 
-        assertThat(WelcomePage.open().then().getTitle()).isEqualTo("The Internet");
+        assertThat(WelcomePage.open2().then().getTitle()).isEqualTo("The Internet");
     }
 }

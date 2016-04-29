@@ -82,6 +82,11 @@ public abstract class BasePage<T extends BasePage<T>> {
         return get();
     }
 
+    public T get(Integer timeout) {
+        wait = new WebDriverWait(driver, timeout);
+        return get();
+    }
+
     public T get(String url, Integer timeout) {
         wait = new WebDriverWait(driver, timeout);
         return get(url);

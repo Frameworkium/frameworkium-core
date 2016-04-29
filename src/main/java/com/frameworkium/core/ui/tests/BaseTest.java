@@ -33,7 +33,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     private static ThreadLocal<Boolean> requiresReset;
     private static ThreadLocal<ScreenshotCapture> capture;
-    private static ThreadLocal<DriverType> driverType;
+    public static ThreadLocal<DriverType> driverType;
     private static List<DriverType> activeDriverTypes = new ArrayList<>();
     private static Logger logger = LogManager.getLogger(BaseTest.class);
 

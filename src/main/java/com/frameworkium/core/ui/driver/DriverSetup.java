@@ -66,6 +66,44 @@ public class DriverSetup {
         return browserDriver;
     }
 
+    //TODO - TEMP TEMP TEMP!
+    public static DriverType initialiseDesiredDriverType(DriverType dt) throws NullPointerException {
+        DriverType browserDriver = dt;
+        DesiredCapabilities browserDesiredCapabilities = browserDriver.getDesiredCapabilities();
+        if (useRemoteDriver()) {
+            SupportedPlatforms platform = returnPlatformType();
+            switch(returnRemoteType()) {
+                case SAUCE:
+                    return new SauceImpl(platform, browserDesiredCapabilities);
+                case BROWSERSTACK:
+                    return new BrowserStackImpl(platform, browserDesiredCapabilities);
+                case GRID:
+                    return new GridImpl(browserDesiredCapabilities);
+            }
+        }
+        return browserDriver;
+    }
+    public static DriverType returnBrowserObject(SupportedBrowsers browsers) {
+        switch (browsers) {
+            case FIREFOX:
+                return new FirefoxImpl();
+            case CHROME:
+                return new ChromeImpl();
+            case OPERA:
+                return new OperaImpl();
+            case IE:
+                return new InternetExplorerImpl();
+            case PHANTOMJS:
+                return new PhantomJSImpl();
+            case SAFARI:
+                return new SafariImpl();
+            case ELECTRON:
+                return new ElectronImpl();
+        }
+        throw new IllegalStateException("Invalid browser type.");
+    }
+    //TODO _ END TEMP END TEMP!
+
     /**
      * @return the browser driver type object based on the browser passed in
      */
