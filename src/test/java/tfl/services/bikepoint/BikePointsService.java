@@ -9,9 +9,6 @@ import tfl.entities.Place;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import static com.jayway.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
 
 public class BikePointsService extends BaseService<BikePointsService>{
 
@@ -19,7 +16,8 @@ public class BikePointsService extends BaseService<BikePointsService>{
     private Place[] bikePoints;
 
     public static BikePointsService newInstance() {
-        return ServiceFactory.newInstance(BikePointsService.class, "http://api.tfl.gov.uk/BikePoint");
+        return ServiceFactory.newInstance(
+                BikePointsService.class,"http://api.tfl.gov.uk/BikePoint");
     }
 
     /**
@@ -39,6 +37,5 @@ public class BikePointsService extends BaseService<BikePointsService>{
     public Place getRandomBikePoint(){
         return bikePoints[new Random().nextInt(bikePoints.length)];
     }
-
 
 }

@@ -2,7 +2,7 @@ package tfl.test;
 
 import com.frameworkium.core.api.tests.BaseTest;
 import org.testng.annotations.Test;
-import tfl.services.journeyplanner.JourneyPlannerService;
+import tfl.services.journeyPlanner.JourneyPlannerService;
 
 import static com.google.common.truth.Truth.assertThat;
 

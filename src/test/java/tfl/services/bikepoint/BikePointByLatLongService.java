@@ -21,7 +21,8 @@ public class BikePointByLatLongService extends BaseService<BikePointByLatLongSer
                 .param("lat", lat)
                 .param("lon", lon)
                 .param("radius", radius);
-        return ServiceFactory.newInstance(BikePointByLatLongService.class, "http://api.tfl.gov.uk/BikePoint", reqSpec);
+        return ServiceFactory.newInstance(
+                BikePointByLatLongService.class, "http://api.tfl.gov.uk/BikePoint", reqSpec);
     }
 
     /**
