@@ -1,7 +1,7 @@
 package com.frameworkium.core.ui.driver.drivers;
 
+import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.driver.DriverType;
-import com.frameworkium.core.ui.properties.UIProperty;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -17,19 +17,18 @@ public class GridImpl extends DriverType {
     public GridImpl(DesiredCapabilities browserDesiredCapabilities) {
         desiredCapabilities = browserDesiredCapabilities;
         try {
-            remoteURL = new URL(UIProperty.GRID_URL.getValue());
-        }
-        catch(MalformedURLException e) {
+            remoteURL = new URL(Property.GRID_URL.getValue());
+        } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public DesiredCapabilities getDesiredCapabilities() {
-        if(UIProperty.BROWSER_VERSION.isSpecified()) {
-            desiredCapabilities.setCapability("version", UIProperty.BROWSER_VERSION.getValue());
+        if (Property.BROWSER_VERSION.isSpecified()) {
+            desiredCapabilities.setCapability("version", Property.BROWSER_VERSION.getValue());
         }
-        if(UIProperty.PLATFORM.isSpecified()) {
-            desiredCapabilities.setCapability("platform", UIProperty.PLATFORM_VERSION.getValue());
+        if (Property.PLATFORM.isSpecified()) {
+            desiredCapabilities.setCapability("platform", Property.PLATFORM_VERSION.getValue());
         }
         return desiredCapabilities;
     }

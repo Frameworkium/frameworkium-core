@@ -3,7 +3,8 @@ package com.frameworkium.core.ui.driver.remotes;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static com.frameworkium.core.ui.properties.UIProperty.BROWSER_STACK;
+import static com.frameworkium.core.common.properties.Property.BROWSER_STACK;
+
 
 public class BrowserStack {
 

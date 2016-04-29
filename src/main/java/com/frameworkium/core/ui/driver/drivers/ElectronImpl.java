@@ -1,7 +1,7 @@
 package com.frameworkium.core.ui.driver.drivers;
 
 import com.frameworkium.core.ui.driver.DriverType;
-import com.frameworkium.core.ui.properties.UIProperty;
+import com.frameworkium.core.common.properties.Property;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -26,10 +26,10 @@ public class ElectronImpl extends DriverType {
     @Override
     public DesiredCapabilities getDesiredCapabilities() {
         Map<String, String> chromeOptions = new HashMap<>();
-        if (!UIProperty.APP_PATH.isSpecified()) {
+        if (!Property.APP_PATH.isSpecified()) {
             logger.error("App path must be specified when using Electron!");
         } else {
-            chromeOptions.put("binary", UIProperty.APP_PATH.getValue());
+            chromeOptions.put("binary", Property.APP_PATH.getValue());
         }
         DesiredCapabilities desiredCapabilities = DesiredCapabilities.chrome();
         desiredCapabilities.setCapability("browserName", "chrome");

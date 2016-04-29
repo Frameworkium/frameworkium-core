@@ -40,6 +40,16 @@ public class EventListener implements WebDriverEventListener {
     }
 
     @Override
+    public void beforeNavigateRefresh(WebDriver webDriver) {
+        logger.debug("before Navigate Refresh");
+    }
+
+    @Override
+    public void afterNavigateRefresh(WebDriver webDriver) {
+        logger.debug("after Navigate Refresh");
+    }
+
+    @Override
     public void afterNavigateTo(String url, WebDriver driver) {
         logger.debug("navigated to " + url);
     }

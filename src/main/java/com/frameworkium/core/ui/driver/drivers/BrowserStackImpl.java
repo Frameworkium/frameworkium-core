@@ -1,8 +1,8 @@
 package com.frameworkium.core.ui.driver.drivers;
 
+import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.driver.DriverType;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
-import com.frameworkium.core.ui.properties.UIProperty;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -18,7 +18,10 @@ public class BrowserStackImpl extends DriverType {
     private static SupportedPlatforms supportedPlatform;
     private static DesiredCapabilities desiredCapabilities;
 
-    public BrowserStackImpl(SupportedPlatforms platform, DesiredCapabilities browserDesiredCapabilities) {
+    public BrowserStackImpl(
+            SupportedPlatforms platform,
+            DesiredCapabilities browserDesiredCapabilities) {
+
         supportedPlatform = platform;
         desiredCapabilities = browserDesiredCapabilities;
         try {
@@ -52,29 +55,35 @@ public class BrowserStackImpl extends DriverType {
             case ANDROID:
                 desiredCapabilities.setCapability("platform", "ANDROID");
                 desiredCapabilities.setCapability("browserName", "android");
-                if (UIProperty.DEVICE.isSpecified()) {
-                    desiredCapabilities.setCapability("device", UIProperty.DEVICE.getValue());
+                if (Property.DEVICE.isSpecified()) {
+                    desiredCapabilities.setCapability(
+                            "device", Property.DEVICE.getValue());
                 }
                 break;
             case IOS:
                 desiredCapabilities.setCapability("platform", "MAC");
-                if (UIProperty.DEVICE.isSpecified()) {
-                    desiredCapabilities.setCapability("device", UIProperty.DEVICE.getValue());
-                    desiredCapabilities.setCapability("browserName", UIProperty.DEVICE.getValue().split(" ")[0]);
+                if (Property.DEVICE.isSpecified()) {
+                    desiredCapabilities.setCapability(
+                            "device", Property.DEVICE.getValue());
+                    desiredCapabilities.setCapability(
+                            "browserName", Property.DEVICE.getValue().split(" ")[0]);
                 }
                 break;
         }
     }
 
     private void setDesktopCapability() {
-        if (UIProperty.PLATFORM_VERSION.isSpecified()) {
-            desiredCapabilities.setCapability("os_version", UIProperty.PLATFORM_VERSION.getValue());
+        if (Property.PLATFORM_VERSION.isSpecified()) {
+            desiredCapabilities.setCapability(
+                    "os_version", Property.PLATFORM_VERSION.getValue());
         }
-        if (UIProperty.RESOLUTION.isSpecified()) {
-            desiredCapabilities.setCapability("resolution", UIProperty.RESOLUTION.getValue());
+        if (Property.RESOLUTION.isSpecified()) {
+            desiredCapabilities.setCapability(
+                    "resolution", Property.RESOLUTION.getValue());
         }
-        if (UIProperty.BROWSER_VERSION.isSpecified()) {
-            desiredCapabilities.setCapability("browser_version", UIProperty.BROWSER_VERSION.getValue());
+        if (Property.BROWSER_VERSION.isSpecified()) {
+            desiredCapabilities.setCapability(
+                    "browser_version", Property.BROWSER_VERSION.getValue());
         }
     }
 }

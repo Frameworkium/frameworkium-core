@@ -1,6 +1,6 @@
 package com.frameworkium.core.common.reporting.jira.zapi;
 
-import com.frameworkium.core.common.properties.CommonProperty;
+import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.jira.Config;
 import com.jayway.restassured.path.json.JsonPath;
 
@@ -11,7 +11,7 @@ import static com.jayway.restassured.RestAssured.given;
 
 public class SearchExecutions {
 
-    private final static String zapiURI = CommonProperty.JIRA_URL.getValue() + Config.zapiRestURI;
+    private final static String zapiURI = Property.JIRA_URL.getValue() + Config.zapiRestURI;
     private final JsonPath jsonPath;
 
     public SearchExecutions(final String query) {
@@ -43,8 +43,8 @@ public class SearchExecutions {
         List<Integer> list = new ArrayList<>();
         List<Integer> tempList = jsonPath.getList(path);
 
-        if (CommonProperty.ZAPI_CYCLE_REGEX.isSpecified()) {
-            String jiraCycleRegEx = CommonProperty.ZAPI_CYCLE_REGEX.getValue();
+        if (Property.ZAPI_CYCLE_REGEX.isSpecified()) {
+            String jiraCycleRegEx = Property.ZAPI_CYCLE_REGEX.getValue();
             List<String> cycleNames = jsonPath.getList("executions.cycleName");
             for (int i = 0; i < cycleNames.size(); i++) {
                 if (cycleNames.get(i).contains(jiraCycleRegEx)) {

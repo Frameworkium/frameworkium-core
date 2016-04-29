@@ -26,14 +26,15 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-@Listeners({CaptureListener.class, ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class,
+@Listeners({CaptureListener.class, ScreenshotListener.class,
+        MethodInterceptor.class, SauceLabsListener.class,
         TestListener.class, ResultLoggerListener.class})
-
-public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
+public abstract class BaseTest
+        implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
     private static ThreadLocal<Boolean> requiresReset;
     private static ThreadLocal<ScreenshotCapture> capture;
-    public static ThreadLocal<DriverType> driverType;
+    private static ThreadLocal<DriverType> driverType;
     private static List<DriverType> activeDriverTypes = new ArrayList<>();
     private static Logger logger = LogManager.getLogger(BaseTest.class);
 
@@ -46,13 +47,13 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      *  - Initialise the screenshot capture
      *  - Configure the browser based on parameters (maximise window, session resets, user agent)
      */
-    @BeforeClass(alwaysRun = true)
+    @BeforeSuite(alwaysRun = true)
     public static void instantiateDriverObject() {
         driverType = new ThreadLocal<DriverType>() {
             @Override
             protected DriverType initialValue() {
-                DriverType driverType = new DriverSetup()
-                        .returnDesiredDriverType();
+                DriverType driverType =
+                        new DriverSetup().returnDesiredDriverType();
                 driverType.instantiate();
                 activeDriverTypes.add(driverType);
                 return driverType;
@@ -83,7 +84,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      *
      * @param testMethod - The test method name of the test
      */
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public static void configureBrowserBeforeTest(Method testMethod) {
         try {
             configureDriverBasedOnParams();

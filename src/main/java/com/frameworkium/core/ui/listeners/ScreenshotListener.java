@@ -1,8 +1,8 @@
 package com.frameworkium.core.ui.listeners;
 
+import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.driver.DriverSetup.SupportedBrowsers;
 import com.frameworkium.core.ui.driver.WebDriverWrapper;
-import com.frameworkium.core.ui.properties.UIProperty;
 import com.frameworkium.core.ui.tests.BaseTest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,8 +18,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import static com.frameworkium.core.common.properties.Property.BROWSER;
 import static com.frameworkium.core.ui.driver.DriverSetup.SupportedBrowsers.ELECTRON;
-import static com.frameworkium.core.ui.properties.UIProperty.BROWSER;
 
 public class ScreenshotListener extends TestListenerAdapter {
 
@@ -61,7 +61,7 @@ public class ScreenshotListener extends TestListenerAdapter {
 
     private void takeScreenshot(String testName) {
         // Take a local screenshot if capture is not enabled
-        if (!UIProperty.CAPTURE_URL.isSpecified()) {
+        if (!Property.CAPTURE_URL.isSpecified()) {
             try {
                 String screenshotDirectory = System.getProperty("screenshotDirectory");
                 if (null == screenshotDirectory) {
@@ -95,8 +95,7 @@ public class ScreenshotListener extends TestListenerAdapter {
     private boolean isScreenshotSupported() {
         if (BROWSER.isSpecified()) {
             return !SupportedBrowsers.valueOf(BROWSER.getValue().toUpperCase()).equals(ELECTRON);
-        }
-        else {
+        } else {
             return false;
         }
     }

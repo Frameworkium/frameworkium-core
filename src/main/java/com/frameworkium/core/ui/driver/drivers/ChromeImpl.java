@@ -1,7 +1,7 @@
 package com.frameworkium.core.ui.driver.drivers;
 
 import com.frameworkium.core.ui.driver.DriverType;
-import com.frameworkium.core.ui.properties.UIProperty;
+import com.frameworkium.core.common.properties.Property;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -24,9 +24,9 @@ public class ChromeImpl extends DriverType {
 
         // Use Chrome's built in device emulators
         // Specify browser=chrome, but also provide device name to use chrome's emulator
-        if (UIProperty.DEVICE.isSpecified()) {
+        if (Property.DEVICE.isSpecified()) {
             Map<String, String> mobileEmulation = new HashMap<>();
-            mobileEmulation.put("deviceName", UIProperty.DEVICE.getValue());
+            mobileEmulation.put("deviceName", Property.DEVICE.getValue());
 
             Map<String, Object> chromeOptions = new HashMap<>();
             chromeOptions.put("mobileEmulation", mobileEmulation);

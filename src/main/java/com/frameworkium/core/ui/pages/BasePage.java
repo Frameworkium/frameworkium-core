@@ -1,17 +1,21 @@
 package com.frameworkium.core.ui.pages;
 
+import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.ui.annotations.Invisible;
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.capture.model.Command;
-import com.frameworkium.core.ui.properties.UIProperty;
 import com.frameworkium.core.ui.tests.BaseTest;
 import com.google.inject.Inject;
 import com.paulhammant.ngwebdriver.WaitForAngularRequestsToFinish;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.*;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -56,7 +60,7 @@ public abstract class BasePage<T extends BasePage<T>> {
     public T get() {
         HtmlElementLoader.populatePageObject(this, driver);
         try {
-            if(isPageAngularJS()) {
+            if (isPageAngularJS()) {
                 waitForAngularRequestsToFinish();
             }
 
@@ -64,14 +68,14 @@ public abstract class BasePage<T extends BasePage<T>> {
 
             try {
                 AllureLogger.logToAllure("Page '" + this.getClass().getName() + "' successfully loaded");
-                if (UIProperty.CAPTURE_URL.isSpecified())
+                if (Property.CAPTURE_URL.isSpecified())
                     BaseTest.getCapture().takeAndSendScreenshot(
                             new Command("load", null, this.getClass().getName()), driver, null);
             } catch (Exception e) {
                 logger.error("Error logging page load, but loaded successfully");
             }
         } catch (IllegalArgumentException | IllegalAccessException e) {
-            logger.error("Error while waiting for page " + this.getClass().getName()  + " to load", e);
+            logger.error("Error while waiting for page " + this.getClass().getName() + " to load", e);
             //throw new PageNotLoadedException("Error while waiting for page " + this.getClass().getName()  + " to load");
         }
         return (T) this;
@@ -114,7 +118,6 @@ public abstract class BasePage<T extends BasePage<T>> {
                 } else if (annotation instanceof Invisible) {
                     waitForObjectToBeInvisible(obj);
                 }
-
             }
         }
     }
@@ -209,7 +212,7 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     //TODO - move to helper methods section instead
-    private ExpectedCondition<Boolean> invisibilityOfElement(WebElement element){
+    private ExpectedCondition<Boolean> invisibilityOfElement(WebElement element) {
         return new ExpectedCondition<Boolean>() {
             @Nullable
             @Override
@@ -217,11 +220,12 @@ public abstract class BasePage<T extends BasePage<T>> {
                 try {
                     return !element.isDisplayed();
                 } catch (NoSuchElementException var3) {
-                    return Boolean.valueOf(true);
+                    return true;
                 } catch (StaleElementReferenceException var4) {
-                    return Boolean.valueOf(true);
+                    return true;
                 }
             }
+
             public String toString() {
                 return "element to no longer be visible: " + element;
             }
@@ -252,9 +256,6 @@ public abstract class BasePage<T extends BasePage<T>> {
                 .waitForAngularRequestsToFinish((JavascriptExecutor) driver);
     }
 
-
-
-
     /**
      * @param javascript the Javascript to execute on the current page
      * @return Returns an Object returned by the Javascript provided
@@ -264,7 +265,7 @@ public abstract class BasePage<T extends BasePage<T>> {
         try {
             JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
             returnObj = jsExecutor.executeScript(javascript);
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.error("Javascript execution failed! Please investigate into the issue.");
             logger.debug("Failed Javascript:" + javascript);
         }
@@ -283,7 +284,7 @@ public abstract class BasePage<T extends BasePage<T>> {
             driver.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
             JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
             returnObj = jsExecutor.executeAsyncScript(javascript);
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.error("Async javascript execution failed! Please investigate the issue.");
             logger.debug("Failed Javascript:" + javascript);
         }

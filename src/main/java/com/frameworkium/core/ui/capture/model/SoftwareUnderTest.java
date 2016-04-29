@@ -1,6 +1,6 @@
 package com.frameworkium.core.ui.capture.model;
 
-import com.frameworkium.core.common.properties.CommonProperty;
+import com.frameworkium.core.common.properties.Property;
 
 public class SoftwareUnderTest {
 
@@ -8,11 +8,11 @@ public class SoftwareUnderTest {
     private String version;
 
     public SoftwareUnderTest() {
-        if (CommonProperty.SUT_NAME.isSpecified()) {
-            this.name = CommonProperty.SUT_NAME.getValue();
+        if (Property.SUT_NAME.isSpecified()) {
+            this.name = Property.SUT_NAME.getValue();
         }
-        if (CommonProperty.SUT_VERSION.isSpecified()) {
-            this.version = CommonProperty.SUT_VERSION.getValue();
+        if (Property.SUT_VERSION.isSpecified()) {
+            this.version = Property.SUT_VERSION.getValue();
         }
     }
 

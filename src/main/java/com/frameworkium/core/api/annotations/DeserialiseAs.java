@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface DeserialiseAs {
-    String value() default  StringUtils.EMPTY;;
+    String value() default StringUtils.EMPTY;
 }

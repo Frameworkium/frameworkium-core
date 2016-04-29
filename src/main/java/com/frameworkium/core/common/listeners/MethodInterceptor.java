@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.frameworkium.core.common.properties.CommonProperty.JIRA_URL;
-import static com.frameworkium.core.common.properties.CommonProperty.JQL_QUERY;
+import static com.frameworkium.core.common.properties.Property.JIRA_URL;
+import static com.frameworkium.core.common.properties.Property.JQL_QUERY;
 
 public class MethodInterceptor implements IMethodInterceptor {
 

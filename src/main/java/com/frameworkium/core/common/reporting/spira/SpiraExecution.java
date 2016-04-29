@@ -1,6 +1,6 @@
 package com.frameworkium.core.common.reporting.spira;
 
-import com.frameworkium.core.common.properties.CommonProperty;
+import com.frameworkium.core.common.properties.Property;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.path.json.JsonPath;
 import org.apache.http.client.methods.HttpPost;
@@ -22,27 +22,28 @@ public class SpiraExecution {
 
     private final static Logger logger = LogManager.getLogger(SpiraExecution.class);
 
-    private final static String spiraURI = CommonProperty.SPIRA_URL.getValue() + Config.spiraRestURI;
+    private final static String spiraURI =
+            Property.SPIRA_URL.getValue() + Config.spiraRestURI;
     private final String username = Config.spiraUsername;
     private final String apiKey = Config.spiraApiKey;
 
-    public void recordTestResult(final String issue, final int resultId, final String comment,final ITestResult result) {
+    public void recordTestResult(
+            String issue, int resultId, String comment, ITestResult result) {
 
         JSONObject obj = new JSONObject();
         try {
-            obj.put("ExecutionStatusId",0);
-            obj.put("StartDate","\\/Date(" + result.getStartMillis() + ")\\/");
-            obj.put("TestCaseId",issue.replaceAll("[^0-9]",""));
-            obj.put("TestRunTypeId",0);
-            obj.put("TestRunFormatId",0);
-            obj.put("ExecutionStatusId",resultId);
+            obj.put("ExecutionStatusId", 0);
+            obj.put("StartDate", "\\/Date(" + result.getStartMillis() + ")\\/");
+            obj.put("TestCaseId", issue.replaceAll("[^0-9]", ""));
+            obj.put("TestRunTypeId", 0);
+            obj.put("TestRunFormatId", 0);
+            obj.put("ExecutionStatusId", resultId);
+            obj.put("RunnerName", "Frameworkium");
+            obj.put("RunnerTestName", result.getMethod().getMethodName());
+            obj.put("RunnerStackTrace", comment);
 
-            obj.put("RunnerName","Frameworkium");
-            obj.put("RunnerTestName",result.getMethod().getMethodName());
-            obj.put("RunnerStackTrace",comment);
-
-            if(CommonProperty.RESULT_VERSION.isSpecified()){
-                obj.put("ReleaseId", getReleaseId(CommonProperty.RESULT_VERSION.getValue()));
+            if (Property.RESULT_VERSION.isSpecified()) {
+                obj.put("ReleaseId", getReleaseId(Property.RESULT_VERSION.getValue()));
             }
             //"Name":null,
             //"BuildId":null,
@@ -75,18 +76,17 @@ public class SpiraExecution {
             e.printStackTrace();
         }
     }
-    
+
     public String getReleaseId(String releaseName) {
         RestAssured.baseURI = spiraURI;
-        
+
         JsonPath jsonPath = given().contentType("application/json")
                 .with().parameter("username", username)
                 .and().parameter("api-key", apiKey)
                 .get("/releases").andReturn().jsonPath();
 
-        return jsonPath.getString(String.format("find {it.FullName == '%s'}.ReleaseId", releaseName));
+        return jsonPath.getString(String.format(
+                "find {it.FullName == '%s'}.ReleaseId", releaseName));
     }
 
 }
-
-

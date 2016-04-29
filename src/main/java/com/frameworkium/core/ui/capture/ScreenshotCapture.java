@@ -1,5 +1,6 @@
 package com.frameworkium.core.ui.capture;
 
+import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.capture.model.message.CreateExecution;
 import com.frameworkium.core.ui.capture.model.message.CreateScreenshot;
@@ -8,7 +9,6 @@ import com.frameworkium.core.ui.driver.DriverType;
 import com.frameworkium.core.ui.driver.WebDriverWrapper;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
-import com.frameworkium.core.ui.properties.UIProperty;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
 import org.apache.logging.log4j.LogManager;
@@ -39,7 +39,7 @@ public class ScreenshotCapture {
     }
 
     public static boolean isRequired() {
-        return UIProperty.CAPTURE_URL.isSpecified() && !DriverType.isNative();
+        return Property.CAPTURE_URL.isSpecified() && !DriverType.isNative();
     }
 
     public void takeAndSendScreenshot(
@@ -55,7 +55,7 @@ public class ScreenshotCapture {
 
     private void sendScreenshot(CreateScreenshot createScreenshotMessage) {
 
-        String uri = UIProperty.CAPTURE_URL.getValue() + "/screenshot";
+        String uri = Property.CAPTURE_URL.getValue() + "/screenshot";
 
         RestAssured.given().contentType(ContentType.JSON)
                 .body(createScreenshotMessage)
@@ -64,7 +64,7 @@ public class ScreenshotCapture {
 
     private void initExecution(CreateExecution createExecutionMessage) {
 
-        String uri = UIProperty.CAPTURE_URL.getValue() + "/executions";
+        String uri = Property.CAPTURE_URL.getValue() + "/executions";
 
         executionID =
                 RestAssured.given().contentType(ContentType.JSON)
@@ -85,7 +85,7 @@ public class ScreenshotCapture {
             } else {
                 try {
                     RemoteWebDriver r = ((WebDriverWrapper) webdriver).getWrappedRemoteWebDriver();
-                    URL gridURL = new URL(UIProperty.GRID_URL.getValue());
+                    URL gridURL = new URL(Property.GRID_URL.getValue());
                     String url =
                             String.format("%s://%s:%d/grid/api/testsession?session=%s",
                                     gridURL.getProtocol(), gridURL.getHost(),

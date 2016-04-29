@@ -1,10 +1,9 @@
 package com.frameworkium.core.ui.driver;
 
-import com.frameworkium.core.common.properties.CommonProperty;
+import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.listeners.CaptureListener;
 import com.frameworkium.core.ui.listeners.EventListener;
-import com.frameworkium.core.ui.properties.UIProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Proxy;
@@ -17,10 +16,10 @@ import static com.frameworkium.core.ui.driver.DriverSetup.useRemoteDriver;
 
 public abstract class DriverType {
 
-    protected WebDriverWrapper webDriverWrapper;
-
-    protected final static Logger logger = LogManager.getLogger(DriverType.class);
     private static final String HOSTNAME_OR_IP_AND_PORT_REGEX = "[\\dA-Za-z.:%-]+";
+
+    private WebDriverWrapper webDriverWrapper;
+    protected final static Logger logger = LogManager.getLogger(DriverType.class);
 
     /**
      * Creates the Wrapped Driver object, and returns to the test
@@ -74,9 +73,9 @@ public abstract class DriverType {
      * @return A Selenium proxy object for the current system properties or null if no valid proxy settings
      */
     public Proxy getProxy() {
-        if (CommonProperty.PROXY.isSpecified()) {
+        if (Property.PROXY.isSpecified()) {
             Proxy proxy = new Proxy();
-            String proxyString = CommonProperty.PROXY.getValue().toLowerCase();
+            String proxyString = Property.PROXY.getValue().toLowerCase();
             switch (proxyString) {
 
                 case "system":
@@ -142,8 +141,8 @@ public abstract class DriverType {
      * Maximises the browser window based on parameters
      */
     public void maximiseBrowserWindow() {
-        if (!UIProperty.MAXIMISE.isSpecified() || Boolean.parseBoolean(UIProperty.MAXIMISE.getValue())) {
-            if (!useRemoteDriver() && !isNative() || UIProperty.GRID_URL.isSpecified()) {
+        if (!Property.MAXIMISE.isSpecified() || Boolean.parseBoolean(Property.MAXIMISE.getValue())) {
+            if (!useRemoteDriver() && !isNative() || Property.GRID_URL.isSpecified()) {
                 this.webDriverWrapper.manage().window().maximize();
             }
         }
@@ -173,7 +172,7 @@ public abstract class DriverType {
      * @return - Boolean, to whether an native app is defined
      */
     public static boolean isNative() {
-        return UIProperty.APP_PATH.isSpecified();
+        return Property.APP_PATH.isSpecified();
     }
 
     /**

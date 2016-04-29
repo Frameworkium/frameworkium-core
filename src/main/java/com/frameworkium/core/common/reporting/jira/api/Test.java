@@ -1,6 +1,6 @@
 package com.frameworkium.core.common.reporting.jira.api;
 
-import com.frameworkium.core.common.properties.CommonProperty;
+import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.jira.Config;
 import com.jayway.restassured.path.json.JsonPath;
 import org.apache.logging.log4j.LogManager;
@@ -13,7 +13,7 @@ import static com.jayway.restassured.RestAssured.given;
 
 public class Test {
 
-    private final static String jiraAPIURI = CommonProperty.JIRA_URL.getValue() + Config.jiraRestURI;
+    private final static String jiraAPIURI = Property.JIRA_URL.getValue() + Config.jiraRestURI;
     private final String issueKey; // Jira Key e.g. KT-123
     private final static Logger logger = LogManager.getLogger(Test.class);
     public Test(final String issue) {

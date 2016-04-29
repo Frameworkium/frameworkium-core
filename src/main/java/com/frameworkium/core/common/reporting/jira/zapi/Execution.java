@@ -1,6 +1,6 @@
 package com.frameworkium.core.common.reporting.jira.zapi;
 
-import com.frameworkium.core.common.properties.CommonProperty;
+import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.jira.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +16,7 @@ import static com.jayway.restassured.RestAssured.given;
 public class Execution {
 
     private final static Logger logger = LogManager.getLogger(Execution.class);
-    private final static String zapiURI = CommonProperty.JIRA_URL.getValue() + Config.zapiRestURI;
+    private final static String zapiURI = Property.JIRA_URL.getValue() + Config.zapiRestURI;
 
     private final String version;
     private final String issue;
@@ -24,7 +24,7 @@ public class Execution {
     private int status;
 
     public Execution(final String issue) {
-        this.version = CommonProperty.RESULT_VERSION.getValue();
+        this.version = Property.RESULT_VERSION.getValue();
         this.issue = issue;
         this.idList = getExecutionIds();
     }

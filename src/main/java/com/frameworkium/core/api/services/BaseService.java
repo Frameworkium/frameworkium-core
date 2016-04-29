@@ -1,52 +1,22 @@
 package com.frameworkium.core.api.services;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.frameworkium.core.api.annotations.DeserialiseAs;
-import com.frameworkium.core.api.annotations.FindBy;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.jayway.restassured.http.Method;
-import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.util.Collection;
-import java.util.List;
 
 import static com.jayway.restassured.RestAssured.given;
-import static com.jayway.restassured.http.Method.*;
 
 public abstract class BaseService<T extends BaseService<T>> {
 
     protected final Logger logger = LogManager.getLogger(this);
 
-    protected Response response;
-    protected JsonPath jsonPath;
-
-    protected String url;
-    protected Method httpVerb;
-    protected RequestSpecification reqSpec;
-
-    /**
-     * @return Returns the current page object.
-     * Useful for e.g. MyPage.get().then().doSomething();
-     */
-    @SuppressWarnings("unchecked")
-    public T then() {
-        return (T) this;
-    }
-
-    /**
-     * @return Returns the current page object.
-     * Useful for e.g. MyPage.get().then().with().aComponent().clickHome();
-     */
-    @SuppressWarnings("unchecked")
-    public T with() {
-        return (T) this;
-    }
+    private Response response;
 
     @SuppressWarnings("unchecked")
     public T get(String url) {
@@ -61,14 +31,8 @@ public abstract class BaseService<T extends BaseService<T>> {
     @SuppressWarnings("unchecked")
     public T get(String url, Method httpVerb, RequestSpecification requestSpec) {
 
-        //Store these in case you want to re-fire the request unmodified without reinstantiating
-        this.url = url;
-        this.httpVerb = httpVerb;
-        this.reqSpec = requestSpec;
-
         //make the request
         this.response = makeRequest(httpVerb, url, requestSpec);
-        jsonPath = response.jsonPath();
         setFieldsBasedUponAnnotations();
 
         try {
@@ -82,86 +46,65 @@ public abstract class BaseService<T extends BaseService<T>> {
     private Response makeRequest(Method httpVerb, String url, RequestSpecification requestSpec) {
 
         //TODO - enable automatic logging to the logger - eg errors to error, rest to debug?
-        //requestSpec = requestSpec.config(RestAssured.config().logConfig(logConfig().enableLoggingOfRequestAndResponseIfValidationFails(HEADERS)));
+        //requestSpec = requestSpec.config(
+        // RestAssured.config().logConfig(logConfig().enableLoggingOfRequestAndResponseIfValidationFails(HEADERS)));
 
-        Response resp = null;
+        Response resp;
 
         logger.info("Making request: " + httpVerb.toString() + " " + url);
 //        requestSpec = requestSpec.log().all();
 
-        if(httpVerb.equals(GET))
+        switch (httpVerb) {
+        case GET:
             resp = requestSpec.get(url);
-        else if (httpVerb.equals(POST))
-            resp = requestSpec.post(url);
-        else if(httpVerb.equals(PUT))
+            break;
+        case PUT:
             resp = requestSpec.put(url);
-        else if(httpVerb.equals(DELETE))
+            break;
+        case POST:
+            resp = requestSpec.post(url);
+            break;
+        case DELETE:
             resp = requestSpec.delete(url);
-        else if(httpVerb.equals(Method.HEAD))
+            break;
+        case HEAD:
             resp = requestSpec.head(url);
-        else if(httpVerb.equals(Method.OPTIONS))
+            break;
+        case TRACE:
+            throw new IllegalStateException("TRACE not supported");
+        case OPTIONS:
             resp = requestSpec.options(url);
-        else if(httpVerb.equals(Method.PATCH))
+            break;
+        case PATCH:
             resp = requestSpec.patch(url);
-        else {
-            logger.error("Unrecognised http verb supplied - defaulting to a get");
+            break;
+        default:
+            logger.error("Unrecognised http verb supplied - defaulting to GET");
             resp = requestSpec.get(url);
         }
 
         return resp;
     }
 
-
     private void setFieldsBasedUponAnnotations() {
-        Field[] fields = this.getClass().getDeclaredFields();
-
-        for (Field field : fields) {
+        for (Field field : this.getClass().getDeclaredFields()) {
 
             Object value = null;
 
             DeserialiseAs[] deserialiseAsAnnotations = field.getAnnotationsByType(DeserialiseAs.class);
+
             if (deserialiseAsAnnotations.length == 1) {
                 Class fieldClass = field.getType();
                 try {
                     value = response.as(fieldClass);
-                } catch(Exception e){
-                    logger.error("Error deserialising the response:");
-                    logger.error(e.toString());
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    logger.error("Error de-serialising the response", e);
                     logger.error("Response received was:");
-                    logger.error(response.toString());
                     logger.error(response.body().asString());
-
-                    response.prettyPrint();
                 }
-            }
-
-            FindBy[] annotations = field.getAnnotationsByType(FindBy.class);
-            if (annotations.length == 1) {
-                String jp = annotations[0].jsonPath();
-
-                //Force to get a list of the specified type
-                // if a list is specified
-                Class fieldClass = field.getType();
-                if(fieldClass.equals(List.class)){
-                    ParameterizedType listType = (ParameterizedType) field.getGenericType();
-                    Class fieldSubClass = (Class) listType.getActualTypeArguments()[0];
-                    value = jsonPath.getList(jp, fieldSubClass);
-                } else {
-                    value = jsonPath.get(jp);
-                }
-
-                //If we only requested one thing, but actually found many,
-                // only return first instance found
-                if((value instanceof Collection) && !fieldClass.equals(List.class)){
-                    value = ((List) value).get(0);
-                }
-
-                //If we wanted the data as a String, let's try to make it one
-                if(!(value instanceof String) && fieldClass.equals(String.class)){
-                    value = String.valueOf(value);
-                }
-
+            } else if (deserialiseAsAnnotations.length > 1) {
+                throw new IllegalArgumentException(
+                        "Cannot have more than 1 @DeserialiseAs per field");
             }
 
             if (value != null) {
@@ -175,15 +118,11 @@ public abstract class BaseService<T extends BaseService<T>> {
         }
     }
 
-    public String prettyPrintResponse(){
+    public String getPrettyPrintedResponse() {
         return this.response.prettyPrint();
     }
 
-    public void resendLastRequest(){
-        get(url,httpVerb,reqSpec);
-    }
-
-    public int getResponseCode(){
+    public int getResponseCode() {
         return response.getStatusCode();
     }
 

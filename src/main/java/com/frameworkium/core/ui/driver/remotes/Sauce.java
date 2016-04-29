@@ -1,6 +1,6 @@
 package com.frameworkium.core.ui.driver.remotes;
 
-import com.frameworkium.core.ui.properties.UIProperty;
+import com.frameworkium.core.common.properties.Property;
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.saucerest.SauceREST;
@@ -25,7 +25,7 @@ public class Sauce {
     }
 
     public static boolean isDesired() {
-        return UIProperty.SAUCE.isSpecified() && Boolean.parseBoolean(UIProperty.SAUCE.getValue());
+        return Property.SAUCE.isSpecified() && Boolean.parseBoolean(Property.SAUCE.getValue());
     }
 
     public static void updateJobName(SauceOnDemandSessionIdProvider sessionIdProvider, String name) {

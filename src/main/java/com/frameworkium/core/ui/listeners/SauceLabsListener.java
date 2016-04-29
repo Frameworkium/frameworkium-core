@@ -12,7 +12,7 @@ import org.testng.ITestResult;
 import java.io.File;
 import java.io.IOException;
 
-import static com.frameworkium.core.ui.properties.UIProperty.APP_PATH;
+import static com.frameworkium.core.common.properties.Property.APP_PATH;
 
 public class SauceLabsListener extends SauceOnDemandTestListener {
 

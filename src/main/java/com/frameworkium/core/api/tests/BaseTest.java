@@ -10,8 +10,8 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.Listeners;
 
 @Listeners({MethodInterceptor.class,
-        TestListener.class, ResultLoggerListener.class} )
-
+        TestListener.class,
+        ResultLoggerListener.class} )
 public abstract class BaseTest {
 
     private static Logger logger = LogManager.getLogger(BaseTest.class);

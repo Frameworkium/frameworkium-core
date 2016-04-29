@@ -144,6 +144,12 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     public void afterNavigateForward(WebDriver driver) {}
 
     @Override
+    public void beforeNavigateRefresh(WebDriver webDriver) {}
+
+    @Override
+    public void afterNavigateRefresh(WebDriver webDriver) {}
+
+    @Override
     public void afterNavigateTo(String url, WebDriver driver) {}
 
     @Override

@@ -1,6 +1,6 @@
 package com.frameworkium.core.ui.capture.model;
 
-import com.frameworkium.core.ui.properties.UIProperty;
+import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.tests.BaseTest;
 import net.sf.uadetector.ReadableUserAgent;
 import net.sf.uadetector.UserAgentStringParser;
@@ -16,7 +16,7 @@ public class Browser {
     public Browser() {
 
 
-        if(!BaseTest.userAgent.isEmpty()) {
+        if (!BaseTest.userAgent.isEmpty()) {
             // Get an UserAgentStringParser and analyze the requesting client
             UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
             ReadableUserAgent agent = parser.parse(BaseTest.userAgent);
@@ -30,20 +30,20 @@ public class Browser {
 
         } else {
 
-            if (UIProperty.BROWSER.isSpecified()) {
-                this.name = UIProperty.BROWSER.getValue().toLowerCase();
+            if (Property.BROWSER.isSpecified()) {
+                this.name = Property.BROWSER.getValue().toLowerCase();
             }
-            if (UIProperty.BROWSER_VERSION.isSpecified()) {
-                this.version = UIProperty.BROWSER_VERSION.getValue();
+            if (Property.BROWSER_VERSION.isSpecified()) {
+                this.version = Property.BROWSER_VERSION.getValue();
             }
-            if (UIProperty.DEVICE.isSpecified()) {
-                this.device = UIProperty.DEVICE.getValue();
+            if (Property.DEVICE.isSpecified()) {
+                this.device = Property.DEVICE.getValue();
             }
-            if (UIProperty.PLATFORM.isSpecified()) {
-                this.platform = UIProperty.PLATFORM.getValue();
+            if (Property.PLATFORM.isSpecified()) {
+                this.platform = Property.PLATFORM.getValue();
             }
-            if (UIProperty.PLATFORM_VERSION.isSpecified()) {
-                this.platformVersion = UIProperty.PLATFORM_VERSION.getValue();
+            if (Property.PLATFORM_VERSION.isSpecified()) {
+                this.platformVersion = Property.PLATFORM_VERSION.getValue();
             }
         }
     }
