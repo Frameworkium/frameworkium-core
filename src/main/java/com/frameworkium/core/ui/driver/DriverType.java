@@ -44,28 +44,6 @@ public abstract class DriverType {
         this.webDriverWrapper = eventFiringWD;
     }
 
-
-    //TODO _ TEMP TEMP TEMP!
-    public WebDriverWrapper instantiate2(DesiredCapabilities caps) {
-        logger.info("Current Browser Selection: " + this);
-
-        Proxy currentProxy = getProxy();
-        if (currentProxy != null) {
-            caps.setCapability(CapabilityType.PROXY, currentProxy);
-        }
-
-        logger.info("Caps: " + caps.toString());
-
-        WebDriverWrapper eventFiringWD = new WebDriverWrapper(getWebDriverObject(caps));
-        eventFiringWD.register(new EventListener());
-        if (ScreenshotCapture.isRequired()) {
-            eventFiringWD.register(new CaptureListener());
-        }
-        return eventFiringWD;
-    }
-
-
-
     /**
      * This method returns a proxy object with settings set by the system properties. If no valid proxy argument is set
      * then it returns null.
