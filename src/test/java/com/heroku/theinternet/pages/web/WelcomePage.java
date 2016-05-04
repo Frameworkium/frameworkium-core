@@ -1,5 +1,6 @@
 package com.heroku.theinternet.pages.web;
 
+import com.frameworkium.core.ui.annotations.ForceVisible;
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
 import com.frameworkium.core.ui.pages.PageFactory;

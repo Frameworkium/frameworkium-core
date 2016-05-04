@@ -2,6 +2,7 @@ package com.frameworkium.core.ui.pages;
 
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
+import com.frameworkium.core.ui.annotations.ForceVisible;
 import com.frameworkium.core.ui.annotations.Invisible;
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.capture.model.Command;
@@ -16,6 +17,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -118,6 +120,19 @@ public abstract class BasePage<T extends BasePage<T>> {
                 } else if (annotation instanceof Invisible) {
                     waitForObjectToBeInvisible(obj);
                 }
+                else if (annotation instanceof ForceVisible) {
+                    if(obj instanceof WebElement) {
+                        forceVisible((WebElement) obj);
+                    }
+                    else if(obj instanceof HtmlElement) {
+                        WebElement e = ((HtmlElement) obj).getWrappedElement();
+                        forceVisible(e);
+                    }
+                    else if(obj instanceof TypifiedElement) {
+                        WebElement e = ((TypifiedElement) obj).getWrappedElement();
+                        forceVisible(e);
+                    }
+                }
             }
         }
     }
@@ -170,6 +185,8 @@ public abstract class BasePage<T extends BasePage<T>> {
             wait.until(ExpectedConditions.visibilityOf(element));
         }
     }
+
+
 
     private void waitForObjectToBeInvisible(Object obj) throws IllegalArgumentException, IllegalAccessException {
 
@@ -291,6 +308,14 @@ public abstract class BasePage<T extends BasePage<T>> {
         return returnObj;
     }
 
+    public void forceVisible(WebElement element){
+        JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+        jsExecutor.executeScript(
+                "arguments[0].style.zindex='10000';" +
+                        "arguments[0].style.visibility='visible';" +
+                        "arguments[0].style.opacity='100';",
+                element);
+    }
 
     /**
      * @return Returns the title of the web page
