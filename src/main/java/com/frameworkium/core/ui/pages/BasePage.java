@@ -17,7 +17,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -30,6 +29,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
 
 public abstract class BasePage<T extends BasePage<T>> {
 
@@ -78,7 +79,6 @@ public abstract class BasePage<T extends BasePage<T>> {
             }
         } catch (IllegalArgumentException | IllegalAccessException e) {
             logger.error("Error while waiting for page " + this.getClass().getName() + " to load", e);
-            //throw new PageNotLoadedException("Error while waiting for page " + this.getClass().getName()  + " to load");
         }
         return (T) this;
     }
@@ -104,8 +104,9 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     @SuppressWarnings("unchecked")
-    private void waitForVisibleAndInvisibleElements(Object pageObject, String groupName) throws IllegalArgumentException,
-            IllegalAccessException {
+    private void waitForVisibleAndInvisibleElements(Object pageObject, String groupName)
+            throws IllegalArgumentException, IllegalAccessException {
+
         for (Field field : pageObject.getClass().getDeclaredFields()) {
             for (Annotation annotation : field.getDeclaredAnnotations()) {
 
@@ -119,25 +120,23 @@ public abstract class BasePage<T extends BasePage<T>> {
                     }
                 } else if (annotation instanceof Invisible) {
                     waitForObjectToBeInvisible(obj);
-                }
-                else if (annotation instanceof ForceVisible) {
-                    if(obj instanceof WebElement) {
-                        forceVisible((WebElement) obj);
-                    }
-                    else if(obj instanceof HtmlElement) {
+                } else if (annotation instanceof ForceVisible) {
+                    if (obj instanceof HtmlElement) {
                         WebElement e = ((HtmlElement) obj).getWrappedElement();
                         forceVisible(e);
-                    }
-                    else if(obj instanceof TypifiedElement) {
+                    } else if (obj instanceof TypifiedElement) {
                         WebElement e = ((TypifiedElement) obj).getWrappedElement();
                         forceVisible(e);
+                    } else if (obj instanceof WebElement) {
+                        forceVisible((WebElement) obj);
                     }
                 }
             }
         }
     }
 
-    private void waitForObjectToBeVisible(Object obj) throws IllegalArgumentException, IllegalAccessException {
+    private void waitForObjectToBeVisible(Object obj)
+            throws IllegalArgumentException, IllegalAccessException {
 
         // Checks for @Visible tags inside an HtmlElement Component
         if (obj instanceof HtmlElement) {
@@ -145,23 +144,22 @@ public abstract class BasePage<T extends BasePage<T>> {
             waitForVisibleAndInvisibleElements(obj);
         }
 
-
         // This handles Lists of WebElements e.g. List<WebElement>
         if (obj instanceof List) {
             //TODO - where to handle List<Link>, for example?
             try {
-                wait.until(ExpectedConditions.visibilityOfAllElements((List<WebElement>) obj));
+                wait.until(visibilityOfAllElements((List<WebElement>) obj));
             } catch (StaleElementReferenceException serex) {
                 logger.info("Caught StaleElementReferenceException");
                 tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady();
-                wait.until(ExpectedConditions.visibilityOfAllElements((List<WebElement>) obj));
+                wait.until(visibilityOfAllElements((List<WebElement>) obj));
             } catch (ClassCastException ccex) {
-                logger.debug("Caught ClassCastException - will try to get the first object in the List instead");
+                logger.debug("Caught ClassCastException - " +
+                        "will try to get the first object in the List instead");
                 obj = ((List<Object>) obj).get(0);
                 waitForObjectToBeVisible(obj);
             }
         }
-
 
         WebElement element;
         if (obj instanceof TypifiedElement) {
@@ -186,9 +184,8 @@ public abstract class BasePage<T extends BasePage<T>> {
         }
     }
 
-
-
-    private void waitForObjectToBeInvisible(Object obj) throws IllegalArgumentException, IllegalAccessException {
+    private void waitForObjectToBeInvisible(Object obj)
+            throws IllegalArgumentException, IllegalAccessException {
 
         WebElement element;
         if (obj instanceof TypifiedElement) {
@@ -197,7 +194,8 @@ public abstract class BasePage<T extends BasePage<T>> {
             element = (WebElement) obj;
         } else {
             throw new IllegalArgumentException(
-                    "Only elements of type TypifiedElement or WebElement are supported by @Invisible at present.");
+                    "Only elements of type TypifiedElement or WebElement " +
+                            "are supported by @Invisible at present.");
         }
         wait.until(invisibilityOfElement(element));
     }
@@ -211,7 +209,7 @@ public abstract class BasePage<T extends BasePage<T>> {
         while (notReadyCount < 20 && readyCount < 3) {
             try {
                 Thread.sleep(500);
-            } catch (InterruptedException e) { /* don't care */ }
+            } catch (InterruptedException ignored) { /* don't care */ }
             boolean docReady = (boolean) executeJS(
                     "return document.readyState == 'complete'");
             if (docReady) {
@@ -249,7 +247,6 @@ public abstract class BasePage<T extends BasePage<T>> {
         };
     }
 
-
     /**
      * Executes a javascript snippet to determine whether a page uses AngularJS
      * @return boolean - AngularJS true/false
@@ -258,8 +255,8 @@ public abstract class BasePage<T extends BasePage<T>> {
         try {
             return executeJS("return typeof angular;").equals("object");
         } catch (NullPointerException e) {
-            logger.error("Detecting whether the page was angular returned a null object. This means your browser" +
-                    "hasn't started! Investigate into the issue.");
+            logger.error("Detecting whether the page was angular returned a null object. " +
+                    "This means your browser hasn't started! Investigate into the issue.");
             return false;
         }
     }
@@ -308,7 +305,7 @@ public abstract class BasePage<T extends BasePage<T>> {
         return returnObj;
     }
 
-    public void forceVisible(WebElement element){
+    public void forceVisible(WebElement element) {
         JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
         jsExecutor.executeScript(
                 "arguments[0].style.zindex='10000';" +
