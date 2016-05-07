@@ -93,11 +93,8 @@ public class ScreenshotListener extends TestListenerAdapter {
      * @return boolean - true/false to whether screenshots are supported
      */
     private boolean isScreenshotSupported() {
-        if (BROWSER.isSpecified()) {
-            return !SupportedBrowsers.valueOf(BROWSER.getValue().toUpperCase()).equals(ELECTRON);
-        } else {
-            return false;
-        }
+        return BROWSER.isSpecified()
+                && !SupportedBrowsers.valueOf(BROWSER.getValue().toUpperCase()).equals(ELECTRON);
     }
 
     @Override

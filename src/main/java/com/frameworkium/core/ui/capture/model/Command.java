@@ -27,7 +27,7 @@ public class Command {
                 this.using = "id";
                 this.value = element.getAttribute("id");
             } else if (!(element.getText()).isEmpty()) {
-                this.using = "linktext";
+                this.using = "linkText";
                 this.value = element.getText();
             } else if (!element.getTagName().isEmpty()) {
                 this.using = "css";

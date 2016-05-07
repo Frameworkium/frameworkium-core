@@ -27,7 +27,7 @@ public abstract class BaseTest {
     /**
      * Logs the start of a step to your allure report
      * Other steps will be substeps until you call stepFinish
-     * @param stepName
+     * @param stepName the name of the step
      */
     public void __stepStart(String stepName){
         AllureLogger.__stepStart(stepName);

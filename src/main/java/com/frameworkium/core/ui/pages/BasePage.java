@@ -185,7 +185,7 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     private void waitForObjectToBeInvisible(Object obj)
-            throws IllegalArgumentException, IllegalAccessException {
+            throws IllegalArgumentException {
 
         WebElement element;
         if (obj instanceof TypifiedElement) {
