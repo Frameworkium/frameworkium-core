@@ -13,7 +13,7 @@ public class PageFactory {
     }
 
     public static <T extends BasePage<T>> T newInstance(
-            Class<T> clazz, Integer timeoutInSeconds) {
+            Class<T> clazz, long timeoutInSeconds) {
         return Guice
                 .createInjector(new WebDriverGuiceModule())
                 .getInstance(clazz)
@@ -29,7 +29,7 @@ public class PageFactory {
     }
 
     public static <T extends BasePage<T>> T newInstance(
-            Class<T> clazz, String url, Integer timeoutInSeconds) {
+            Class<T> clazz, String url, long timeoutInSeconds) {
         return Guice
                 .createInjector(new WebDriverGuiceModule())
                 .getInstance(clazz)

@@ -8,8 +8,7 @@ import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.tests.BaseTest;
 import com.google.inject.Inject;
-import com.paulhammant.ngwebdriver.WaitForAngularRequestsToFinish;
-import org.apache.commons.lang.StringUtils;
+import com.paulhammant.ngwebdriver.NgWebDriver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
@@ -28,7 +27,6 @@ import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
 
@@ -40,6 +38,8 @@ public abstract class BasePage<T extends BasePage<T>> {
     protected WebDriverWait wait;
 
     protected final Logger logger = LogManager.getLogger(this);
+
+    private NgWebDriver ngDriver;
 
     /**
      * @return Returns the current page object.
@@ -75,7 +75,7 @@ public abstract class BasePage<T extends BasePage<T>> {
                     BaseTest.getCapture().takeAndSendScreenshot(
                             new Command("load", null, this.getClass().getName()), driver, null);
             } catch (Exception e) {
-                logger.error("Error logging page load, but loaded successfully");
+                logger.error("Error logging page load, but loaded successfully", e);
             }
         } catch (IllegalArgumentException | IllegalAccessException e) {
             logger.error("Error while waiting for page " + this.getClass().getName() + " to load", e);
@@ -88,23 +88,17 @@ public abstract class BasePage<T extends BasePage<T>> {
         return get();
     }
 
-    public T get(Integer timeout) {
+    public T get(long timeout) {
         wait = new WebDriverWait(driver, timeout);
         return get();
     }
 
-    public T get(String url, Integer timeout) {
+    public T get(String url, long timeout) {
         wait = new WebDriverWait(driver, timeout);
         return get(url);
     }
 
     private void waitForVisibleAndInvisibleElements(Object pageObject)
-            throws IllegalArgumentException, IllegalAccessException {
-        waitForVisibleAndInvisibleElements(pageObject, StringUtils.EMPTY);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void waitForVisibleAndInvisibleElements(Object pageObject, String groupName)
             throws IllegalArgumentException, IllegalAccessException {
 
         for (Field field : pageObject.getClass().getDeclaredFields()) {
@@ -114,10 +108,7 @@ public abstract class BasePage<T extends BasePage<T>> {
                 Object obj = field.get(pageObject);
 
                 if (annotation instanceof Visible) {
-                    // If the group name matches, then check for visibility
-                    if (((Visible) annotation).value().equalsIgnoreCase(groupName)) {
-                        waitForObjectToBeVisible(obj);
-                    }
+                    waitForObjectToBeVisible(obj);
                 } else if (annotation instanceof Invisible) {
                     waitForObjectToBeInvisible(obj);
                 } else if (annotation instanceof ForceVisible) {
@@ -150,11 +141,11 @@ public abstract class BasePage<T extends BasePage<T>> {
             try {
                 wait.until(visibilityOfAllElements((List<WebElement>) obj));
             } catch (StaleElementReferenceException serex) {
-                logger.info("Caught StaleElementReferenceException");
+                logger.info("Caught StaleElementReferenceException in waitForObjectToBeVisible");
                 tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady();
                 wait.until(visibilityOfAllElements((List<WebElement>) obj));
             } catch (ClassCastException ccex) {
-                logger.debug("Caught ClassCastException - " +
+                logger.debug("Caught ClassCastException in waitForObjectToBeVisible - " +
                         "will try to get the first object in the List instead");
                 obj = ((List<Object>) obj).get(0);
                 waitForObjectToBeVisible(obj);
@@ -234,9 +225,8 @@ public abstract class BasePage<T extends BasePage<T>> {
             public Boolean apply(WebDriver input) {
                 try {
                     return !element.isDisplayed();
-                } catch (NoSuchElementException var3) {
-                    return true;
-                } catch (StaleElementReferenceException var4) {
+                } catch (NoSuchElementException
+                        | StaleElementReferenceException e) {
                     return true;
                 }
             }
@@ -264,20 +254,25 @@ public abstract class BasePage<T extends BasePage<T>> {
     /**
      * Method to wait for AngularJS requests to finish on the page
      */
-    public void waitForAngularRequestsToFinish() {
-        driver.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
-        WaitForAngularRequestsToFinish
-                .waitForAngularRequestsToFinish((JavascriptExecutor) driver);
+    protected void waitForAngularRequestsToFinish() {
+        getNgDriver().waitForAngularRequestsToFinish();
+    }
+
+    private NgWebDriver getNgDriver() {
+        if (ngDriver == null) {
+            ngDriver = new NgWebDriver((JavascriptExecutor) driver);
+        }
+        return ngDriver;
     }
 
     /**
      * @param javascript the Javascript to execute on the current page
      * @return Returns an Object returned by the Javascript provided
      */
-    public Object executeJS(String javascript) {
+    protected Object executeJS(String javascript) {
         Object returnObj = null;
+        JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
         try {
-            JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
             returnObj = jsExecutor.executeScript(javascript);
         } catch (Exception e) {
             logger.error("Javascript execution failed! Please investigate into the issue.");
@@ -292,10 +287,9 @@ public abstract class BasePage<T extends BasePage<T>> {
      * @param javascript the JavaScript code to execute
      * @return the object returned from the executed JavaScript
      */
-    public Object executeAsyncJS(String javascript) {
+    protected Object executeAsyncJS(String javascript) {
         Object returnObj = null;
         try {
-            driver.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
             JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
             returnObj = jsExecutor.executeAsyncScript(javascript);
         } catch (Exception e) {
@@ -305,7 +299,7 @@ public abstract class BasePage<T extends BasePage<T>> {
         return returnObj;
     }
 
-    public void forceVisible(WebElement element) {
+    protected void forceVisible(WebElement element) {
         JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
         jsExecutor.executeScript(
                 "arguments[0].style.zindex='10000';" +
@@ -327,5 +321,4 @@ public abstract class BasePage<T extends BasePage<T>> {
     public String getSource() {
         return driver.getPageSource();
     }
-
 }
