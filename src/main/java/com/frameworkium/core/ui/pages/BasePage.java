@@ -150,28 +150,28 @@ public abstract class BasePage<T extends BasePage<T>> {
                 obj = ((List<Object>) obj).get(0);
                 waitForObjectToBeVisible(obj);
             }
-        }
-
-        WebElement element;
-        if (obj instanceof TypifiedElement) {
-            element = ((TypifiedElement) obj).getWrappedElement();
-        } else if (obj instanceof WebElement) {
-            element = (WebElement) obj;
         } else {
-            throw new IllegalArgumentException(
-                    "Only elements of type TypifiedElement, WebElement or " +
-                            "List<WebElement> are supported by @Visible.");
-        }
-        // Retries when an element is looked up before the previous page has unloaded or before doc ready
-        try {
-            wait.until(ExpectedConditions.visibilityOf(element));
-        } catch (StaleElementReferenceException e) {
-            logger.info("Caught StaleElementReferenceException");
-            tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady();
-            // If the below throws a StaleElementReferenceException try
-            // increasing the sleep time or count in:
-            // tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady()
-            wait.until(ExpectedConditions.visibilityOf(element));
+            WebElement element;
+            if (obj instanceof TypifiedElement) {
+                element = ((TypifiedElement) obj).getWrappedElement();
+            } else if (obj instanceof WebElement) {
+                element = (WebElement) obj;
+            } else {
+                throw new IllegalArgumentException(
+                        "Only elements of type TypifiedElement, WebElement or " +
+                                "List<WebElement> are supported by @Visible.");
+            }
+            // Retries when an element is looked up before the previous page has unloaded or before doc ready
+            try {
+                wait.until(ExpectedConditions.visibilityOf(element));
+            } catch (StaleElementReferenceException e) {
+                logger.info("Caught StaleElementReferenceException");
+                tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady();
+                // If the below throws a StaleElementReferenceException try
+                // increasing the sleep time or count in:
+                // tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady()
+                wait.until(ExpectedConditions.visibilityOf(element));
+            }
         }
     }
 
