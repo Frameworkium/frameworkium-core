@@ -14,13 +14,9 @@ import static com.jayway.restassured.RestAssured.given;
 public class Test {
 
     private final static String jiraAPIURI = Property.JIRA_URL.getValue() + Config.jiraRestURI;
-    private final String issueKey; // Jira Key e.g. KT-123
     private final static Logger logger = LogManager.getLogger(Test.class);
-    public Test(final String issue) {
-        this.issueKey = issue;
-    }
 
-    public static void changeIssueFieldValue(final String issueKey, final String fieldToUpdate, final String resultValue) {
+    public static void changeIssueFieldValue(String issueKey, String fieldToUpdate, String resultValue) {
         JSONObject obj = new JSONObject();
         JSONObject fieldObj = new JSONObject();
         JSONObject setObj = new JSONObject();
@@ -45,10 +41,20 @@ public class Test {
                 .put(jiraAPIURI + "/issue/" + issueKey);
 
     }
-    
+
+    private static String getFieldId(String fieldName) {
+
+        JsonPath jsonPath = given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+                .then()
+                .get(jiraAPIURI + "/field")
+                .andReturn().jsonPath();
+
+        return jsonPath.getString(String.format("find {it.name == '%s'}.id", fieldName));
+    }
+
     public static void addComment(String issueKey, String commentToAdd) {
         JSONObject obj = new JSONObject();
-        
+
         try {
             obj.put("body", commentToAdd);
         } catch (JSONException e) {
@@ -62,39 +68,29 @@ public class Test {
                 .post(jiraAPIURI + "/issue/" + issueKey + "/comment");
 
     }
-    
-    public static String getFieldId(String fieldName) {
 
-        JsonPath jsonPath = given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
-                .then()
-                .get(jiraAPIURI + "/field")
-                .andReturn().jsonPath();
-
-        return jsonPath.getString(String.format("find {it.name == '%s'}.id", fieldName));
-    }
-
-    public static int getTransitionId(String issueKey, String transitionName) {
+    private static int getTransitionId(String issueKey, String transitionName) {
 
         JsonPath jsonPath = given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
                 .then()
                 .get(jiraAPIURI + "/issue/" + issueKey + "?expand=transitions.fields")
                 .andReturn().jsonPath();
 
-        String jsonPathToTransitionId =String.format(
+        String jsonPathToTransitionId = String.format(
                 "transitions.find {it -> it.name == '%s'}.id", transitionName);
         return Integer.parseInt(jsonPath.getString(jsonPathToTransitionId));
     }
-    
+
     public static void transitionIssue(String issueKey, String transitionName) {
         logger.debug("Transition name: " + transitionName);
-        transitionIssue(issueKey, getTransitionId(issueKey,transitionName));
+        transitionIssue(issueKey, getTransitionId(issueKey, transitionName));
     }
-    
-    public static void transitionIssue(String issueKey, int transitionId) {
+
+    private static void transitionIssue(String issueKey, int transitionId) {
         logger.debug("Transition id: " + transitionId);
         JSONObject obj = new JSONObject();
         JSONObject idObj = new JSONObject();
-        
+
         try {
             obj.put("transition", idObj);
             idObj.put("id", transitionId);
@@ -107,6 +103,5 @@ public class Test {
                 .body(obj.toString())
                 .then()
                 .post(jiraAPIURI + "issue/" + issueKey + "/transitions");
-
     }
 }

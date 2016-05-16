@@ -23,14 +23,8 @@ public class Execution {
     private List<Integer> idList;
     private int status;
 
-    public Execution(final String issue) {
+    public Execution(String issue) {
         this.version = Property.RESULT_VERSION.getValue();
-        this.issue = issue;
-        this.idList = getExecutionIds();
-    }
-
-    public Execution(final String version, final String issue) {
-        this.version = version;
         this.issue = issue;
         this.idList = getExecutionIds();
     }
@@ -56,72 +50,81 @@ public class Execution {
         return status;
     }
 
-    public void update(final int status, final String comment, final String attachment) {
+    public void update(int status, String comment, String attachment) {
         if (null != idList) {
             for (Integer executionId : idList) {
                 updateStatusAndComment(executionId, status, comment);
                 replaceExistingAttachment(attachment, executionId);
-                
+
                 logger.debug("ZAPI Updater - Updated %s to status %s", issue, status);
             }
         }
     }
 
-    private void replaceExistingAttachment(final String attachment, final Integer executionId) {
+    private void replaceExistingAttachment(String attachment, Integer executionId) {
         if (null != attachment && !attachment.isEmpty()) {
             deleteExistingAttachments(executionId);
             addAttachment(executionId, attachment);
         }
     }
 
-    private void updateStatusAndComment(final Integer executionId, final int status, String comment) {
+    private void updateStatusAndComment(Integer executionId, int status, String comment) {
 
         JSONObject obj = new JSONObject();
         try {
             obj.put("status", String.valueOf(status));
-            //Limit on Zephyr's comment field capacity
-            if (comment.length()>750) {
+            // Limit on Zephyr's comment field capacity
+            if (comment.length() > 750) {
                 comment = comment.substring(0, 747) + "...";
             }
             obj.put("comment", comment);
 
-            given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
-                    .contentType("application/json").and().body(obj.toString()).then()
+            given().auth().preemptive()
+                    .basic(Config.jiraUsername, Config.jiraPassword)
+                    .contentType("application/json")
+                    .body(obj.toString())
+                    .then()
                     .put(zapiURI + "execution/" + executionId + "/execute");
+
         } catch (JSONException e) {
             logger.error("Update status and comment failed", e);
         }
     }
 
-    private void deleteExistingAttachments(final Integer executionId) {
+    private void deleteExistingAttachments(Integer executionId) {
 
-        String url = "attachment/attachmentsByEntity?entityType=EXECUTION&entityId=" + executionId;
+        String path = "attachment/attachmentsByEntity?entityType=EXECUTION&entityId=" + executionId;
 
         List<String> fileIds =
-                given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
-                .then()
-                .get(zapiURI + url).andReturn().jsonPath().getList("data.fileId", String.class);
+                given().auth().preemptive()
+                        .basic(Config.jiraUsername, Config.jiraPassword)
+                        .then()
+                        .get(zapiURI + path).andReturn().jsonPath()
+                        .getList("data.fileId", String.class);
 
         // Iterate over attachments
         for (String fileId : fileIds) {
-            given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
-                .then()
-                .delete(zapiURI + "attachment/" + fileId);
+            given().auth().preemptive()
+                    .basic(Config.jiraUsername, Config.jiraPassword)
+                    .then()
+                    .delete(zapiURI + "attachment/" + fileId);
         }
     }
 
-    private void addAttachment(final Integer executionId, final String attachment) {
+    private void addAttachment(Integer executionId, String attachment) {
 
-        String url = "attachment?entityType=EXECUTION&entityId=" + executionId;
+        String path = "attachment?entityType=EXECUTION&entityId=" + executionId;
 
-        given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword).and()
-                .header("X-Atlassian-Token", "nocheck").and()
-                .multiPart(new File(attachment)).when()
-                .post(zapiURI + url);
+        given().auth().preemptive()
+                .basic(Config.jiraUsername, Config.jiraPassword)
+                .header("X-Atlassian-Token", "nocheck")
+                .multiPart(new File(attachment))
+                .when()
+                .post(zapiURI + path);
     }
 
     /** Converts ITestResult status to ZAPI execution status */
-    public static int getZAPIStatus(final int status) {
+    public static int getZAPIStatus(int status) {
         switch (status) {
             case ITestResult.SUCCESS:
                 return Config.ZAPI_STATUS.ZAPI_STATUS_PASS;

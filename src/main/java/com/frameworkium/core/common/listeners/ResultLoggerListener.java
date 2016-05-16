@@ -17,6 +17,7 @@ import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 
 public class ResultLoggerListener implements ITestListener {
 
@@ -33,7 +34,7 @@ public class ResultLoggerListener implements ITestListener {
 
             if (zapiLoggingParamsProvided(result)) {
                 logger.info("Logging WIP to zapi");
-                new Execution(Property.RESULT_VERSION.getValue(), getIssueOrTestCaseIdAnnotation(result))
+                new Execution(getIssueOrTestCaseIdAnnotation(result))
                         .update(Config.ZAPI_STATUS.ZAPI_STATUS_WIP, comment, null);
             }
             if (jiraTransitionLoggingParamsProvided(result)) {
@@ -58,10 +59,15 @@ public class ResultLoggerListener implements ITestListener {
         for (String jiraTransition : jiraTransitions) {
             try {
                 Test.transitionIssue(issueAnnotation, jiraTransition);
-                logger.debug("Performed transition '" + jiraTransition + "' on '" + issueAnnotation + "'");
+                logger.debug(String.format(
+                        "Performed transition '%s' on '%s'",
+                        jiraTransition,
+                        issueAnnotation));
             } catch (Exception e) {
-                logger.debug("Failed to perform transition '" + jiraTransition + "' on '" + issueAnnotation
-                        + "'- maybe not possible given the state?");
+                logger.warn(String.format(
+                        "Failed to perform transition '%s' on '%s'- maybe not possible given the state?",
+                        jiraTransition,
+                        issueAnnotation));
             }
         }
     }
@@ -75,7 +81,7 @@ public class ResultLoggerListener implements ITestListener {
 
             if (zapiLoggingParamsProvided(result)) {
                 logger.info("Logging PASS to zapi");
-                new Execution(Property.RESULT_VERSION.getValue(), getIssueOrTestCaseIdAnnotation(result))
+                new Execution(getIssueOrTestCaseIdAnnotation(result))
                         .update(Config.ZAPI_STATUS.ZAPI_STATUS_PASS, comment, null);
             }
             if (jiraTransitionLoggingParamsProvided(result)) {
@@ -106,7 +112,8 @@ public class ResultLoggerListener implements ITestListener {
     @Override
     public void onTestFailure(ITestResult result) {
 
-        if (!(result.getThrowable() instanceof AssertionError) && Config.FailTestOnlyIfAssertionError) {
+        if (!(result.getThrowable() instanceof AssertionError)
+                && Config.FailTestOnlyIfAssertionError) {
             markAsBlocked(result);
         } else if (!getIssueOrTestCaseIdAnnotation(result).isEmpty()) {
 
@@ -114,7 +121,7 @@ public class ResultLoggerListener implements ITestListener {
 
             if (zapiLoggingParamsProvided(result)) {
                 logger.info("Logging FAIL to zapi");
-                new Execution(Property.RESULT_VERSION.getValue(), getIssueOrTestCaseIdAnnotation(result))
+                new Execution(getIssueOrTestCaseIdAnnotation(result))
                         .update(Config.ZAPI_STATUS.ZAPI_STATUS_FAIL, comment, null);
             }
             if (jiraTransitionLoggingParamsProvided(result)) {
@@ -155,7 +162,7 @@ public class ResultLoggerListener implements ITestListener {
 
             if (zapiLoggingParamsProvided(result)) {
                 logger.info("Logging BLOCKED to zapi");
-                new Execution(Property.RESULT_VERSION.getValue(), getIssueOrTestCaseIdAnnotation(result))
+                new Execution(getIssueOrTestCaseIdAnnotation(result))
                         .update(Config.ZAPI_STATUS.ZAPI_STATUS_BLOCKED, comment, null);
             }
             if (jiraTransitionLoggingParamsProvided(result)) {
@@ -220,22 +227,22 @@ public class ResultLoggerListener implements ITestListener {
 
     private String getIssueOrTestCaseIdAnnotation(ITestResult result) {
         String annotation = StringUtils.EMPTY;
+        Method method = result.getMethod().getConstructorOrMethod().getMethod();
         try {
-            annotation = result.getMethod().getConstructorOrMethod().getMethod()
-                    .getAnnotation(Issue.class).value();
-        } catch (NullPointerException e) { /* ignored */ }
+            annotation = method.getAnnotation(Issue.class).value();
+        } catch (NullPointerException ignored) { /* ignored */ }
         try {
-            annotation = result.getMethod().getConstructorOrMethod().getMethod()
-                    .getAnnotation(TestCaseId.class).value();
-        } catch (NullPointerException e) { /* ignored */}
+            annotation = method.getAnnotation(TestCaseId.class).value();
+        } catch (NullPointerException ignored) { /* ignored */ }
         return annotation;
     }
 
     private String getOSInfo() {
-        return System.getProperty("os.name")
-                + " - "
-                + System.getProperty("os.version")
-                + " (" + System.getProperty("os.arch") + ")";
+        return String.format(
+                "%s - %s (%s)",
+                System.getProperty("os.name"),
+                System.getProperty("os.version"),
+                System.getProperty("os.arch"));
     }
 
     private String getStackTraceFromThrowable(Throwable cause) {
@@ -253,31 +260,34 @@ public class ResultLoggerListener implements ITestListener {
         comment.append(String.format(
                 "Test: %s.%s",
                 result.getTestClass().getName(),
-                result.getMethod().getMethodName()));
-        comment.append(System.lineSeparator());
-        comment.append(String.format("Duration: %s seconds",
-                ((result.getEndMillis() - result.getStartMillis()) / 1000)));
-        comment.append(System.lineSeparator());
+                result.getMethod().getMethodName()))
+                .append(System.lineSeparator())
+                .append("Duration: ")
+                .append(((result.getEndMillis() - result.getStartMillis()) / 1000))
+                .append("seconds")
+                .append(System.lineSeparator());
+
         if (System.getenv("BUILD_URL") != null) {
-            comment.append("Jenkins build: ");
-            comment.append(System.getenv("BUILD_URL"));
-            comment.append(System.lineSeparator());
+            comment.append("Jenkins build: ")
+                    .append(System.getenv("BUILD_URL"))
+                    .append(System.lineSeparator());
         }
         //TODO - fix this!
-//        if (CAPTURE_URL.isSpecified()) {
-//            comment.append("Capture API: ");
-//            comment.append(CAPTURE_URL.getValue());
-//            comment.append(System.lineSeparator());
-//        }
-        comment.append("OS: ");
-        comment.append(getOSInfo());
-        comment.append(System.lineSeparator());
-        comment.append("UserAgent: ");
-        comment.append(BaseTest.userAgent);
+        //        if (CAPTURE_URL.isSpecified()) {
+        //            comment.append("Capture API: ");
+        //            comment.append(CAPTURE_URL.getValue());
+        //            comment.append(System.lineSeparator());
+        //        }
+        comment.append("OS: ")
+                .append(getOSInfo())
+                .append(System.lineSeparator())
+                .append("UserAgent: ")
+                .append(BaseTest.userAgent);
+
         if (result.getThrowable() != null) {
-            comment.append(System.lineSeparator());
-            comment.append("Stacktrace: ");
-            comment.append(getStackTraceFromThrowable(result.getThrowable()));
+            comment.append(System.lineSeparator())
+                    .append("Stacktrace: ")
+                    .append(getStackTraceFromThrowable(result.getThrowable()));
         }
 
         return comment.toString();
