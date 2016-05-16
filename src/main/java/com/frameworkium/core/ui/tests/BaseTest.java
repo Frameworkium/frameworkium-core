@@ -42,45 +42,29 @@ public abstract class BaseTest
 
     /**
      * Method which runs first upon running a test, it will do the following:
-     *  - Retrieve the desired driver type and initialise the driver
-     *  - Initialise whether the browser needs resetting
-     *  - Initialise the screenshot capture
-     *  - Configure the browser based on parameters (maximise window, session resets, user agent)
+     * - Retrieve the desired driver type and initialise the driver
+     * - Initialise whether the browser needs resetting
+     * - Initialise the screenshot capture
      */
     @BeforeSuite(alwaysRun = true)
     public static void instantiateDriverObject() {
-        driverType = new ThreadLocal<DriverType>() {
-            @Override
-            protected DriverType initialValue() {
-                DriverType driverType =
-                        new DriverSetup().returnDesiredDriverType();
-                driverType.instantiate();
-                activeDriverTypes.add(driverType);
-                return driverType;
-            }
-        };
-        requiresReset = new ThreadLocal<Boolean>() {
-            @Override
-            protected Boolean initialValue() {
-                return Boolean.FALSE;
-            }
-        };
-        capture = new ThreadLocal<ScreenshotCapture>() {
-            @Override
-            protected ScreenshotCapture initialValue() {
-                return null;
-            }
-        };
-
-        //configureBrowserBeforeTest(testMethod);
+        driverType = ThreadLocal.withInitial(() -> {
+            DriverType driverType =
+                    new DriverSetup().returnDesiredDriverType();
+            driverType.instantiate();
+            activeDriverTypes.add(driverType);
+            return driverType;
+        });
+        requiresReset = ThreadLocal.withInitial(() -> Boolean.FALSE);
+        capture = ThreadLocal.withInitial(() -> null);
     }
 
     /**
      * The methods which configure the browser once a test runs
-     *  - Maximises browser based on the driver type
-     *  - Initialises screenshot capture if needed
-     *  - Clears the session if another test ran prior
-     *  - Sets the user agent of the browser
+     * - Maximises browser based on the driver type
+     * - Initialises screenshot capture if needed
+     * - Resets the browser if another test ran prior
+     * - Sets the user agent of the browser
      *
      * @param testMethod - The test method name of the test
      */
@@ -175,14 +159,14 @@ public abstract class BaseTest
     }
 
     /**
-     * Retrieves the user agent from the browser
-     * @return - String of the user agent
+     * Attempts to retrieve the user agent from the browser
+     *
+     * @return - The user agent or error message
      */
     private static String getUserAgent() {
         String ua;
-        JavascriptExecutor js = getDriver();
         try {
-            ua = (String) js.executeScript("return navigator.userAgent;");
+            ua = (String) getDriver().executeScript("return navigator.userAgent;");
         } catch (Exception e) {
             ua = "Unable to fetch UserAgent";
         }
@@ -207,17 +191,16 @@ public abstract class BaseTest
 
     /**
      * Logs the start of a step to your allure report
-     * Other steps will be substeps until you call stepFinish
+     * Other steps will be sub-steps until you call stepFinish
+     *
      * @param stepName the name of the step
      */
-    public void __stepStart(String stepName){
+    public void __stepStart(String stepName) {
         AllureLogger.__stepStart(stepName);
     }
 
-    /**
-     * Logs the end of a step
-     */
-    public void __stepFinish(){
+    /** Logs the end of a step */
+    public void __stepFinish() {
         AllureLogger.__stepFinish();
     }
 

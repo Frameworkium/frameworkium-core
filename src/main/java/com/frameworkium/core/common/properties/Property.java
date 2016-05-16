@@ -1,5 +1,6 @@
 package com.frameworkium.core.common.properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import java.util.Map;
@@ -46,7 +47,7 @@ public enum Property {
     }
 
     public boolean isSpecified() {
-        return null != this.value && !this.value.isEmpty();
+        return StringUtils.isNotEmpty(value);
     }
 
     private String retrieveValue(final String key) {
@@ -58,12 +59,14 @@ public enum Property {
                     .load(ClassLoader.getSystemResourceAsStream(
                             System.getProperty("config")));
         }
+
         if (configMap != null) {
             Object configValue = configMap.get(key);
             if (configValue != null) {
                 return configValue.toString();
             }
         }
+
         return null;
     }
 }
