@@ -133,7 +133,7 @@ public abstract class BaseTest
     /**
      * Loops through all active driver types and tears down the driver object
      */
-    @AfterMethod(alwaysRun = true)
+    @AfterSuite(alwaysRun = true)
     public static void closeDriverObject() {
         try {
             activeDriverTypes.forEach(DriverType::tearDownDriver);
