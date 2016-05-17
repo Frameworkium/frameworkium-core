@@ -188,9 +188,7 @@ public abstract class BasePage<T extends BasePage<T>> {
         wait.until(invisibilityOfElement(element));
     }
 
-    /**
-     * Will wait up to ~10 seconds for the document to be ready.
-     */
+    /** Will wait up to ~10 seconds for the document to be ready. */
     private void tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady() {
         int notReadyCount = 0;
         int readyCount = 0;
@@ -202,15 +200,14 @@ public abstract class BasePage<T extends BasePage<T>> {
                     "return document.readyState == 'complete'");
             if (docReady) {
                 readyCount++;
-                logger.debug(String.format(
-                        "Document ready. Not ready %d times, ready %d times.",
-                        notReadyCount, readyCount));
             } else {
                 notReadyCount++;
-                logger.warn(String.format(
-                        "Document not ready. Not ready %d times, ready %d times.",
-                        notReadyCount, readyCount));
             }
+            logger.debug(
+                    "Document ready: %b. Not ready %d times, ready %d times.",
+                    docReady,
+                    notReadyCount,
+                    readyCount);
         }
     }
 
@@ -248,9 +245,7 @@ public abstract class BasePage<T extends BasePage<T>> {
         }
     }
 
-    /**
-     * Method to wait for AngularJS requests to finish on the page
-     */
+    /** Method to wait for AngularJS requests to finish on the page */
     protected void waitForAngularRequestsToFinish() {
         getNgDriver().waitForAngularRequestsToFinish();
     }

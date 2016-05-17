@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.List;
 
 import static com.jayway.restassured.RestAssured.given;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 public class Execution {
 
@@ -31,7 +32,7 @@ public class Execution {
 
     private List<Integer> getExecutionIds() {
         if (null == idList) {
-            if (null != version && !version.isEmpty() && null != issue && !issue.isEmpty()) {
+            if (isNotEmpty(version) && isNotEmpty(issue)) {
                 String query = String.format("issue='%s' and fixVersion='%s'", issue, version);
 
                 SearchExecutions search = new SearchExecutions(query);
@@ -54,15 +55,15 @@ public class Execution {
         if (null != idList) {
             for (Integer executionId : idList) {
                 updateStatusAndComment(executionId, status, comment);
-                replaceExistingAttachment(attachment, executionId);
+                replaceExistingAttachment(executionId, attachment);
 
                 logger.debug("ZAPI Updater - Updated %s to status %s", issue, status);
             }
         }
     }
 
-    private void replaceExistingAttachment(String attachment, Integer executionId) {
-        if (null != attachment && !attachment.isEmpty()) {
+    private void replaceExistingAttachment(Integer executionId, String attachment) {
+        if (isNotEmpty(attachment)) {
             deleteExistingAttachments(executionId);
             addAttachment(executionId, attachment);
         }

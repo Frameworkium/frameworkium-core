@@ -21,9 +21,7 @@ public abstract class DriverType {
     private WebDriverWrapper webDriverWrapper;
     protected final static Logger logger = LogManager.getLogger(DriverType.class);
 
-    /**
-     * Creates the Wrapped Driver object, and returns to the test
-     */
+    /** Creates the Wrapped Driver object */
     public void instantiate() {
         logger.info("Current Browser Selection: " + this);
 
@@ -50,7 +48,7 @@ public abstract class DriverType {
      *
      * @return A Selenium proxy object for the current system properties or null if no valid proxy settings
      */
-    public Proxy getProxy() {
+    private Proxy getProxy() {
         if (Property.PROXY.isSpecified()) {
             Proxy proxy = new Proxy();
             String proxyString = Property.PROXY.getValue().toLowerCase();
@@ -71,12 +69,14 @@ public abstract class DriverType {
                 default:
                     proxy.setProxyType(ProxyType.MANUAL);
                     if (verifyProxyAddress(proxyString)) {
-                        proxy.setHttpProxy(proxyString).setFtpProxy(proxyString).setSslProxy(proxyString);
-                        String logMessage = String
-                                .format("Set all protocols to use proxy with address %s", proxyString);
-                        logger.info(logMessage);
+                        proxy.setHttpProxy(proxyString)
+                                .setFtpProxy(proxyString)
+                                .setSslProxy(proxyString);
+                        logger.debug("Set all protocols to use proxy with address " + proxyString);
                     } else {
-                        logger.error("Invalid proxy setting specified, acceptable values are: system, autodetect, direct or {hostname}:{port}. Tests will now use default setting for your browser");
+                        logger.error("Invalid proxy setting specified, acceptable values are: " +
+                                "system, autodetect, direct or {hostname}:{port}. " +
+                                "Tests will now use default setting for your browser");
                         return null;
                     }
                     break;
@@ -115,9 +115,7 @@ public abstract class DriverType {
         return false;
     }
 
-    /**
-     * Maximises the browser window based on parameters
-     */
+    /** Maximises the browser window based on parameters */
     public void maximiseBrowserWindow() {
         if (!Property.MAXIMISE.isSpecified() || Boolean.parseBoolean(Property.MAXIMISE.getValue())) {
             if (!useRemoteDriver() && !isNative() || Property.GRID_URL.isSpecified()) {
@@ -126,16 +124,12 @@ public abstract class DriverType {
         }
     }
 
-    /**
-     * Method to tear down the driver object, can be overridden
-     */
+    /** Method to tear down the driver object, can be overridden */
     public void tearDownDriver() {
         this.webDriverWrapper.quit();
     }
 
-    /**
-     * Reset the browser based on whether it's been reset before
-     */
+    /** Reset the browser based on whether it's been reset before */
     public boolean resetBrowser(final boolean requiresReset) {
         if (requiresReset) {
             tearDownDriver();

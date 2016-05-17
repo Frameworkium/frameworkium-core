@@ -39,7 +39,6 @@ public class Test {
                 .body(obj.toString())
                 .then()
                 .put(jiraAPIURI + "/issue/" + issueKey);
-
     }
 
     private static String getFieldId(String fieldName) {
@@ -66,7 +65,6 @@ public class Test {
                 .body(obj.toString())
                 .then()
                 .post(jiraAPIURI + "/issue/" + issueKey + "/comment");
-
     }
 
     private static int getTransitionId(String issueKey, String transitionName) {
