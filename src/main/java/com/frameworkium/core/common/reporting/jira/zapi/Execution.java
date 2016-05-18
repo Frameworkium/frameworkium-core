@@ -104,12 +104,12 @@ public class Execution {
                         .getList("data.fileId", String.class);
 
         // Iterate over attachments
-        for (String fileId : fileIds) {
+        fileIds.forEach(fileId ->
             given().auth().preemptive()
                     .basic(Config.jiraUsername, Config.jiraPassword)
                     .then()
-                    .delete(zapiURI + "attachment/" + fileId);
-        }
+                    .delete(zapiURI + "attachment/" + fileId)
+        );
     }
 
     private void addAttachment(Integer executionId, String attachment) {

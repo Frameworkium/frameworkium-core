@@ -23,8 +23,6 @@ public abstract class DriverType {
 
     /** Creates the Wrapped Driver object */
     public void instantiate() {
-        logger.info("Current Browser Selection: " + this);
-
         DesiredCapabilities caps = getDesiredCapabilities();
 
         Proxy currentProxy = getProxy();
@@ -32,7 +30,7 @@ public abstract class DriverType {
             caps.setCapability(CapabilityType.PROXY, currentProxy);
         }
 
-        logger.info("Caps: " + caps.toString());
+        logger.info("Caps: " + caps);
 
         WebDriverWrapper eventFiringWD = new WebDriverWrapper(getWebDriverObject(caps));
         eventFiringWD.register(new EventListener());
