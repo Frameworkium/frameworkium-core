@@ -204,7 +204,7 @@ public abstract class BasePage<T extends BasePage<T>> {
                 notReadyCount++;
             }
             logger.debug(
-                    "Document ready: %b. Not ready %d times, ready %d times.",
+                    "Document ready: {}. Not ready {} times, ready {} times.",
                     docReady,
                     notReadyCount,
                     readyCount);

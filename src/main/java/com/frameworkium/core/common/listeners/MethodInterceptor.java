@@ -69,7 +69,7 @@ public class MethodInterceptor implements IMethodInterceptor {
                 }
             }
 
-            logger.info("Running %d tests specified by query...", methodsToRun.size());
+            logger.info("Running {} tests specified by query...", methodsToRun.size());
             return methodsToRun;
         } else {
             // Can't run the JQL without both JIRA_URL and JQL_QUERY

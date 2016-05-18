@@ -57,7 +57,7 @@ public class Execution {
                 updateStatusAndComment(executionId, status, comment);
                 replaceExistingAttachment(executionId, attachment);
 
-                logger.debug("ZAPI Updater - Updated %s to status %s", issue, status);
+                logger.debug("ZAPI Updater - Updated {} to status {}", issue, status);
             }
         }
     }

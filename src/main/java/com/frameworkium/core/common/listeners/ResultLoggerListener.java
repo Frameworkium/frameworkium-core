@@ -60,12 +60,12 @@ public class ResultLoggerListener implements ITestListener {
             try {
                 Test.transitionIssue(issueAnnotation, jiraTransition);
                 logger.debug(
-                        "Performed transition '%s' on '%s'",
+                        "Performed transition '{}' on '{}'",
                         jiraTransition,
                         issueAnnotation);
             } catch (Exception e) {
                 logger.warn(
-                        "Failed to perform transition '%s' on '%s'- maybe not possible given the state?",
+                        "Failed to perform transition '{}' on '{}'- maybe not possible given the state?",
                         jiraTransition,
                         issueAnnotation);
             }

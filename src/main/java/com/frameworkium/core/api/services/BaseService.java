@@ -51,7 +51,7 @@ public abstract class BaseService<T extends BaseService<T>> {
 
         Response resp;
 
-        logger.info("Making request: " + httpVerb.toString() + " " + url);
+        logger.info("Making request: {} {}", httpVerb.toString(), url);
 //        requestSpec = requestSpec.log().all();
 
         switch (httpVerb) {
@@ -101,6 +101,7 @@ public abstract class BaseService<T extends BaseService<T>> {
                     logger.error("Error de-serialising the response", e);
                     logger.error("Response received was:");
                     logger.error(response.body().asString());
+                    throw new RuntimeException(e);
                 }
             } else if (deserialiseAsAnnotations.length > 1) {
                 throw new IllegalArgumentException(

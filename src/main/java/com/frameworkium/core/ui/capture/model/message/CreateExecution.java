@@ -16,7 +16,7 @@ public final class CreateExecution {
 
     public CreateExecution(String testID, String nodeAddress) {
 
-        logger.debug("CreateExecution: testID='%s', nodeAddress='%s", testID, nodeAddress);
+        logger.debug("CreateExecution: testID='{}', nodeAddress='{}", testID, nodeAddress);
         this.testID = testID;
         this.browser = new Browser();
         this.softwareUnderTest = new SoftwareUnderTest();
