@@ -6,6 +6,7 @@ import com.frameworkium.core.common.reporting.jira.api.Test;
 import com.frameworkium.core.common.reporting.jira.zapi.Execution;
 import com.frameworkium.core.common.reporting.spira.SpiraExecution;
 import com.frameworkium.core.ui.tests.BaseTest;
+import com.google.common.base.Throwables;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,8 +16,6 @@ import org.testng.ITestResult;
 import ru.yandex.qatools.allure.annotations.Issue;
 import ru.yandex.qatools.allure.annotations.TestCaseId;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.Method;
 
 public class ResultLoggerListener implements ITestListener {
@@ -156,33 +155,34 @@ public class ResultLoggerListener implements ITestListener {
 
     private void markAsBlocked(ITestResult result) {
 
-        if (!getIssueOrTestCaseIdAnnotation(result).isEmpty()) {
+        String issueOrTestCaseId = getIssueOrTestCaseIdAnnotation(result);
+        if (!issueOrTestCaseId.isEmpty()) {
 
             String comment = "BLOCKED" + System.lineSeparator() + this.baseComment(result);
 
             if (zapiLoggingParamsProvided(result)) {
                 logger.info("Logging BLOCKED to zapi");
-                new Execution(getIssueOrTestCaseIdAnnotation(result))
+                new Execution(issueOrTestCaseId)
                         .update(Config.ZAPI_STATUS.ZAPI_STATUS_BLOCKED, comment, null);
             }
             if (jiraTransitionLoggingParamsProvided(result)) {
                 logger.info("Logging BLOCKED to Jira using issue transitions");
-                moveThroughTransitions(getIssueOrTestCaseIdAnnotation(result),
+                moveThroughTransitions(issueOrTestCaseId,
                         Config.JIRA_TRANSITION.JIRA_TRANSITION_BLOCKED);
-                Test.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+                Test.addComment(issueOrTestCaseId, comment);
             }
             if (jiraFieldLoggingParamsProvided(result)) {
                 logger.info("Logging BLOCKED to jira by updating the specified field - "
                         + Property.JIRA_RESULT_FIELDNAME.getValue());
                 Test.changeIssueFieldValue(
-                        getIssueOrTestCaseIdAnnotation(result),
+                        issueOrTestCaseId,
                         Property.JIRA_RESULT_FIELDNAME.getValue(),
                         Config.JIRA_FIELD_STATUS.JIRA_STATUS_BLOCKED);
-                Test.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+                Test.addComment(issueOrTestCaseId, comment);
             }
             if (spiraLoggingParamsProvided(result)) {
                 new SpiraExecution().recordTestResult(
-                        getIssueOrTestCaseIdAnnotation(result),
+                        issueOrTestCaseId,
                         Config.SPIRA_STATUS.SPIRA_STATUS_BLOCKED,
                         comment,
                         result);
@@ -225,16 +225,33 @@ public class ResultLoggerListener implements ITestListener {
                 && !getIssueOrTestCaseIdAnnotation(result).isEmpty();
     }
 
+    /**
+     * @return the value of either the @Issue or @TestCaseId annotation for the
+     * provided test result.
+     * If both are specified but if their values are not equal an
+     * {@link IllegalStateException} will be thrown, otherwise, their value will
+     * be returned.
+     * If neither are specified then the empty string will be returned.
+     */
     private String getIssueOrTestCaseIdAnnotation(ITestResult result) {
-        String annotation = StringUtils.EMPTY;
         Method method = result.getMethod().getConstructorOrMethod().getMethod();
-        try {
-            annotation = method.getAnnotation(Issue.class).value();
-        } catch (NullPointerException ignored) { /* ignored */ }
-        try {
-            annotation = method.getAnnotation(TestCaseId.class).value();
-        } catch (NullPointerException ignored) { /* ignored */ }
-        return annotation;
+        TestCaseId tcIdAnnotation = method.getAnnotation(TestCaseId.class);
+        Issue issueAnnotation = method.getAnnotation(Issue.class);
+
+        if (null != issueAnnotation && null != tcIdAnnotation) {
+            if (!issueAnnotation.value().equals(tcIdAnnotation.value())) {
+                throw new IllegalStateException(
+                        "TestCaseId and Issue annotation are both specified but " +
+                                "not equal for method: " + method.toString());
+            }
+            return issueAnnotation.value();
+        } else if (null != issueAnnotation) {
+            return issueAnnotation.value();
+        } else if (null != tcIdAnnotation) {
+            return tcIdAnnotation.value();
+        } else {
+            return StringUtils.EMPTY;
+        }
     }
 
     private String getOSInfo() {
@@ -245,22 +262,14 @@ public class ResultLoggerListener implements ITestListener {
                 System.getProperty("os.arch"));
     }
 
-    private String getStackTraceFromThrowable(Throwable cause) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-
-        cause.printStackTrace(pw);
-        return sw.getBuffer().toString();
-    }
-
     private String baseComment(ITestResult result) {
 
         StringBuilder comment = new StringBuilder();
 
-        comment.append(String.format(
-                "Test: %s.%s",
-                result.getTestClass().getName(),
-                result.getMethod().getMethodName()))
+        comment.append("Test: ")
+                .append(result.getTestClass().getName())
+                .append(".")
+                .append(result.getMethod().getMethodName())
                 .append(System.lineSeparator())
                 .append("Duration: ")
                 .append(((result.getEndMillis() - result.getStartMillis()) / 1000))
@@ -287,7 +296,7 @@ public class ResultLoggerListener implements ITestListener {
         if (result.getThrowable() != null) {
             comment.append(System.lineSeparator())
                     .append("Stacktrace: ")
-                    .append(getStackTraceFromThrowable(result.getThrowable()));
+                    .append(Throwables.getStackTraceAsString(result.getThrowable()));
         }
 
         return comment.toString();
