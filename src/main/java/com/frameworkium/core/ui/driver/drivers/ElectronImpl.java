@@ -1,7 +1,7 @@
 package com.frameworkium.core.ui.driver.drivers;
 
-import com.frameworkium.core.ui.driver.DriverType;
 import com.frameworkium.core.common.properties.Property;
+import com.frameworkium.core.ui.driver.DriverType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;

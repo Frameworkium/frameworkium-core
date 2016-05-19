@@ -2,23 +2,15 @@ package com.frameworkium.core.ui.pages;
 
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
-import com.frameworkium.core.ui.annotations.ForceVisible;
-import com.frameworkium.core.ui.annotations.Invisible;
-import com.frameworkium.core.ui.annotations.Visible;
+import com.frameworkium.core.ui.annotations.*;
 import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.tests.BaseTest;
 import com.google.inject.Inject;
 import com.paulhammant.ngwebdriver.NgWebDriver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.*;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 import ru.yandex.qatools.htmlelements.loader.HtmlElementLoader;
@@ -71,9 +63,10 @@ public abstract class BasePage<T extends BasePage<T>> {
 
             try {
                 AllureLogger.logToAllure("Page '" + this.getClass().getName() + "' successfully loaded");
-                if (Property.CAPTURE_URL.isSpecified())
+                if (Property.CAPTURE_URL.isSpecified()) {
                     BaseTest.getCapture().takeAndSendScreenshot(
                             new Command("load", null, this.getClass().getName()), driver, null);
+                }
             } catch (Exception e) {
                 logger.error("Error logging page load, but loaded successfully", e);
             }
@@ -233,6 +226,7 @@ public abstract class BasePage<T extends BasePage<T>> {
 
     /**
      * Executes a javascript snippet to determine whether a page uses AngularJS
+     *
      * @return boolean - AngularJS true/false
      */
     private boolean isPageAngularJS() {

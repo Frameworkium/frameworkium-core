@@ -51,7 +51,6 @@ public abstract class DriverType {
             Proxy proxy = new Proxy();
             String proxyString = Property.PROXY.getValue().toLowerCase();
             switch (proxyString) {
-
                 case "system":
                     proxy.setProxyType(ProxyType.SYSTEM);
                     logger.info("Using system proxy");

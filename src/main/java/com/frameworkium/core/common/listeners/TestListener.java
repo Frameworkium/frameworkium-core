@@ -2,10 +2,7 @@ package com.frameworkium.core.common.listeners;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.testng.ITestContext;
-import org.testng.ITestListener;
-import org.testng.ITestResult;
-import org.testng.SkipException;
+import org.testng.*;
 import ru.yandex.qatools.allure.annotations.Step;
 
 public class TestListener implements ITestListener {

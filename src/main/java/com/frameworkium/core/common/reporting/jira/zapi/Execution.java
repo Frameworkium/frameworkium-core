@@ -105,10 +105,10 @@ public class Execution {
 
         // Iterate over attachments
         fileIds.forEach(fileId ->
-            given().auth().preemptive()
-                    .basic(Config.jiraUsername, Config.jiraPassword)
-                    .then()
-                    .delete(zapiURI + "attachment/" + fileId)
+                given().auth().preemptive()
+                        .basic(Config.jiraUsername, Config.jiraPassword)
+                        .then()
+                        .delete(zapiURI + "attachment/" + fileId)
         );
     }
 

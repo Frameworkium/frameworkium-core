@@ -11,6 +11,9 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static com.frameworkium.core.common.properties.Property.BROWSER_VERSION;
+import static com.frameworkium.core.common.properties.Property.DEVICE;
+import static com.frameworkium.core.common.properties.Property.PLATFORM_VERSION;
 import static com.frameworkium.core.ui.driver.DriverSetup.SupportedPlatforms;
 
 public class SauceImpl extends DriverType {
@@ -47,53 +50,53 @@ public class SauceImpl extends DriverType {
 
     private void setCapabilitiesBasedOnPlatform() {
         switch (supportedPlatforms) {
-        case WINDOWS:
-            if (Property.PLATFORM_VERSION.isSpecified()) {
-                desiredCapabilities.setCapability(
-                        "platform", "Windows " + Property.PLATFORM_VERSION.getValue());
-            } else {
-                logger.error("Platform version needs to be specified when using Windows & SauceLabs!");
-            }
-            if (Property.BROWSER_VERSION.isSpecified()) {
-                desiredCapabilities.setCapability(
-                        "version", Property.BROWSER_VERSION.getValue());
-            }
-            break;
-        case OSX:
-            if (Property.PLATFORM_VERSION.isSpecified()) {
-                desiredCapabilities.setCapability(
-                        "platform", "OS X " + Property.PLATFORM_VERSION.getValue());
-            } else {
-                logger.error("Platform version needs to be specified when using OSX & SauceLabs!");
-            }
-            if (Property.BROWSER_VERSION.isSpecified()) {
-                desiredCapabilities.setCapability(
-                        "version", Property.BROWSER_VERSION.getValue());
-            }
-            break;
-        case ANDROID:
-            desiredCapabilities = DesiredCapabilities.android();
-            desiredCapabilities.setCapability("platform", "Linux");
-            if (Property.PLATFORM_VERSION.isSpecified()) {
-                desiredCapabilities.setCapability(
-                        "version", Property.PLATFORM_VERSION.getValue());
-            }
-            desiredCapabilities.setCapability("deviceName", "Android Emulator");
-            desiredCapabilities.setCapability("deviceOrientation", "portrait");
-            break;
-        case IOS:
-            desiredCapabilities = DesiredCapabilities.iphone();
-            desiredCapabilities.setCapability("platform", "OS X 10.10");
-            if (Property.PLATFORM_VERSION.isSpecified()) {
-                desiredCapabilities.setCapability(
-                        "version", Property.PLATFORM_VERSION.getValue());
-            }
-            if (Property.DEVICE.isSpecified()) {
-                desiredCapabilities.setCapability(
-                        "deviceName", Property.DEVICE.getValue() + " Simulator");
-            }
-            desiredCapabilities.setCapability("deviceOrientation", "portrait");
-            break;
+            case WINDOWS:
+                if (PLATFORM_VERSION.isSpecified()) {
+                    desiredCapabilities.setCapability(
+                            "platform", "Windows " + PLATFORM_VERSION.getValue());
+                } else {
+                    logger.error("Platform version needs to be specified when using Windows & SauceLabs!");
+                }
+                if (BROWSER_VERSION.isSpecified()) {
+                    desiredCapabilities.setCapability(
+                            "version", BROWSER_VERSION.getValue());
+                }
+                break;
+            case OSX:
+                if (PLATFORM_VERSION.isSpecified()) {
+                    desiredCapabilities.setCapability(
+                            "platform", "OS X " + PLATFORM_VERSION.getValue());
+                } else {
+                    logger.error("Platform version needs to be specified when using OSX & SauceLabs!");
+                }
+                if (BROWSER_VERSION.isSpecified()) {
+                    desiredCapabilities.setCapability(
+                            "version", BROWSER_VERSION.getValue());
+                }
+                break;
+            case ANDROID:
+                desiredCapabilities = DesiredCapabilities.android();
+                desiredCapabilities.setCapability("platform", "Linux");
+                if (PLATFORM_VERSION.isSpecified()) {
+                    desiredCapabilities.setCapability(
+                            "version", PLATFORM_VERSION.getValue());
+                }
+                desiredCapabilities.setCapability("deviceName", "Android Emulator");
+                desiredCapabilities.setCapability("deviceOrientation", "portrait");
+                break;
+            case IOS:
+                desiredCapabilities = DesiredCapabilities.iphone();
+                desiredCapabilities.setCapability("platform", "OS X 10.10");
+                if (PLATFORM_VERSION.isSpecified()) {
+                    desiredCapabilities.setCapability(
+                            "version", PLATFORM_VERSION.getValue());
+                }
+                if (DEVICE.isSpecified()) {
+                    desiredCapabilities.setCapability(
+                            "deviceName", DEVICE.getValue() + " Simulator");
+                }
+                desiredCapabilities.setCapability("deviceOrientation", "portrait");
+                break;
         }
     }
 
@@ -103,34 +106,34 @@ public class SauceImpl extends DriverType {
         desiredCapabilities.setCapability("appiumVersion", "1.4.10");
         desiredCapabilities.setCapability("deviceOrientation", "portrait");
         switch (supportedPlatforms) {
-        case IOS:
-            desiredCapabilities = DesiredCapabilities.iphone();
-            if (Property.DEVICE.isSpecified()) {
-                desiredCapabilities.setCapability(
-                        "deviceName", Property.DEVICE.getValue() + " Simulator");
-            }
-            desiredCapabilities.setCapability("platformName", "iOS");
-            desiredCapabilities.setCapability("browserName", "");
-            if (Property.PLATFORM_VERSION.isSpecified()) {
-                desiredCapabilities.setCapability(
-                        "platformVersion", Property.PLATFORM_VERSION.getValue());
-            }
-            break;
-        case ANDROID:
-            desiredCapabilities = DesiredCapabilities.android();
-            if (Property.DEVICE.isSpecified()) {
-                desiredCapabilities.setCapability(
-                        "deviceName", Property.DEVICE.getValue() + " Emulator");
-            }
-            desiredCapabilities.setCapability("platformName", "Android");
-            desiredCapabilities.setCapability("browserName", "");
-            if (Property.PLATFORM_VERSION.isSpecified()) {
-                desiredCapabilities.setCapability(
-                        "platformVersion", Property.PLATFORM_VERSION.getValue());
-            }
-            break;
-        default:
-            logger.error("Appium is not available on any platform other than iOS/Android!");
+            case IOS:
+                desiredCapabilities = DesiredCapabilities.iphone();
+                if (DEVICE.isSpecified()) {
+                    desiredCapabilities.setCapability(
+                            "deviceName", DEVICE.getValue() + " Simulator");
+                }
+                desiredCapabilities.setCapability("platformName", "iOS");
+                desiredCapabilities.setCapability("browserName", "");
+                if (PLATFORM_VERSION.isSpecified()) {
+                    desiredCapabilities.setCapability(
+                            "platformVersion", PLATFORM_VERSION.getValue());
+                }
+                break;
+            case ANDROID:
+                desiredCapabilities = DesiredCapabilities.android();
+                if (DEVICE.isSpecified()) {
+                    desiredCapabilities.setCapability(
+                            "deviceName", DEVICE.getValue() + " Emulator");
+                }
+                desiredCapabilities.setCapability("platformName", "Android");
+                desiredCapabilities.setCapability("browserName", "");
+                if (PLATFORM_VERSION.isSpecified()) {
+                    desiredCapabilities.setCapability(
+                            "platformVersion", PLATFORM_VERSION.getValue());
+                }
+                break;
+            default:
+                logger.error("Appium is only available on iOS/Android!");
         }
     }
 }

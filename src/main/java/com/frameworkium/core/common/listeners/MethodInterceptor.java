@@ -4,17 +4,12 @@ import com.frameworkium.core.common.reporting.jira.api.SearchIssues;
 import com.frameworkium.core.ui.driver.DriverType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.testng.IMethodInstance;
-import org.testng.IMethodInterceptor;
-import org.testng.ITestContext;
+import org.testng.*;
 import ru.yandex.qatools.allure.annotations.Issue;
 import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.frameworkium.core.common.properties.Property.JIRA_URL;
 import static com.frameworkium.core.common.properties.Property.JQL_QUERY;

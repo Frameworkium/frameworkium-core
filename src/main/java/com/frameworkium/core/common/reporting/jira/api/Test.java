@@ -5,9 +5,7 @@ import com.frameworkium.core.common.reporting.jira.Config;
 import com.jayway.restassured.path.json.JsonPath;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.*;
 
 import static com.jayway.restassured.RestAssured.given;
 

@@ -9,13 +9,9 @@ import com.frameworkium.core.ui.tests.BaseTest;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.events.WebDriverEventListener;
-import org.testng.ITestContext;
-import org.testng.ITestListener;
-import org.testng.ITestResult;
+import org.testng.*;
 
 public class CaptureListener implements WebDriverEventListener, ITestListener {
 
@@ -107,20 +103,23 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     @Override
     public void onTestSuccess(ITestResult result) {
-        if(result.getTestClass().getRealClass().getSuperclass().isInstance(BaseTest.class))
+        if (result.getTestClass().getRealClass().getSuperclass().isInstance(BaseTest.class)) {
             sendFinalScreenshot(result, "pass");
+        }
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
-        if(result.getTestClass().getRealClass().getSuperclass().isInstance(BaseTest.class))
+        if (result.getTestClass().getRealClass().getSuperclass().isInstance(BaseTest.class)) {
             sendFinalScreenshot(result, "fail");
+        }
     }
 
     @Override
     public void onTestSkipped(ITestResult result) {
-        if(result.getTestClass().getRealClass().getSuperclass().isInstance(BaseTest.class))
+        if (result.getTestClass().getRealClass().getSuperclass().isInstance(BaseTest.class)) {
             sendFinalScreenshot(result, "skip");
+        }
     }
 
     /* Methods we don't really want screenshots for. */

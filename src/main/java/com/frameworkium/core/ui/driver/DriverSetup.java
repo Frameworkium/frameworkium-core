@@ -1,16 +1,7 @@
 package com.frameworkium.core.ui.driver;
 
 import com.frameworkium.core.common.properties.Property;
-import com.frameworkium.core.ui.driver.drivers.BrowserStackImpl;
-import com.frameworkium.core.ui.driver.drivers.ChromeImpl;
-import com.frameworkium.core.ui.driver.drivers.ElectronImpl;
-import com.frameworkium.core.ui.driver.drivers.FirefoxImpl;
-import com.frameworkium.core.ui.driver.drivers.GridImpl;
-import com.frameworkium.core.ui.driver.drivers.InternetExplorerImpl;
-import com.frameworkium.core.ui.driver.drivers.OperaImpl;
-import com.frameworkium.core.ui.driver.drivers.PhantomJSImpl;
-import com.frameworkium.core.ui.driver.drivers.SafariImpl;
-import com.frameworkium.core.ui.driver.drivers.SauceImpl;
+import com.frameworkium.core.ui.driver.drivers.*;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
 import org.apache.logging.log4j.LogManager;
@@ -21,23 +12,17 @@ public class DriverSetup {
 
     private static final SupportedBrowsers DEFAULT_BROWSER = SupportedBrowsers.FIREFOX;
 
-    /**
-     * List of supported drivers
-     */
+    /** List of supported drivers */
     public enum SupportedBrowsers {
         FIREFOX, CHROME, OPERA, IE, PHANTOMJS, SAFARI, ELECTRON
     }
 
-    /**
-     * List of supported remote grids
-     */
+    /** List of supported remote grids */
     private enum SupportedRemotes {
         SAUCE, BROWSERSTACK, GRID
     }
 
-    /**
-     * List of supported platforms on remote grids
-     */
+    /** List of supported platforms on remote grids */
     public enum SupportedPlatforms {
         WINDOWS, OSX, IOS, ANDROID, NONE
     }
@@ -63,40 +48,40 @@ public class DriverSetup {
         return initialiseDesiredDriverType(browserDriver);
     }
 
-    public DriverType initialiseDesiredDriverType(DriverType dt) {
+    private DriverType initialiseDesiredDriverType(DriverType dt) {
         DesiredCapabilities browserDesiredCapabilities = dt.getDesiredCapabilities();
         if (useRemoteDriver()) {
-            SupportedPlatforms platform = returnPlatformType();
+            SupportedPlatforms platform = getPlatformType();
             switch (returnRemoteType()) {
-            case SAUCE:
-                return new SauceImpl(platform, browserDesiredCapabilities);
-            case BROWSERSTACK:
-                return new BrowserStackImpl(platform, browserDesiredCapabilities);
-            case GRID:
-                return new GridImpl(browserDesiredCapabilities);
+                case SAUCE:
+                    return new SauceImpl(platform, browserDesiredCapabilities);
+                case BROWSERSTACK:
+                    return new BrowserStackImpl(platform, browserDesiredCapabilities);
+                case GRID:
+                    return new GridImpl(browserDesiredCapabilities);
             }
         }
         return dt;
     }
 
-    public DriverType returnBrowserObject(SupportedBrowsers browsers) {
+    private DriverType returnBrowserObject(SupportedBrowsers browsers) {
         switch (browsers) {
-        case FIREFOX:
-            return new FirefoxImpl();
-        case CHROME:
-            return new ChromeImpl();
-        case OPERA:
-            return new OperaImpl();
-        case IE:
-            return new InternetExplorerImpl();
-        case PHANTOMJS:
-            return new PhantomJSImpl();
-        case SAFARI:
-            return new SafariImpl();
-        case ELECTRON:
-            return new ElectronImpl();
+            case FIREFOX:
+                return new FirefoxImpl();
+            case CHROME:
+                return new ChromeImpl();
+            case OPERA:
+                return new OperaImpl();
+            case IE:
+                return new InternetExplorerImpl();
+            case PHANTOMJS:
+                return new PhantomJSImpl();
+            case SAFARI:
+                return new SafariImpl();
+            case ELECTRON:
+                return new ElectronImpl();
         }
-        throw new IllegalStateException("Invalid browser type.");
+        throw new IllegalArgumentException("Invalid browser type.");
     }
 
     /**
@@ -115,7 +100,7 @@ public class DriverSetup {
      *
      * @return - Platform type
      */
-    private static SupportedPlatforms returnPlatformType() {
+    private static SupportedPlatforms getPlatformType() {
         if (Property.PLATFORM.isSpecified()) {
             return SupportedPlatforms.valueOf(Property.PLATFORM.getValue().toUpperCase());
         } else {

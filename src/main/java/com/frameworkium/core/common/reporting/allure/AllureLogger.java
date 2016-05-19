@@ -10,17 +10,16 @@ import ru.yandex.qatools.allure.events.StepStartedEvent;
 public class AllureLogger {
     private static final Logger logger = LogManager.getLogger(AllureLogger.class);
 
-   @Step("{0}")
-   public static void logToAllure(String log)
-   {
-       logger.debug("Logged to allure: " + log);
-   }
+    @Step("{0}")
+    public static void logToAllure(String log) {
+        logger.debug("Logged to allure: " + log);
+    }
 
-    public static void __stepStart(String stepName){
+    public static void __stepStart(String stepName) {
         Allure.LIFECYCLE.fire(new StepStartedEvent(stepName));
     }
 
-    public static void __stepFinish(){
+    public static void __stepFinish() {
         Allure.LIFECYCLE.fire(new StepFinishedEvent());
     }
 

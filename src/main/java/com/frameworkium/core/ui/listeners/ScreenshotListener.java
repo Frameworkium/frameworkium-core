@@ -6,17 +6,13 @@ import com.frameworkium.core.ui.driver.WebDriverWrapper;
 import com.frameworkium.core.ui.tests.BaseTest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.Augmenter;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 import ru.yandex.qatools.allure.annotations.Attachment;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 import static com.frameworkium.core.common.properties.Property.BROWSER;
 import static com.frameworkium.core.ui.driver.DriverSetup.SupportedBrowsers.ELECTRON;
@@ -99,11 +95,15 @@ public class ScreenshotListener extends TestListenerAdapter {
 
     @Override
     public void onTestFailure(ITestResult failingTest) {
-        if (isScreenshotSupported()) takeScreenshot(failingTest.getName());
+        if (isScreenshotSupported()) {
+            takeScreenshot(failingTest.getName());
+        }
     }
 
     @Override
     public void onTestSkipped(ITestResult skippedTest) {
-        if (isScreenshotSupported()) takeScreenshot(skippedTest.getName());
+        if (isScreenshotSupported()) {
+            takeScreenshot(skippedTest.getName());
+        }
     }
 }

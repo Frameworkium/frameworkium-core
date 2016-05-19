@@ -55,32 +55,32 @@ public abstract class BaseService<T extends BaseService<T>> {
 //        requestSpec = requestSpec.log().all();
 
         switch (httpVerb) {
-        case GET:
-            resp = requestSpec.get(url);
-            break;
-        case PUT:
-            resp = requestSpec.put(url);
-            break;
-        case POST:
-            resp = requestSpec.post(url);
-            break;
-        case DELETE:
-            resp = requestSpec.delete(url);
-            break;
-        case HEAD:
-            resp = requestSpec.head(url);
-            break;
-        case TRACE:
-            throw new IllegalStateException("TRACE not supported");
-        case OPTIONS:
-            resp = requestSpec.options(url);
-            break;
-        case PATCH:
-            resp = requestSpec.patch(url);
-            break;
-        default:
-            logger.error("Unrecognised http verb supplied - defaulting to GET");
-            resp = requestSpec.get(url);
+            case GET:
+                resp = requestSpec.get(url);
+                break;
+            case PUT:
+                resp = requestSpec.put(url);
+                break;
+            case POST:
+                resp = requestSpec.post(url);
+                break;
+            case DELETE:
+                resp = requestSpec.delete(url);
+                break;
+            case HEAD:
+                resp = requestSpec.head(url);
+                break;
+            case TRACE:
+                throw new IllegalStateException("TRACE not supported");
+            case OPTIONS:
+                resp = requestSpec.options(url);
+                break;
+            case PATCH:
+                resp = requestSpec.patch(url);
+                break;
+            default:
+                logger.error("Unrecognised http verb supplied - defaulting to GET");
+                resp = requestSpec.get(url);
         }
 
         return resp;

@@ -1,22 +1,15 @@
 package com.frameworkium.core.ui.tests;
 
-import com.frameworkium.core.common.listeners.MethodInterceptor;
-import com.frameworkium.core.common.listeners.ResultLoggerListener;
-import com.frameworkium.core.common.listeners.TestListener;
+import com.frameworkium.core.common.listeners.*;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
-import com.frameworkium.core.ui.driver.DriverSetup;
-import com.frameworkium.core.ui.driver.DriverType;
-import com.frameworkium.core.ui.driver.WebDriverWrapper;
-import com.frameworkium.core.ui.listeners.CaptureListener;
-import com.frameworkium.core.ui.listeners.SauceLabsListener;
-import com.frameworkium.core.ui.listeners.ScreenshotListener;
+import com.frameworkium.core.ui.driver.*;
+import com.frameworkium.core.ui.listeners.*;
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.remote.SessionId;
 import org.testng.annotations.*;
 import ru.yandex.qatools.allure.annotations.Issue;

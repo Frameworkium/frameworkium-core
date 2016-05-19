@@ -17,6 +17,7 @@ public class Issue {
     private final static String jiraAPIURI = Property.JIRA_URL.getValue() + Config.jiraRestURI;
     private final String issueKey; // Jira Key e.g. KT-123
     private final static Logger logger = LogManager.getLogger(Issue.class);
+
     public Issue(final String issue) {
         this.issueKey = issue;
     }

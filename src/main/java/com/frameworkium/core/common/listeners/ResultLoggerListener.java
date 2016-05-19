@@ -10,9 +10,7 @@ import com.google.common.base.Throwables;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.testng.ITestContext;
-import org.testng.ITestListener;
-import org.testng.ITestResult;
+import org.testng.*;
 import ru.yandex.qatools.allure.annotations.Issue;
 import ru.yandex.qatools.allure.annotations.TestCaseId;
 
@@ -243,8 +241,9 @@ public class ResultLoggerListener implements ITestListener {
                 throw new IllegalStateException(
                         "TestCaseId and Issue annotation are both specified but " +
                                 "not equal for method: " + method.toString());
+            } else {
+                return issueAnnotation.value();
             }
-            return issueAnnotation.value();
         } else if (null != issueAnnotation) {
             return issueAnnotation.value();
         } else if (null != tcIdAnnotation) {

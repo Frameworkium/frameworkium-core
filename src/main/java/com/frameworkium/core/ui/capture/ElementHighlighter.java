@@ -1,9 +1,6 @@
 package com.frameworkium.core.ui.capture;
 
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
 public class ElementHighlighter {
     private JavascriptExecutor js;

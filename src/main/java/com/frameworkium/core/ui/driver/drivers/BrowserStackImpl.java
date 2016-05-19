@@ -26,8 +26,7 @@ public class BrowserStackImpl extends DriverType {
         desiredCapabilities = browserDesiredCapabilities;
         try {
             remoteURL = BrowserStack.getURL();
-        }
-        catch(MalformedURLException e) {
+        } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -43,7 +42,7 @@ public class BrowserStackImpl extends DriverType {
     }
 
     private void setCapabilitiesBasedOnPlatform() {
-        switch(supportedPlatform) {
+        switch (supportedPlatform) {
             case WINDOWS:
                 desiredCapabilities.setCapability("os", "Windows");
                 setDesktopCapability();
