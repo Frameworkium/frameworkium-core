@@ -1,38 +1,35 @@
 package com.frameworkium.core.ui.pages;
 
-import com.frameworkium.core.ui.driver.WebDriverGuiceModule;
-import com.google.inject.Guice;
-
 public class PageFactory {
 
     public static <T extends BasePage<T>> T newInstance(Class<T> clazz) {
-        return Guice
-                .createInjector(new WebDriverGuiceModule())
-                .getInstance(clazz)
-                .get();
+
+        return getPageObject(clazz).get();
     }
 
     public static <T extends BasePage<T>> T newInstance(
             Class<T> clazz, long timeoutInSeconds) {
-        return Guice
-                .createInjector(new WebDriverGuiceModule())
-                .getInstance(clazz)
-                .get(timeoutInSeconds);
+
+        return getPageObject(clazz).get(timeoutInSeconds);
     }
 
     public static <T extends BasePage<T>> T newInstance(
             Class<T> clazz, String url) {
-        return Guice
-                .createInjector(new WebDriverGuiceModule())
-                .getInstance(clazz)
-                .get(url);
+
+        return getPageObject(clazz).get(url);
     }
 
     public static <T extends BasePage<T>> T newInstance(
             Class<T> clazz, String url, long timeoutInSeconds) {
-        return Guice
-                .createInjector(new WebDriverGuiceModule())
-                .getInstance(clazz)
-                .get(url, timeoutInSeconds);
+
+        return getPageObject(clazz).get(url, timeoutInSeconds);
+    }
+
+    private static <T extends BasePage<T>> T getPageObject(Class<T> clazz) {
+        try {
+            return clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException("Unable to instantiate PageObject", e);
+        }
     }
 }

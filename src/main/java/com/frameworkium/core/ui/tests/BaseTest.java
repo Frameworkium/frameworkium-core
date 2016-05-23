@@ -17,6 +17,7 @@ import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Listeners({CaptureListener.class, ScreenshotListener.class,
@@ -28,7 +29,8 @@ public abstract class BaseTest
     private static ThreadLocal<Boolean> requiresReset;
     private static ThreadLocal<ScreenshotCapture> capture;
     private static ThreadLocal<DriverType> driverType;
-    private static List<DriverType> activeDriverTypes = new ArrayList<>();
+    private static List<DriverType> activeDriverTypes =
+            Collections.synchronizedList(new ArrayList<>());
     private static Logger logger = LogManager.getLogger(BaseTest.class);
 
     public static String userAgent;
@@ -67,7 +69,8 @@ public abstract class BaseTest
             configureDriverBasedOnParams();
             initialiseNewScreenshotCapture(testMethod);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e);
+            throw new RuntimeException("Failed to configure browser.", e);
         }
     }
 
@@ -94,7 +97,7 @@ public abstract class BaseTest
             } catch (NullPointerException e) {
                 logger.debug("No Test Case ID defined.");
             }
-            capture.set(new ScreenshotCapture(testID, driverType.get().getDriver()));
+            capture.set(new ScreenshotCapture(testID, getDriver()));
         }
     }
 
@@ -108,7 +111,7 @@ public abstract class BaseTest
     }
 
     /**
-     * Returns the webdriver object for that given thread
+     * Returns the {@link WebDriverWrapper} instance for the requesting thread
      *
      * @return - WebDriver object
      */
@@ -116,28 +119,23 @@ public abstract class BaseTest
         return driverType.get().getDriver();
     }
 
-    /**
-     * Sets the user agent of the browser for the test run
-     */
+    /** Sets the user agent of the browser for the test run */
     private static void setUserAgent() {
         userAgent = getUserAgent();
     }
 
-    /**
-     * Loops through all active driver types and tears down the driver object
-     */
+    /** Loops through all active driver types and tears them down */
     @AfterSuite(alwaysRun = true)
     public static void closeDriverObject() {
         try {
-            activeDriverTypes.forEach(DriverType::tearDownDriver);
+            activeDriverTypes.stream().parallel()
+                    .forEach(DriverType::tearDownDriver);
         } catch (Exception e) {
             logger.warn("Session quit unexpectedly.", e);
         }
     }
 
-    /**
-     * Creates the allure properties for the report, after the test run
-     */
+    /** Creates the allure properties for the report, after the test run */
     @AfterSuite(alwaysRun = true)
     public static void createAllureProperties() {
         com.frameworkium.core.common.reporting.allure.AllureProperties.create();

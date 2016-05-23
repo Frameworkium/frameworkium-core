@@ -54,7 +54,15 @@ public class EventListener implements WebDriverEventListener {
 
     @Override
     public void afterScript(String script, WebDriver driver) {
-        logger.debug("ran script " + script);
+        // Only log part of a long script
+        // We already log the whole script in beforeScript
+        int endIndex = script.length();
+        String ellipsis = "";
+        if (endIndex > 128) {
+            endIndex = 128;
+            ellipsis = "...";
+        }
+        logger.debug("ran script " + script.substring(0, endIndex) + ellipsis);
     }
 
     @Override

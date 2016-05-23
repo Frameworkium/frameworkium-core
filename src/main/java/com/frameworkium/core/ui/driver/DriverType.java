@@ -12,6 +12,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.util.concurrent.TimeUnit;
+
+import static com.frameworkium.core.common.properties.Property.MAXIMISE;
 import static com.frameworkium.core.ui.driver.DriverSetup.useRemoteDriver;
 
 public abstract class DriverType {
@@ -37,14 +40,16 @@ public abstract class DriverType {
         if (ScreenshotCapture.isRequired()) {
             eventFiringWD.register(new CaptureListener());
         }
+        eventFiringWD.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
         this.webDriverWrapper = eventFiringWD;
     }
 
     /**
-     * This method returns a proxy object with settings set by the system properties. If no valid proxy argument is set
-     * then it returns null.
+     * This method returns a proxy object with settings set by the system properties.
+     * If no valid proxy argument is set then it returns null.
      *
-     * @return A Selenium proxy object for the current system properties or null if no valid proxy settings
+     * @return A Selenium proxy object for the current system properties
+     * or null if no valid proxy settings
      */
     private Proxy getProxy() {
         if (Property.PROXY.isSpecified()) {
@@ -53,23 +58,23 @@ public abstract class DriverType {
             switch (proxyString) {
                 case "system":
                     proxy.setProxyType(ProxyType.SYSTEM);
-                    logger.info("Using system proxy");
+                    logger.debug("Using system proxy");
                     break;
                 case "autodetect":
                     proxy.setProxyType(ProxyType.AUTODETECT);
-                    logger.info("Using autodetected proxy");
+                    logger.debug("Using autodetect proxy");
                     break;
                 case "direct":
                     proxy.setProxyType(ProxyType.DIRECT);
-                    logger.info("Using direct (no) proxy");
+                    logger.debug("Using direct i.e. (no) proxy");
                     break;
                 default:
-                    proxy.setProxyType(ProxyType.MANUAL);
                     if (verifyProxyAddress(proxyString)) {
-                        proxy.setHttpProxy(proxyString)
+                        proxy.setProxyType(ProxyType.MANUAL)
+                                .setHttpProxy(proxyString)
                                 .setFtpProxy(proxyString)
                                 .setSslProxy(proxyString);
-                        logger.debug("Set all protocols to use proxy with address " + proxyString);
+                        logger.debug("Set all protocols to use proxy address: " + proxyString);
                     } else {
                         logger.error("Invalid proxy setting specified, acceptable values are: " +
                                 "system, autodetect, direct or {hostname}:{port}. " +
@@ -84,8 +89,8 @@ public abstract class DriverType {
     }
 
     /**
-     * This helper method verifies that a value is suitable for usage as a proxy address. Selenium expects values of the
-     * format hostname:port or ip:port
+     * This helper method verifies that a value is suitable for usage as a proxy address.
+     * Selenium expects values of the format hostname:port or ip:port
      *
      * @param proxyAddress The proxy value to verify
      * @return true if value is acceptable as a proxy, false otherwise
@@ -112,12 +117,14 @@ public abstract class DriverType {
         return false;
     }
 
-    /** Maximises the browser window based on parameters */
+    /** Maximises the browser window based on maximise property */
     public void maximiseBrowserWindow() {
-        if (!Property.MAXIMISE.isSpecified() || Boolean.parseBoolean(Property.MAXIMISE.getValue())) {
-            if (!useRemoteDriver() && !isNative() || Property.GRID_URL.isSpecified()) {
-                this.webDriverWrapper.manage().window().maximize();
-            }
+        boolean wantToMaximise = !MAXIMISE.isSpecified()
+                || Boolean.parseBoolean(MAXIMISE.getValue());
+        boolean ableToMaximise = !useRemoteDriver() && !isNative();
+
+        if (wantToMaximise && ableToMaximise) {
+            this.webDriverWrapper.manage().window().maximize();
         }
     }
 

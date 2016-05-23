@@ -3,6 +3,7 @@ package com.frameworkium.core.ui.capture;
 import org.openqa.selenium.*;
 
 public class ElementHighlighter {
+
     private JavascriptExecutor js;
     private WebElement previousElem;
 
@@ -13,6 +14,7 @@ public class ElementHighlighter {
     public void highlightElement(WebElement elem) {
 
         previousElem = elem; // remember the new element
+        // TODO: save the previous border
         js.executeScript("arguments[0].style.border='3px solid red'", elem);
     }
 

@@ -1,18 +1,24 @@
 package com.frameworkium.core.ui.listeners;
 
 import com.frameworkium.core.ui.capture.ElementHighlighter;
-import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.capture.model.Command;
-import com.frameworkium.core.ui.driver.DriverType;
 import com.frameworkium.core.ui.driver.WebDriverWrapper;
 import com.frameworkium.core.ui.tests.BaseTest;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.WebDriverEventListener;
-import org.testng.*;
+import org.testng.ITestContext;
+import org.testng.ITestListener;
+import org.testng.ITestResult;
 
+/**
+ * Assumes that {@link com.frameworkium.core.ui.capture.ScreenshotCapture}.isRequired()
+ * is true i.e. the capture url is specified and driver is not native.
+ */
 public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private static final Logger logger = LogManager.getLogger(CaptureListener.class);
@@ -36,33 +42,27 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     private void sendFinalScreenshot(ITestResult result, String action) {
-        if (ScreenshotCapture.isRequired()) {
-            WebDriverWrapper webDriver = BaseTest.getDriver();
-            Throwable thrw = result.getThrowable();
-            if (null != thrw) {
-                takeScreenshotAndSendToCaptureWithException(
-                        action, webDriver, thrw);
-            } else {
-                Command command = new Command(action, "n/a", "n/a");
-                takeScreenshotAndSendToCapture(command, webDriver);
-            }
+        WebDriverWrapper webDriver = BaseTest.getDriver();
+        Throwable thrw = result.getThrowable();
+        if (null != thrw) {
+            takeScreenshotAndSendToCaptureWithException(
+                    action, webDriver, thrw);
+        } else {
+            Command command = new Command(action, "n/a", "n/a");
+            takeScreenshotAndSendToCapture(command, webDriver);
         }
     }
 
     private void highlightElementTakeScreenshotAndSendToCapture(
             String action, WebDriver driver, WebElement element) {
+
         logger.debug("highlightElementTakeScreenshotSendToCapture: action=" + action);
-        ElementHighlighter highlighter = null;
-        if (!DriverType.isNative()) {
-            logger.debug("Trying to highlight the element");
-            highlighter = new ElementHighlighter(driver);
-            highlighter.highlightElement(element);
-        }
+        ElementHighlighter highlighter = new ElementHighlighter(driver);
+        logger.debug("Trying to highlight the element");
+        highlighter.highlightElement(element);
         Command command = new Command(action, element);
         takeScreenshotAndSendToCapture(command, driver);
-        if (null != highlighter) {
-            highlighter.unhighlightPrevious();
-        }
+        highlighter.unhighlightPrevious();
     }
 
     /* WebDriver events */

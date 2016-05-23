@@ -2,36 +2,61 @@ package com.frameworkium.core.ui.pages;
 
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
-import com.frameworkium.core.ui.annotations.*;
+import com.frameworkium.core.ui.annotations.ForceVisible;
+import com.frameworkium.core.ui.annotations.Invisible;
+import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.tests.BaseTest;
-import com.google.inject.Inject;
+import com.google.common.collect.ImmutableMap;
 import com.paulhammant.ngwebdriver.NgWebDriver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.*;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 import ru.yandex.qatools.htmlelements.loader.HtmlElementLoader;
+import ru.yandex.qatools.htmlelements.utils.HtmlElementUtils;
 
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toList;
+import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOfAllElements;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
 
 public abstract class BasePage<T extends BasePage<T>> {
 
-    @Inject
-    protected WebDriver driver;
-    @Inject
-    protected WebDriverWait wait;
+    private static final long DEFAULT_TIMEOUT_SECONDS = 10;
 
     protected final Logger logger = LogManager.getLogger(this);
+    protected final WebDriver driver;
+    protected Wait<WebDriver> wait;
 
     private NgWebDriver ngDriver;
+
+    public BasePage() {
+        driver = BaseTest.getDriver();
+        wait = newWaitWithTimeout(DEFAULT_TIMEOUT_SECONDS);
+        ngDriver = new NgWebDriver((JavascriptExecutor) driver);
+    }
+
+    private FluentWait<WebDriver> newWaitWithTimeout(long timeout) {
+        return new FluentWait<>(driver)
+                .withTimeout(timeout, TimeUnit.SECONDS)
+                .ignoring(NoSuchElementException.class)
+                .ignoring(StaleElementReferenceException.class);
+    }
 
     /**
      * @return Returns the current page object.
@@ -51,28 +76,30 @@ public abstract class BasePage<T extends BasePage<T>> {
         return (T) this;
     }
 
+    /**
+     * Initialises the PageObject.
+     * <p>
+     * <ul>
+     * <li>Initialises fields with lazy proxies</li>
+     * <li>Waits for AngularJS requests to finish loading, if present</li>
+     * <li>Processes Frameworkium visibility annotations e.g. {@link Visible}</li>
+     * <li>Log page load to Allure and Capture</li>
+     * </ul>
+     */
     @SuppressWarnings("unchecked")
     public T get() {
         HtmlElementLoader.populatePageObject(this, driver);
+        if (isPageAngularJS()) {
+            waitForAngularRequestsToFinish();
+        }
+
+        processFrameworkiumVisibilityAnnotations(this);
+
         try {
-            if (isPageAngularJS()) {
-                waitForAngularRequestsToFinish();
-            }
-
-            waitForVisibleAndInvisibleElements(this);
-
-            try {
-                AllureLogger.logToAllure("Page '" + this.getClass().getName() + "' successfully loaded");
-                if (Property.CAPTURE_URL.isSpecified()) {
-                    BaseTest.getCapture().takeAndSendScreenshot(
-                            new Command("load", null, this.getClass().getName()), driver, null);
-                }
-            } catch (Exception e) {
-                logger.error("Error logging page load, but loaded successfully", e);
-            }
-        } catch (IllegalAccessException e) {
-            logger.error("Error while waiting for page " + this.getClass().getName() + " to load", e);
-            throw new RuntimeException(e); // don't bury errors
+            AllureLogger.logToAllure("Page '" + this.getClass().getName() + "' successfully loaded");
+            takePageLoadedScreenshotAndSendToCapture();
+        } catch (Exception e) {
+            logger.warn("Error logging page load, but loaded successfully", e);
         }
         return (T) this;
     }
@@ -83,133 +110,148 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     public T get(long timeout) {
-        wait = new WebDriverWait(driver, timeout);
+        wait = newWaitWithTimeout(timeout);
         return get();
     }
 
     public T get(String url, long timeout) {
-        wait = new WebDriverWait(driver, timeout);
+        wait = newWaitWithTimeout(timeout);
         return get(url);
     }
 
-    private void waitForVisibleAndInvisibleElements(Object pageObject)
-            throws IllegalAccessException {
+    // TODO: move all Frameworkium visibility annotation code to separate class
+    private void processFrameworkiumVisibilityAnnotations(Object pageObject) {
 
-        for (Field field : pageObject.getClass().getDeclaredFields()) {
-            for (Annotation annotation : field.getDeclaredAnnotations()) {
+        Field[] allFields = pageObject.getClass().getDeclaredFields();
 
-                field.setAccessible(true);
-                Object obj = field.get(pageObject);
-
-                if (annotation instanceof Visible) {
-                    waitForObjectToBeVisible(obj);
-                } else if (annotation instanceof Invisible) {
-                    waitForObjectToBeInvisible(obj);
-                } else if (annotation instanceof ForceVisible) {
-                    if (obj instanceof HtmlElement) {
-                        WebElement e = ((HtmlElement) obj).getWrappedElement();
-                        forceVisible(e);
-                    } else if (obj instanceof TypifiedElement) {
-                        WebElement e = ((TypifiedElement) obj).getWrappedElement();
-                        forceVisible(e);
-                    } else if (obj instanceof WebElement) {
-                        forceVisible((WebElement) obj);
-                    }
-                }
-            }
-        }
+        Arrays.stream(allFields)
+                .filter(this::validateFieldVisibilityAnnotations)
+                .forEach(field -> visibilityFunctionForField(field).accept(pageObject, field));
     }
 
-    private void waitForObjectToBeVisible(Object obj)
-            throws IllegalAccessException {
+    private BiConsumer<Object, Field> visibilityFunctionForField(Field field) {
+        Map<Class<? extends Annotation>, BiConsumer<Object, Field>> annotationToFunction =
+                ImmutableMap.of(
+                        Visible.class, this::waitForFieldToBeVisible,
+                        Invisible.class, this::waitForFieldToBeInvisible,
+                        ForceVisible.class, this::forceThenWaitForFieldToBeVisible);
 
-        // Checks for @Visible tags inside an HtmlElement Component
-        if (obj instanceof HtmlElement) {
-            logger.debug("Checking for visible elements inside HtmlElement");
-            waitForVisibleAndInvisibleElements(obj);
-        }
+        return annotationToFunction.get(
+                getAnnotationFromFieldStream(field)
+                        .findAny()
+                        .orElseThrow(IllegalStateException::new));
+    }
 
-        // This handles Lists of WebElements e.g. List<WebElement>
-        if (obj instanceof List) {
-            //TODO - where to handle List<Link>, for example?
-            try {
-                wait.until(visibilityOfAllElements((List<WebElement>) obj));
-            } catch (StaleElementReferenceException serex) {
-                logger.info("Caught StaleElementReferenceException in waitForObjectToBeVisible");
-                tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady();
-                wait.until(visibilityOfAllElements((List<WebElement>) obj));
-            } catch (ClassCastException ccex) {
-                logger.debug("Caught ClassCastException in waitForObjectToBeVisible - " +
-                        "will try to get the first object in the List instead");
-                obj = ((List<Object>) obj).get(0);
-                waitForObjectToBeVisible(obj);
-            }
+    private Stream<Class<? extends Annotation>> getAnnotationFromFieldStream(Field field) {
+        return Arrays.asList(Visible.class, Invisible.class, ForceVisible.class)
+                .stream()
+                .filter(field::isAnnotationPresent);
+    }
+
+    private boolean validateFieldVisibilityAnnotations(Field field) {
+        long annotationCount =
+                getAnnotationFromFieldStream(field)
+                        .count();
+
+        if (annotationCount > 1) {
+            throw new IllegalArgumentException(String.format(
+                    "Field %s on %s has too many Visibility related Annotations",
+                    field.getName(),
+                    field.getDeclaringClass().getName()));
         } else {
-            WebElement element;
-            if (obj instanceof TypifiedElement) {
-                element = ((TypifiedElement) obj).getWrappedElement();
-            } else if (obj instanceof WebElement) {
-                element = (WebElement) obj;
-            } else {
-                throw new IllegalArgumentException(
-                        "Only elements of type TypifiedElement, WebElement or " +
-                                "List<WebElement> are supported by @Visible.");
-            }
-            try {
-                wait.until(ExpectedConditions.visibilityOf(element));
-            } catch (StaleElementReferenceException e) {
-                logger.info("Caught StaleElementReferenceException in waitForObjectToBeVisible");
-                tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady();
-                wait.until(ExpectedConditions.visibilityOf(element));
-            }
+            return annotationCount == 1;
         }
     }
 
-    private void waitForObjectToBeInvisible(Object obj)
-            throws IllegalArgumentException {
+    private Object getObjectFromField(Object pageObject, Field field) {
+        field.setAccessible(true);
+        try {
+            return field.get(pageObject);
+        } catch (IllegalAccessException e) {
+            logger.error(
+                    String.format(
+                            "Error while accessing field %s on page %s",
+                            field.getName(),
+                            pageObject.getClass().getName()),
+                    e);
+            throw new RuntimeException(e);
+        }
+    }
 
-        WebElement element;
-        if (obj instanceof TypifiedElement) {
-            element = ((TypifiedElement) obj).getWrappedElement();
-        } else if (obj instanceof WebElement) {
-            element = (WebElement) obj;
+    /**
+     * Checks for visibility of Fields with the {@link Visible} annotation.
+     * Can recurse inside {@link HtmlElement}s
+     *
+     * @param pageObject the pageObject
+     * @param field      wait for visibility of the field
+     */
+    @SuppressWarnings("unchecked")
+    private void waitForFieldToBeVisible(Object pageObject, Field field) {
+
+        Object obj = getObjectFromField(pageObject, field);
+
+        if (HtmlElementUtils.isHtmlElementList(field)) {
+            // Recursively checks the HtmlElement Component
+            ((List<HtmlElement>) obj)
+                    .forEach(this::processFrameworkiumVisibilityAnnotations);
+        } else if (HtmlElementUtils.isHtmlElement(field)) {
+            processFrameworkiumVisibilityAnnotations(obj);
+        } else if (HtmlElementUtils.isTypifiedElementList(field)) {
+            List<WebElement> webElements =
+                    ((List<TypifiedElement>) obj).stream()
+                            .map(TypifiedElement::getWrappedElement)
+                            .collect(toList());
+            wait.until(visibilityOfAllElements(webElements));
+        } else if (HtmlElementUtils.isTypifiedElement(field)) {
+            wait.until(visibilityOf(((TypifiedElement) obj).getWrappedElement()));
+        } else if (HtmlElementUtils.isWebElementList(field)) {
+            wait.until(visibilityOfAllElements((List<WebElement>) obj));
+        } else if (HtmlElementUtils.isWebElement(field)) {
+            wait.until(visibilityOf((WebElement) obj));
         } else {
             throw new IllegalArgumentException(
-                    "Only elements of type TypifiedElement or WebElement " +
-                            "are supported by @Invisible at present.");
-        }
-        wait.until(invisibilityOfElement(element));
-    }
-
-    /** Will wait up to ~10 seconds for the document to be ready. */
-    private void tryToEnsureWeHaveUnloadedOldPageAndNewPageIsReady() {
-        int notReadyCount = 0;
-        int readyCount = 0;
-        while (notReadyCount < 20 && readyCount < 3) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ignored) { /* don't care */ }
-            boolean docReady = (boolean) executeJS(
-                    "return document.readyState == 'complete'");
-            if (docReady) {
-                readyCount++;
-            } else {
-                notReadyCount++;
-            }
-            logger.debug(
-                    "Document ready: {}. Not ready {} times, ready {} times.",
-                    docReady,
-                    notReadyCount,
-                    readyCount);
+                    "Only elements of type HtmlElement, TypifiedElement, WebElement or " +
+                            "Lists thereof are supported by @Visible.");
         }
     }
 
-    //TODO - move to helper methods section instead
-    private ExpectedCondition<Boolean> invisibilityOfElement(WebElement element) {
+    /**
+     * Same as waitForFieldToBeVisible but for Invisibility i.e. not visible
+     */
+    @SuppressWarnings("unchecked")
+    private void waitForFieldToBeInvisible(Object pageObject, Field field) {
+
+        Object obj = getObjectFromField(pageObject, field);
+        if (HtmlElementUtils.isHtmlElementList(field)) {
+            ((List<HtmlElement>) obj)
+                    .forEach(he -> {
+                        WebElement we = he.getWrappedElement();
+                        wait.until(notPresentOrInvisibilityOfElement(we));
+                    });
+        } else if (HtmlElementUtils.isHtmlElement(field)) {
+            wait.until(notPresentOrInvisibilityOfElement(((HtmlElement) obj).getWrappedElement()));
+        } else if (HtmlElementUtils.isTypifiedElementList(field)) {
+            ((List<TypifiedElement>) obj).stream()
+                    .map(TypifiedElement::getWrappedElement)
+                    .forEach(e -> wait.until(notPresentOrInvisibilityOfElement(e)));
+        } else if (HtmlElementUtils.isTypifiedElement(field)) {
+            wait.until(notPresentOrInvisibilityOfElement(((TypifiedElement) obj).getWrappedElement()));
+        } else if (HtmlElementUtils.isWebElementList(field)) {
+            wait.until(invisibilityOfAllElements((List<WebElement>) obj));
+        } else if (HtmlElementUtils.isWebElement(field)) {
+            wait.until(notPresentOrInvisibilityOfElement((WebElement) obj));
+        } else {
+            throw new IllegalArgumentException(
+                    "Only elements of type HtmlElement, TypifiedElement, WebElement or " +
+                            "Lists thereof are supported by @Invisible.");
+        }
+    }
+
+    private ExpectedCondition<Boolean> notPresentOrInvisibilityOfElement(WebElement element) {
         return new ExpectedCondition<Boolean>() {
             @Nullable
             @Override
-            public Boolean apply(WebDriver input) {
+            public Boolean apply(@Nullable WebDriver input) {
                 try {
                     return !element.isDisplayed();
                 } catch (NoSuchElementException
@@ -217,11 +259,54 @@ public abstract class BasePage<T extends BasePage<T>> {
                     return true;
                 }
             }
-
-            public String toString() {
-                return "element to no longer be visible: " + element;
-            }
         };
+    }
+
+    /**
+     * Same as waitForFieldToBeVisible but forces visibility before waiting
+     */
+    @SuppressWarnings("unchecked")
+    private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field) {
+
+        Object obj = getObjectFromField(pageObject, field);
+
+        if (HtmlElementUtils.isHtmlElementList(field)) {
+            ((List<HtmlElement>) obj).stream()
+                    .map(HtmlElement::getWrappedElement)
+                    .forEach(this::forceVisible);
+        } else if (HtmlElementUtils.isHtmlElement(field)) {
+            forceVisible(((HtmlElement) obj).getWrappedElement());
+        } else if (HtmlElementUtils.isTypifiedElementList(field)) {
+            ((List<TypifiedElement>) obj).stream()
+                    .map(TypifiedElement::getWrappedElement)
+                    .forEach(this::forceVisible);
+        } else if (HtmlElementUtils.isTypifiedElement(field)) {
+            forceVisible(((TypifiedElement) obj).getWrappedElement());
+        } else if (HtmlElementUtils.isWebElementList(field)) {
+            ((List<WebElement>) obj).stream()
+                    .forEach(this::forceVisible);
+        } else if (HtmlElementUtils.isWebElement(field)) {
+            forceVisible((WebElement) obj);
+        } else {
+            throw new IllegalArgumentException(
+                    "Only elements of type HtmlElement, TypifiedElement, WebElement or " +
+                            "Lists thereof are supported by @ForceVisible.");
+        }
+
+        waitForFieldToBeVisible(pageObject, field);
+    }
+
+    private void takePageLoadedScreenshotAndSendToCapture() {
+        if (Property.CAPTURE_URL.isSpecified()) {
+            try {
+                BaseTest.getCapture().takeAndSendScreenshot(
+                        new Command("load", null, this.getClass().getName()),
+                        driver,
+                        null);
+            } catch (Exception e) {
+                logger.warn("Failed to ");
+            }
+        }
     }
 
     /**
@@ -235,20 +320,13 @@ public abstract class BasePage<T extends BasePage<T>> {
         } catch (NullPointerException e) {
             logger.error("Detecting whether the page was angular returned a null object. " +
                     "This means your browser hasn't started! Investigate into the issue.");
-            return false;
+            throw new RuntimeException(e);
         }
     }
 
     /** Method to wait for AngularJS requests to finish on the page */
     protected void waitForAngularRequestsToFinish() {
-        getNgDriver().waitForAngularRequestsToFinish();
-    }
-
-    private NgWebDriver getNgDriver() {
-        if (ngDriver == null) {
-            ngDriver = new NgWebDriver((JavascriptExecutor) driver);
-        }
-        return ngDriver;
+        ngDriver.waitForAngularRequestsToFinish();
     }
 
     /**
@@ -294,16 +372,12 @@ public abstract class BasePage<T extends BasePage<T>> {
                 element);
     }
 
-    /**
-     * @return Returns the title of the web page
-     */
+    /** @return Returns the title of the web page */
     public String getTitle() {
         return driver.getTitle();
     }
 
-    /**
-     * @return Returns the source code of the current page
-     */
+    /** @return Returns the source code of the current page */
     public String getSource() {
         return driver.getPageSource();
     }
