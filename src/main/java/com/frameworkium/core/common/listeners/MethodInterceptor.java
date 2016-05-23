@@ -13,25 +13,28 @@ import java.util.*;
 
 import static com.frameworkium.core.common.properties.Property.JIRA_URL;
 import static com.frameworkium.core.common.properties.Property.JQL_QUERY;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 public class MethodInterceptor implements IMethodInterceptor {
 
     private static final Logger logger = LogManager.getLogger(MethodInterceptor.class);
     private static boolean interceptMethodsBasedOnName = false;
 
-
     @Override
-    public List<IMethodInstance> intercept(List<IMethodInstance> methods, ITestContext context) {
-        List<IMethodInstance> methodsToRun = filterTestsToRunBasedOnJQL(methods);
+    public List<IMethodInstance> intercept(
+            List<IMethodInstance> methods, ITestContext context) {
+
+        List<IMethodInstance> methodsToRun = filterTestsToRunByJQL(methods);
         if (interceptMethodsBasedOnName) {
             logger.info("Filtering tests based on their name.");
-            return filterTestsToRunBasedOnDriverAndTestClassName(methodsToRun);
+            return filterTestsToRunByDriverAndTestClassName(methodsToRun);
         } else {
             return methodsToRun;
         }
     }
 
-    private List<IMethodInstance> filterTestsToRunBasedOnJQL(
+    private List<IMethodInstance> filterTestsToRunByJQL(
             List<IMethodInstance> methodsToBeFiltered) {
 
         if (JQL_QUERY.isSpecified() && JIRA_URL.isSpecified()) {
@@ -58,13 +61,18 @@ public class MethodInterceptor implements IMethodInterceptor {
                 IMethodInstance method = testMethods.get(issueKey);
                 if (null != method) {
                     methodsToRun.add(method);
-                    logger.debug("Adding " + issueKey);
+                    logger.trace("Adding " + issueKey);
                 } else {
                     logger.error("Key cannot find test for issueKey " + issueKey);
                 }
             }
 
-            logger.info("Running {} tests specified by query...", methodsToRun.size());
+            logger.debug("Running the following test methods:\n{}", () ->
+                    methodsToRun.stream()
+                            .map(m -> m.getMethod().getMethodName())
+                            .collect(joining(", ")));
+            logger.info("Running {} tests specified by JQL query...", methodsToRun.size());
+
             return methodsToRun;
         } else {
             // Can't run the JQL without both JIRA_URL and JQL_QUERY
@@ -73,24 +81,25 @@ public class MethodInterceptor implements IMethodInterceptor {
     }
 
     //TODO - make this non-UI specific!
-    private List<IMethodInstance> filterTestsToRunBasedOnDriverAndTestClassName(List<IMethodInstance> methods) {
-        List<IMethodInstance> methodsToRun = new ArrayList<>();
-        for (IMethodInstance instance : methods) {
-            String clazz = instance.getMethod().getRealClass().getName();
+    private List<IMethodInstance> filterTestsToRunByDriverAndTestClassName(
+            List<IMethodInstance> methods) {
 
-            if (!DriverType.isMobile()) {
-                if (!clazz.endsWith("AppTest") && !clazz.endsWith("MobiTest")) {
-                    methodsToRun.add(instance);
-                }
-            } else {
-                if (DriverType.isNative() && clazz.endsWith("AppTest")) {
-                    methodsToRun.add(instance);
-                } else if (!DriverType.isNative() && clazz.endsWith("MobiTest")) {
-                    methodsToRun.add(instance);
-                }
-            }
-        }
-        return methodsToRun;
+        return methods.stream()
+                .filter(instance -> {
+                    String clazz = instance.getMethod().getRealClass().getName();
+
+                    boolean appTest = clazz.endsWith("AppTest");
+                    boolean mobiTest = clazz.endsWith("MobiTest");
+                    boolean nonMobileNotAppMobiTest =
+                            !DriverType.isMobile() && !appTest && !mobiTest;
+                    boolean nativeAppTest =
+                            DriverType.isNative() && appTest;
+                    boolean nonNativeMobiTest =
+                            !DriverType.isNative() && mobiTest;
+
+                    return nonMobileNotAppMobiTest || nativeAppTest || nonNativeMobiTest;
+                })
+                .collect(toList());
     }
 
 }
