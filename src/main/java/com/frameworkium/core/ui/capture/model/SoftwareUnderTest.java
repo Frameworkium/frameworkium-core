@@ -1,26 +1,19 @@
 package com.frameworkium.core.ui.capture.model;
 
-import com.frameworkium.core.common.properties.Property;
+import static com.frameworkium.core.common.properties.Property.SUT_NAME;
+import static com.frameworkium.core.common.properties.Property.SUT_VERSION;
 
 public class SoftwareUnderTest {
 
-    private String name;
-    private String version;
+    public String name;
+    public String version;
 
     public SoftwareUnderTest() {
-        if (Property.SUT_NAME.isSpecified()) {
-            this.name = Property.SUT_NAME.getValue();
+        if (SUT_NAME.isSpecified()) {
+            this.name = SUT_NAME.getValue();
         }
-        if (Property.SUT_VERSION.isSpecified()) {
-            this.version = Property.SUT_VERSION.getValue();
+        if (SUT_VERSION.isSpecified()) {
+            this.version = SUT_VERSION.getValue();
         }
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getVersion() {
-        return version;
     }
 }

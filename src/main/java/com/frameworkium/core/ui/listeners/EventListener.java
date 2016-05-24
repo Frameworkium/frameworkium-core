@@ -1,5 +1,6 @@
 package com.frameworkium.core.ui.listeners;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
@@ -55,14 +56,8 @@ public class EventListener implements WebDriverEventListener {
     @Override
     public void afterScript(String script, WebDriver driver) {
         // Only log part of a long script
-        // We already log the whole script in beforeScript
-        int endIndex = script.length();
-        String ellipsis = "";
-        if (endIndex > 128) {
-            endIndex = 128;
-            ellipsis = "...";
-        }
-        logger.debug("ran script " + script.substring(0, endIndex) + ellipsis);
+        // We already log the entire script in beforeScript
+        logger.debug("ran script " + StringUtils.abbreviate(script, 128));
     }
 
     @Override

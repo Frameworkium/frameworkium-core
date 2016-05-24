@@ -9,7 +9,6 @@ import com.frameworkium.core.ui.driver.DriverType;
 import com.frameworkium.core.ui.driver.WebDriverWrapper;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
-import com.frameworkium.core.ui.tests.BaseTest;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
 import org.apache.logging.log4j.LogManager;
@@ -22,15 +21,15 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static com.frameworkium.core.common.properties.Property.CAPTURE_URL;
+import static com.frameworkium.core.common.properties.Property.SUT_NAME;
+import static com.frameworkium.core.common.properties.Property.SUT_VERSION;
+import static com.frameworkium.core.ui.tests.BaseTest.executor;
 
 public class ScreenshotCapture {
 
     private static final Logger logger = LogManager.getLogger(ScreenshotCapture.class);
-    private static final ExecutorService executor = Executors.newFixedThreadPool(3);
 
     private String executionID;
 
@@ -42,7 +41,12 @@ public class ScreenshotCapture {
     }
 
     public static boolean isRequired() {
-        return CAPTURE_URL.isSpecified() && !DriverType.isNative();
+        boolean allRequirePropertiesSpecified =
+                CAPTURE_URL.isSpecified() &&
+                SUT_NAME.isSpecified() &&
+                SUT_VERSION.isSpecified();
+
+        return allRequirePropertiesSpecified && !DriverType.isNative();
     }
 
     public void takeAndSendScreenshot(
@@ -64,18 +68,24 @@ public class ScreenshotCapture {
 
     private void sendScreenshot(CreateScreenshot createScreenshotMessage) {
 
+        if (executionID == null) {
+            logger.debug("Capture executionID is null.");
+            return;
+        }
+
         String uri = CAPTURE_URL.getValue() + "/screenshot";
 
         executor.submit(() -> {
             try {
+                logger.debug("About to send screenshot to Capture.");
                 RestAssured.given().contentType(ContentType.JSON)
                         .body(createScreenshotMessage)
                         .post(uri)
                         .then()
                         .assertThat().statusCode(201);
-            } catch (Exception e) {
-                logger.warn("Error sending screenshot to Capture.");
-                logger.debug(e);
+            } catch (Throwable t) {
+                logger.warn("Failed sending screenshot to Capture.");
+                logger.debug(t);
             }
         });
     }
@@ -85,17 +95,19 @@ public class ScreenshotCapture {
         String uri = CAPTURE_URL.getValue() + "/executions";
 
         try {
+            logger.debug("About to initialise Capture execution.");
+            CreateExecution createExecution =
+                    new CreateExecution(testID, getNode(driver));
             executionID = RestAssured
                     .given().contentType(ContentType.JSON)
-                    .body(new CreateExecution(testID, getNode(driver)))
+                    .body(createExecution)
                     .post(uri)
                     .then().statusCode(201)
                     .extract().path("executionID").toString();
-        } catch (Exception e) {
-            logger.error("Unable to init capture execution.", e);
+            logger.debug("Capture executionID=" + executionID);
+        } catch (Throwable t) {
+            logger.warn("Unable to create Capture execution.", t);
         }
-
-        logger.debug("Capture executionID=" + executionID);
     }
 
     private String getNode(WebDriverWrapper driver) {

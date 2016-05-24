@@ -8,6 +8,7 @@ import com.frameworkium.core.ui.listeners.*;
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.remote.SessionId;
@@ -16,9 +17,8 @@ import ru.yandex.qatools.allure.annotations.Issue;
 import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.*;
 
 @Listeners({CaptureListener.class, ScreenshotListener.class,
         MethodInterceptor.class, SauceLabsListener.class,
@@ -26,14 +26,15 @@ import java.util.List;
 public abstract class BaseTest
         implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
+    public static final ExecutorService executor = Executors.newSingleThreadExecutor();
+    public static String userAgent;
+
     private static ThreadLocal<Boolean> requiresReset;
     private static ThreadLocal<ScreenshotCapture> capture;
     private static ThreadLocal<DriverType> driverType;
     private static List<DriverType> activeDriverTypes =
             Collections.synchronizedList(new ArrayList<>());
     private static Logger logger = LogManager.getLogger(BaseTest.class);
-
-    public static String userAgent;
 
     /**
      * Method which runs first upon running a test, it will do the following:
@@ -75,39 +76,73 @@ public abstract class BaseTest
     }
 
     /**
+     * Ran as part of the initialiseDriverObject, configures parts of the driver
+     */
+    private static void configureDriverBasedOnParams() {
+        requiresReset.set(driverType.get().resetBrowser(requiresReset.get()));
+        driverType.get().maximiseBrowserWindow();
+        userAgent = determineUserAgent();
+    }
+
+    /**
      * Initialise the screenshot capture and link to issue/test case id
      *
      * @param testMethod - Test method passed from the test script
      */
     private static void initialiseNewScreenshotCapture(Method testMethod) {
         if (ScreenshotCapture.isRequired()) {
-            String testID = "n/a";
-            try {
-                testID = testMethod.getName();
-            } catch (NullPointerException e) {
-                logger.debug("No test method defined.");
-            }
-            try {
-                testID = testMethod.getAnnotation(Issue.class).value();
-            } catch (NullPointerException e) {
-                logger.debug("No Issue defined.");
-            }
-            try {
-                testID = testMethod.getAnnotation(TestCaseId.class).value();
-            } catch (NullPointerException e) {
-                logger.debug("No Test Case ID defined.");
+            String testID = getIssueOrTestCaseIdAnnotation(testMethod);
+            if (testID.isEmpty()) {
+                logger.warn("Method {} doesn't have a TestID annotation.", testMethod.getName());
+                testID = StringUtils.abbreviate(testMethod.getName(), 20);
             }
             capture.set(new ScreenshotCapture(testID, getDriver()));
         }
     }
 
     /**
-     * Ran as part of the initialiseDriverObject, configures parts of the driver
+     * Attempts to retrieve the user agent from the browser
+     *
+     * @return - The user agent or error message
      */
-    private static void configureDriverBasedOnParams() {
-        requiresReset.set(driverType.get().resetBrowser(requiresReset.get()));
-        driverType.get().maximiseBrowserWindow();
-        setUserAgent();
+    private static String determineUserAgent() {
+        String ua;
+        try {
+            ua = (String) getDriver().executeScript("return navigator.userAgent;");
+        } catch (Exception e) {
+            ua = "Unable to fetch UserAgent";
+        }
+        logger.debug("User agent is: '" + ua + "'");
+        return ua;
+    }
+
+    /**
+     * Throws {@link IllegalStateException} if {@link TestCaseId} and {@link Issue}
+     * are specified inconstantly.
+     *
+     * @param method the method to check for test ID annotations.
+     * @return either the {@link TestCaseId} and {@link Issue} value if specified,
+     * otherwise will return an empty string
+     */
+    public static String getIssueOrTestCaseIdAnnotation(Method method) {
+        TestCaseId tcIdAnnotation = method.getAnnotation(TestCaseId.class);
+        Issue issueAnnotation = method.getAnnotation(Issue.class);
+
+        if (null != issueAnnotation && null != tcIdAnnotation) {
+            if (!issueAnnotation.value().equals(tcIdAnnotation.value())) {
+                throw new IllegalStateException(
+                        "TestCaseId and Issue annotation are both specified but " +
+                                "not equal for method: " + method.toString());
+            } else {
+                return issueAnnotation.value();
+            }
+        } else if (null != issueAnnotation) {
+            return issueAnnotation.value();
+        } else if (null != tcIdAnnotation) {
+            return tcIdAnnotation.value();
+        } else {
+            return StringUtils.EMPTY;
+        }
     }
 
     /**
@@ -117,11 +152,6 @@ public abstract class BaseTest
      */
     public static WebDriverWrapper getDriver() {
         return driverType.get().getDriver();
-    }
-
-    /** Sets the user agent of the browser for the test run */
-    private static void setUserAgent() {
-        userAgent = getUserAgent();
     }
 
     /** Loops through all active driver types and tears them down */
@@ -135,10 +165,27 @@ public abstract class BaseTest
         }
     }
 
+    /** Shuts down the {@link ExecutorService} */
+    @AfterSuite(alwaysRun = true)
+    public static void shutdownExecutor() {
+        try {
+            executor.shutdown();
+            executor.awaitTermination(15, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            logger.error("Executor was interrupted while shutting down. " +
+                    "Some tasks might not have been executed.");
+        }
+    }
+
     /** Creates the allure properties for the report, after the test run */
     @AfterSuite(alwaysRun = true)
     public static void createAllureProperties() {
         com.frameworkium.core.common.reporting.allure.AllureProperties.create();
+    }
+
+    /** @return - Screenshot capture object for the current test */
+    public static ScreenshotCapture getCapture() {
+        return capture.get();
     }
 
     /** @return the Job id for the current thread */
@@ -150,34 +197,11 @@ public abstract class BaseTest
     }
 
     /**
-     * Attempts to retrieve the user agent from the browser
-     *
-     * @return - The user agent or error message
-     */
-    private static String getUserAgent() {
-        String ua;
-        try {
-            ua = (String) getDriver().executeScript("return navigator.userAgent;");
-        } catch (Exception e) {
-            ua = "Unable to fetch UserAgent";
-        }
-        logger.debug("User agent is: '" + ua + "'");
-        return ua;
-    }
-
-    /**
      * @return the {@link SauceOnDemandAuthentication} instance containing the Sauce username/access key
      */
     @Override
     public SauceOnDemandAuthentication getAuthentication() {
         return new SauceOnDemandAuthentication();
-    }
-
-    /**
-     * @return - Screenshot capture object for the current test
-     */
-    public static ScreenshotCapture getCapture() {
-        return capture.get();
     }
 
     /**

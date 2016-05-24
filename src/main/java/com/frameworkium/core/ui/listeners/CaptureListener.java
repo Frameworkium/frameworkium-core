@@ -2,38 +2,32 @@ package com.frameworkium.core.ui.listeners;
 
 import com.frameworkium.core.ui.capture.ElementHighlighter;
 import com.frameworkium.core.ui.capture.model.Command;
-import com.frameworkium.core.ui.driver.WebDriverWrapper;
 import com.frameworkium.core.ui.tests.BaseTest;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.events.WebDriverEventListener;
-import org.testng.ITestContext;
-import org.testng.ITestListener;
-import org.testng.ITestResult;
+import org.testng.*;
 
 /**
- * Assumes that {@link com.frameworkium.core.ui.capture.ScreenshotCapture}.isRequired()
- * is true i.e. the capture url is specified and driver is not native.
+ * Assumes {@link com.frameworkium.core.ui.capture.ScreenshotCapture}.isRequired()
+ * is true.
  */
 public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private static final Logger logger = LogManager.getLogger(CaptureListener.class);
 
-    private void takeScreenshotAndSendToCapture(Command command, WebDriver driver) {
-        logger.debug("takeScreenshotAndSendToCapture");
+    private void takeScreenshotAndSend(Command command, WebDriver driver) {
         BaseTest.getCapture().takeAndSendScreenshot(command, driver, null);
     }
 
-    private void takeScreenshotAndSendToCapture(String action, WebDriver driver) {
+    private void takeScreenshotAndSend(String action, WebDriver driver) {
         Command command = new Command(action, "n/a", "n/a");
-        takeScreenshotAndSendToCapture(command, driver);
+        takeScreenshotAndSend(command, driver);
     }
 
-    private void takeScreenshotAndSendToCaptureWithException(
+    private void takeScreenshotAndSend(
             String action, WebDriver driver, Throwable thrw) {
         Command command = new Command(action, "n/a", "n/a");
         BaseTest.getCapture().takeAndSendScreenshot(
@@ -42,60 +36,60 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     private void sendFinalScreenshot(ITestResult result, String action) {
-        WebDriverWrapper webDriver = BaseTest.getDriver();
+        // As this can be called from any test type, ensure this is a UI test
+        if (!(result.getInstance() instanceof BaseTest)) {
+            return;
+        }
         Throwable thrw = result.getThrowable();
         if (null != thrw) {
-            takeScreenshotAndSendToCaptureWithException(
-                    action, webDriver, thrw);
+            takeScreenshotAndSend(action, BaseTest.getDriver(), thrw);
         } else {
             Command command = new Command(action, "n/a", "n/a");
-            takeScreenshotAndSendToCapture(command, webDriver);
+            takeScreenshotAndSend(command, BaseTest.getDriver());
         }
     }
 
-    private void highlightElementTakeScreenshotAndSendToCapture(
+    private void highlightElementAndSendScreenshot(
             String action, WebDriver driver, WebElement element) {
 
-        logger.debug("highlightElementTakeScreenshotSendToCapture: action=" + action);
         ElementHighlighter highlighter = new ElementHighlighter(driver);
-        logger.debug("Trying to highlight the element");
         highlighter.highlightElement(element);
         Command command = new Command(action, element);
-        takeScreenshotAndSendToCapture(command, driver);
+        takeScreenshotAndSend(command, driver);
         highlighter.unhighlightPrevious();
     }
 
     /* WebDriver events */
     @Override
     public void beforeClickOn(WebElement element, WebDriver driver) {
-        highlightElementTakeScreenshotAndSendToCapture("click", driver, element);
+        highlightElementAndSendScreenshot("click", driver, element);
     }
 
     @Override
     public void afterChangeValueOf(WebElement element, WebDriver driver) {
-        highlightElementTakeScreenshotAndSendToCapture("change", driver, element);
+        takeScreenshotAndSend("change", driver);
     }
 
     @Override
     public void beforeNavigateBack(WebDriver driver) {
-        takeScreenshotAndSendToCapture("nav back", driver);
+        takeScreenshotAndSend("nav back", driver);
     }
 
     @Override
     public void beforeNavigateForward(WebDriver driver) {
-        takeScreenshotAndSendToCapture("nav forward", driver);
+        takeScreenshotAndSend("nav forward", driver);
     }
 
     @Override
     public void beforeNavigateTo(String url, WebDriver driver) {
         Command command = new Command("nav", "url", url);
-        takeScreenshotAndSendToCapture(command, driver);
+        takeScreenshotAndSend(command, driver);
     }
 
     @Override
     public void beforeScript(String script, WebDriver driver) {
         if (!script.contains("navigator.userAgent")) {
-            takeScreenshotAndSendToCapture("script", driver);
+            takeScreenshotAndSend("script", driver);
         }
     }
 
@@ -103,23 +97,17 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     @Override
     public void onTestSuccess(ITestResult result) {
-        if (result.getTestClass().getRealClass().getSuperclass().isInstance(BaseTest.class)) {
-            sendFinalScreenshot(result, "pass");
-        }
+        sendFinalScreenshot(result, "pass");
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
-        if (result.getTestClass().getRealClass().getSuperclass().isInstance(BaseTest.class)) {
-            sendFinalScreenshot(result, "fail");
-        }
+        sendFinalScreenshot(result, "fail");
     }
 
     @Override
     public void onTestSkipped(ITestResult result) {
-        if (result.getTestClass().getRealClass().getSuperclass().isInstance(BaseTest.class)) {
-            sendFinalScreenshot(result, "skip");
-        }
+        sendFinalScreenshot(result, "skip");
     }
 
     /* Methods we don't really want screenshots for. */

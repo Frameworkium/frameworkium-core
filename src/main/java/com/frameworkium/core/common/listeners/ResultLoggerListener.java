@@ -233,24 +233,7 @@ public class ResultLoggerListener implements ITestListener {
      */
     private String getIssueOrTestCaseIdAnnotation(ITestResult result) {
         Method method = result.getMethod().getConstructorOrMethod().getMethod();
-        TestCaseId tcIdAnnotation = method.getAnnotation(TestCaseId.class);
-        Issue issueAnnotation = method.getAnnotation(Issue.class);
-
-        if (null != issueAnnotation && null != tcIdAnnotation) {
-            if (!issueAnnotation.value().equals(tcIdAnnotation.value())) {
-                throw new IllegalStateException(
-                        "TestCaseId and Issue annotation are both specified but " +
-                                "not equal for method: " + method.toString());
-            } else {
-                return issueAnnotation.value();
-            }
-        } else if (null != issueAnnotation) {
-            return issueAnnotation.value();
-        } else if (null != tcIdAnnotation) {
-            return tcIdAnnotation.value();
-        } else {
-            return StringUtils.EMPTY;
-        }
+        return BaseTest.getIssueOrTestCaseIdAnnotation(method);
     }
 
     private String getOSInfo() {

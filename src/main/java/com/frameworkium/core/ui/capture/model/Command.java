@@ -1,21 +1,23 @@
 package com.frameworkium.core.ui.capture.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.frameworkium.core.ui.driver.DriverType;
 import org.openqa.selenium.WebElement;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Command {
 
-    private String action;
-    private String using;
-    private String value;
+    public String action;
+    public String using;
+    public String value;
 
-    public Command(final String action, final String using, final String value) {
+    public Command(String action, String using, String value) {
         this.action = action;
         this.using = using;
         this.value = value;
     }
 
-    public Command(final String action, final WebElement element) {
+    public Command(String action, WebElement element) {
         this.action = action;
 
         // TODO: Improve this. Use hacky solution in EventListener?
@@ -38,17 +40,5 @@ public class Command {
                 this.value = "n/a";
             }
         }
-    }
-
-    public String getAction() {
-        return action;
-    }
-
-    public String getUsing() {
-        return using;
-    }
-
-    public String getValue() {
-        return value;
     }
 }

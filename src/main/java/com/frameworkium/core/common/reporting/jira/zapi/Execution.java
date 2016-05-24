@@ -2,6 +2,7 @@ package com.frameworkium.core.common.reporting.jira.zapi;
 
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.jira.Config;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
@@ -33,7 +34,8 @@ public class Execution {
     private List<Integer> getExecutionIds() {
         if (null == idList) {
             if (isNotEmpty(version) && isNotEmpty(issue)) {
-                String query = String.format("issue='%s' and fixVersion='%s'", issue, version);
+                String query = String.format(
+                        "issue='%s' and fixVersion='%s'", issue, version);
 
                 SearchExecutions search = new SearchExecutions(query);
                 idList = search.getExecutionIds();
@@ -74,11 +76,8 @@ public class Execution {
         JSONObject obj = new JSONObject();
         try {
             obj.put("status", String.valueOf(status));
-            // Limit on Zephyr's comment field capacity
-            if (comment.length() > 750) {
-                comment = comment.substring(0, 747) + "...";
-            }
-            obj.put("comment", comment);
+            int commentMaxLen = 750;
+            obj.put("comment", StringUtils.abbreviate(comment, commentMaxLen));
 
             given().auth().preemptive()
                     .basic(Config.jiraUsername, Config.jiraPassword)
