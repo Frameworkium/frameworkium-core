@@ -1,22 +1,18 @@
 package com.frameworkium.core.ui.listeners;
 
 import com.frameworkium.core.ui.capture.ElementHighlighter;
+import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.tests.BaseTest;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.testng.*;
 
 /**
- * Assumes {@link com.frameworkium.core.ui.capture.ScreenshotCapture}.isRequired()
- * is true.
+ * Assumes {@link ScreenshotCapture}.isRequired() is true.
  */
 public class CaptureListener implements WebDriverEventListener, ITestListener {
-
-    private static final Logger logger = LogManager.getLogger(CaptureListener.class);
 
     private void takeScreenshotAndSend(Command command, WebDriver driver) {
         BaseTest.getCapture().takeAndSendScreenshot(command, driver, null);
@@ -37,7 +33,8 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private void sendFinalScreenshot(ITestResult result, String action) {
         // As this can be called from any test type, ensure this is a UI test
-        if (!(result.getInstance() instanceof BaseTest)) {
+        if (!(result.getInstance() instanceof BaseTest)
+                || !ScreenshotCapture.isRequired()) {
             return;
         }
         Throwable thrw = result.getThrowable();
