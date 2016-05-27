@@ -158,6 +158,17 @@
 
   <build/>
 
+  <reporting>
+    <excludeDefaults>true</excludeDefaults>
+    <plugins>
+      <plugin>
+        <groupId>ru.yandex.qatools.allure</groupId>
+        <artifactId>allure-maven-plugin</artifactId>
+        <version>2.5</version>
+      </plugin>
+    </plugins>
+  </reporting>
+
   <profiles>
     <profile>
       <id>com.frameworkium.core</id>
