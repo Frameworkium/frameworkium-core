@@ -5,14 +5,13 @@ import com.frameworkium.core.ui.driver.DriverType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.*;
-import ru.yandex.qatools.allure.annotations.Issue;
-import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.List;
 
 import static com.frameworkium.core.common.properties.Property.JIRA_URL;
 import static com.frameworkium.core.common.properties.Property.JQL_QUERY;
+import static com.frameworkium.core.ui.tests.BaseTest.getIssueOrTestCaseIdValue;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -38,40 +37,23 @@ public class MethodInterceptor implements IMethodInterceptor {
             List<IMethodInstance> methodsToBeFiltered) {
 
         if (JQL_QUERY.isSpecified() && JIRA_URL.isSpecified()) {
-            // gets list of tests to run from JIRA based on the JQL
-            logger.info("Overriding specified tests to run with JQL query results");
+            logger.info("Filtering specified tests to run with JQL query results");
 
-            Map<String, IMethodInstance> testMethods = new HashMap<>();
-            for (IMethodInstance iMethod : methodsToBeFiltered) {
-                Method method = iMethod.getMethod().getConstructorOrMethod().getMethod();
-                Issue issueAnnotation = method.getAnnotation(Issue.class);
-                if (null != issueAnnotation) {
-                    testMethods.put(issueAnnotation.value(), iMethod);
-                } else {
-                    TestCaseId testCaseIdAnnotation = method.getAnnotation(TestCaseId.class);
-                    if (null != testCaseIdAnnotation) {
-                        testMethods.put(testCaseIdAnnotation.value(), iMethod);
-                    }
-                }
-            }
+            List<IMethodInstance> methodsWithTestIDs = methodsToBeFiltered.stream()
+                    .filter(m -> getIssueOrTestCaseIdValue(m).isPresent())
+                    .collect(toList());
 
-            List<IMethodInstance> methodsToRun = new ArrayList<>();
-            List<String> issueKeysBasedOnJQL = new SearchIssues(JQL_QUERY.getValue()).getKeys();
-            for (String issueKey : issueKeysBasedOnJQL) {
-                IMethodInstance method = testMethods.get(issueKey);
-                if (null != method) {
-                    methodsToRun.add(method);
-                    logger.trace("Adding " + issueKey);
-                } else {
-                    logger.error("Key cannot find test for issueKey " + issueKey);
-                }
-            }
+            List<String> testIDsFromJQL =
+                    new SearchIssues(JQL_QUERY.getValue()).getKeys();
 
-            logger.debug("Running the following test methods:\n{}", () ->
-                    methodsToRun.stream()
-                            .map(m -> m.getMethod().getMethodName())
-                            .collect(joining(", ")));
-            logger.info("Running {} tests specified by JQL query...", methodsToRun.size());
+            List<IMethodInstance> methodsToRun = methodsWithTestIDs.stream()
+                    .filter(m -> testIDsFromJQL
+                            .contains(getIssueOrTestCaseIdValue(m)
+                                    .orElseThrow(IllegalStateException::new)))
+                    .collect(toList());
+
+            logTestMethodInformation(
+                    methodsToBeFiltered, methodsWithTestIDs, methodsToRun);
 
             return methodsToRun;
         } else {
@@ -80,7 +62,7 @@ public class MethodInterceptor implements IMethodInterceptor {
         }
     }
 
-    //TODO - make this non-UI specific!
+    // TODO - make this non-UI specific!
     private List<IMethodInstance> filterTestsToRunByDriverAndTestClassName(
             List<IMethodInstance> methods) {
 
@@ -102,4 +84,30 @@ public class MethodInterceptor implements IMethodInterceptor {
                 .collect(toList());
     }
 
+    private void logTestMethodInformation(
+            List<IMethodInstance> methodsPreFiltering,
+            List<IMethodInstance> methodsWithTestIDs,
+            List<IMethodInstance> methodsPostFiltering) {
+
+        logger.debug("Running the following test methods:\n{}", () ->
+                methodsPostFiltering.stream()
+                        .map(m -> getMethodFromIMethod(m).getName())
+                        .collect(joining("\n")));
+
+        List<String> methodsWithoutTestIds = methodsPreFiltering.stream()
+                .filter(m -> !methodsWithTestIDs.contains(m))
+                .map(m -> getMethodFromIMethod(m).getName())
+                .collect(toList());
+
+        if (methodsWithoutTestIds.size() > 0) {
+            logger.warn("The following tests don't have and TestIDs {}",
+                    () -> methodsWithoutTestIds.stream().collect(joining(", ")));
+        }
+
+        logger.info("Running {} tests specified by JQL query...", methodsPostFiltering.size());
+    }
+
+    private Method getMethodFromIMethod(IMethodInstance iMethod) {
+        return iMethod.getMethod().getConstructorOrMethod().getMethod();
+    }
 }

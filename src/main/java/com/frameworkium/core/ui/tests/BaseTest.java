@@ -12,13 +12,17 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.remote.SessionId;
+import org.testng.IMethodInstance;
 import org.testng.annotations.*;
 import ru.yandex.qatools.allure.annotations.Issue;
 import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.Optional;
 import java.util.concurrent.*;
+
+import static java.util.Objects.isNull;
 
 @Listeners({CaptureListener.class, ScreenshotListener.class,
         MethodInterceptor.class, SauceLabsListener.class,
@@ -91,12 +95,13 @@ public abstract class BaseTest
      */
     private static void initialiseNewScreenshotCapture(Method testMethod) {
         if (ScreenshotCapture.isRequired()) {
-            String testID = getIssueOrTestCaseIdAnnotation(testMethod);
-            if (testID.isEmpty()) {
+            Optional<String> testID = getIssueOrTestCaseIdValue(testMethod);
+            if (!testID.isPresent() || testID.get().isEmpty()) {
                 logger.warn("Method {} doesn't have a TestID annotation.", testMethod.getName());
-                testID = StringUtils.abbreviate(testMethod.getName(), 20);
+                testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));
             }
-            capture.set(new ScreenshotCapture(testID, getDriver()));
+            capture.set(new ScreenshotCapture(
+                    testID.orElse("n/a"), getDriver()));
         }
     }
 
@@ -117,31 +122,26 @@ public abstract class BaseTest
     }
 
     /**
-     * Throws {@link IllegalStateException} if {@link TestCaseId} and {@link Issue}
-     * are specified inconstantly.
-     *
      * @param method the method to check for test ID annotations.
-     * @return either the {@link TestCaseId} and {@link Issue} value if specified,
-     * otherwise will return an empty string
+     * @return Optional of the {@link TestCaseId} or {@link Issue} value.
+     * @throws IllegalStateException if {@link TestCaseId} and {@link Issue}
+     *                               are specified inconstantly.
      */
-    public static String getIssueOrTestCaseIdAnnotation(Method method) {
+    public static Optional<String> getIssueOrTestCaseIdValue(Method method) {
         TestCaseId tcIdAnnotation = method.getAnnotation(TestCaseId.class);
         Issue issueAnnotation = method.getAnnotation(Issue.class);
 
-        if (null != issueAnnotation && null != tcIdAnnotation) {
-            if (!issueAnnotation.value().equals(tcIdAnnotation.value())) {
-                throw new IllegalStateException(
-                        "TestCaseId and Issue annotation are both specified but " +
-                                "not equal for method: " + method.toString());
-            } else {
-                return issueAnnotation.value();
-            }
-        } else if (null != issueAnnotation) {
-            return issueAnnotation.value();
-        } else if (null != tcIdAnnotation) {
-            return tcIdAnnotation.value();
+        if (!isNull(issueAnnotation) && !isNull(tcIdAnnotation)
+                && !issueAnnotation.value().equals(tcIdAnnotation.value())) {
+            throw new IllegalStateException(
+                    "TestCaseId and Issue annotation are both specified but " +
+                            "not equal for method: " + method.toString());
+        } else if (!isNull(issueAnnotation)) {
+            return Optional.of(issueAnnotation.value());
+        } else if (!isNull(tcIdAnnotation)) {
+            return Optional.of(tcIdAnnotation.value());
         } else {
-            return StringUtils.EMPTY;
+            return Optional.empty();
         }
     }
 
@@ -152,6 +152,17 @@ public abstract class BaseTest
      */
     public static WebDriverWrapper getDriver() {
         return driverType.get().getDriver();
+    }
+
+    /**
+     * @param iMethod the {@link IMethodInstance} to check for test ID annotations.
+     * @return Optional of either the {@link TestCaseId} and {@link Issue} value.
+     * @throws IllegalStateException if {@link TestCaseId} and {@link Issue}
+     *                               are specified inconstantly.
+     */
+    public static Optional<String> getIssueOrTestCaseIdValue(IMethodInstance iMethod) {
+        Method method = iMethod.getMethod().getConstructorOrMethod().getMethod();
+        return getIssueOrTestCaseIdValue(method);
     }
 
     /** Loops through all active driver types and tears them down */
@@ -193,7 +204,7 @@ public abstract class BaseTest
     public String getSessionId() {
         WebDriverWrapper driver = getDriver();
         SessionId sessionId = driver.getWrappedRemoteWebDriver().getSessionId();
-        return (sessionId == null) ? null : sessionId.toString();
+        return isNull(sessionId) ? null : sessionId.toString();
     }
 
     /**

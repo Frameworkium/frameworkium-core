@@ -10,7 +10,7 @@ import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.testng.*;
 
 /**
- * Assumes {@link ScreenshotCapture}.isRequired() is true.
+ * Assumes {@link ScreenshotCapture}.isRequired() is true for WebDriver events.
  */
 public class CaptureListener implements WebDriverEventListener, ITestListener {
 
@@ -33,16 +33,16 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private void sendFinalScreenshot(ITestResult result, String action) {
         // As this can be called from any test type, ensure this is a UI test
-        if (!(result.getInstance() instanceof BaseTest)
-                || !ScreenshotCapture.isRequired()) {
-            return;
-        }
-        Throwable thrw = result.getThrowable();
-        if (null != thrw) {
-            takeScreenshotAndSend(action, BaseTest.getDriver(), thrw);
-        } else {
-            Command command = new Command(action, "n/a", "n/a");
-            takeScreenshotAndSend(command, BaseTest.getDriver());
+        // and capture is required
+        if ((result.getInstance() instanceof BaseTest)
+                && ScreenshotCapture.isRequired()) {
+            Throwable thrw = result.getThrowable();
+            if (null != thrw) {
+                takeScreenshotAndSend(action, BaseTest.getDriver(), thrw);
+            } else {
+                Command command = new Command(action, "n/a", "n/a");
+                takeScreenshotAndSend(command, BaseTest.getDriver());
+            }
         }
     }
 

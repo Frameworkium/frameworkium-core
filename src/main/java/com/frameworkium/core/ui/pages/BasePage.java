@@ -143,8 +143,7 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     private Stream<Class<? extends Annotation>> getAnnotationFromFieldStream(Field field) {
-        return Arrays.asList(Visible.class, Invisible.class, ForceVisible.class)
-                .stream()
+        return Stream.of(Visible.class, Invisible.class, ForceVisible.class)
                 .filter(field::isAnnotationPresent);
     }
 

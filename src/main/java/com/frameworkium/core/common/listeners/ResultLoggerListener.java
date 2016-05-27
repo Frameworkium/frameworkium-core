@@ -5,16 +5,17 @@ import com.frameworkium.core.common.reporting.jira.Config;
 import com.frameworkium.core.common.reporting.jira.api.Test;
 import com.frameworkium.core.common.reporting.jira.zapi.Execution;
 import com.frameworkium.core.common.reporting.spira.SpiraExecution;
+import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.tests.BaseTest;
 import com.google.common.base.Throwables;
-import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.*;
-import ru.yandex.qatools.allure.annotations.Issue;
-import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import java.lang.reflect.Method;
+
+import static com.frameworkium.core.common.properties.Property.CAPTURE_URL;
+import static java.util.Objects.isNull;
 
 public class ResultLoggerListener implements ITestListener {
 
@@ -233,7 +234,7 @@ public class ResultLoggerListener implements ITestListener {
      */
     private String getIssueOrTestCaseIdAnnotation(ITestResult result) {
         Method method = result.getMethod().getConstructorOrMethod().getMethod();
-        return BaseTest.getIssueOrTestCaseIdAnnotation(method);
+        return BaseTest.getIssueOrTestCaseIdValue(method).orElse("");
     }
 
     private String getOSInfo() {
@@ -258,24 +259,23 @@ public class ResultLoggerListener implements ITestListener {
                 .append("seconds")
                 .append(System.lineSeparator());
 
-        if (System.getenv("BUILD_URL") != null) {
+        if (!isNull(System.getenv("BUILD_URL"))) {
             comment.append("Jenkins build: ")
                     .append(System.getenv("BUILD_URL"))
                     .append(System.lineSeparator());
         }
-        //TODO - fix this!
-        //        if (CAPTURE_URL.isSpecified()) {
-        //            comment.append("Capture API: ");
-        //            comment.append(CAPTURE_URL.getValue());
-        //            comment.append(System.lineSeparator());
-        //        }
+        if (ScreenshotCapture.isRequired()) {
+            comment.append("Capture API: ")
+                    .append(CAPTURE_URL.getValue())
+                    .append(System.lineSeparator());
+        }
         comment.append("OS: ")
                 .append(getOSInfo())
                 .append(System.lineSeparator())
                 .append("UserAgent: ")
                 .append(BaseTest.userAgent);
 
-        if (result.getThrowable() != null) {
+        if (!isNull(result.getThrowable())) {
             comment.append(System.lineSeparator())
                     .append("Stacktrace: ")
                     .append(Throwables.getStackTraceAsString(result.getThrowable()));
