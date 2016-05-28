@@ -133,13 +133,10 @@ public abstract class DriverType {
         this.webDriverWrapper.quit();
     }
 
-    /** Reset the browser based on whether it's been reset before */
-    public boolean resetBrowser(final boolean requiresReset) {
-        if (requiresReset) {
-            tearDownDriver();
-            instantiate();
-        }
-        return true;
+    /** Reset the browser */
+    public void resetBrowser() {
+        tearDownDriver();
+        instantiate();
     }
 
     /**

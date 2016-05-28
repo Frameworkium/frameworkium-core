@@ -6,6 +6,7 @@ import com.frameworkium.integration.github.pages.web.SearchResultsPage;
 import com.frameworkium.integration.github.pages.web.HomePage;
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.Issue;
+import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -24,5 +25,11 @@ public class ComponentExampleTest extends BaseTest {
         // Search for "Selenium" and check SeleniumHQ/selenium is one of the returned repos.
         SearchResultsPage searchResultsPage = explorePage.with().theHeader().search("Selenium");
         assertThat(searchResultsPage.getRepoNames()).contains("SeleniumHQ/selenium");
+    }
+
+    @TestCaseId("Force Visible")
+    @Test(description = "force visible makes hidden element visible")
+    public void force_visible_makes_hidden_element_visible() {
+        HomePage.open().then().with().theHeader().testForceVisible();
     }
 }

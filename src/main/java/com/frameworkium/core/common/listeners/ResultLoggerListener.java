@@ -273,7 +273,7 @@ public class ResultLoggerListener implements ITestListener {
                 .append(getOSInfo())
                 .append(System.lineSeparator())
                 .append("UserAgent: ")
-                .append(BaseTest.userAgent);
+                .append(BaseTest.getUserAgent());
 
         if (!isNull(result.getThrowable())) {
             comment.append(System.lineSeparator())

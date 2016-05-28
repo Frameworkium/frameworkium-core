@@ -10,19 +10,19 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class DriverSetup {
 
-    private static final SupportedBrowsers DEFAULT_BROWSER = SupportedBrowsers.FIREFOX;
+    public static final SupportedBrowsers DEFAULT_BROWSER = SupportedBrowsers.FIREFOX;
 
-    /** List of supported drivers */
+    /** Supported drivers */
     public enum SupportedBrowsers {
         FIREFOX, CHROME, OPERA, IE, PHANTOMJS, SAFARI, ELECTRON
     }
 
-    /** List of supported remote grids */
+    /** Supported remote grids */
     private enum SupportedRemotes {
         SAUCE, BROWSERSTACK, GRID
     }
 
-    /** List of supported platforms on remote grids */
+    /** Supported platforms for remote grids */
     public enum SupportedPlatforms {
         WINDOWS, OSX, IOS, ANDROID, NONE
     }

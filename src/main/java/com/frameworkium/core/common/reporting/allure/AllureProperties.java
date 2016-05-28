@@ -73,8 +73,8 @@ public class AllureProperties {
         if (PLATFORM_VERSION.isSpecified()) {
             props.setProperty("Platform Version", PLATFORM_VERSION.getValue());
         }
-        if (BaseTest.userAgent != null) {
-            props.setProperty("UserAgent", BaseTest.userAgent);
+        if (BaseTest.getUserAgent().isPresent()) {
+            props.setProperty("UserAgent", BaseTest.getUserAgent().orElse(""));
         }
 
         return props;

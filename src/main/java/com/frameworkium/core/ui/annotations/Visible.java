@@ -9,4 +9,3 @@ import java.lang.annotation.*;
 public @interface Visible {
     String value() default StringUtils.EMPTY;
 }
-

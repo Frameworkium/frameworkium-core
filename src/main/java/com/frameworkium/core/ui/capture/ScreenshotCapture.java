@@ -6,25 +6,19 @@ import com.frameworkium.core.ui.capture.model.message.CreateExecution;
 import com.frameworkium.core.ui.capture.model.message.CreateScreenshot;
 import com.frameworkium.core.ui.driver.DriverSetup;
 import com.frameworkium.core.ui.driver.DriverType;
-import com.frameworkium.core.ui.driver.WebDriverWrapper;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
+import com.frameworkium.core.ui.tests.BaseTest;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.net.InetAddress;
-import java.net.URL;
-import java.net.UnknownHostException;
+import java.net.*;
 
-import static com.frameworkium.core.common.properties.Property.CAPTURE_URL;
-import static com.frameworkium.core.common.properties.Property.SUT_NAME;
-import static com.frameworkium.core.common.properties.Property.SUT_VERSION;
+import static com.frameworkium.core.common.properties.Property.*;
 import static com.frameworkium.core.ui.tests.BaseTest.executor;
 
 public class ScreenshotCapture {
@@ -36,15 +30,71 @@ public class ScreenshotCapture {
     private ScreenshotCapture() {
     }
 
-    public ScreenshotCapture(String testID, WebDriverWrapper driver) {
-        initExecution(testID, driver);
+    public ScreenshotCapture(String testID) {
+        initExecution(testID);
+    }
+
+    private void initExecution(String testID) {
+
+        String uri = CAPTURE_URL.getValue() + "/executions";
+
+        try {
+            logger.debug("About to initialise Capture execution.");
+            CreateExecution createExecution =
+                    new CreateExecution(testID, getNode());
+            executionID = RestAssured
+                    .given().contentType(ContentType.JSON)
+                    .body(createExecution)
+                    .post(uri)
+                    .then().statusCode(201)
+                    .extract().path("executionID").toString();
+            logger.debug("Capture executionID=" + executionID);
+        } catch (Throwable t) {
+            logger.error("Unable to create Capture execution.", t);
+        }
+    }
+
+    private String getNode() {
+
+        String node = "n/a";
+        if (DriverSetup.useRemoteDriver()) {
+            if (Sauce.isDesired()) {
+                node = "SauceLabs";
+            } else if (BrowserStack.isDesired()) {
+                node = "BrowserStack";
+            } else {
+                RemoteWebDriver remoteDriver = BaseTest.getDriver().getWrappedRemoteWebDriver();
+                try {
+                    URL gridURL = new URL(Property.GRID_URL.getValue());
+                    String testSessionURI = String.format(
+                            "%s://%s:%d/grid/api/testsession?session=%s",
+                            gridURL.getProtocol(),
+                            gridURL.getHost(),
+                            gridURL.getPort(),
+                            remoteDriver.getSessionId());
+
+                    node = RestAssured
+                            .post(testSessionURI).then()
+                            .extract().path("proxyId");
+                } catch (Throwable t) {
+                    logger.warn("Failed to get node address of remote web driver", t);
+                }
+            }
+        } else {
+            try {
+                node = InetAddress.getLocalHost().getCanonicalHostName();
+            } catch (UnknownHostException e) {
+                logger.warn("Failed to get local machine name", e);
+            }
+        }
+        return node;
     }
 
     public static boolean isRequired() {
         boolean allRequirePropertiesSpecified =
                 CAPTURE_URL.isSpecified() &&
-                SUT_NAME.isSpecified() &&
-                SUT_VERSION.isSpecified();
+                        SUT_NAME.isSpecified() &&
+                        SUT_VERSION.isSpecified();
 
         return allRequirePropertiesSpecified && !DriverType.isNative();
     }
@@ -62,14 +112,10 @@ public class ScreenshotCapture {
         );
     }
 
-    private String getBase64Screenshot(WebDriver driver) {
-        return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
-    }
-
     private void sendScreenshot(CreateScreenshot createScreenshotMessage) {
 
         if (executionID == null) {
-            logger.debug("Capture executionID is null.");
+            logger.debug("No Screenshot sent. Capture executionID is null.");
             return;
         }
 
@@ -90,55 +136,7 @@ public class ScreenshotCapture {
         });
     }
 
-    private void initExecution(String testID, WebDriverWrapper driver) {
-
-        String uri = CAPTURE_URL.getValue() + "/executions";
-
-        try {
-            logger.debug("About to initialise Capture execution.");
-            CreateExecution createExecution =
-                    new CreateExecution(testID, getNode(driver));
-            executionID = RestAssured
-                    .given().contentType(ContentType.JSON)
-                    .body(createExecution)
-                    .post(uri)
-                    .then().statusCode(201)
-                    .extract().path("executionID").toString();
-            logger.debug("Capture executionID=" + executionID);
-        } catch (Throwable t) {
-            logger.warn("Unable to create Capture execution.", t);
-        }
-    }
-
-    private String getNode(WebDriverWrapper driver) {
-
-        // TODO: can this be cached?
-        String node = "n/a";
-        if (DriverSetup.useRemoteDriver()) {
-            if (Sauce.isDesired()) {
-                node = "SauceLabs";
-            } else if (BrowserStack.isDesired()) {
-                node = "BrowserStack";
-            } else {
-                try {
-                    RemoteWebDriver remoteDriver = driver.getWrappedRemoteWebDriver();
-                    URL gridURL = new URL(Property.GRID_URL.getValue());
-                    String url =
-                            String.format("%s://%s:%d/grid/api/testsession?session=%s",
-                                    gridURL.getProtocol(), gridURL.getHost(),
-                                    gridURL.getPort(), remoteDriver.getSessionId());
-                    node = RestAssured.post(url).then().extract().path("proxyId");
-                } catch (Throwable t) {
-                    logger.warn("Failed to get node address of remote web driver", t);
-                }
-            }
-        } else {
-            try {
-                node = InetAddress.getLocalHost().getCanonicalHostName();
-            } catch (UnknownHostException e) {
-                logger.warn("Failed to get local machine name", e);
-            }
-        }
-        return node;
+    private String getBase64Screenshot(WebDriver driver) {
+        return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
     }
 }

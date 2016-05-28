@@ -2,16 +2,16 @@ package com.frameworkium.integration.github.pages.web.components;
 
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.PageFactory;
-import com.frameworkium.integration.github.pages.web.ExplorePage;
-import com.frameworkium.integration.github.pages.web.HomePage;
-import com.frameworkium.integration.github.pages.web.SearchResultsPage;
-import org.openqa.selenium.Keys;
+import com.frameworkium.core.ui.pages.Visibility;
+import com.frameworkium.core.ui.tests.BaseTest;
+import com.frameworkium.integration.github.pages.web.*;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Wait;
 import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
-import ru.yandex.qatools.htmlelements.element.HtmlElement;
-import ru.yandex.qatools.htmlelements.element.Link;
-import ru.yandex.qatools.htmlelements.element.TextInput;
+import ru.yandex.qatools.htmlelements.element.*;
 
 @Name("Github Header")
 @FindBy(css = "header")
@@ -48,5 +48,18 @@ public class HeaderComponent extends HtmlElement {
         searchBox.sendKeys(searchText);
         searchBox.sendKeys(Keys.ENTER);
         return PageFactory.newInstance(SearchResultsPage.class);
+    }
+
+    @Step("Testing Visibility.forceVisible()")
+    public void testForceVisible() {
+        Wait<WebDriver> wait = BaseTest.newDefaultWait();
+
+        WebElement link = homeLink.getWrappedElement();
+        // hide the home link
+        BaseTest.getDriver().executeScript("arguments[0].style.visibility='hidden';", link);
+        wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOf(link)));
+        // test force visible works
+        Visibility.forceVisible(link);
+        wait.until(ExpectedConditions.visibilityOf(link));
     }
 }

@@ -1,10 +1,13 @@
 package com.frameworkium.core.ui.capture.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.frameworkium.core.ui.driver.DriverSetup;
 import com.frameworkium.core.ui.tests.BaseTest;
 import net.sf.uadetector.ReadableUserAgent;
 import net.sf.uadetector.UserAgentStringParser;
 import net.sf.uadetector.service.UADetectorServiceFactory;
+
+import java.util.Optional;
 
 import static com.frameworkium.core.common.properties.Property.*;
 
@@ -19,10 +22,12 @@ public class Browser {
 
     public Browser() {
 
-        if (!BaseTest.userAgent.isEmpty()) {
-            // Get an UserAgentStringParser and analyze the requesting client
-            UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
-            ReadableUserAgent agent = parser.parse(BaseTest.userAgent);
+        Optional<String> userAgent = BaseTest.getUserAgent();
+        if (userAgent.isPresent() && !userAgent.get().isEmpty()) {
+            // Try to parse the UA
+
+            UserAgentStringParser uaParser = UADetectorServiceFactory.getResourceModuleParser();
+            ReadableUserAgent agent = uaParser.parse(userAgent.get());
 
             // Set the params based on this agent
             this.name = agent.getName();
@@ -32,9 +37,11 @@ public class Browser {
             this.platformVersion = agent.getOperatingSystem().getVersionNumber().toVersionString();
 
         } else {
-
+            // Fall-back to the Property class
             if (BROWSER.isSpecified()) {
                 this.name = BROWSER.getValue().toLowerCase();
+            } else {
+                this.name = DriverSetup.DEFAULT_BROWSER.toString();
             }
             if (BROWSER_VERSION.isSpecified()) {
                 this.version = BROWSER_VERSION.getValue();

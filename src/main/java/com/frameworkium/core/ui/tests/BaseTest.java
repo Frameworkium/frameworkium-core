@@ -2,6 +2,7 @@ package com.frameworkium.core.ui.tests;
 
 import com.frameworkium.core.common.listeners.*;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
+import com.frameworkium.core.common.reporting.allure.AllureProperties;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.driver.*;
 import com.frameworkium.core.ui.listeners.*;
@@ -11,7 +12,11 @@ import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.testng.IMethodInstance;
 import org.testng.annotations.*;
 import ru.yandex.qatools.allure.annotations.Issue;
@@ -31,11 +36,14 @@ public abstract class BaseTest
         implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
     public static final ExecutorService executor = Executors.newSingleThreadExecutor();
-    public static String userAgent;
+    private static final long DEFAULT_TIMEOUT_SECONDS = 10;
+
+    private static String userAgent;
 
     private static ThreadLocal<Boolean> requiresReset;
     private static ThreadLocal<ScreenshotCapture> capture;
     private static ThreadLocal<DriverType> driverType;
+    private static ThreadLocal<Wait<WebDriver>> wait;
     private static List<DriverType> activeDriverTypes =
             Collections.synchronizedList(new ArrayList<>());
     private static Logger logger = LogManager.getLogger(BaseTest.class);
@@ -55,8 +63,29 @@ public abstract class BaseTest
             activeDriverTypes.add(driverType);
             return driverType;
         });
+        wait = ThreadLocal.withInitial(BaseTest::newDefaultWait);
         requiresReset = ThreadLocal.withInitial(() -> Boolean.FALSE);
         capture = ThreadLocal.withInitial(() -> null);
+    }
+
+    public static Wait<WebDriver> newDefaultWait() {
+        return newWaitWithTimeout(DEFAULT_TIMEOUT_SECONDS);
+    }
+
+    public static Wait<WebDriver> newWaitWithTimeout(long timeout) {
+        return new FluentWait<>(getDriver().getWrappedDriver())
+                .withTimeout(timeout, TimeUnit.SECONDS)
+                .ignoring(org.openqa.selenium.NoSuchElementException.class)
+                .ignoring(StaleElementReferenceException.class);
+    }
+
+    /**
+     * Returns the {@link WebDriverWrapper} instance for the requesting thread
+     *
+     * @return - WebDriver object
+     */
+    public static WebDriverWrapper getDriver() {
+        return driverType.get().getDriver();
     }
 
     /**
@@ -79,13 +108,22 @@ public abstract class BaseTest
         }
     }
 
-    /**
-     * Ran as part of the initialiseDriverObject, configures parts of the driver
-     */
     private static void configureDriverBasedOnParams() {
-        requiresReset.set(driverType.get().resetBrowser(requiresReset.get()));
+        if (requiresReset.get()) {
+            driverType.get().resetBrowser();
+        } else {
+            requiresReset.set(true);
+        }
         driverType.get().maximiseBrowserWindow();
         userAgent = determineUserAgent();
+    }
+
+    private static String determineUserAgent() {
+        try {
+            return (String) getDriver().executeScript("return navigator.userAgent;");
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -97,28 +135,11 @@ public abstract class BaseTest
         if (ScreenshotCapture.isRequired()) {
             Optional<String> testID = getIssueOrTestCaseIdValue(testMethod);
             if (!testID.isPresent() || testID.get().isEmpty()) {
-                logger.warn("Method {} doesn't have a TestID annotation.", testMethod.getName());
+                logger.warn("{} doesn't have a TestID annotation.", testMethod.getName());
                 testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));
             }
-            capture.set(new ScreenshotCapture(
-                    testID.orElse("n/a"), getDriver()));
+            capture.set(new ScreenshotCapture(testID.orElse("n/a")));
         }
-    }
-
-    /**
-     * Attempts to retrieve the user agent from the browser
-     *
-     * @return - The user agent or error message
-     */
-    private static String determineUserAgent() {
-        String ua;
-        try {
-            ua = (String) getDriver().executeScript("return navigator.userAgent;");
-        } catch (Exception e) {
-            ua = "Unable to fetch UserAgent";
-        }
-        logger.debug("User agent is: '" + ua + "'");
-        return ua;
     }
 
     /**
@@ -143,15 +164,6 @@ public abstract class BaseTest
         } else {
             return Optional.empty();
         }
-    }
-
-    /**
-     * Returns the {@link WebDriverWrapper} instance for the requesting thread
-     *
-     * @return - WebDriver object
-     */
-    public static WebDriverWrapper getDriver() {
-        return driverType.get().getDriver();
     }
 
     /**
@@ -191,24 +203,33 @@ public abstract class BaseTest
     /** Creates the allure properties for the report, after the test run */
     @AfterSuite(alwaysRun = true)
     public static void createAllureProperties() {
-        com.frameworkium.core.common.reporting.allure.AllureProperties.create();
+        AllureProperties.create();
     }
 
-    /** @return - Screenshot capture object for the current test */
+    /** @return the {@link ScreenshotCapture} object for the current test */
     public static ScreenshotCapture getCapture() {
         return capture.get();
     }
 
+    /** @return The default {@link Wait} */
+    public static Wait<WebDriver> getWait() {
+        return wait.get();
+    }
+
+    /** @return Optional of the current browser user agent */
+    public static Optional<String> getUserAgent() {
+        return Optional.ofNullable(userAgent);
+    }
+
     /** @return the Job id for the current thread */
-    @Override
     public String getSessionId() {
-        WebDriverWrapper driver = getDriver();
-        SessionId sessionId = driver.getWrappedRemoteWebDriver().getSessionId();
+        SessionId sessionId = getDriver().getWrappedRemoteWebDriver().getSessionId();
         return isNull(sessionId) ? null : sessionId.toString();
     }
 
     /**
-     * @return the {@link SauceOnDemandAuthentication} instance containing the Sauce username/access key
+     * @return the {@link SauceOnDemandAuthentication} instance containing
+     * the Sauce username/access key
      */
     @Override
     public SauceOnDemandAuthentication getAuthentication() {
@@ -229,5 +250,4 @@ public abstract class BaseTest
     public void __stepFinish() {
         AllureLogger.__stepFinish();
     }
-
 }
