@@ -14,19 +14,19 @@ import java.net.URL;
 import static com.frameworkium.core.common.properties.Property.BROWSER_VERSION;
 import static com.frameworkium.core.common.properties.Property.DEVICE;
 import static com.frameworkium.core.common.properties.Property.PLATFORM_VERSION;
-import static com.frameworkium.core.ui.driver.DriverSetup.SupportedPlatforms;
+import static com.frameworkium.core.ui.driver.DriverSetup.Platform;
 
 public class SauceImpl extends DriverType {
 
-    private static URL remoteURL;
-    private static SupportedPlatforms supportedPlatforms;
-    private static DesiredCapabilities desiredCapabilities;
+    private URL remoteURL;
+    private Platform platform;
+    private DesiredCapabilities desiredCapabilities;
 
-    public SauceImpl(SupportedPlatforms platform, DesiredCapabilities browserDesiredCapabilities) {
-        supportedPlatforms = platform;
-        desiredCapabilities = browserDesiredCapabilities;
+    public SauceImpl(Platform platform, DesiredCapabilities desiredCapabilities) {
+        this.platform = platform;
+        this.desiredCapabilities = desiredCapabilities;
         try {
-            remoteURL = Sauce.getURL();
+            this.remoteURL = Sauce.getURL();
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
@@ -49,7 +49,7 @@ public class SauceImpl extends DriverType {
     }
 
     private void setCapabilitiesBasedOnPlatform() {
-        switch (supportedPlatforms) {
+        switch (platform) {
             case WINDOWS:
                 if (PLATFORM_VERSION.isSpecified()) {
                     desiredCapabilities.setCapability(
@@ -105,7 +105,7 @@ public class SauceImpl extends DriverType {
                 "app", "sauce-storage:" + new File(Property.APP_PATH.getValue()).getName());
         desiredCapabilities.setCapability("appiumVersion", "1.4.10");
         desiredCapabilities.setCapability("deviceOrientation", "portrait");
-        switch (supportedPlatforms) {
+        switch (platform) {
             case IOS:
                 desiredCapabilities = DesiredCapabilities.iphone();
                 if (DEVICE.isSpecified()) {

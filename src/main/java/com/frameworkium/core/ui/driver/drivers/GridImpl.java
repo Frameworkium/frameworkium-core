@@ -9,26 +9,30 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static com.frameworkium.core.common.properties.Property.BROWSER_VERSION;
+import static com.frameworkium.core.common.properties.Property.PLATFORM;
+import static com.frameworkium.core.common.properties.Property.PLATFORM_VERSION;
+
 public class GridImpl extends DriverType {
 
-    private static URL remoteURL;
-    private static DesiredCapabilities desiredCapabilities;
+    private URL remoteURL;
+    private DesiredCapabilities desiredCapabilities;
 
-    public GridImpl(DesiredCapabilities browserDesiredCapabilities) {
-        desiredCapabilities = browserDesiredCapabilities;
+    public GridImpl(DesiredCapabilities desiredCapabilities) {
+        this.desiredCapabilities = desiredCapabilities;
         try {
-            remoteURL = new URL(Property.GRID_URL.getValue());
+            this.remoteURL = new URL(Property.GRID_URL.getValue());
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public DesiredCapabilities getDesiredCapabilities() {
-        if (Property.BROWSER_VERSION.isSpecified()) {
-            desiredCapabilities.setCapability("version", Property.BROWSER_VERSION.getValue());
+        if (BROWSER_VERSION.isSpecified()) {
+            desiredCapabilities.setCapability("version", BROWSER_VERSION.getValue());
         }
-        if (Property.PLATFORM.isSpecified()) {
-            desiredCapabilities.setCapability("platform", Property.PLATFORM_VERSION.getValue());
+        if (PLATFORM.isSpecified()) {
+            desiredCapabilities.setCapability("platform", PLATFORM_VERSION.getValue());
         }
         return desiredCapabilities;
     }

@@ -25,7 +25,6 @@ public class Browser {
         Optional<String> userAgent = BaseTest.getUserAgent();
         if (userAgent.isPresent() && !userAgent.get().isEmpty()) {
             // Try to parse the UA
-
             UserAgentStringParser uaParser = UADetectorServiceFactory.getResourceModuleParser();
             ReadableUserAgent agent = uaParser.parse(userAgent.get());
 

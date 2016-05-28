@@ -5,6 +5,6 @@
    -->
   <weaver options="">
     <include within="ru.yandex.qatools.allure.*"/>
-    <include within="com.frameworkium.integration.*"/>
+    <include within="com.frameworkium..*"/>
   </weaver>
 </aspectj>

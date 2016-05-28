@@ -10,20 +10,20 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class DriverSetup {
 
-    public static final SupportedBrowsers DEFAULT_BROWSER = SupportedBrowsers.FIREFOX;
+    public static final Browser DEFAULT_BROWSER = Browser.FIREFOX;
 
     /** Supported drivers */
-    public enum SupportedBrowsers {
+    public enum Browser {
         FIREFOX, CHROME, OPERA, IE, PHANTOMJS, SAFARI, ELECTRON
     }
 
     /** Supported remote grids */
-    private enum SupportedRemotes {
+    private enum RemoteGrid {
         SAUCE, BROWSERSTACK, GRID
     }
 
     /** Supported platforms for remote grids */
-    public enum SupportedPlatforms {
+    public enum Platform {
         WINDOWS, OSX, IOS, ANDROID, NONE
     }
 
@@ -32,10 +32,11 @@ public class DriverSetup {
     /**
      * Returns the driver type to the base test, which initialises it
      *
-     * @return - Driver Type
+     * @return - A {@link DriverType} Implementation
      */
     public DriverType returnDesiredDriverType() {
-        return initialiseDesiredDriverType();
+        DriverType browserDriver = returnBrowserObject(returnBrowserType());
+        return initialiseDesiredDriverType(browserDriver);
     }
 
     /**
@@ -43,29 +44,27 @@ public class DriverSetup {
      *
      * @return - The correct driver type based on parameters
      */
-    private DriverType initialiseDesiredDriverType() {
-        DriverType browserDriver = returnBrowserObject(returnBrowserType());
-        return initialiseDesiredDriverType(browserDriver);
-    }
-
-    private DriverType initialiseDesiredDriverType(DriverType dt) {
-        DesiredCapabilities browserDesiredCapabilities = dt.getDesiredCapabilities();
+    private DriverType initialiseDesiredDriverType(DriverType driverType) {
         if (useRemoteDriver()) {
-            SupportedPlatforms platform = getPlatformType();
+            DesiredCapabilities desiredCapabilities = driverType.getDesiredCapabilities();
+            Platform platform = getPlatformType();
             switch (returnRemoteType()) {
                 case SAUCE:
-                    return new SauceImpl(platform, browserDesiredCapabilities);
+                    return new SauceImpl(platform, desiredCapabilities);
                 case BROWSERSTACK:
-                    return new BrowserStackImpl(platform, browserDesiredCapabilities);
+                    return new BrowserStackImpl(platform, desiredCapabilities);
                 case GRID:
-                    return new GridImpl(browserDesiredCapabilities);
+                    return new GridImpl(desiredCapabilities);
+                default:
+                    return driverType;
             }
+        } else {
+            return driverType;
         }
-        return dt;
     }
 
-    private DriverType returnBrowserObject(SupportedBrowsers browsers) {
-        switch (browsers) {
+    private DriverType returnBrowserObject(Browser browser) {
+        switch (browser) {
             case FIREFOX:
                 return new FirefoxImpl();
             case CHROME:
@@ -100,11 +99,11 @@ public class DriverSetup {
      *
      * @return - Platform type
      */
-    private static SupportedPlatforms getPlatformType() {
+    private static Platform getPlatformType() {
         if (Property.PLATFORM.isSpecified()) {
-            return SupportedPlatforms.valueOf(Property.PLATFORM.getValue().toUpperCase());
+            return Platform.valueOf(Property.PLATFORM.getValue().toUpperCase());
         } else {
-            return SupportedPlatforms.NONE;
+            return Platform.NONE;
         }
     }
 
@@ -113,11 +112,11 @@ public class DriverSetup {
      *
      * @return - Browser Type
      */
-    private static SupportedBrowsers returnBrowserType() {
+    private static Browser returnBrowserType() {
         if (!Property.BROWSER.isSpecified()) {
             return DEFAULT_BROWSER;
         } else {
-            return SupportedBrowsers.valueOf(Property.BROWSER.getValue().toUpperCase());
+            return Browser.valueOf(Property.BROWSER.getValue().toUpperCase());
         }
     }
 
@@ -126,13 +125,13 @@ public class DriverSetup {
      *
      * @return - Remote Driver Type
      */
-    private static SupportedRemotes returnRemoteType() {
+    private static RemoteGrid returnRemoteType() {
         if (Sauce.isDesired()) {
-            return SupportedRemotes.SAUCE;
+            return RemoteGrid.SAUCE;
         } else if (BrowserStack.isDesired()) {
-            return SupportedRemotes.BROWSERSTACK;
+            return RemoteGrid.BROWSERSTACK;
         } else {
-            return SupportedRemotes.GRID;
+            return RemoteGrid.GRID;
         }
     }
 }

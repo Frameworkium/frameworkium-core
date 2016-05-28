@@ -33,7 +33,7 @@ public abstract class DriverType {
             caps.setCapability(CapabilityType.PROXY, currentProxy);
         }
 
-        logger.info("Caps: " + caps);
+        logger.debug("Browser Capability: " + caps);
 
         WebDriverWrapper eventFiringWD = new WebDriverWrapper(getWebDriverObject(caps));
         eventFiringWD.register(new EventListener());

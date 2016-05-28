@@ -1,6 +1,5 @@
 package com.frameworkium.core.ui.driver.drivers;
 
-import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.driver.DriverType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -11,6 +10,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.frameworkium.core.common.properties.Property.APP_PATH;
+
 public class ElectronImpl extends DriverType {
 
     private static URL remoteURL;
@@ -19,17 +20,18 @@ public class ElectronImpl extends DriverType {
         try {
             remoteURL = new URL("http://localhost:9515");
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public DesiredCapabilities getDesiredCapabilities() {
         Map<String, String> chromeOptions = new HashMap<>();
-        if (!Property.APP_PATH.isSpecified()) {
-            logger.error("App path must be specified when using Electron!");
+        if (!APP_PATH.isSpecified()) {
+            throw new IllegalStateException(
+                    "App path must be specified when using Electron!");
         } else {
-            chromeOptions.put("binary", Property.APP_PATH.getValue());
+            chromeOptions.put("binary", APP_PATH.getValue());
         }
         DesiredCapabilities desiredCapabilities = DesiredCapabilities.chrome();
         desiredCapabilities.setCapability("browserName", "chrome");

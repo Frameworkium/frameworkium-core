@@ -36,6 +36,7 @@ public abstract class BaseTest
         implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
     public static final ExecutorService executor = Executors.newSingleThreadExecutor();
+
     private static final long DEFAULT_TIMEOUT_SECONDS = 10;
 
     private static String userAgent;
@@ -50,9 +51,10 @@ public abstract class BaseTest
 
     /**
      * Method which runs first upon running a test, it will do the following:
-     * - Retrieve the desired driver type and initialise the driver
+     * - Retrieve the desired {@link DriverType} and initialise the {@link WebDriver}
+     * - Initialise the {@link Wait}
      * - Initialise whether the browser needs resetting
-     * - Initialise the screenshot capture
+     * - Initialise the {@link ScreenshotCapture}
      */
     @BeforeSuite(alwaysRun = true)
     public static void instantiateDriverObject() {

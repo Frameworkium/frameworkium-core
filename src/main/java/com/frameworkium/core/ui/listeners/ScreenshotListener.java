@@ -1,7 +1,7 @@
 package com.frameworkium.core.ui.listeners;
 
-import com.frameworkium.core.common.properties.Property;
-import com.frameworkium.core.ui.driver.DriverSetup.SupportedBrowsers;
+import com.frameworkium.core.ui.capture.ScreenshotCapture;
+import com.frameworkium.core.ui.driver.DriverSetup.Browser;
 import com.frameworkium.core.ui.driver.WebDriverWrapper;
 import com.frameworkium.core.ui.tests.BaseTest;
 import org.apache.logging.log4j.LogManager;
@@ -15,49 +15,29 @@ import ru.yandex.qatools.allure.annotations.Attachment;
 import java.io.*;
 
 import static com.frameworkium.core.common.properties.Property.BROWSER;
-import static com.frameworkium.core.ui.driver.DriverSetup.SupportedBrowsers.ELECTRON;
+import static com.frameworkium.core.ui.driver.DriverSetup.Browser.ELECTRON;
 
 public class ScreenshotListener extends TestListenerAdapter {
 
     private static Logger logger = LogManager.getLogger(ScreenshotListener.class);
 
-    private boolean createFile(File screenshot) {
-        boolean fileCreated = false;
-
-        if (screenshot.exists()) {
-            fileCreated = true;
-        } else {
-            File parentDirectory = new File(screenshot.getParent());
-            if (parentDirectory.exists() || parentDirectory.mkdirs()) {
-                try {
-                    fileCreated = screenshot.createNewFile();
-                } catch (IOException e) {
-                    logger.error("Error creating screenshot", e);
-                }
-            }
+    @Override
+    public void onTestFailure(ITestResult failingTest) {
+        if (isScreenshotSupported()) {
+            takeScreenshot(failingTest.getName());
         }
-
-        return fileCreated;
     }
 
-    @Attachment(value = "Screenshot on failure", type = "image/png")
-    private byte[] writeScreenshotToFile(WebDriver driver, File screenshot) {
-        try {
-            FileOutputStream screenshotStream = new FileOutputStream(screenshot);
-            byte[] bytes = ((TakesScreenshot) driver)
-                    .getScreenshotAs(OutputType.BYTES);
-            screenshotStream.write(bytes);
-            screenshotStream.close();
-            return bytes;
-        } catch (IOException e) {
-            logger.error("Unable to write " + screenshot.getAbsolutePath(), e);
+    @Override
+    public void onTestSkipped(ITestResult skippedTest) {
+        if (isScreenshotSupported()) {
+            takeScreenshot(skippedTest.getName());
         }
-        return null;
     }
 
     private void takeScreenshot(String testName) {
         // Take a local screenshot if capture is not enabled
-        if (!Property.CAPTURE_URL.isSpecified()) {
+        if (!ScreenshotCapture.isRequired()) {
             try {
                 String screenshotDirectory = System.getProperty("screenshotDirectory");
                 if (null == screenshotDirectory) {
@@ -83,27 +63,41 @@ public class ScreenshotListener extends TestListenerAdapter {
         }
     }
 
-    /**
-     * Are screenshots supported by the browser type being used
-     *
-     * @return boolean - true/false to whether screenshots are supported
-     */
+    private boolean createFile(File screenshotFile) {
+        boolean fileCreated = false;
+
+        if (!screenshotFile.exists()) {
+            File parentDirectory = new File(screenshotFile.getParent());
+            if (parentDirectory.exists() || parentDirectory.mkdirs()) {
+                try {
+                    fileCreated = screenshotFile.createNewFile();
+                } catch (IOException e) {
+                    logger.error("Error creating screenshot", e);
+                }
+            }
+        }
+
+        return fileCreated;
+    }
+
+    @Attachment(value = "Screenshot on failure", type = "image/png")
+    private byte[] writeScreenshotToFile(WebDriver driver, File screenshot) {
+        try (FileOutputStream screenshotStream = new FileOutputStream(screenshot)) {
+            byte[] bytes = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+            screenshotStream.write(bytes);
+            screenshotStream.close();
+            return bytes;
+        } catch (IOException e) {
+            logger.error("Unable to write " + screenshot.getAbsolutePath(), e);
+        }
+        return null;
+    }
+
     private boolean isScreenshotSupported() {
-        return BROWSER.isSpecified()
-                && !SupportedBrowsers.valueOf(BROWSER.getValue().toUpperCase()).equals(ELECTRON);
-    }
+        boolean defaultBrowser = !BROWSER.isSpecified();
+        boolean isElectron = BROWSER.isSpecified()
+                && ELECTRON.equals(Browser.valueOf(BROWSER.getValue().toUpperCase()));
 
-    @Override
-    public void onTestFailure(ITestResult failingTest) {
-        if (isScreenshotSupported()) {
-            takeScreenshot(failingTest.getName());
-        }
-    }
-
-    @Override
-    public void onTestSkipped(ITestResult skippedTest) {
-        if (isScreenshotSupported()) {
-            takeScreenshot(skippedTest.getName());
-        }
+        return defaultBrowser || !isElectron;
     }
 }

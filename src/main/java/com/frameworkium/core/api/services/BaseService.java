@@ -51,7 +51,7 @@ public abstract class BaseService<T extends BaseService<T>> {
 
         Response resp;
 
-        logger.info("Making request: {} {}", httpVerb.toString(), url);
+        logger.debug("Making request: {} {}", httpVerb.toString(), url);
 //        requestSpec = requestSpec.log().all();
 
         switch (httpVerb) {

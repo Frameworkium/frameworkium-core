@@ -10,19 +10,18 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static com.frameworkium.core.ui.driver.DriverSetup.SupportedPlatforms;
+import static com.frameworkium.core.ui.driver.DriverSetup.Platform;
 
 public class BrowserStackImpl extends DriverType {
 
-    private static URL remoteURL;
-    private static SupportedPlatforms supportedPlatform;
-    private static DesiredCapabilities desiredCapabilities;
+    private URL remoteURL;
+    private Platform platform;
+    private DesiredCapabilities desiredCapabilities;
 
     public BrowserStackImpl(
-            SupportedPlatforms platform,
-            DesiredCapabilities browserDesiredCapabilities) {
+            Platform platform, DesiredCapabilities browserDesiredCapabilities) {
 
-        supportedPlatform = platform;
+        this.platform = platform;
         desiredCapabilities = browserDesiredCapabilities;
         try {
             remoteURL = BrowserStack.getURL();
@@ -42,7 +41,7 @@ public class BrowserStackImpl extends DriverType {
     }
 
     private void setCapabilitiesBasedOnPlatform() {
-        switch (supportedPlatform) {
+        switch (platform) {
             case WINDOWS:
                 desiredCapabilities.setCapability("os", "Windows");
                 setDesktopCapability();
