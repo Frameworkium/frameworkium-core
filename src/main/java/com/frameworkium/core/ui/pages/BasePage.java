@@ -102,11 +102,6 @@ public abstract class BasePage<T extends BasePage<T>> {
         }
     }
 
-    /**
-     * Executes a javascript snippet to determine whether a page uses AngularJS
-     *
-     * @return boolean - AngularJS true/false
-     */
     private boolean isPageAngularJS() {
         try {
             return executeJS("return typeof angular;").equals("object");
@@ -119,7 +114,8 @@ public abstract class BasePage<T extends BasePage<T>> {
 
     /**
      * @param javascript the Javascript to execute on the current page
-     * @return Returns an Object returned by the Javascript provided
+     * @return One of Boolean, Long, String, List or WebElement. Or null.
+     * @see JavascriptExecutor#executeScript(String, Object...)
      */
     protected Object executeJS(String javascript) {
         Object returnObj = null;
@@ -149,10 +145,17 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
-     * Method which executes an async JS call
+     * Execute an asynchronous piece of JavaScript in the context of the
+     * currently selected frame or window. Unlike executing synchronous
+     * JavaScript, scripts executed with this method must explicitly signal they
+     * are finished by invoking the provided callback. This callback is always
+     * injected into the executed function as the last argument.
+     * <p>
+     * If executeAsyncScript throws an Exception it's caught and logged
      *
      * @param javascript the JavaScript code to execute
-     * @return the object returned from the executed JavaScript
+     * @return One of Boolean, Long, String, List, WebElement, or null.
+     * @see JavascriptExecutor#executeAsyncScript(String, Object...)
      */
     protected Object executeAsyncJS(String javascript) {
         Object returnObj = null;
@@ -160,7 +163,7 @@ public abstract class BasePage<T extends BasePage<T>> {
             JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
             returnObj = jsExecutor.executeAsyncScript(javascript);
         } catch (Exception e) {
-            logger.error("Async javascript execution failed! Please investigate the issue.");
+            logger.error("Async javascript execution failed!", e);
             logger.debug("Failed Javascript:" + javascript);
         }
         return returnObj;

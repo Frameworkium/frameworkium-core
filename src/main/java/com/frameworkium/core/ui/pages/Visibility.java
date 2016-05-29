@@ -7,8 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.*;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 
@@ -25,7 +24,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllE
 import static ru.yandex.qatools.htmlelements.utils.HtmlElementUtils.*;
 
 /**
- * All things Frameworkium related to dealing with Element visibility.
+ * All things Frameworkium-related dealing with PageObject element visibility.
  */
 public final class Visibility {
 
@@ -97,15 +96,15 @@ public final class Visibility {
 
         // lists
         if (isHtmlElementList(field)) {
-            listFun.accept(
-                    ((List<HtmlElement>) obj).stream()
-                            .map(HtmlElement::getWrappedElement)
-                            .collect(toList()));
+            List<WebElement> webElements = ((List<HtmlElement>) obj).stream()
+                    .map(HtmlElement::getWrappedElement)
+                    .collect(toList());
+            listFun.accept(webElements);
         } else if (isTypifiedElementList(field)) {
-            listFun.accept(
-                    ((List<TypifiedElement>) obj).stream()
-                            .map(TypifiedElement::getWrappedElement)
-                            .collect(toList()));
+            List<WebElement> webElements = ((List<TypifiedElement>) obj).stream()
+                    .map(TypifiedElement::getWrappedElement)
+                    .collect(toList());
+            listFun.accept(webElements);
         } else if (isWebElementList(field)) {
             listFun.accept((List<WebElement>) obj);
             // single elements
@@ -124,13 +123,14 @@ public final class Visibility {
 
     /**
      * Custom wait which fills the gap left by Selenium whereby
-     * <code>not(visibilityOf(webElement))</code> will fail if the element is
-     * not present, but <code>invisibilityOfElementLocated(locator)</code> waits
-     * for either not visibility or not presence.
+     * <code>not({@link ExpectedConditions#visibilityOf(WebElement)})</code>
+     * will fail if the element is not present, but
+     * {@link ExpectedConditions#invisibilityOfElementLocated(By)}
+     * waits for either not visibility or not present.
      *
      * @param element the element to wait for
-     * @return an {@link ExpectedCondition} which returns false iff the element
-     * is visible otherwise false.
+     * @return an {@link ExpectedCondition} which returns <strong>false</strong>
+     * iff the element is visible, otherwise <strong>true</strong>.
      */
     public static ExpectedCondition<Boolean> notPresentOrInvisibilityOfElement(
             WebElement element) {
@@ -145,15 +145,18 @@ public final class Visibility {
     }
 
     /**
-     * Overloaded method for {@link List} of {@link WebElement}s.
+     * Overloaded {@link Visibility#notPresentOrInvisibilityOfElement(WebElement)}
+     * for {@link List} of {@link WebElement}s.
      *
      * @param elements the list of {@link WebElement}s to wait for
-     * @return an {@link ExpectedCondition} which returns false iff the elements
-     * are visible otherwise false.
+     * @return an {@link ExpectedCondition} which returns <strong>false</strong>
+     * iff any element is visible, otherwise <strong>true</strong>.
+     * @see Visibility#notPresentOrInvisibilityOfElement(WebElement)
      */
     public static ExpectedCondition<Boolean> notPresentOrInvisibilityOfElement(
             List<WebElement> elements) {
-        return (d) -> {
+
+        return (driver) -> {
             boolean listIsEmpty = elements.size() == 0;
             boolean atLeastOneElementIsDisplayed =
                     elements.stream()
@@ -165,7 +168,8 @@ public final class Visibility {
     }
 
     /**
-     * Same as waitForFieldToBeVisible but forces visibility before waiting
+     * Calls {@link Visibility#forceVisible(WebElement)} after calling
+     * {@link Visibility#waitForFieldToBeVisible(Object, Field)}.
      */
     private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field) {
 
@@ -173,7 +177,7 @@ public final class Visibility {
                 field,
                 getObjectFromField(pageObject, field),
                 Visibility::forceVisible,
-                Visibility::forceVisible);
+                list -> list.forEach(Visibility::forceVisible));
 
         waitForFieldToBeVisible(pageObject, field);
     }
@@ -232,6 +236,15 @@ public final class Visibility {
         annotationToFunction.get(annotationClass).accept(pageObject, field);
     }
 
+    /**
+     * Executes JavaScript in an attempt to make the element visible
+     * e.g. for elements which are occluded but are required for interaction.
+     * <p>
+     * To apply this to a list of WebElements, try the following:
+     * <code>elements.forEach(Visibility::forceVisible)</code>
+     *
+     * @param element the {@link WebElement} to make visible
+     */
     public static void forceVisible(WebElement element) {
         JavascriptExecutor jsExecutor = BaseTest.getDriver();
         jsExecutor.executeScript(
@@ -239,9 +252,5 @@ public final class Visibility {
                         "arguments[0].style.visibility='visible';" +
                         "arguments[0].style.opacity='100';",
                 element);
-    }
-
-    public static void forceVisible(List<WebElement> elements) {
-        elements.forEach(Visibility::forceVisible);
     }
 }
