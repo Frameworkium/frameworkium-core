@@ -18,7 +18,7 @@ public class PhantomJSImpl extends DriverType {
     }
 
     @Override
-    public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
+    public WebDriver getWebDriver(DesiredCapabilities capabilities) {
         return new PhantomJSDriver(capabilities);
     }
 

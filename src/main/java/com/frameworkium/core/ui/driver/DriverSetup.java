@@ -34,8 +34,8 @@ public class DriverSetup {
      *
      * @return - A {@link DriverType} Implementation
      */
-    public DriverType returnDesiredDriverType() {
-        DriverType browserDriver = returnBrowserObject(returnBrowserType());
+    public Driver returnDesiredDriverType() {
+        Driver browserDriver = returnBrowserObject(returnBrowserType());
         return initialiseDesiredDriverType(browserDriver);
     }
 
@@ -44,7 +44,7 @@ public class DriverSetup {
      *
      * @return - The correct driver type based on parameters
      */
-    private DriverType initialiseDesiredDriverType(DriverType driverType) {
+    private Driver initialiseDesiredDriverType(Driver driverType) {
         if (useRemoteDriver()) {
             DesiredCapabilities desiredCapabilities = driverType.getDesiredCapabilities();
             Platform platform = getPlatformType();
@@ -63,7 +63,7 @@ public class DriverSetup {
         }
     }
 
-    private DriverType returnBrowserObject(Browser browser) {
+    private Driver returnBrowserObject(Browser browser) {
         switch (browser) {
             case FIREFOX:
                 return new FirefoxImpl();

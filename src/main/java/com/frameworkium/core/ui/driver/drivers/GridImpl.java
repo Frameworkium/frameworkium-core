@@ -37,7 +37,7 @@ public class GridImpl extends DriverType {
         return desiredCapabilities;
     }
 
-    public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
+    public WebDriver getWebDriver(DesiredCapabilities capabilities) {
         return new RemoteWebDriver(remoteURL, capabilities);
     }
 }

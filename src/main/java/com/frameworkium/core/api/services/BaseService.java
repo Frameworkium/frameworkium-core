@@ -18,12 +18,10 @@ public abstract class BaseService<T extends BaseService<T>> {
 
     private Response response;
 
-    @SuppressWarnings("unchecked")
     public T get(String url) {
         return get(url, Method.GET, given());
     }
 
-    @SuppressWarnings("unchecked")
     public T get(String url, RequestSpecification requestSpec) {
         return get(url, Method.GET, requestSpec);
     }

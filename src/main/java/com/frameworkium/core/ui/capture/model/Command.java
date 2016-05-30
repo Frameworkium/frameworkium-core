@@ -1,7 +1,7 @@
 package com.frameworkium.core.ui.capture.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.frameworkium.core.ui.driver.DriverType;
+import com.frameworkium.core.ui.driver.Driver;
 import org.openqa.selenium.WebElement;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -21,7 +21,7 @@ public class Command {
         this.action = action;
 
         // TODO: Improve this. Use hacky solution in EventListener?
-        if (DriverType.isNative()) {
+        if (Driver.isNative()) {
             this.using = "n/a";
             this.value = "n/a";
         } else {

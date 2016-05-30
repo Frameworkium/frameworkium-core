@@ -1,7 +1,7 @@
 package com.frameworkium.core.common.listeners;
 
 import com.frameworkium.core.common.reporting.jira.api.SearchIssues;
-import com.frameworkium.core.ui.driver.DriverType;
+import com.frameworkium.core.ui.driver.Driver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.*;
@@ -73,11 +73,11 @@ public class MethodInterceptor implements IMethodInterceptor {
                     boolean appTest = clazz.endsWith("AppTest");
                     boolean mobiTest = clazz.endsWith("MobiTest");
                     boolean nonMobileNotAppMobiTest =
-                            !DriverType.isMobile() && !appTest && !mobiTest;
+                            !Driver.isMobile() && !appTest && !mobiTest;
                     boolean nativeAppTest =
-                            DriverType.isNative() && appTest;
+                            Driver.isNative() && appTest;
                     boolean nonNativeMobiTest =
-                            !DriverType.isNative() && mobiTest;
+                            !Driver.isNative() && mobiTest;
 
                     return nonMobileNotAppMobiTest || nativeAppTest || nonNativeMobiTest;
                 })

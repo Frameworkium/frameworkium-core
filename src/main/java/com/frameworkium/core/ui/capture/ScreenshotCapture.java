@@ -4,8 +4,7 @@ import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.capture.model.message.CreateExecution;
 import com.frameworkium.core.ui.capture.model.message.CreateScreenshot;
-import com.frameworkium.core.ui.driver.DriverSetup;
-import com.frameworkium.core.ui.driver.DriverType;
+import com.frameworkium.core.ui.driver.*;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
 import com.frameworkium.core.ui.tests.BaseTest;
@@ -96,7 +95,7 @@ public class ScreenshotCapture {
                         SUT_NAME.isSpecified() &&
                         SUT_VERSION.isSpecified();
 
-        return allRequirePropertiesSpecified && !DriverType.isNative();
+        return allRequirePropertiesSpecified && !Driver.isNative();
     }
 
     public void takeAndSendScreenshot(

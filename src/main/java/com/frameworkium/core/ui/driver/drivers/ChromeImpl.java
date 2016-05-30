@@ -37,7 +37,7 @@ public class ChromeImpl extends DriverType {
     }
 
     @Override
-    public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
+    public WebDriver getWebDriver(DesiredCapabilities capabilities) {
         return new ChromeDriver(capabilities);
     }
 

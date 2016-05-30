@@ -1,6 +1,6 @@
 package com.frameworkium.core.ui.listeners;
 
-import com.frameworkium.core.ui.driver.DriverType;
+import com.frameworkium.core.ui.driver.Driver;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandTestListener;
@@ -24,7 +24,7 @@ public class SauceLabsListener extends SauceOnDemandTestListener {
         if (isRunningOnSauceLabs) {
             super.onStart(testContext);
 
-            if (DriverType.isNative()) {
+            if (Driver.isNative()) {
                 try {
                     Sauce.uploadFile(new File(APP_PATH.getValue()));
                 } catch (IOException ioe) {

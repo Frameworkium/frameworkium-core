@@ -43,9 +43,9 @@ public abstract class BaseTest
 
     private static ThreadLocal<Boolean> requiresReset;
     private static ThreadLocal<ScreenshotCapture> capture;
-    private static ThreadLocal<DriverType> driverType;
+    private static ThreadLocal<Driver> driverType;
     private static ThreadLocal<Wait<WebDriver>> wait;
-    private static List<DriverType> activeDriverTypes =
+    private static List<Driver> activeDriverTypes =
             Collections.synchronizedList(new ArrayList<>());
     private static Logger logger = LogManager.getLogger(BaseTest.class);
 
@@ -59,7 +59,7 @@ public abstract class BaseTest
     @BeforeSuite(alwaysRun = true)
     public static void instantiateDriverObject() {
         driverType = ThreadLocal.withInitial(() -> {
-            DriverType driverType =
+            Driver driverType =
                     new DriverSetup().returnDesiredDriverType();
             driverType.instantiate();
             activeDriverTypes.add(driverType);
@@ -92,10 +92,12 @@ public abstract class BaseTest
 
     /**
      * The methods which configure the browser once a test runs
-     * - Maximises browser based on the driver type
-     * - Initialises screenshot capture if needed
-     * - Resets the browser if another test ran prior
-     * - Sets the user agent of the browser
+     * <ul>
+     * <li>Maximises browser based on the driver type</li>
+     * <li>Initialises screenshot capture if needed</li>
+     * <li>Resets the browser if another test ran prior</li>
+     * <li>Sets the user agent of the browser</li>
+     * </ul>
      *
      * @param testMethod - The test method name of the test
      */
@@ -110,6 +112,7 @@ public abstract class BaseTest
         }
     }
 
+    /** Should be moved inside the Driver object */
     private static void configureDriverBasedOnParams() {
         if (requiresReset.get()) {
             driverType.get().resetBrowser();
@@ -118,14 +121,6 @@ public abstract class BaseTest
         }
         driverType.get().maximiseBrowserWindow();
         userAgent = determineUserAgent();
-    }
-
-    private static String determineUserAgent() {
-        try {
-            return (String) getDriver().executeScript("return navigator.userAgent;");
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     /**
@@ -141,6 +136,14 @@ public abstract class BaseTest
                 testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));
             }
             capture.set(new ScreenshotCapture(testID.orElse("n/a")));
+        }
+    }
+
+    private static String determineUserAgent() {
+        try {
+            return (String) getDriver().executeScript("return navigator.userAgent;");
+        } catch (Exception e) {
+            return null;
         }
     }
 
@@ -184,7 +187,7 @@ public abstract class BaseTest
     public static void closeDriverObject() {
         try {
             activeDriverTypes.stream().parallel()
-                    .forEach(DriverType::tearDownDriver);
+                    .forEach(Driver::tearDown);
         } catch (Exception e) {
             logger.warn("Session quit unexpectedly.", e);
         }

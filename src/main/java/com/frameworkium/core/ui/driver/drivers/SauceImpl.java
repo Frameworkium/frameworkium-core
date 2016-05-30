@@ -1,6 +1,6 @@
 package com.frameworkium.core.ui.driver.drivers;
 
-import com.frameworkium.core.common.properties.Property;
+import com.frameworkium.core.ui.driver.Driver;
 import com.frameworkium.core.ui.driver.DriverType;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
 import org.openqa.selenium.WebDriver;
@@ -11,9 +11,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static com.frameworkium.core.common.properties.Property.BROWSER_VERSION;
-import static com.frameworkium.core.common.properties.Property.DEVICE;
-import static com.frameworkium.core.common.properties.Property.PLATFORM_VERSION;
+import static com.frameworkium.core.common.properties.Property.*;
 import static com.frameworkium.core.ui.driver.DriverSetup.Platform;
 
 public class SauceImpl extends DriverType {
@@ -33,18 +31,18 @@ public class SauceImpl extends DriverType {
     }
 
     public DesiredCapabilities getDesiredCapabilities() {
-        if (isNative()) {
+        if (Driver.isNative()) {
             setAppiumCapabilities();
         } else {
             setCapabilitiesBasedOnPlatform();
         }
         desiredCapabilities.setCapability("capture-html", true);
         desiredCapabilities.setCapability("sauce-advisor", false);
-        desiredCapabilities.setCapability("build", Property.BUILD.getValue());
+        desiredCapabilities.setCapability("build", BUILD.getValue());
         return desiredCapabilities;
     }
 
-    public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
+    public WebDriver getWebDriver(DesiredCapabilities capabilities) {
         return new RemoteWebDriver(remoteURL, capabilities);
     }
 
@@ -102,7 +100,7 @@ public class SauceImpl extends DriverType {
 
     private void setAppiumCapabilities() {
         desiredCapabilities.setCapability(
-                "app", "sauce-storage:" + new File(Property.APP_PATH.getValue()).getName());
+                "app", "sauce-storage:" + new File(APP_PATH.getValue()).getName());
         desiredCapabilities.setCapability("appiumVersion", "1.4.10");
         desiredCapabilities.setCapability("deviceOrientation", "portrait");
         switch (platform) {

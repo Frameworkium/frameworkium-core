@@ -8,7 +8,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.Proxy.ProxyType;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -17,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import static com.frameworkium.core.common.properties.Property.MAXIMISE;
 import static com.frameworkium.core.ui.driver.DriverSetup.useRemoteDriver;
 
-public abstract class DriverType {
+public abstract class DriverType implements Driver {
 
     private static final String HOSTNAME_OR_IP_AND_PORT_REGEX = "[\\dA-Za-z.:%-]+";
 
@@ -35,7 +34,7 @@ public abstract class DriverType {
 
         logger.debug("Browser Capability: " + caps);
 
-        WebDriverWrapper eventFiringWD = new WebDriverWrapper(getWebDriverObject(caps));
+        WebDriverWrapper eventFiringWD = new WebDriverWrapper(getWebDriver(caps));
         eventFiringWD.register(new EventListener());
         if (ScreenshotCapture.isRequired()) {
             eventFiringWD.register(new CaptureListener());
@@ -108,59 +107,26 @@ public abstract class DriverType {
         return this.webDriverWrapper;
     }
 
-    /**
-     * Determines whether tests have been ran to configure against a mobile
-     *
-     * @return - Boolean, whether using mobile or not
-     */
-    public static boolean isMobile() {
-        return false;
-    }
-
     /** Maximises the browser window based on maximise property */
     public void maximiseBrowserWindow() {
         boolean wantToMaximise = !MAXIMISE.isSpecified()
                 || Boolean.parseBoolean(MAXIMISE.getValue());
-        boolean ableToMaximise = !useRemoteDriver() && !isNative();
+        boolean ableToMaximise = !useRemoteDriver() && !Driver.isNative();
 
         if (wantToMaximise && ableToMaximise) {
             this.webDriverWrapper.manage().window().maximize();
         }
     }
 
-    /** Method to tear down the driver object, can be overridden */
-    public void tearDownDriver() {
+    /** {@inheritDoc} */
+    public void tearDown() {
         this.webDriverWrapper.quit();
     }
 
-    /** Reset the browser */
+    /** {@inheritDoc} */
     public void resetBrowser() {
-        tearDownDriver();
+        tearDown();
         instantiate();
     }
-
-    /**
-     * Determines whether a native app is being used for testing
-     *
-     * @return - Boolean, to whether an native app is defined
-     */
-    public static boolean isNative() {
-        return Property.APP_PATH.isSpecified();
-    }
-
-    /**
-     * Implemented in each Driver Type to specify the capabilities of that browser
-     *
-     * @return - Desired Capabilities of each browser
-     */
-    public abstract DesiredCapabilities getDesiredCapabilities();
-
-    /**
-     * Returns the correct WebDriver object for that driver type
-     *
-     * @param capabilities - Capabilities of the browser
-     * @return - WebDriver object for the browser
-     */
-    public abstract WebDriver getWebDriverObject(DesiredCapabilities capabilities);
 
 }

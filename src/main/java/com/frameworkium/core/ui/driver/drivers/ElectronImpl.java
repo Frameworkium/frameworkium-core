@@ -40,7 +40,7 @@ public class ElectronImpl extends DriverType {
     }
 
     @Override
-    public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
+    public WebDriver getWebDriver(DesiredCapabilities capabilities) {
         return new RemoteWebDriver(remoteURL, capabilities);
     }
 }

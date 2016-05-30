@@ -15,7 +15,7 @@ public class OperaImpl extends DriverType {
     }
 
     @Override
-    public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
+    public WebDriver getWebDriver(DesiredCapabilities capabilities) {
         return new OperaDriver(capabilities);
     }
 

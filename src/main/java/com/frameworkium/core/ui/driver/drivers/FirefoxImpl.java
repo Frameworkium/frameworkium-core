@@ -18,7 +18,7 @@ public class FirefoxImpl extends DriverType {
     }
 
     @Override
-    public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
+    public WebDriver getWebDriver(DesiredCapabilities capabilities) {
         if (Property.FIREFOX_PROFILE.isSpecified()) {
             File profileFile = new File(Property.FIREFOX_PROFILE.getValue());
             FirefoxProfile firefoxProfile;

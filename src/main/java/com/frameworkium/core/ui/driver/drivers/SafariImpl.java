@@ -1,5 +1,6 @@
 package com.frameworkium.core.ui.driver.drivers;
 
+import com.frameworkium.core.ui.driver.Driver;
 import com.frameworkium.core.ui.driver.DriverType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -9,7 +10,7 @@ public class SafariImpl extends DriverType {
 
     @Override
     public DesiredCapabilities getDesiredCapabilities() {
-        if (isMobile()) {
+        if (Driver.isMobile()) {
             return new DesiredCapabilities();
         } else {
             DesiredCapabilities capabilities = DesiredCapabilities.safari();
@@ -19,8 +20,8 @@ public class SafariImpl extends DriverType {
     }
 
     @Override
-    public WebDriver getWebDriverObject(DesiredCapabilities capabilities) {
-        if (isMobile()) {
+    public WebDriver getWebDriver(DesiredCapabilities capabilities) {
+        if (Driver.isMobile()) {
             throw new IllegalArgumentException(
                     "seleniumGridURL or sauceUser and sauceKey must be specified when running on iOS");
         } else {
