@@ -1,6 +1,7 @@
 package com.frameworkium.core.ui.pages;
 
 import com.frameworkium.core.ui.annotations.*;
+import com.frameworkium.core.ui.driver.WebDriverWrapper;
 import com.frameworkium.core.ui.tests.BaseTest;
 import com.google.common.collect.ImmutableMap;
 import org.apache.logging.log4j.LogManager;
@@ -29,26 +30,41 @@ import static ru.yandex.qatools.htmlelements.utils.HtmlElementUtils.*;
 public final class Visibility {
 
     private static final Logger logger = LogManager.getLogger(Visibility.class);
-
     private final Wait<WebDriver> wait;
+    private final WebDriverWrapper driver;
+    /**
+     * Mapping from Visibility Annotation to the function that performs the
+     * appropriate action for the given PageObject and annotated Field.
+     */
     private final Map<Class<? extends Annotation>, BiConsumer<Object, Field>> annotationToFunction =
             ImmutableMap.of(
                     Visible.class, this::waitForFieldToBeVisible,
                     Invisible.class, this::waitForFieldToBeInvisible,
                     ForceVisible.class, this::forceThenWaitForFieldToBeVisible);
 
-    /** Uses the default {@link Wait} from {@link BaseTest}. */
+    /**
+     * Uses the {@link Wait} and {@link WebDriverWrapper} from {@link BaseTest}.
+     */
     public Visibility() {
-        this.wait = BaseTest.getWait();
+        this(BaseTest.getWait(), BaseTest.getDriver());
+    }
+
+    /**
+     * @param wait   a specific wait to use.
+     * @param driver a specific {@link WebDriverWrapper} to use.
+     */
+    public Visibility(Wait<WebDriver> wait, WebDriverWrapper driver) {
+        this.wait = wait;
+        this.driver = driver;
     }
 
     /** @param wait a specific wait to use instead of the default. */
     public Visibility(Wait<WebDriver> wait) {
-        this.wait = wait;
+        this(wait, BaseTest.getDriver());
     }
 
     private boolean validateFieldVisibilityAnnotations(Field field) {
-        long annotationCount = getAnnotationsFromField(field).count();
+        long annotationCount = visibilityAnnotationsFrom(field).count();
 
         if (annotationCount > 1) {
             throw new IllegalArgumentException(String.format(
@@ -60,35 +76,24 @@ public final class Visibility {
         }
     }
 
-    private Stream<Class<? extends Annotation>> getAnnotationsFromField(Field field) {
+    private Stream<Class<? extends Annotation>> visibilityAnnotationsFrom(Field field) {
         return annotationToFunction.keySet().stream()
                 .filter(field::isAnnotationPresent);
     }
 
-    /** Same as waitForFieldToBeVisible but for Invisibility. */
-    private void waitForFieldToBeInvisible(Object pageObject, Field field) {
+    /**
+     * Calls {@link Visibility#forceVisible(WebElement)} after calling
+     * {@link Visibility#waitForFieldToBeVisible(Object, Field)}.
+     */
+    private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field) {
 
-        Object obj = getObjectFromField(pageObject, field);
         applyToWebElements(
                 field,
-                obj,
-                we -> wait.until(notPresentOrInvisibilityOfElement(we)),
-                list -> wait.until(notPresentOrInvisibilityOfElement(list)));
-    }
+                getObjectFromField(pageObject, field),
+                this::forceVisible,
+                list -> list.forEach(this::forceVisible));
 
-    private Object getObjectFromField(Object pageObject, Field field) {
-        field.setAccessible(true);
-        try {
-            return field.get(pageObject);
-        } catch (IllegalAccessException e) {
-            logger.error(
-                    String.format(
-                            "Error while accessing field %s on page %s",
-                            field.getName(),
-                            pageObject.getClass().getName()),
-                    e);
-            throw new RuntimeException(e);
-        }
+        waitForFieldToBeVisible(pageObject, field);
     }
 
     @SuppressWarnings("unchecked")
@@ -119,6 +124,89 @@ public final class Visibility {
                     "Only elements of type HtmlElement, TypifiedElement, WebElement or " +
                             "Lists thereof are supported by Visibility annotations.");
         }
+    }
+
+    private Object getObjectFromField(Object pageObject, Field field) {
+        field.setAccessible(true);
+        try {
+            return field.get(pageObject);
+        } catch (IllegalAccessException e) {
+            logger.error(
+                    String.format(
+                            "Error while accessing field %s on page %s",
+                            field.getName(),
+                            pageObject.getClass().getName()),
+                    e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Checks for visibility of Fields with the {@link Visible} annotation.
+     * Can recurse inside {@link HtmlElement}s
+     *
+     * @param pageObject the pageObject
+     * @param field      wait for visibility of the field
+     */
+    @SuppressWarnings("unchecked")
+    private void waitForFieldToBeVisible(Object pageObject, Field field) {
+
+        Object objectFromField = getObjectFromField(pageObject, field);
+
+        // Recursively checks the HtmlElement Component(s)
+        if (isHtmlElementList(field)) {
+            ((List<HtmlElement>) objectFromField)
+                    .forEach(this::waitForAnnotatedElementVisibility);
+        } else if (isHtmlElement(field)) {
+            waitForAnnotatedElementVisibility(objectFromField);
+        } else {
+            applyToWebElements(
+                    field,
+                    objectFromField,
+                    we -> wait.until(visibilityOf(we)),
+                    list -> wait.until(visibilityOfAllElements(list)));
+        }
+    }
+
+    /**
+     * The main entry point for {@link BasePage}.
+     * For each Field:
+     * <ul>
+     * <li>Ensures either 0 or 1 Frameworkium Visibility annotations are used.</li>
+     * <li>Waits for the (in)visibility of elements annotated by visibility annotations.</li>
+     * </ul>
+     *
+     * @param pageObject the "page object" e.g. extends {@link BasePage}
+     *                   or {@link TypifiedElement} or {@link HtmlElement}.
+     */
+    public void waitForAnnotatedElementVisibility(Object pageObject) {
+
+        Field[] allFields = pageObject.getClass().getDeclaredFields();
+        Arrays.stream(allFields)
+                .filter(this::validateFieldVisibilityAnnotations)
+                .forEach(field ->
+                        invokeWaitFunctionForField(field, pageObject));
+    }
+
+    private void invokeWaitFunctionForField(Field field, Object pageObject) {
+
+        Class<? extends Annotation> annotationClass =
+                visibilityAnnotationsFrom(field)
+                        .findAny()
+                        .orElseThrow(IllegalStateException::new);
+
+        annotationToFunction.get(annotationClass).accept(pageObject, field);
+    }
+
+    /** Same as waitForFieldToBeVisible but for Invisibility. */
+    private void waitForFieldToBeInvisible(Object pageObject, Field field) {
+
+        Object objectFromField = getObjectFromField(pageObject, field);
+        applyToWebElements(
+                field,
+                objectFromField,
+                we -> wait.until(notPresentOrInvisibilityOfElement(we)),
+                list -> wait.until(notPresentOrInvisibilityOfElement(list)));
     }
 
     /**
@@ -168,75 +256,6 @@ public final class Visibility {
     }
 
     /**
-     * Calls {@link Visibility#forceVisible(WebElement)} after calling
-     * {@link Visibility#waitForFieldToBeVisible(Object, Field)}.
-     */
-    private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field) {
-
-        applyToWebElements(
-                field,
-                getObjectFromField(pageObject, field),
-                Visibility::forceVisible,
-                list -> list.forEach(Visibility::forceVisible));
-
-        waitForFieldToBeVisible(pageObject, field);
-    }
-
-    /**
-     * Checks for visibility of Fields with the {@link Visible} annotation.
-     * Can recurse inside {@link HtmlElement}s
-     *
-     * @param pageObject the pageObject
-     * @param field      wait for visibility of the field
-     */
-    @SuppressWarnings("unchecked")
-    private void waitForFieldToBeVisible(Object pageObject, Field field) {
-
-        Object objectFromField = getObjectFromField(pageObject, field);
-
-        // Recursively checks the HtmlElement Component(s)
-        if (isHtmlElementList(field)) {
-            ((List<HtmlElement>) objectFromField)
-                    .forEach(this::waitForAnnotatedElementVisibility);
-        } else if (isHtmlElement(field)) {
-            waitForAnnotatedElementVisibility(objectFromField);
-        } else {
-            applyToWebElements(
-                    field,
-                    objectFromField,
-                    we -> wait.until(visibilityOf(we)),
-                    list -> wait.until(visibilityOfAllElements(list)));
-        }
-    }
-
-    /**
-     * The main entry point for {@link BasePage}.
-     * <p>
-     * Waits for the (in)visibility of elements annotated by Frameworkium's visibility annotations
-     *
-     * @param pageObject the page object like object e.g. ? extends {@link BasePage}
-     *                   or a {@link TypifiedElement} or an {@link HtmlElement}.
-     */
-    public void waitForAnnotatedElementVisibility(Object pageObject) {
-
-        Field[] allFields = pageObject.getClass().getDeclaredFields();
-        Arrays.stream(allFields)
-                .filter(this::validateFieldVisibilityAnnotations)
-                .forEach(field ->
-                        visibilityFunctionForField(field, pageObject));
-    }
-
-    private void visibilityFunctionForField(Field field, Object pageObject) {
-
-        Class<? extends Annotation> annotationClass =
-                getAnnotationsFromField(field)
-                        .findAny()
-                        .orElseThrow(IllegalStateException::new);
-
-        annotationToFunction.get(annotationClass).accept(pageObject, field);
-    }
-
-    /**
      * Executes JavaScript in an attempt to make the element visible
      * e.g. for elements which are occluded but are required for interaction.
      * <p>
@@ -245,9 +264,8 @@ public final class Visibility {
      *
      * @param element the {@link WebElement} to make visible
      */
-    public static void forceVisible(WebElement element) {
-        JavascriptExecutor jsExecutor = BaseTest.getDriver();
-        jsExecutor.executeScript(
+    public void forceVisible(WebElement element) {
+        driver.executeScript(
                 "arguments[0].style.zindex='10000';" +
                         "arguments[0].style.visibility='visible';" +
                         "arguments[0].style.opacity='100';",

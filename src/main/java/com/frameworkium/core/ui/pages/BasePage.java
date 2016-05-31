@@ -31,7 +31,7 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
-     * @return Returns the current page object.
+     * @return the current page object.
      * Useful for e.g. MyPage.get().then().doSomething();
      */
     @SuppressWarnings("unchecked")
@@ -40,7 +40,7 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
-     * @return Returns the current page object.
+     * @return the current page object.
      * Useful for e.g. MyPage.get().then().with().aComponent().clickHome();
      */
     @SuppressWarnings("unchecked")
@@ -48,6 +48,13 @@ public abstract class BasePage<T extends BasePage<T>> {
         return (T) this;
     }
 
+    /**
+     * Creates a new {@link Wait} with the specified timeout then calls
+     * {@link BasePage#get()}.
+     *
+     * @param timeout the timeout, in seconds, for the new wait for this page
+     * @return new instance of a PageObject of type T, see {@link BasePage#get()}
+     */
     public T get(long timeout) {
         wait = BaseTest.newWaitWithTimeout(timeout);
         return get();
@@ -62,20 +69,22 @@ public abstract class BasePage<T extends BasePage<T>> {
      * <li>Processes Frameworkium visibility annotations e.g. {@link Visible}</li>
      * <li>Log page load to Allure and Capture</li>
      * </ul>
+     *
+     * @return the PageObject populated with lazy proxies which are checked for
+     * visibility based upon appropriate Frameworkium annotations.
      */
     @SuppressWarnings("unchecked")
     public T get() {
 
         HtmlElementLoader.populatePageObject(this, driver);
 
+        // wait for page to load
         if (isPageAngularJS()) {
             waitForAngularRequestsToFinish();
         }
-
         visibility.waitForAnnotatedElementVisibility(this);
-
+        // log page load
         takePageLoadedScreenshotAndSendToCapture();
-
         logPageLoadToAllure();
 
         return (T) this;

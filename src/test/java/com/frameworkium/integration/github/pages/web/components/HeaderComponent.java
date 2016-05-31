@@ -59,7 +59,7 @@ public class HeaderComponent extends HtmlElement {
         BaseTest.getDriver().executeScript("arguments[0].style.visibility='hidden';", link);
         wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOf(link)));
         // test force visible works
-        Visibility.forceVisible(link);
+        new Visibility().forceVisible(link);
         wait.until(ExpectedConditions.visibilityOf(link));
     }
 }
