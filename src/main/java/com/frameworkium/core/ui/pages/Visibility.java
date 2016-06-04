@@ -101,10 +101,16 @@ public final class Visibility {
 
         // lists
         if (isHtmlElementList(field)) {
-            List<WebElement> webElements = ((List<HtmlElement>) obj).stream()
+            List<HtmlElement> list = (List<HtmlElement>) obj;
+
+            List<WebElement> webElements = list.stream()
                     .map(HtmlElement::getWrappedElement)
                     .collect(toList());
+            // wait for wrapped elements
             listFun.accept(webElements);
+
+            // recurse inside each HtmlElement
+            list.forEach(this::waitForAnnotatedElementVisibility);
         } else if (isTypifiedElementList(field)) {
             List<WebElement> webElements = ((List<TypifiedElement>) obj).stream()
                     .map(TypifiedElement::getWrappedElement)
@@ -114,7 +120,10 @@ public final class Visibility {
             listFun.accept((List<WebElement>) obj);
             // single elements
         } else if (isHtmlElement(field)) {
+            // wait for wrapped element
             fun.accept(((HtmlElement) obj).getWrappedElement());
+            // recurse inside HtmlElement
+            waitForAnnotatedElementVisibility(obj);
         } else if (isTypifiedElement(field)) {
             fun.accept(((TypifiedElement) obj).getWrappedElement());
         } else if (isWebElement(field)) {
@@ -153,19 +162,11 @@ public final class Visibility {
 
         Object objectFromField = getObjectFromField(pageObject, field);
 
-        // Recursively checks the HtmlElement Component(s)
-        if (isHtmlElementList(field)) {
-            ((List<HtmlElement>) objectFromField)
-                    .forEach(this::waitForAnnotatedElementVisibility);
-        } else if (isHtmlElement(field)) {
-            waitForAnnotatedElementVisibility(objectFromField);
-        } else {
-            applyToWebElements(
-                    field,
-                    objectFromField,
-                    we -> wait.until(visibilityOf(we)),
-                    list -> wait.until(visibilityOfAllElements(list)));
-        }
+        applyToWebElements(
+                field,
+                objectFromField,
+                we -> wait.until(visibilityOf(we)),
+                list -> wait.until(visibilityOfAllElements(list)));
     }
 
     /**
