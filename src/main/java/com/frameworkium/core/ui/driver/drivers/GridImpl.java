@@ -1,7 +1,7 @@
 package com.frameworkium.core.ui.driver.drivers;
 
 import com.frameworkium.core.common.properties.Property;
-import com.frameworkium.core.ui.driver.DriverType;
+import com.frameworkium.core.ui.driver.AbstractDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -13,7 +13,7 @@ import static com.frameworkium.core.common.properties.Property.BROWSER_VERSION;
 import static com.frameworkium.core.common.properties.Property.PLATFORM;
 import static com.frameworkium.core.common.properties.Property.PLATFORM_VERSION;
 
-public class GridImpl extends DriverType {
+public class GridImpl extends AbstractDriver {
 
     private URL remoteURL;
     private DesiredCapabilities desiredCapabilities;

@@ -1,7 +1,7 @@
 package com.frameworkium.core.ui.driver.drivers;
 
 import com.frameworkium.core.common.properties.Property;
-import com.frameworkium.core.ui.driver.DriverType;
+import com.frameworkium.core.ui.driver.AbstractDriver;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -12,7 +12,7 @@ import java.net.URL;
 
 import static com.frameworkium.core.ui.driver.DriverSetup.Platform;
 
-public class BrowserStackImpl extends DriverType {
+public class BrowserStackImpl extends AbstractDriver {
 
     private URL remoteURL;
     private Platform platform;

@@ -1,12 +1,12 @@
 package com.frameworkium.core.ui.driver.drivers;
 
+import com.frameworkium.core.ui.driver.AbstractDriver;
 import com.frameworkium.core.ui.driver.Driver;
-import com.frameworkium.core.ui.driver.DriverType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariDriver;
 
-public class SafariImpl extends DriverType {
+public class SafariImpl extends AbstractDriver {
 
     @Override
     public DesiredCapabilities getDesiredCapabilities() {

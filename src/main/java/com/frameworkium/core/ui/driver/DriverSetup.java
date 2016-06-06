@@ -27,12 +27,12 @@ public class DriverSetup {
         WINDOWS, OSX, IOS, ANDROID, NONE
     }
 
-    protected final static Logger logger = LogManager.getLogger(DriverType.class);
+    protected final static Logger logger = LogManager.getLogger(DriverSetup.class);
 
     /**
-     * Returns the driver type to the base test, which initialises it
+     * Returns the driver to the base test, which initialises it
      *
-     * @return - A {@link DriverType} Implementation
+     * @return - A {@link Driver} Implementation
      */
     public Driver returnDesiredDriverType() {
         Driver browserDriver = returnBrowserObject(returnBrowserType());

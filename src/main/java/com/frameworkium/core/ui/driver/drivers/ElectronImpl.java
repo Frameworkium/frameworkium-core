@@ -1,6 +1,6 @@
 package com.frameworkium.core.ui.driver.drivers;
 
-import com.frameworkium.core.ui.driver.DriverType;
+import com.frameworkium.core.ui.driver.AbstractDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static com.frameworkium.core.common.properties.Property.APP_PATH;
 
-public class ElectronImpl extends DriverType {
+public class ElectronImpl extends AbstractDriver {
 
     private static URL remoteURL;
 

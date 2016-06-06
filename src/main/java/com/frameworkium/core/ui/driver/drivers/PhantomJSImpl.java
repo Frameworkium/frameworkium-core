@@ -1,12 +1,12 @@
 package com.frameworkium.core.ui.driver.drivers;
 
-import com.frameworkium.core.ui.driver.DriverType;
+import com.frameworkium.core.ui.driver.AbstractDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class PhantomJSImpl extends DriverType {
+public class PhantomJSImpl extends AbstractDriver {
 
     @Override
     public DesiredCapabilities getDesiredCapabilities() {

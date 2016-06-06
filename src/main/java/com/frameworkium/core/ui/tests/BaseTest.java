@@ -43,27 +43,27 @@ public abstract class BaseTest
 
     private static ThreadLocal<Boolean> requiresReset;
     private static ThreadLocal<ScreenshotCapture> capture;
-    private static ThreadLocal<Driver> driverType;
+    private static ThreadLocal<Driver> driver;
     private static ThreadLocal<Wait<WebDriver>> wait;
-    private static List<Driver> activeDriverTypes =
+    private static List<Driver> activeDrivers =
             Collections.synchronizedList(new ArrayList<>());
     private static Logger logger = LogManager.getLogger(BaseTest.class);
 
     /**
      * Method which runs first upon running a test, it will do the following:
-     * - Retrieve the desired {@link DriverType} and initialise the {@link WebDriver}
+     * - Retrieve the desired {@link Driver} and initialise the {@link WebDriver}
      * - Initialise the {@link Wait}
      * - Initialise whether the browser needs resetting
      * - Initialise the {@link ScreenshotCapture}
      */
     @BeforeSuite(alwaysRun = true)
     public static void instantiateDriverObject() {
-        driverType = ThreadLocal.withInitial(() -> {
-            Driver driverType =
+        driver = ThreadLocal.withInitial(() -> {
+            Driver newDriver =
                     new DriverSetup().returnDesiredDriverType();
-            driverType.instantiate();
-            activeDriverTypes.add(driverType);
-            return driverType;
+            newDriver.instantiate();
+            activeDrivers.add(newDriver);
+            return newDriver;
         });
         wait = ThreadLocal.withInitial(BaseTest::newDefaultWait);
         requiresReset = ThreadLocal.withInitial(() -> Boolean.FALSE);
@@ -87,7 +87,7 @@ public abstract class BaseTest
      * @return - WebDriver object
      */
     public static WebDriverWrapper getDriver() {
-        return driverType.get().getDriver();
+        return driver.get().getDriver();
     }
 
     /**
@@ -115,11 +115,11 @@ public abstract class BaseTest
     /** Should be moved inside the Driver object */
     private static void configureDriverBasedOnParams() {
         if (requiresReset.get()) {
-            driverType.get().resetBrowser();
+            driver.get().resetBrowser();
         } else {
             requiresReset.set(true);
         }
-        driverType.get().maximiseBrowserWindow();
+        driver.get().maximiseBrowserWindow();
         userAgent = determineUserAgent();
     }
 
@@ -186,7 +186,7 @@ public abstract class BaseTest
     @AfterSuite(alwaysRun = true)
     public static void closeDriverObject() {
         try {
-            activeDriverTypes.stream().parallel()
+            activeDrivers.stream().parallel()
                     .forEach(Driver::tearDown);
         } catch (Exception e) {
             logger.warn("Session quit unexpectedly.", e);

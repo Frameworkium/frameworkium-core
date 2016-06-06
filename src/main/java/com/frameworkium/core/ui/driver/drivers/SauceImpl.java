@@ -1,7 +1,7 @@
 package com.frameworkium.core.ui.driver.drivers;
 
+import com.frameworkium.core.ui.driver.AbstractDriver;
 import com.frameworkium.core.ui.driver.Driver;
-import com.frameworkium.core.ui.driver.DriverType;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -14,7 +14,7 @@ import java.net.URL;
 import static com.frameworkium.core.common.properties.Property.*;
 import static com.frameworkium.core.ui.driver.DriverSetup.Platform;
 
-public class SauceImpl extends DriverType {
+public class SauceImpl extends AbstractDriver {
 
     private URL remoteURL;
     private Platform platform;

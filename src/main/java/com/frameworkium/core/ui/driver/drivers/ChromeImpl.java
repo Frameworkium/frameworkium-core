@@ -1,7 +1,7 @@
 package com.frameworkium.core.ui.driver.drivers;
 
 import com.frameworkium.core.common.properties.Property;
-import com.frameworkium.core.ui.driver.DriverType;
+import com.frameworkium.core.ui.driver.AbstractDriver;
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -12,7 +12,7 @@ import java.util.*;
 
 import static java.util.Collections.singletonList;
 
-public class ChromeImpl extends DriverType {
+public class ChromeImpl extends AbstractDriver {
 
     @Override
     public DesiredCapabilities getDesiredCapabilities() {
