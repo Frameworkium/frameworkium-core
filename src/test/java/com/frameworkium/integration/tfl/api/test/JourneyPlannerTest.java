@@ -1,9 +1,7 @@
 package com.frameworkium.integration.tfl.api.test;
 
 import com.frameworkium.core.api.tests.BaseTest;
-import com.frameworkium.integration.tfl.api.services.journeyPlanner.JourneyPlannerDisambiguationResponse;
-import com.frameworkium.integration.tfl.api.services.journeyPlanner.JourneyPlannerItineraryResponse;
-import com.frameworkium.integration.tfl.api.services.journeyPlanner.JourneyPlannerService;
+import com.frameworkium.integration.tfl.api.services.journeyPlanner.*;
 import com.google.common.collect.ImmutableMap;
 import org.testng.annotations.Test;
 

@@ -6,6 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
+import ru.yandex.qatools.htmlelements.element.Button;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
@@ -14,7 +15,7 @@ public class JavaScriptAlertsPage extends BasePage<JavaScriptAlertsPage> {
     @Visible
     @Name("JS Alert button")
     @FindBy(css = "button[onclick='jsAlert()']")
-    private WebElement jsAlertButton;
+    private Button jsAlertButton;
 
     @Name("Result area")
     @FindBy(css = "p#result")

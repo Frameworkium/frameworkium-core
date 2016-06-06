@@ -6,6 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
+import ru.yandex.qatools.htmlelements.element.Button;
 
 public class IFramePage extends BasePage<IFramePage> {
 
@@ -17,7 +18,7 @@ public class IFramePage extends BasePage<IFramePage> {
     @Visible
     @Name("Bold Button")
     @FindBy(css = "div[aria-label='Bold'] button")
-    private WebElement boldButton;
+    private Button boldButton;
 
     // This is within the iframe so while it'll be physically visible when the
     // page loads, it WILL NOT be 'visible' to the driver (i.e. selenium will

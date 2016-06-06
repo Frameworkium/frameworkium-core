@@ -12,16 +12,10 @@ import java.util.stream.Collectors;
 
 public class CheckboxesPage extends BasePage<CheckboxesPage> {
 
+    @Visible
     @Name("All checkboxes")
     @FindBy(css = "form input[type='checkbox']")
     private List<CheckBox> allCheckboxes;
-
-    //This is required as we can't check
-    //visibility of a List<CheckBox> yet
-    @Visible
-    @Name("Unchecked checkbox")
-    @FindBy(css = "form input[type='checkbox']")
-    private CheckBox uncheckedCheckbox;
 
     @Step("Set all the checkboxes to true")
     public CheckboxesPage checkAllCheckboxes() {

@@ -11,12 +11,12 @@ import ru.yandex.qatools.htmlelements.annotations.Name;
 
 public class HomePage extends BasePage<HomePage> {
 
-    @Name("Header")
     @Visible
+    @Name("Header")
     private HeaderComponent header;
 
-    @Name("Marketing Sign-Up Banner")
     @Visible
+    @Name("Marketing Sign-Up Banner")
     @FindBy(css = "div.homepage-hero-intro")
     private WebElement homepageHeroIntro;
 

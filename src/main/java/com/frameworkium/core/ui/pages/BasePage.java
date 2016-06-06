@@ -26,8 +26,8 @@ public abstract class BasePage<T extends BasePage<T>> {
     public BasePage() {
         driver = BaseTest.getDriver();
         wait = BaseTest.getWait();
-        visibility = new Visibility(wait);
-        ngDriver = new NgWebDriver((JavascriptExecutor) driver);
+        visibility = new Visibility(wait, BaseTest.getDriver());
+        ngDriver = new NgWebDriver(BaseTest.getDriver());
     }
 
     /**

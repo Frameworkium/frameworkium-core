@@ -6,17 +6,19 @@ import com.frameworkium.core.ui.pages.PageFactory;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.htmlelements.annotations.Name;
+import ru.yandex.qatools.htmlelements.element.Link;
+import ru.yandex.qatools.htmlelements.element.TextInput;
 
 public class DeveloperGuidePage extends BasePage<DeveloperGuidePage> {
 
     @Name("Developer guide search")
     @Visible
     @FindBy(css = "input[name='as_q']")
-    private WebElement searchField;
+    private TextInput searchField;
 
     @Name("Bootstrap search item")
     @FindBy(linkText = "Bootstrap")
-    private WebElement bootstrapSearchItem;
+    private Link bootstrapSearchItem;
 
     @Name("Guide article title")
     @FindBy(css = "h1")

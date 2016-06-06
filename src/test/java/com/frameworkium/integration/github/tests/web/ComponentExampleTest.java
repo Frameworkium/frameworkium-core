@@ -2,11 +2,12 @@ package com.frameworkium.integration.github.tests.web;
 
 import com.frameworkium.core.ui.tests.BaseTest;
 import com.frameworkium.integration.github.pages.web.ExplorePage;
-import com.frameworkium.integration.github.pages.web.SearchResultsPage;
 import com.frameworkium.integration.github.pages.web.HomePage;
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.Issue;
 import ru.yandex.qatools.allure.annotations.TestCaseId;
+
+import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -23,8 +24,10 @@ public class ComponentExampleTest extends BaseTest {
         assertThat(explorePage.getTitle()).isEqualTo("Explore · GitHub");
 
         // Search for "Selenium" and check SeleniumHQ/selenium is one of the returned repos.
-        SearchResultsPage searchResultsPage = explorePage.with().theHeader().search("Selenium");
-        assertThat(searchResultsPage.getRepoNames()).contains("SeleniumHQ/selenium");
+        List<String> searchResults = explorePage.with().theHeader()
+                .search("Selenium")
+                .getRepoNames();
+        assertThat(searchResults).contains("SeleniumHQ/selenium");
     }
 
     @TestCaseId("Force Visible")

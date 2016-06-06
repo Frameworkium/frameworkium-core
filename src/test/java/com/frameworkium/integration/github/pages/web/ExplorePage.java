@@ -11,12 +11,12 @@ import ru.yandex.qatools.htmlelements.annotations.Name;
 
 public class ExplorePage extends BasePage<ExplorePage> {
 
-    @Name("Header")
     @Visible
+    @Name("Header")
     private HeaderComponent header;
 
-    @Name("Explore Content")
     @Visible
+    @Name("Explore Content")
     @FindBy(css = "div.explore-marketing-header")
     private WebElement marketingBanner;
 
