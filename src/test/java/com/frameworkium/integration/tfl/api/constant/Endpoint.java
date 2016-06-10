@@ -2,8 +2,9 @@ package com.frameworkium.integration.tfl.api.constant;
 
 public enum Endpoint {
 
-    JOURNEY_PLANNER("https://api.tfl.gov.uk/journey/JourneyResults/%s/to/%s"),
-    CAR_PARK_OCCUPANCY("https://api.tfl.gov.uk/Occupancy/CarPark");
+    BASE_URI("https://api.tfl.gov.uk"),
+    JOURNEY_PLANNER("/journey/JourneyResults/%s/to/%s"),
+    CAR_PARK_OCCUPANCY("/Occupancy/CarPark");
 
     private String url;
 

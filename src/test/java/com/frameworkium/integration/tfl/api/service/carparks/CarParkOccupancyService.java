@@ -12,8 +12,7 @@ public class CarParkOccupancyService extends BaseTFLService {
     @Step("Get Car Park Occupancies")
     public CarParkOccupancies getCarParkOccupancies() {
         return new CarParkOccupancies(
-                getRequestSpecification()
-                        .response().spec(getResponseSpecification())
+                getResponseSpecification()
                         .get(CAR_PARK_OCCUPANCY.getUrl())
                         .as(CarParkOccupancy[].class));
     }

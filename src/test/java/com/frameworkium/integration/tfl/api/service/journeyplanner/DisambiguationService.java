@@ -9,14 +9,13 @@ import org.apache.http.HttpStatus;
 public class DisambiguationService extends BaseTFLService {
 
     public DisambiguationResult getDisambiguationResult(String from, String to) {
-        return getRequestSpecification()
-                .response().spec(getResponseSpecification())
+        return getResponseSpecification()
                 .get(Endpoint.JOURNEY_PLANNER.getUrl(from, to))
                 .as(DisambiguationResult.class);
     }
 
     protected ResponseSpecification getResponseSpecification() {
-        return getRequestSpecification()
+        return getResponseSpecification()
                 .expect()
                 .statusCode(HttpStatus.SC_MULTIPLE_CHOICES);
     }

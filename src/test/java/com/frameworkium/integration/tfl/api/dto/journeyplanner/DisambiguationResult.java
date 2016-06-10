@@ -12,6 +12,8 @@ public class DisambiguationResult {
 
     @Step
     public String getFirstDisambiguatedTo() {
-        return toLocationDisambiguation.disambiguationOptions.get(0).parameterValue;
+        return toLocationDisambiguation
+                .disambiguationOptions.get(0)
+                .parameterValue;
     }
 }
