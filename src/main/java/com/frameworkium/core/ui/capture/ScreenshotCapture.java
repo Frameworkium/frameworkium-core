@@ -4,7 +4,8 @@ import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.capture.model.message.CreateExecution;
 import com.frameworkium.core.ui.capture.model.message.CreateScreenshot;
-import com.frameworkium.core.ui.driver.*;
+import com.frameworkium.core.ui.driver.Driver;
+import com.frameworkium.core.ui.driver.DriverSetup;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
 import com.frameworkium.core.ui.tests.BaseTest;
@@ -76,14 +77,16 @@ public class ScreenshotCapture {
                             .post(testSessionURI).then()
                             .extract().path("proxyId");
                 } catch (Throwable t) {
-                    logger.warn("Failed to get node address of remote web driver", t);
+                    logger.warn("Failed to get node address of remote web driver");
+                    logger.debug(t);
                 }
             }
         } else {
             try {
                 node = InetAddress.getLocalHost().getCanonicalHostName();
             } catch (UnknownHostException e) {
-                logger.warn("Failed to get local machine name", e);
+                logger.warn("Failed to get local machine name");
+                logger.debug(e);
             }
         }
         return node;

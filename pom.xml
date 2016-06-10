@@ -69,7 +69,7 @@
     <dependency>
       <groupId>ru.yandex.qatools.htmlelements</groupId>
       <artifactId>htmlelements-java</artifactId>
-      <version>1.16-SNAPSHOT</version>
+      <version>1.16</version>
     </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>

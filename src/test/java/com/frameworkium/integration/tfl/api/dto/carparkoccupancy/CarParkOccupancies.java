@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.ToIntFunction;
 
+import static java.util.stream.Collectors.toList;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CarParkOccupancies {
 
@@ -36,5 +38,12 @@ public class CarParkOccupancies {
                 .flatMap(cpo -> cpo.bays.stream()) // flatMap (to a single Stream of Bays) each list of Bays in each CPO
                 .mapToInt(bayToIntFunction)        // get the number of something from bays
                 .sum();
+    }
+
+    @Step
+    public List<String> getNames() {
+        return carParkOccupancies.stream() // create a Stream of the CPO array
+                .map(cpo -> cpo.name)      // get the name
+                .collect(toList());        // collect the stream to a List
     }
 }

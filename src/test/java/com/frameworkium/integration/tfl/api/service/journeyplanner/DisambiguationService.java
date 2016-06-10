@@ -15,7 +15,7 @@ public class DisambiguationService extends BaseTFLService {
     }
 
     protected ResponseSpecification getResponseSpecification() {
-        return getResponseSpecification()
+        return getRequestSpecification()
                 .expect()
                 .statusCode(HttpStatus.SC_MULTIPLE_CHOICES);
     }
