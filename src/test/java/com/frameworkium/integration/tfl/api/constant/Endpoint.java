@@ -2,7 +2,8 @@ package com.frameworkium.integration.tfl.api.constant;
 
 public enum Endpoint {
 
-    JOURNEY_PLANNER("https://api.tfl.gov.uk/journey/JourneyResults/%s/to/%s");
+    JOURNEY_PLANNER("https://api.tfl.gov.uk/journey/JourneyResults/%s/to/%s"),
+    CAR_PARK_OCCUPANCY("https://api.tfl.gov.uk/Occupancy/CarPark");
 
     private String url;
 
@@ -10,8 +11,14 @@ public enum Endpoint {
         this.url = url;
     }
 
-    public String getUrl(String[] param) {
-        return String.format(url, param);
+    /**
+     * Calls {@link String#format(String, Object...)} on the
+     *
+     * @param params Arguments referenced by the format specifiers in the url.
+     * @return A formatted URL String
+     */
+    public String getUrl(Object... params) {
+        return String.format(url, params);
     }
 
 }

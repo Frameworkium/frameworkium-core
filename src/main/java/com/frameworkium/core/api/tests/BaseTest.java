@@ -13,7 +13,7 @@ import org.testng.annotations.Listeners;
         ResultLoggerListener.class})
 public abstract class BaseTest {
 
-    private static Logger logger = LogManager.getLogger(BaseTest.class);
+    protected static Logger logger = LogManager.getLogger();
 
     /** Creates the allure properties for the report, after the test run */
     @AfterSuite(alwaysRun = true)
