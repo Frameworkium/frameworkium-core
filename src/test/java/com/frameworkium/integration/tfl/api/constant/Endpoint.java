@@ -5,7 +5,8 @@ public enum Endpoint {
     BASE_URI("https://api.tfl.gov.uk"),
     JOURNEY_PLANNER("/journey/JourneyResults/%s/to/%s"),
     CAR_PARK_OCCUPANCY("/Occupancy/CarPark"),
-    CAR_PARK_OCCUPANCY_BY_ID("/Occupancy/CarPark/%s");
+    CAR_PARK_OCCUPANCY_BY_ID("/Occupancy/CarPark/%s"),
+    BIKE_POINT("/BikePoint");
 
     private String url;
 

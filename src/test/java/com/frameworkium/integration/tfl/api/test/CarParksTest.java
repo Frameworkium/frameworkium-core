@@ -7,9 +7,6 @@ import com.frameworkium.integration.tfl.api.service.carparks.CarParkOccupancySer
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-
 import static com.google.common.truth.Truth.assertThat;
 
 @Test
@@ -24,7 +21,7 @@ public class CarParksTest extends BaseTest {
 
     public void all_car_park_occupancies_more_than_10_spaces() {
 
-        assertThat(carParkOccupancies.getTotalNumFreeSpaces())
+        assertThat(carParkOccupancies.getTotalNumFree())
                 .isGreaterThan(10);
     }
 
@@ -39,11 +36,11 @@ public class CarParksTest extends BaseTest {
         // between the first and subsequent service call
         // this is due to using a live service and not controlling test data
 
-        CarParkOccupancy randomCPO = getRandomCarParkOccupancy();
+        CarParkOccupancy randomCPO = carParkOccupancies.getRandomCarParkOccupancy();
 
         // Get said CPO via ID
         CarParkOccupancy specificCPO =
-                new CarParkOccupancyService().getCarParkOccupancy(randomCPO.id);
+                new CarParkOccupancyService().getCarParkOccupancyByID(randomCPO.id);
 
         // Make sure they are the same ignoring the details of the bays
         assertThat(specificCPO.equalsIgnoringBayDetails(randomCPO)).isTrue();
@@ -51,9 +48,11 @@ public class CarParksTest extends BaseTest {
 
     public void single_car_park_has_sane_number_of_free_spaces() {
 
+        CarParkOccupancy randomCPO = carParkOccupancies.getRandomCarParkOccupancy();
+
         // Get said CP via ID
         int freeSpaces = new CarParkOccupancyService()
-                .getCarParkOccupancy(getRandomCarParkOccupancy().id)
+                .getCarParkOccupancyByID(randomCPO.id)
                 .getNumFreeSpaces();
 
         // Make sure things are sane
@@ -64,19 +63,8 @@ public class CarParksTest extends BaseTest {
     @Test(enabled = false) // possible bug in the service
     public void free_and_occupied_equals_total() {
 
-        int freeAndOccupiedCount =
-                carParkOccupancies.getTotalNumFreeSpaces()
-                        + carParkOccupancies.getTotalNumOccupiedSpaces();
-
         assertThat(carParkOccupancies.getTotalNumSpaces())
-                .isEqualTo(freeAndOccupiedCount);
-    }
-
-    private CarParkOccupancy getRandomCarParkOccupancy() {
-
-        List<CarParkOccupancy> cpos = carParkOccupancies.carParkOccupancies;
-        // Pick a random CP from the list of all CPs
-        return cpos.get(ThreadLocalRandom.current().nextInt(cpos.size()));
+                .isEqualTo(carParkOccupancies.getTotalNumFreeAndOccupied());
     }
 
 }

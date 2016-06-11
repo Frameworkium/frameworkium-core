@@ -5,6 +5,7 @@ import ru.yandex.qatools.allure.annotations.Step;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.ToIntFunction;
 
 import static java.util.stream.Collectors.toList;
@@ -24,12 +25,12 @@ public class CarParkOccupancies {
     }
 
     @Step
-    public Integer getTotalNumFreeSpaces() {
+    public Integer getTotalNumFree() {
         return getSumFromBays(bay -> bay.free);
     }
 
     @Step
-    public Integer getTotalNumOccupiedSpaces() {
+    public Integer getTotalNumOccupied() {
         return getSumFromBays(bay -> bay.occupied);
     }
 
@@ -41,9 +42,20 @@ public class CarParkOccupancies {
     }
 
     @Step
+    public Object getTotalNumFreeAndOccupied() {
+        return getTotalNumFree() + getTotalNumOccupied();
+    }
+
+    @Step
     public List<String> getNames() {
         return carParkOccupancies.stream() // create a Stream of the CPO array
                 .map(cpo -> cpo.name)      // get the name
                 .collect(toList());        // collect the stream to a List
+    }
+
+    @Step
+    public CarParkOccupancy getRandomCarParkOccupancy() {
+        return carParkOccupancies.get(
+                ThreadLocalRandom.current().nextInt(carParkOccupancies.size()));
     }
 }
