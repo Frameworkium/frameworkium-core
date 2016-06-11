@@ -18,7 +18,7 @@ public class CarParkOccupancy {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 
-    public boolean equalsIgnoringBayDetails(Object obj) {
+    public boolean equalsIgnoringBays(Object obj) {
         CarParkOccupancy other = (CarParkOccupancy) obj;
         return EqualsBuilder.reflectionEquals(this, other, "bays")
                 && bays.size() == other.bays.size();

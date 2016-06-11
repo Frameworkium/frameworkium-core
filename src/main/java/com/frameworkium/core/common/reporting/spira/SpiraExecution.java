@@ -1,8 +1,7 @@
 package com.frameworkium.core.common.reporting.spira;
 
 import com.frameworkium.core.common.properties.Property;
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.path.json.JsonPath;
+import io.restassured.RestAssured;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -16,7 +15,7 @@ import org.testng.ITestResult;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 
 public class SpiraExecution {
 
@@ -55,6 +54,7 @@ public class SpiraExecution {
         //JSONObject auto-escapes the backslash, so we need to unescape it!
         String json = obj.toString().replace("\\\\", "\\");
 
+        // TODO: use RestAssured
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         HttpPost request = new HttpPost(spiraURI + "/test-runs/record?" +
                 "username=" + username + "&" +
@@ -65,28 +65,28 @@ public class SpiraExecution {
             request.addHeader("content-type", "application/json");
             request.setEntity(jsonBody);
         } catch (UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.warn(e);
         }
 
         try {
             httpClient.execute(request);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.warn(e);
         }
     }
 
     public String getReleaseId(String releaseName) {
         RestAssured.baseURI = spiraURI;
+        String path = String.format(
+                "find {it.FullName == '%s'}.ReleaseId", releaseName);
 
-        JsonPath jsonPath = given().contentType("application/json")
-                .with().parameter("username", username)
-                .and().parameter("api-key", apiKey)
-                .get("/releases").andReturn().jsonPath();
-
-        return jsonPath.getString(String.format(
-                "find {it.FullName == '%s'}.ReleaseId", releaseName));
+        return given().contentType("application/json")
+                .param("username", username)
+                .param("api-key", apiKey)
+                .when()
+                .get("/releases")
+                .thenReturn().jsonPath()
+                .getString(path);
     }
 
 }

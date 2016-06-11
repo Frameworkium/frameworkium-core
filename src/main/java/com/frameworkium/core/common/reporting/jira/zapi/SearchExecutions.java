@@ -2,12 +2,13 @@ package com.frameworkium.core.common.reporting.jira.zapi;
 
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.jira.Config;
-import com.jayway.restassured.path.json.JsonPath;
+import io.restassured.path.json.JsonPath;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
+
 
 public class SearchExecutions {
 
@@ -17,9 +18,9 @@ public class SearchExecutions {
     public SearchExecutions(final String query) {
 
         jsonPath = given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
-                .then()
+                .when()
                 .get(zapiURI + String.format("zql/executeSearch?zqlQuery=%s", query))
-                .andReturn().jsonPath();
+                .thenReturn().jsonPath();
     }
 
     /**

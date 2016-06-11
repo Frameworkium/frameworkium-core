@@ -13,16 +13,14 @@ public class ItineraryService extends BaseTFLService {
 
     @Step("Get itinerary from {0} to {1}")
     public Itinerary getItinerary(String from, String to) {
-        return getResponseSpecification()
-                .get(JOURNEY_PLANNER.getUrl(from, to))
+        return performRequest(JOURNEY_PLANNER.getUrl(from, to))
                 .as(Itinerary.class);
     }
 
     @Step("Get national itinerary from {0} to {1}")
     public Itinerary getNationalItinerary(String from, String to) {
         Map<String, String> params = ImmutableMap.of("nationalSearch", "true");
-        return getResponseSpecification(params)
-                .get(JOURNEY_PLANNER.getUrl(from, to))
+        return performRequest(params, JOURNEY_PLANNER.getUrl(from, to))
                 .as(Itinerary.class);
     }
 }

@@ -1,7 +1,10 @@
 package com.frameworkium.core.api.services;
 
-import com.jayway.restassured.specification.RequestSpecification;
-import com.jayway.restassured.specification.ResponseSpecification;
+import com.google.common.collect.ImmutableMap;
+import io.restassured.http.Method;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,38 +19,54 @@ public abstract class BaseService {
      * defined in the given service. For example:
      * <pre><code>RestAssured.given().proxy(...)</code></pre>
      */
-    protected abstract RequestSpecification getDefaultRequestSpecification();
+    protected abstract RequestSpecification getRequestSpec();
 
     /**
      * Used to define the RequestSpecification common to all operations
      * defined in the given service. For example:
      * <pre>
-     *     <code>getDefaultRequestSpecification().expect().response().statusCode(200);</code>
+     *     <code>getDefaultRequestSpecification().then().response().statusCode(200);</code>
      * </pre>
      */
-    protected abstract ResponseSpecification getDefaultResponseSpecification();
+    protected abstract ResponseSpecification getResponseSpec();
 
     /**
-     * Template method used to define the RequestSpecification with params.
+     * Performs GET request of the URL.
+     *
+     * @param url the url to get
+     * @return The response from the request
      */
-    protected ResponseSpecification getResponseSpecification(Map<String, ?> params) {
-        return getRequestSpecification()
+    protected ExtractableResponse performRequest(String url) {
+        return performRequest(ImmutableMap.of(), url);
+    }
+
+    /**
+     * Performs GET request of the URL with parameters.
+     *
+     * @param params the GET parameters
+     * @param url    the URL to GET
+     * @return The response from the request
+     */
+    protected ExtractableResponse performRequest(Map<String, ?> params, String url) {
+        return performRequest(Method.GET, params, url);
+    }
+
+    /**
+     * Performs specified HTTP verb request of the URL with parameters.
+     *
+     * @param method the HTTP method to request
+     * @param params the request parameters
+     * @param url    the URL to request
+     * @return The response from the request
+     */
+    protected ExtractableResponse performRequest(Method method, Map<String, ?> params, String url) {
+        return getRequestSpec()
                 .params(params)
-                .response().spec(getResponseSpecification());
-    }
-
-    /**
-     * Method to be overridden in Concrete Services if required.
-     */
-    protected ResponseSpecification getResponseSpecification() {
-        return getDefaultResponseSpecification();
-    }
-
-    /**
-     * Method to be overridden in Concrete Services if required.
-     */
-    protected RequestSpecification getRequestSpecification() {
-        return getDefaultRequestSpecification();
+                .when()
+                .request(method, url)
+                .then()
+                .spec(getResponseSpec())
+                .extract();
     }
 
 }

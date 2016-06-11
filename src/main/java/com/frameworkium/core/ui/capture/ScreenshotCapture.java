@@ -9,8 +9,8 @@ import com.frameworkium.core.ui.driver.DriverSetup;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
 import com.frameworkium.core.ui.tests.BaseTest;
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.http.ContentType;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
@@ -34,6 +34,15 @@ public class ScreenshotCapture {
         initExecution(testID);
     }
 
+    public static boolean isRequired() {
+        boolean allRequirePropertiesSpecified =
+                CAPTURE_URL.isSpecified() &&
+                        SUT_NAME.isSpecified() &&
+                        SUT_VERSION.isSpecified();
+
+        return allRequirePropertiesSpecified && !Driver.isNative();
+    }
+
     private void initExecution(String testID) {
 
         String uri = CAPTURE_URL.getValue() + "/executions";
@@ -45,6 +54,7 @@ public class ScreenshotCapture {
             executionID = RestAssured
                     .given().contentType(ContentType.JSON)
                     .body(createExecution)
+                    .when()
                     .post(uri)
                     .then().statusCode(201)
                     .extract().path("executionID").toString();
@@ -74,7 +84,8 @@ public class ScreenshotCapture {
                             remoteDriver.getSessionId());
 
                     node = RestAssured
-                            .post(testSessionURI).then()
+                            .post(testSessionURI)
+                            .then()
                             .extract().path("proxyId");
                 } catch (Throwable t) {
                     logger.warn("Failed to get node address of remote web driver");
@@ -90,15 +101,6 @@ public class ScreenshotCapture {
             }
         }
         return node;
-    }
-
-    public static boolean isRequired() {
-        boolean allRequirePropertiesSpecified =
-                CAPTURE_URL.isSpecified() &&
-                        SUT_NAME.isSpecified() &&
-                        SUT_VERSION.isSpecified();
-
-        return allRequirePropertiesSpecified && !Driver.isNative();
     }
 
     public void takeAndSendScreenshot(
@@ -123,14 +125,17 @@ public class ScreenshotCapture {
 
         String uri = CAPTURE_URL.getValue() + "/screenshot";
 
-        executor.submit(() -> {
+        executor.execute(() -> {
+            logger.debug("About to send screenshot to Capture.");
             try {
-                logger.debug("About to send screenshot to Capture.");
-                RestAssured.given().contentType(ContentType.JSON)
+                RestAssured.given()
+                        .contentType(ContentType.JSON)
                         .body(createScreenshotMessage)
+                        .when()
                         .post(uri)
                         .then()
                         .assertThat().statusCode(201);
+                logger.debug("Sent screenshot to Capture.");
             } catch (Throwable t) {
                 logger.warn("Failed sending screenshot to Capture.");
                 logger.debug(t);

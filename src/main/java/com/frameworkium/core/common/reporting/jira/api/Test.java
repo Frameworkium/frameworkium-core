@@ -2,12 +2,12 @@ package com.frameworkium.core.common.reporting.jira.api;
 
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.jira.Config;
-import com.jayway.restassured.path.json.JsonPath;
+import io.restassured.path.json.JsonPath;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.*;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 
 public class Test {
 
@@ -35,16 +35,16 @@ public class Test {
         given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword).and()
                 .contentType("application/json").and()
                 .body(obj.toString())
-                .then()
+                .when()
                 .put(jiraAPIURI + "/issue/" + issueKey);
     }
 
     private static String getFieldId(String fieldName) {
 
         JsonPath jsonPath = given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
-                .then()
+                .when()
                 .get(jiraAPIURI + "/field")
-                .andReturn().jsonPath();
+                .thenReturn().jsonPath();
 
         return jsonPath.getString(String.format("find {it.name == '%s'}.id", fieldName));
     }
@@ -61,16 +61,16 @@ public class Test {
         given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword).and()
                 .contentType("application/json").and()
                 .body(obj.toString())
-                .then()
+                .when()
                 .post(jiraAPIURI + "/issue/" + issueKey + "/comment");
     }
 
     private static int getTransitionId(String issueKey, String transitionName) {
 
         JsonPath jsonPath = given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
-                .then()
+                .when()
                 .get(jiraAPIURI + "/issue/" + issueKey + "?expand=transitions.fields")
-                .andReturn().jsonPath();
+                .thenReturn().jsonPath();
 
         String jsonPathToTransitionId = String.format(
                 "transitions.find {it -> it.name == '%s'}.id", transitionName);
@@ -97,7 +97,7 @@ public class Test {
         given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword).and()
                 .contentType("application/json").and()
                 .body(obj.toString())
-                .then()
+                .when()
                 .post(jiraAPIURI + "issue/" + issueKey + "/transitions");
     }
 }

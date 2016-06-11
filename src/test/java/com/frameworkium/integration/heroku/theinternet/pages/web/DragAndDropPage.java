@@ -2,7 +2,7 @@ package com.frameworkium.integration.heroku.theinternet.pages.web;
 
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
-import com.jayway.restassured.RestAssured;
+import io.restassured.RestAssured;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.allure.annotations.Step;

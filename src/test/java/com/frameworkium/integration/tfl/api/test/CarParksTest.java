@@ -14,6 +14,10 @@ public class CarParksTest extends BaseTest {
 
     private CarParkOccupancies carParkOccupancies;
 
+    /**
+     * Make the service call only once using {@link BeforeClass} to speed up
+     * tests while allowing fine grain tests.
+     */
     @BeforeClass
     public void setUp() {
         carParkOccupancies = new CarParkOccupancyService().getCarParkOccupancies();
@@ -36,23 +40,24 @@ public class CarParksTest extends BaseTest {
         // between the first and subsequent service call
         // this is due to using a live service and not controlling test data
 
-        CarParkOccupancy randomCPO = carParkOccupancies.getRandomCarParkOccupancy();
+        CarParkOccupancy randomCPO = carParkOccupancies.getRandom();
 
         // Get said CPO via ID
         CarParkOccupancy specificCPO =
-                new CarParkOccupancyService().getCarParkOccupancyByID(randomCPO.id);
+                new CarParkOccupancyService()
+                        .getCarParkOccupancyByID(randomCPO.id);
 
         // Make sure they are the same ignoring the details of the bays
-        assertThat(specificCPO.equalsIgnoringBayDetails(randomCPO)).isTrue();
+        assertThat(specificCPO.equalsIgnoringBays(randomCPO)).isTrue();
     }
 
     public void single_car_park_has_sane_number_of_free_spaces() {
 
-        CarParkOccupancy randomCPO = carParkOccupancies.getRandomCarParkOccupancy();
+        String randomCPOID = carParkOccupancies.getRandom().id;
 
         // Get said CP via ID
         int freeSpaces = new CarParkOccupancyService()
-                .getCarParkOccupancyByID(randomCPO.id)
+                .getCarParkOccupancyByID(randomCPOID)
                 .getNumFreeSpaces();
 
         // Make sure things are sane

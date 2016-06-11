@@ -10,7 +10,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.List;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 
 public class Issue {
 
@@ -39,30 +39,31 @@ public class Issue {
             logger.error("Can't create JSON Object for linkIssues", e);
         }
 
-        given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword).and()
-                .contentType("application/json").and()
+        given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+                .contentType("application/json")
                 .body(obj.toString())
-                .then()
+                .when()
                 .post(jiraAPIURI + "issueLink");
     }
 
     public List<String> getAttachmentIds() {
 
-        return given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
-                .then()
-                .get(jiraAPIURI + "issue/" + issueKey).andReturn().jsonPath().getList("fields.attachment.id");
-
+        return given()
+                .auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+                .when()
+                .get(jiraAPIURI + "issue/" + issueKey)
+                .thenReturn().jsonPath()
+                .getList("fields.attachment.id");
     }
 
     public void addAttachment(final File attachment) {
         String url = String.format("issue/%s/attachments", issueKey);
 
-        given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword).and()
-                .header("X-Atlassian-Token", "nocheck").and()
+        given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+                .header("X-Atlassian-Token", "nocheck")
                 .multiPart(attachment).and()
-                .then()
+                .when()
                 .post(jiraAPIURI + url)
-                .andReturn().statusLine();
-
+                .thenReturn().statusLine();
     }
 }

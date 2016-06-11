@@ -12,7 +12,7 @@ import org.testng.ITestResult;
 import java.io.File;
 import java.util.List;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 public class Execution {
@@ -83,7 +83,7 @@ public class Execution {
                     .basic(Config.jiraUsername, Config.jiraPassword)
                     .contentType("application/json")
                     .body(obj.toString())
-                    .then()
+                    .when()
                     .put(zapiURI + "execution/" + executionId + "/execute");
 
         } catch (JSONException e) {
@@ -98,15 +98,15 @@ public class Execution {
         List<String> fileIds =
                 given().auth().preemptive()
                         .basic(Config.jiraUsername, Config.jiraPassword)
-                        .then()
-                        .get(zapiURI + path).andReturn().jsonPath()
+                        .when()
+                        .get(zapiURI + path).thenReturn().jsonPath()
                         .getList("data.fileId", String.class);
 
         // Iterate over attachments
         fileIds.forEach(fileId ->
                 given().auth().preemptive()
                         .basic(Config.jiraUsername, Config.jiraPassword)
-                        .then()
+                        .when()
                         .delete(zapiURI + "attachment/" + fileId)
         );
     }

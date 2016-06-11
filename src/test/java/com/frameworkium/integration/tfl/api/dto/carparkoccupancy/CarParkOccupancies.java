@@ -54,7 +54,7 @@ public class CarParkOccupancies {
     }
 
     @Step
-    public CarParkOccupancy getRandomCarParkOccupancy() {
+    public CarParkOccupancy getRandom() {
         return carParkOccupancies.get(
                 ThreadLocalRandom.current().nextInt(carParkOccupancies.size()));
     }

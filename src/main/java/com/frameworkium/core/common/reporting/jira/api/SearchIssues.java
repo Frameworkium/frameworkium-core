@@ -2,11 +2,11 @@ package com.frameworkium.core.common.reporting.jira.api;
 
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.jira.Config;
-import com.jayway.restassured.path.json.JsonPath;
+import io.restassured.path.json.JsonPath;
 
 import java.util.List;
 
-import static com.jayway.restassured.RestAssured.given;
+import static io.restassured.RestAssured.given;
 
 public class SearchIssues {
 
@@ -16,10 +16,9 @@ public class SearchIssues {
     public SearchIssues(final String query) {
         try {
             jsonPath = given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
-                    .log().everything()
-                    .then()
+                    .when()
                     .get(jiraAPIURI + String.format("search?jql=%s&maxResults=1000", query))
-                    .andReturn().jsonPath();
+                    .thenReturn().jsonPath();
 
         } catch (RuntimeException re) {
             throw new RuntimeException("Problem with JIRA or JQL.");

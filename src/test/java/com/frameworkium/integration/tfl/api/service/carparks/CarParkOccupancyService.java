@@ -12,16 +12,15 @@ public class CarParkOccupancyService extends BaseTFLService {
 
     @Step("Get Car Park Occupancies")
     public CarParkOccupancies getCarParkOccupancies() {
-        return new CarParkOccupancies(
-                getResponseSpecification()
-                        .get(CAR_PARK_OCCUPANCY.getUrl())
-                        .as(CarParkOccupancy[].class));
+        CarParkOccupancy[] carParkOccupancies =
+                performRequest(CAR_PARK_OCCUPANCY.getUrl())
+                        .as(CarParkOccupancy[].class);
+        return new CarParkOccupancies(carParkOccupancies);
     }
 
     @Step("Get Car Park Occupancy by ID {0}")
     public CarParkOccupancy getCarParkOccupancyByID(String id) {
-        return getResponseSpecification()
-                .get(CAR_PARK_OCCUPANCY_BY_ID.getUrl(id))
+        return performRequest(CAR_PARK_OCCUPANCY_BY_ID.getUrl(id))
                 .as(CarParkOccupancy.class);
     }
 
