@@ -11,17 +11,17 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onTestStart(ITestResult result) {
-        logger.info("starting {}.{}", result.getTestClass().getName(), result.getMethod().getMethodName());
+        logger.info("START {}", getTestIdentifier(result));
     }
 
     @Override
     public void onTestSuccess(ITestResult result) {
-        logger.info("PASS {}.{}", result.getTestClass().getName(), result.getMethod().getMethodName());
+        logger.info("PASS  {}", getTestIdentifier(result));
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
-        logger.error("FAIL {}.{}", result.getTestClass().getName(), result.getMethod().getMethodName());
+        logger.error("FAIL  {}", getTestIdentifier(result));
         Throwable cause = result.getThrowable();
         if (null != cause) {
             logger.error(cause.getMessage(), cause);
@@ -30,11 +30,17 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onTestSkipped(ITestResult result) {
-        logger.error("SKIP {}.{}", result.getTestClass().getName(), result.getMethod().getMethodName());
+        logger.warn("SKIP  {}", getTestIdentifier(result));
         Throwable cause = result.getThrowable();
         if (cause != null && SkipException.class.isAssignableFrom(cause.getClass())) {
-            logger.error(cause.getMessage());
+            logger.warn(cause.getMessage());
         }
+    }
+
+    private String getTestIdentifier(ITestResult result) {
+        return String.format("%s.%s",
+                result.getInstanceName(),
+                result.getMethod().getMethodName());
     }
 
     @Override
