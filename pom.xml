@@ -42,7 +42,7 @@
   <dependencies>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-server</artifactId>
+      <artifactId>selenium-java</artifactId>
       <version>2.53.0</version>
     </dependency>
     <dependency>
@@ -70,11 +70,6 @@
       <groupId>ru.yandex.qatools.htmlelements</groupId>
       <artifactId>htmlelements-java</artifactId>
       <version>1.16</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.inject</groupId>
-      <artifactId>guice</artifactId>
-      <version>4.0</version>
     </dependency>
     <dependency>
       <groupId>io.appium</groupId>

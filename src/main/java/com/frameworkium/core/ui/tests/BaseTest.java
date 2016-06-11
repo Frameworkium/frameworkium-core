@@ -112,7 +112,7 @@ public abstract class BaseTest
         }
     }
 
-    /** Should be moved inside the Driver object */
+    /** TODO: Should be moved inside the Driver object */
     private static void configureDriverBasedOnParams() {
         if (requiresReset.get()) {
             driver.get().resetBrowser();
