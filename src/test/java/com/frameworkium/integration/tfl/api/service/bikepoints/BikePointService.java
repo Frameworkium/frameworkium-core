@@ -14,15 +14,17 @@ public class BikePointService extends BaseTFLService {
 
     @Step("Get Bike Points")
     public BikePoints getBikePoints() {
-        Place[] places = performRequest(BIKE_POINT.getUrl()).as(Place[].class);
+        Place[] places = request(BIKE_POINT.getUrl()).as(Place[].class);
+
         return new BikePoints(places);
     }
 
     @Step("Search Bike Points")
     public BikePoints searchBikePoints(Map<String, String> params) {
         PlacesResponse placesResponse =
-                performRequest(params, BIKE_POINT.getUrl())
+                request(params, BIKE_POINT.getUrl())
                         .as(PlacesResponse.class);
+
         return new BikePoints(placesResponse);
     }
 }

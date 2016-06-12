@@ -36,8 +36,8 @@ public abstract class BaseService {
      * @param url the url to get
      * @return The response from the request
      */
-    protected ExtractableResponse performRequest(String url) {
-        return performRequest(ImmutableMap.of(), url);
+    protected ExtractableResponse request(String url) {
+        return request(ImmutableMap.of(), url);
     }
 
     /**
@@ -47,8 +47,8 @@ public abstract class BaseService {
      * @param url    the URL to GET
      * @return The response from the request
      */
-    protected ExtractableResponse performRequest(Map<String, ?> params, String url) {
-        return performRequest(Method.GET, params, url);
+    protected ExtractableResponse request(Map<String, ?> params, String url) {
+        return request(Method.GET, params, url);
     }
 
     /**
@@ -59,7 +59,7 @@ public abstract class BaseService {
      * @param url    the URL to request
      * @return The response from the request
      */
-    protected ExtractableResponse performRequest(Method method, Map<String, ?> params, String url) {
+    protected ExtractableResponse request(Method method, Map<String, ?> params, String url) {
         return getRequestSpec()
                 .params(params)
                 .when()

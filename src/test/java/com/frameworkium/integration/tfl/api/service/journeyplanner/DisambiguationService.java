@@ -11,7 +11,7 @@ import static com.frameworkium.integration.tfl.api.constant.Endpoint.JOURNEY_PLA
 public class DisambiguationService extends BaseTFLService {
 
     public DisambiguationResult getDisambiguationResult(String from, String to) {
-        return performRequest(JOURNEY_PLANNER.getUrl(from, to))
+        return request(JOURNEY_PLANNER.getUrl(from, to))
                 .as(DisambiguationResult.class);
     }
 
@@ -21,8 +21,7 @@ public class DisambiguationService extends BaseTFLService {
      */
     @Override
     protected ResponseSpecification getResponseSpec() {
-        return RestAssured
-                .expect()
+        return RestAssured.expect()
                 .statusCode(HttpStatus.SC_MULTIPLE_CHOICES);
     }
 
