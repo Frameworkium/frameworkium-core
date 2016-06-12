@@ -2,6 +2,7 @@ package com.frameworkium.core.common.reporting.jira.api;
 
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.jira.Config;
+import io.restassured.specification.RequestSpecification;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
@@ -39,7 +40,7 @@ public class Issue {
             logger.error("Can't create JSON Object for linkIssues", e);
         }
 
-        given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+        getRequestSpec()
                 .contentType("application/json")
                 .body(obj.toString())
                 .when()
@@ -48,8 +49,7 @@ public class Issue {
 
     public List<String> getAttachmentIds() {
 
-        return given()
-                .auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+        return getRequestSpec()
                 .when()
                 .get(jiraAPIURI + "issue/" + issueKey)
                 .thenReturn().jsonPath()
@@ -59,11 +59,17 @@ public class Issue {
     public void addAttachment(final File attachment) {
         String url = String.format("issue/%s/attachments", issueKey);
 
-        given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+        getRequestSpec()
                 .header("X-Atlassian-Token", "nocheck")
                 .multiPart(attachment).and()
                 .when()
                 .post(jiraAPIURI + url)
                 .thenReturn().statusLine();
+    }
+
+    private static RequestSpecification getRequestSpec() {
+        return given()
+                .auth().preemptive()
+                .basic(Config.jiraUsername, Config.jiraPassword);
     }
 }
