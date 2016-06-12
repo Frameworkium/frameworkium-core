@@ -14,7 +14,7 @@ public class DriverSetup {
 
     /** Supported drivers */
     public enum Browser {
-        FIREFOX, CHROME, OPERA, IE, PHANTOMJS, SAFARI, ELECTRON
+        MARIONETTE, FIREFOX, CHROME, OPERA, IE, PHANTOMJS, SAFARI, ELECTRON
     }
 
     /** Supported remote grids */
@@ -65,6 +65,8 @@ public class DriverSetup {
 
     private Driver returnBrowserObject(Browser browser) {
         switch (browser) {
+            case MARIONETTE:
+                return new MarionetteImpl();
             case FIREFOX:
                 return new FirefoxImpl();
             case CHROME:
@@ -79,8 +81,9 @@ public class DriverSetup {
                 return new SafariImpl();
             case ELECTRON:
                 return new ElectronImpl();
+            default:
+                throw new IllegalArgumentException("Invalid browser type.");
         }
-        throw new IllegalArgumentException("Invalid browser type.");
     }
 
     /**

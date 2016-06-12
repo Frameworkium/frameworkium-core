@@ -13,6 +13,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.Wait;
 import ru.yandex.qatools.htmlelements.loader.HtmlElementLoader;
 
+import java.util.Objects;
+
 public abstract class BasePage<T extends BasePage<T>> {
 
     protected final Logger logger = LogManager.getLogger(this);
@@ -107,18 +109,13 @@ public abstract class BasePage<T extends BasePage<T>> {
                         null);
             } catch (Exception e) {
                 logger.warn("Failed to send loading screenshot to Capture.");
+                logger.debug(e);
             }
         }
     }
 
     private boolean isPageAngularJS() {
-        try {
-            return executeJS("return typeof angular;").equals("object");
-        } catch (NullPointerException e) {
-            logger.error("Detecting whether the page was angular returned a null object. " +
-                    "This means your browser hasn't started! Investigate into the issue.");
-            throw new RuntimeException(e);
-        }
+        return Objects.equals(executeJS("return typeof angular;"), "object");
     }
 
     /**
@@ -132,8 +129,8 @@ public abstract class BasePage<T extends BasePage<T>> {
         try {
             returnObj = jsExecutor.executeScript(javascript);
         } catch (Exception e) {
-            logger.error("Javascript execution failed! Please investigate into the issue.");
-            logger.debug("Failed Javascript:" + javascript);
+            logger.error("Javascript execution failed!");
+            logger.debug("Failed Javascript:" + javascript, e);
         }
         return returnObj;
     }
@@ -172,8 +169,8 @@ public abstract class BasePage<T extends BasePage<T>> {
             JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
             returnObj = jsExecutor.executeAsyncScript(javascript);
         } catch (Exception e) {
-            logger.error("Async javascript execution failed!", e);
-            logger.debug("Failed Javascript:" + javascript);
+            logger.error("Async Javascript execution failed!");
+            logger.debug("Failed Javascript:" + javascript, e);
         }
         return returnObj;
     }

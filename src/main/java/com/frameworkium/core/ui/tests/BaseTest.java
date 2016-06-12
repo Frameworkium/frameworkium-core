@@ -107,7 +107,7 @@ public abstract class BaseTest
             configureDriverBasedOnParams();
             initialiseNewScreenshotCapture(testMethod);
         } catch (Exception e) {
-            logger.error(e);
+            logger.error("Failed to configure browser.", e);
             throw new RuntimeException("Failed to configure browser.", e);
         }
     }

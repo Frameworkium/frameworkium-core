@@ -37,8 +37,10 @@ public class SauceLabsListener extends SauceOnDemandTestListener {
     @Override
     public void onTestStart(ITestResult result) {
         if (isRunningOnSauceLabs) {
-            Sauce.updateJobName((SauceOnDemandSessionIdProvider) result.getInstance(), result.getTestClass()
-                    .getRealClass().getSimpleName());
+            // TODO: thread safe?
+            Sauce.updateJobName(
+                    (SauceOnDemandSessionIdProvider) result.getInstance(),
+                    result.getTestClass().getRealClass().getSimpleName());
 
             super.onTestStart(result);
         }
