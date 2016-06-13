@@ -174,13 +174,23 @@ public final class Visibility {
      * Calls {@link Visibility#forceVisible(WebElement)} after calling
      * {@link Visibility#waitForFieldToBeVisible(Object, Field)}.
      */
+    @SuppressWarnings("unchecked")
     private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field) {
 
+        Object objectFromField = getObjectFromField(pageObject, field);
         applyToWebElements(
                 field,
-                getObjectFromField(pageObject, field),
+                objectFromField,
                 this::forceVisible,
                 list -> list.forEach(this::forceVisible));
+
+        // recurse inside HtmlElements
+        if (isHtmlElementList(field)) {
+            ((List<HtmlElement>) objectFromField)
+                    .forEach(this::waitForAnnotatedElementVisibility);
+        } else if (isHtmlElement(field)) {
+            waitForAnnotatedElementVisibility(objectFromField);
+        }
 
         waitForFieldToBeVisible(pageObject, field);
     }
@@ -196,13 +206,6 @@ public final class Visibility {
             throw new IllegalArgumentException(
                     "Only elements of type HtmlElement, TypifiedElement, WebElement or " +
                             "Lists thereof are supported by Visibility annotations.");
-        }
-
-        // recurse inside HtmlElements
-        if (isHtmlElementList(field)) {
-            ((List<HtmlElement>) obj).forEach(this::waitForAnnotatedElementVisibility);
-        } else if (isHtmlElement(field)) {
-            waitForAnnotatedElementVisibility(obj);
         }
     }
 
