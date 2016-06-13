@@ -59,6 +59,7 @@ public abstract class BasePage<T extends BasePage<T>> {
      */
     public T get(long timeout) {
         wait = BaseTest.newWaitWithTimeout(timeout);
+        visibility = new Visibility(wait, BaseTest.getDriver());
         return get();
     }
 
