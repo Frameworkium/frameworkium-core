@@ -22,7 +22,7 @@ public interface Driver {
      * perhaps builder pattern.
      */
     @Deprecated
-    void instantiate();
+    void initialise();
 
     /** Reset the browser ready for another test. */
     void resetBrowser();

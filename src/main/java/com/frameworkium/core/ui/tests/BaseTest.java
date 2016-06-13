@@ -12,8 +12,8 @@ import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
@@ -36,58 +36,37 @@ public abstract class BaseTest
         implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
     public static final ExecutorService executor = Executors.newSingleThreadExecutor();
-
-    private static final long DEFAULT_TIMEOUT_SECONDS = 10;
-
+    protected static final Logger logger = LogManager.getLogger();
+    private static final long DEFAULT_TIMEOUT_SECONDS = 10L;
     private static String userAgent;
-
     private static ThreadLocal<Boolean> requiresReset;
     private static ThreadLocal<ScreenshotCapture> capture;
     private static ThreadLocal<Driver> driver;
     private static ThreadLocal<Wait<WebDriver>> wait;
     private static List<Driver> activeDrivers =
             Collections.synchronizedList(new ArrayList<>());
-    private static Logger logger = LogManager.getLogger(BaseTest.class);
 
     /**
      * Method which runs first upon running a test, it will do the following:
-     * - Retrieve the desired {@link Driver} and initialise the {@link WebDriver}
-     * - Initialise the {@link Wait}
-     * - Initialise whether the browser needs resetting
-     * - Initialise the {@link ScreenshotCapture}
+     * <ul>
+     * <li>Retrieve the {@link Driver} and initialise the {@link WebDriver}</li>
+     * <li>Initialise the {@link Wait}</li>
+     * <li>Initialise whether the browser needs resetting</li>
+     * <li>Initialise the {@link ScreenshotCapture}</li>
+     * </ul>
      */
     @BeforeSuite(alwaysRun = true)
     public static void instantiateDriverObject() {
         driver = ThreadLocal.withInitial(() -> {
             Driver newDriver =
                     new DriverSetup().returnDesiredDriverType();
-            newDriver.instantiate();
+            newDriver.initialise();
             activeDrivers.add(newDriver);
             return newDriver;
         });
         wait = ThreadLocal.withInitial(BaseTest::newDefaultWait);
         requiresReset = ThreadLocal.withInitial(() -> Boolean.FALSE);
         capture = ThreadLocal.withInitial(() -> null);
-    }
-
-    public static Wait<WebDriver> newDefaultWait() {
-        return newWaitWithTimeout(DEFAULT_TIMEOUT_SECONDS);
-    }
-
-    public static Wait<WebDriver> newWaitWithTimeout(long timeout) {
-        return new FluentWait<>(getDriver().getWrappedDriver())
-                .withTimeout(timeout, TimeUnit.SECONDS)
-                .ignoring(org.openqa.selenium.NoSuchElementException.class)
-                .ignoring(StaleElementReferenceException.class);
-    }
-
-    /**
-     * Returns the {@link WebDriverWrapper} instance for the requesting thread
-     *
-     * @return - WebDriver object
-     */
-    public static WebDriverWrapper getDriver() {
-        return driver.get().getDriver();
     }
 
     /**
@@ -99,7 +78,7 @@ public abstract class BaseTest
      * <li>Sets the user agent of the browser</li>
      * </ul>
      *
-     * @param testMethod - The test method name of the test
+     * @param testMethod The test method name of the test
      */
     @BeforeMethod(alwaysRun = true)
     public static void configureBrowserBeforeTest(Method testMethod) {
@@ -112,7 +91,7 @@ public abstract class BaseTest
         }
     }
 
-    /** TODO: Should be moved inside the Driver object */
+    /** TODO: Should be refactored */
     private static void configureDriverBasedOnParams() {
         if (requiresReset.get()) {
             driver.get().resetBrowser();
@@ -121,22 +100,6 @@ public abstract class BaseTest
             requiresReset.set(true);
         }
         userAgent = determineUserAgent();
-    }
-
-    /**
-     * Initialise the screenshot capture and link to issue/test case id
-     *
-     * @param testMethod - Test method passed from the test script
-     */
-    private static void initialiseNewScreenshotCapture(Method testMethod) {
-        if (ScreenshotCapture.isRequired()) {
-            Optional<String> testID = getIssueOrTestCaseIdValue(testMethod);
-            if (!testID.isPresent() || testID.get().isEmpty()) {
-                logger.warn("{} doesn't have a TestID annotation.", testMethod.getName());
-                testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));
-            }
-            capture.set(new ScreenshotCapture(testID.orElse("n/a")));
-        }
     }
 
     private static String determineUserAgent() {
@@ -148,10 +111,27 @@ public abstract class BaseTest
     }
 
     /**
+     * Initialise the screenshot capture and link to issue/test case id
+     *
+     * @param testMethod Test method passed from the test script
+     */
+    private static void initialiseNewScreenshotCapture(Method testMethod) {
+        if (ScreenshotCapture.isRequired()) {
+            Optional<String> testID = getIssueOrTestCaseIdValue(testMethod);
+            if (testID.orElse("").isEmpty()) {
+                logger.warn("{} doesn't have a TestID annotation.", testMethod.getName());
+                testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));
+            }
+            capture.set(new ScreenshotCapture(testID.orElse("n/a")));
+        }
+    }
+
+    /**
+     * TODO: doesn't belong in this class
      * @param method the method to check for test ID annotations.
      * @return Optional of the {@link TestCaseId} or {@link Issue} value.
      * @throws IllegalStateException if {@link TestCaseId} and {@link Issue}
-     *                               are specified inconstantly.
+     *                               are both specified inconstantly.
      */
     public static Optional<String> getIssueOrTestCaseIdValue(Method method) {
         TestCaseId tcIdAnnotation = method.getAnnotation(TestCaseId.class);
@@ -162,7 +142,9 @@ public abstract class BaseTest
             throw new IllegalStateException(
                     "TestCaseId and Issue annotation are both specified but " +
                             "not equal for method: " + method.toString());
-        } else if (!isNull(issueAnnotation)) {
+        }
+
+        if (!isNull(issueAnnotation)) {
             return Optional.of(issueAnnotation.value());
         } else if (!isNull(tcIdAnnotation)) {
             return Optional.of(tcIdAnnotation.value());
@@ -172,8 +154,33 @@ public abstract class BaseTest
     }
 
     /**
+     * @return a new {@link Wait} for the thread local driver and default timeout
+     */
+    public static Wait<WebDriver> newDefaultWait() {
+        return newWaitWithTimeout(DEFAULT_TIMEOUT_SECONDS);
+    }
+
+    /**
+     * @param timeout timeout in seconds for the {@link Wait}
+     * @return a new {@link Wait} for the thread local driver and given timeout
+     */
+    public static Wait<WebDriver> newWaitWithTimeout(long timeout) {
+        return new FluentWait<>(getDriver().getWrappedDriver())
+                .withTimeout(timeout, TimeUnit.SECONDS)
+                .ignoring(NoSuchElementException.class)
+                .ignoring(StaleElementReferenceException.class);
+    }
+
+    /**
+     * @return the {@link WebDriverWrapper} instance for the requesting thread
+     */
+    public static WebDriverWrapper getDriver() {
+        return driver.get().getDriver();
+    }
+
+    /**
      * @param iMethod the {@link IMethodInstance} to check for test ID annotations.
-     * @return Optional of either the {@link TestCaseId} and {@link Issue} value.
+     * @return Optional of either the {@link TestCaseId} or {@link Issue} value.
      * @throws IllegalStateException if {@link TestCaseId} and {@link Issue}
      *                               are specified inconstantly.
      */
@@ -205,7 +212,7 @@ public abstract class BaseTest
         }
     }
 
-    /** Creates the allure properties for the report, after the test run */
+    /** Creates the allure properties for the report */
     @AfterSuite(alwaysRun = true)
     public static void createAllureProperties() {
         AllureProperties.create();
@@ -227,6 +234,7 @@ public abstract class BaseTest
     }
 
     /** @return the Job id for the current thread */
+    @Override
     public String getSessionId() {
         SessionId sessionId = getDriver().getWrappedRemoteWebDriver().getSessionId();
         return isNull(sessionId) ? null : sessionId.toString();
@@ -246,12 +254,19 @@ public abstract class BaseTest
      * Other steps will be sub-steps until you call stepFinish
      *
      * @param stepName the name of the step
+     * @deprecated use <code>AllureLogger.__stepStart(stepName)</code>
      */
+    @Deprecated
     public void __stepStart(String stepName) {
         AllureLogger.__stepStart(stepName);
     }
 
-    /** Logs the end of a step */
+    /**
+     * Logs the end of a step
+     *
+     * @deprecated use <code>AllureLogger.__stepFinish()</code>
+     */
+    @Deprecated
     public void __stepFinish() {
         AllureLogger.__stepFinish();
     }

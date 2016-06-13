@@ -7,6 +7,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
+import ru.yandex.qatools.htmlelements.annotations.Timeout;
 import ru.yandex.qatools.htmlelements.element.Button;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
 
@@ -20,6 +21,7 @@ public class DynamicLoadingExamplePage extends BasePage<DynamicLoadingExamplePag
     private Button startButton;
 
     @Invisible
+    @Timeout(0) // prevents page load taking 5s due to implicit timeout
     @Name("Hidden element")
     @FindBy(id = "finish")
     private HtmlElement dynamicElement;

@@ -24,7 +24,7 @@ public abstract class AbstractDriver implements Driver {
     protected final static Logger logger = LogManager.getLogger(AbstractDriver.class);
 
     /** Creates the Wrapped Driver object */
-    public void instantiate() {
+    public void initialise() {
         DesiredCapabilities caps = getDesiredCapabilities();
 
         Proxy currentProxy = getProxy();
@@ -128,7 +128,7 @@ public abstract class AbstractDriver implements Driver {
     /** {@inheritDoc} */
     public void resetBrowser() {
         tearDown();
-        instantiate();
+        initialise();
     }
 
 }

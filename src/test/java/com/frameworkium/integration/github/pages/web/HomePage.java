@@ -10,7 +10,7 @@ import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
 public class HomePage extends BasePage<HomePage> {
 
@@ -33,6 +33,6 @@ public class HomePage extends BasePage<HomePage> {
     }
 
     public void waitForSomething() {
-        wait.until(invisibilityOfElementLocated(By.cssSelector("Not here")));
+        wait.until(visibilityOfElementLocated(By.cssSelector("body")));
     }
 }
