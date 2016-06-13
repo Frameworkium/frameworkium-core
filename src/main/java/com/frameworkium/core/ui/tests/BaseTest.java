@@ -120,6 +120,8 @@ public abstract class BaseTest
             requiresReset.set(true);
         }
         driver.get().maximiseBrowserWindow();
+        // Remember to update default wait after quitting previous driver
+        wait.set(newDefaultWait());
         userAgent = determineUserAgent();
     }
 
