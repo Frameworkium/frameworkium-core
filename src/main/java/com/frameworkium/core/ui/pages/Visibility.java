@@ -151,13 +151,23 @@ public final class Visibility {
      * @param pageObject the pageObject
      * @param field      wait for visibility of the field
      */
+    @SuppressWarnings("unchecked")
     private void waitForFieldToBeVisible(Object pageObject, Field field) {
 
+        Object objectFromField = getObjectFromField(pageObject, field);
         applyToWebElements(
                 field,
-                getObjectFromField(pageObject, field),
+                objectFromField,
                 we -> wait.until(visibilityOf(we)),
                 list -> wait.until(visibilityOfAllElements(list)));
+
+        // recurse inside HtmlElements
+        if (isHtmlElementList(field)) {
+            ((List<HtmlElement>) objectFromField)
+                    .forEach(this::waitForAnnotatedElementVisibility);
+        } else if (isHtmlElement(field)) {
+            waitForAnnotatedElementVisibility(objectFromField);
+        }
     }
 
     /** Same as waitForFieldToBeVisible but for Invisibility. */
@@ -174,23 +184,13 @@ public final class Visibility {
      * Calls {@link Visibility#forceVisible(WebElement)} after calling
      * {@link Visibility#waitForFieldToBeVisible(Object, Field)}.
      */
-    @SuppressWarnings("unchecked")
     private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field) {
 
-        Object objectFromField = getObjectFromField(pageObject, field);
         applyToWebElements(
                 field,
-                objectFromField,
+                getObjectFromField(pageObject, field),
                 this::forceVisible,
                 list -> list.forEach(this::forceVisible));
-
-        // recurse inside HtmlElements
-        if (isHtmlElementList(field)) {
-            ((List<HtmlElement>) objectFromField)
-                    .forEach(this::waitForAnnotatedElementVisibility);
-        } else if (isHtmlElement(field)) {
-            waitForAnnotatedElementVisibility(objectFromField);
-        }
 
         waitForFieldToBeVisible(pageObject, field);
     }
