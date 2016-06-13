@@ -41,6 +41,8 @@ public abstract class AbstractDriver implements Driver {
         }
         eventFiringWD.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
         this.webDriverWrapper = eventFiringWD;
+
+        maximiseBrowserWindow();
     }
 
     /**

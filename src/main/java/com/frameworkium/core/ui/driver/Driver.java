@@ -47,10 +47,4 @@ public interface Driver {
 
     /** Method to tear down the driver object. */
     void tearDown();
-
-    /**
-     * @deprecated Should probably be part of the constructor like instantiate.
-     */
-    @Deprecated
-    void maximiseBrowserWindow();
 }

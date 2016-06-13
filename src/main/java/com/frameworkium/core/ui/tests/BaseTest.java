@@ -116,7 +116,6 @@ public abstract class BaseTest
     private static void configureDriverBasedOnParams() {
         if (requiresReset.get()) {
             driver.get().resetBrowser();
-            driver.get().maximiseBrowserWindow();
             wait.set(newDefaultWait());
         } else {
             requiresReset.set(true);
