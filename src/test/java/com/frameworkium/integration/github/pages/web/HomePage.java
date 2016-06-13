@@ -4,10 +4,13 @@ import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
 import com.frameworkium.core.ui.pages.PageFactory;
 import com.frameworkium.integration.github.pages.web.components.HeaderComponent;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
+
+import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOfElementLocated;
 
 public class HomePage extends BasePage<HomePage> {
 
@@ -27,5 +30,9 @@ public class HomePage extends BasePage<HomePage> {
 
     public HeaderComponent theHeader() {
         return header;
+    }
+
+    public void waitForSomething() {
+        wait.until(invisibilityOfElementLocated(By.cssSelector("Not here")));
     }
 }

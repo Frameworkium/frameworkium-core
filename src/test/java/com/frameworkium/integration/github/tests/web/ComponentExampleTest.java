@@ -33,6 +33,15 @@ public class ComponentExampleTest extends BaseTest {
     @TestCaseId("Force Visible")
     @Test(description = "force visible makes hidden element visible")
     public void force_visible_makes_hidden_element_visible() {
-        HomePage.open().then().with().theHeader().testForceVisible();
+        HomePage hp = HomePage.open();
+        hp.then().with().theHeader().testForceVisible();
+        // tests bug whereby BasePage.wait wasn't updated after browser reset
+        hp.waitForSomething();
+    }
+
+    @TestCaseId("Wait update")
+    @Test(dependsOnMethods = {"force_visible_makes_hidden_element_visible"})
+    public void ensure_BaseTest_wait_is_updated_after_browser_reset() {
+        HomePage.open().waitForSomething();
     }
 }
