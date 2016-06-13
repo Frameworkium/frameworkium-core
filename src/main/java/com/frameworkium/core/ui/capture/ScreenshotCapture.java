@@ -11,6 +11,7 @@ import com.frameworkium.core.ui.driver.remotes.Sauce;
 import com.frameworkium.core.ui.tests.BaseTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
@@ -51,8 +52,7 @@ public class ScreenshotCapture {
             logger.debug("About to initialise Capture execution.");
             CreateExecution createExecution =
                     new CreateExecution(testID, getNode());
-            executionID = RestAssured
-                    .given().contentType(ContentType.JSON)
+            executionID = getRequestSpec()
                     .body(createExecution)
                     .when()
                     .post(uri)
@@ -86,7 +86,8 @@ public class ScreenshotCapture {
                     node = RestAssured
                             .post(testSessionURI)
                             .then()
-                            .extract().path("proxyId");
+                            .extract().jsonPath()
+                            .getString("proxyId");
                 } catch (Throwable t) {
                     logger.warn("Failed to get node address of remote web driver");
                     logger.debug(t);
@@ -116,6 +117,10 @@ public class ScreenshotCapture {
         );
     }
 
+    private String getBase64Screenshot(WebDriver driver) {
+        return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
+    }
+
     private void sendScreenshot(CreateScreenshot createScreenshotMessage) {
 
         if (executionID == null) {
@@ -128,8 +133,7 @@ public class ScreenshotCapture {
         executor.execute(() -> {
             logger.debug("About to send screenshot to Capture.");
             try {
-                RestAssured.given()
-                        .contentType(ContentType.JSON)
+                getRequestSpec()
                         .body(createScreenshotMessage)
                         .when()
                         .post(uri)
@@ -143,7 +147,8 @@ public class ScreenshotCapture {
         });
     }
 
-    private String getBase64Screenshot(WebDriver driver) {
-        return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
+    private RequestSpecification getRequestSpec() {
+        return RestAssured.given()
+                .contentType(ContentType.JSON);
     }
 }

@@ -32,21 +32,21 @@ public class DriverSetup {
     /**
      * Returns the driver to the base test, which initialises it
      *
-     * @return - A {@link Driver} Implementation
+     * @return A {@link Driver} Implementation
      */
     public Driver returnDesiredDriverType() {
         Driver browserDriver = returnBrowserObject(returnBrowserType());
-        return initialiseDesiredDriverType(browserDriver);
+        return instantiateDesiredRemote(browserDriver);
     }
 
     /**
      * Uses the parameters given to determine which browser/remote/platform to use
      *
-     * @return - The correct driver type based on parameters
+     * @return The correct driver type based on parameters
      */
-    private Driver initialiseDesiredDriverType(Driver driverType) {
+    private Driver instantiateDesiredRemote(Driver driver) {
         if (useRemoteDriver()) {
-            DesiredCapabilities desiredCapabilities = driverType.getDesiredCapabilities();
+            DesiredCapabilities desiredCapabilities = driver.getDesiredCapabilities();
             Platform platform = getPlatformType();
             switch (returnRemoteType()) {
                 case SAUCE:
@@ -56,10 +56,10 @@ public class DriverSetup {
                 case GRID:
                     return new GridImpl(desiredCapabilities);
                 default:
-                    return driverType;
+                    return driver;
             }
         } else {
-            return driverType;
+            return driver;
         }
     }
 
@@ -89,7 +89,7 @@ public class DriverSetup {
     /**
      * Checks whether a remote driver is wanting to be used
      *
-     * @return - True/False to whether to use a remote driver
+     * @return True/False to whether to use a remote driver
      */
     public static boolean useRemoteDriver() {
         return Property.GRID_URL.isSpecified()
@@ -100,7 +100,7 @@ public class DriverSetup {
     /**
      * Returns the platform type, if it's been given
      *
-     * @return - Platform type
+     * @return Platform type
      */
     private static Platform getPlatformType() {
         if (Property.PLATFORM.isSpecified()) {
@@ -113,7 +113,7 @@ public class DriverSetup {
     /**
      * Returns the browser type and returns default if not specified
      *
-     * @return - Browser Type
+     * @return Browser Type
      */
     private static Browser returnBrowserType() {
         if (!Property.BROWSER.isSpecified()) {
@@ -126,7 +126,7 @@ public class DriverSetup {
     /**
      * Returns what type of remote driver has been specified to be used
      *
-     * @return - Remote Driver Type
+     * @return Remote Driver Type
      */
     private static RemoteGrid returnRemoteType() {
         if (Sauce.isDesired()) {

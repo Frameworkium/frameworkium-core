@@ -36,15 +36,17 @@ public abstract class BaseTest
         implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
     public static final ExecutorService executor = Executors.newSingleThreadExecutor();
+
     protected static final Logger logger = LogManager.getLogger();
+
     private static final long DEFAULT_TIMEOUT_SECONDS = 10L;
-    private static String userAgent;
-    private static ThreadLocal<Boolean> requiresReset;
+
     private static ThreadLocal<ScreenshotCapture> capture;
     private static ThreadLocal<Driver> driver;
     private static ThreadLocal<Wait<WebDriver>> wait;
     private static List<Driver> activeDrivers =
             Collections.synchronizedList(new ArrayList<>());
+    private static String userAgent;
 
     /**
      * Method which runs first upon running a test, it will do the following:
@@ -65,7 +67,6 @@ public abstract class BaseTest
             return newDriver;
         });
         wait = ThreadLocal.withInitial(BaseTest::newDefaultWait);
-        requiresReset = ThreadLocal.withInitial(() -> Boolean.FALSE);
         capture = ThreadLocal.withInitial(() -> null);
     }
 
@@ -78,28 +79,19 @@ public abstract class BaseTest
      * <li>Sets the user agent of the browser</li>
      * </ul>
      *
-     * @param testMethod The test method name of the test
+     * @param testMethod The test method about to be executed
      */
     @BeforeMethod(alwaysRun = true)
     public static void configureBrowserBeforeTest(Method testMethod) {
         try {
-            configureDriverBasedOnParams();
+            driver.get().resetBrowser();
+            wait.set(newDefaultWait());
+            userAgent = determineUserAgent();
             initialiseNewScreenshotCapture(testMethod);
         } catch (Exception e) {
             logger.error("Failed to configure browser.", e);
             throw new RuntimeException("Failed to configure browser.", e);
         }
-    }
-
-    /** TODO: Should be refactored */
-    private static void configureDriverBasedOnParams() {
-        if (requiresReset.get()) {
-            driver.get().resetBrowser();
-            wait.set(newDefaultWait());
-        } else {
-            requiresReset.set(true);
-        }
-        userAgent = determineUserAgent();
     }
 
     private static String determineUserAgent() {
@@ -128,6 +120,7 @@ public abstract class BaseTest
 
     /**
      * TODO: doesn't belong in this class
+     *
      * @param method the method to check for test ID annotations.
      * @return Optional of the {@link TestCaseId} or {@link Issue} value.
      * @throws IllegalStateException if {@link TestCaseId} and {@link Issue}
@@ -191,7 +184,7 @@ public abstract class BaseTest
 
     /** Loops through all active driver types and tears them down */
     @AfterSuite(alwaysRun = true)
-    public static void closeDriverObject() {
+    public static void tearDownRemainingDrivers() {
         try {
             activeDrivers.stream().parallel()
                     .forEach(Driver::tearDown);

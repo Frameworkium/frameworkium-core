@@ -30,14 +30,14 @@ public interface Driver {
     /**
      * Implemented in each Driver Type to specify the capabilities of that browser.
      *
-     * @return - Desired Capabilities of each browser
+     * @return Desired Capabilities of each browser
      */
     DesiredCapabilities getDesiredCapabilities();
 
     /**
      * Returns the correct WebDriver object for the driver type.
      *
-     * @param capabilities - Capabilities of the browser
+     * @param capabilities Capabilities of the browser
      * @return {@link WebDriver} object for the browser
      */
     WebDriver getWebDriver(DesiredCapabilities capabilities);

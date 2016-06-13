@@ -39,6 +39,7 @@ public abstract class AbstractDriver implements Driver {
         if (ScreenshotCapture.isRequired()) {
             eventFiringWD.register(new CaptureListener());
         }
+        // TODO: allow parametrisation
         eventFiringWD.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
         this.webDriverWrapper = eventFiringWD;
 
@@ -103,7 +104,7 @@ public abstract class AbstractDriver implements Driver {
     /**
      * Returns the WebDriverWrapper with the initialised driver inside
      *
-     * @return - Initialised WebDriverWrapper
+     * @return Initialised WebDriverWrapper
      */
     public WebDriverWrapper getDriver() {
         return this.webDriverWrapper;
