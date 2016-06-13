@@ -12,13 +12,11 @@ import org.testng.ITestResult;
 import java.io.File;
 import java.util.List;
 
-import static io.restassured.RestAssured.given;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 public class Execution {
 
     private final static Logger logger = LogManager.getLogger(Execution.class);
-    private final static String zapiURI = Property.JIRA_URL.getValue() + Config.zapiRestURI;
 
     private final String version;
     private final String issue;
@@ -79,12 +77,11 @@ public class Execution {
             int commentMaxLen = 750;
             obj.put("comment", StringUtils.abbreviate(comment, commentMaxLen));
 
-            given().auth().preemptive()
-                    .basic(Config.jiraUsername, Config.jiraPassword)
+            Config.getJIRARequestSpec()
                     .contentType("application/json")
                     .body(obj.toString())
                     .when()
-                    .put(zapiURI + "execution/" + executionId + "/execute");
+                    .put(Config.zapiRestURI + "execution/" + executionId + "/execute");
 
         } catch (JSONException e) {
             logger.error("Update status and comment failed", e);
@@ -96,18 +93,16 @@ public class Execution {
         String path = "attachment/attachmentsByEntity?entityType=EXECUTION&entityId=" + executionId;
 
         List<String> fileIds =
-                given().auth().preemptive()
-                        .basic(Config.jiraUsername, Config.jiraPassword)
+                Config.getJIRARequestSpec()
                         .when()
-                        .get(zapiURI + path).thenReturn().jsonPath()
+                        .get(Config.zapiRestURI + path).thenReturn().jsonPath()
                         .getList("data.fileId", String.class);
 
         // Iterate over attachments
         fileIds.forEach(fileId ->
-                given().auth().preemptive()
-                        .basic(Config.jiraUsername, Config.jiraPassword)
+                Config.getJIRARequestSpec()
                         .when()
-                        .delete(zapiURI + "attachment/" + fileId)
+                        .delete(Config.zapiRestURI + "attachment/" + fileId)
         );
     }
 
@@ -115,12 +110,11 @@ public class Execution {
 
         String path = "attachment?entityType=EXECUTION&entityId=" + executionId;
 
-        given().auth().preemptive()
-                .basic(Config.jiraUsername, Config.jiraPassword)
+        Config.getJIRARequestSpec()
                 .header("X-Atlassian-Token", "nocheck")
                 .multiPart(new File(attachment))
                 .when()
-                .post(zapiURI + path);
+                .post(Config.zapiRestURI + path);
     }
 
     /** Converts ITestResult status to ZAPI execution status */

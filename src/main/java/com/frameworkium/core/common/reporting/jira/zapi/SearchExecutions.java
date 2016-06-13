@@ -7,19 +7,15 @@ import io.restassured.path.json.JsonPath;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.restassured.RestAssured.given;
-
-
 public class SearchExecutions {
 
-    private final static String zapiURI = Property.JIRA_URL.getValue() + Config.zapiRestURI;
     private final JsonPath jsonPath;
 
     public SearchExecutions(final String query) {
 
-        jsonPath = given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+        jsonPath = Config.getJIRARequestSpec()
                 .when()
-                .get(zapiURI + String.format("zql/executeSearch?zqlQuery=%s", query))
+                .get(Config.zapiRestURI + "zql/executeSearch?zqlQuery=" + query)
                 .thenReturn().jsonPath();
     }
 

@@ -1,8 +1,6 @@
 package com.frameworkium.core.common.reporting.jira.api;
 
-import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.jira.Config;
-import io.restassured.specification.RequestSpecification;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
@@ -11,19 +9,16 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.List;
 
-import static io.restassured.RestAssured.given;
-
 public class Issue {
 
-    private final static String jiraAPIURI = Property.JIRA_URL.getValue() + Config.jiraRestURI;
     private final String issueKey; // Jira Key e.g. KT-123
     private final static Logger logger = LogManager.getLogger(Issue.class);
 
-    public Issue(final String issue) {
+    public Issue(String issue) {
         this.issueKey = issue;
     }
 
-    public static void linkIssues(final String type, final String inwardIssue, final String outwardIssue) {
+    public void linkIssues(String type, String inwardIssue, String outwardIssue) {
         JSONObject obj = new JSONObject();
         JSONObject typeObj = new JSONObject();
         JSONObject inwardIssueObj = new JSONObject();
@@ -40,36 +35,30 @@ public class Issue {
             logger.error("Can't create JSON Object for linkIssues", e);
         }
 
-        getRequestSpec()
+        Config.getJIRARequestSpec()
                 .contentType("application/json")
                 .body(obj.toString())
                 .when()
-                .post(jiraAPIURI + "issueLink");
+                .post(Config.jiraRestURI + "issueLink");
     }
 
     public List<String> getAttachmentIds() {
 
-        return getRequestSpec()
+        return Config.getJIRARequestSpec()
                 .when()
-                .get(jiraAPIURI + "issue/" + issueKey)
+                .get(Config.jiraRestURI + "issue/" + issueKey)
                 .thenReturn().jsonPath()
                 .getList("fields.attachment.id");
     }
 
-    public void addAttachment(final File attachment) {
+    public void addAttachment(File attachment) {
         String url = String.format("issue/%s/attachments", issueKey);
 
-        getRequestSpec()
+        Config.getJIRARequestSpec()
                 .header("X-Atlassian-Token", "nocheck")
                 .multiPart(attachment).and()
                 .when()
-                .post(jiraAPIURI + url)
+                .post(Config.jiraRestURI + url)
                 .thenReturn().statusLine();
-    }
-
-    private static RequestSpecification getRequestSpec() {
-        return given()
-                .auth().preemptive()
-                .basic(Config.jiraUsername, Config.jiraPassword);
     }
 }

@@ -1,20 +1,17 @@
 package com.frameworkium.core.common.reporting.jira.api;
 
-import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.jira.Config;
 import io.restassured.path.json.JsonPath;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.*;
 
-import static io.restassured.RestAssured.given;
-
 public class Test {
 
-    private final static String jiraAPIURI = Property.JIRA_URL.getValue() + Config.jiraRestURI;
     private final static Logger logger = LogManager.getLogger(Test.class);
 
-    public static void changeIssueFieldValue(String issueKey, String fieldToUpdate, String resultValue) {
+    public static void changeIssueFieldValue(
+            String issueKey, String fieldToUpdate, String resultValue) {
         JSONObject obj = new JSONObject();
         JSONObject fieldObj = new JSONObject();
         JSONObject setObj = new JSONObject();
@@ -32,18 +29,18 @@ public class Test {
             logger.error("Can't create JSON Object for test case result update", e);
         }
 
-        given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword).and()
+        Config.getJIRARequestSpec()
                 .contentType("application/json").and()
                 .body(obj.toString())
                 .when()
-                .put(jiraAPIURI + "/issue/" + issueKey);
+                .put(Config.jiraRestURI + "/issue/" + issueKey);
     }
 
     private static String getFieldId(String fieldName) {
 
-        JsonPath jsonPath = given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+        JsonPath jsonPath = Config.getJIRARequestSpec()
                 .when()
-                .get(jiraAPIURI + "/field")
+                .get(Config.jiraRestURI + "/field")
                 .thenReturn().jsonPath();
 
         return jsonPath.getString(String.format("find {it.name == '%s'}.id", fieldName));
@@ -58,18 +55,18 @@ public class Test {
             logger.error("Can't create JSON Object for comment update", e);
         }
 
-        given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword).and()
-                .contentType("application/json").and()
+        Config.getJIRARequestSpec()
+                .contentType("application/json")
                 .body(obj.toString())
                 .when()
-                .post(jiraAPIURI + "/issue/" + issueKey + "/comment");
+                .post(Config.jiraRestURI + "/issue/" + issueKey + "/comment");
     }
 
     private static int getTransitionId(String issueKey, String transitionName) {
 
-        JsonPath jsonPath = given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+        JsonPath jsonPath = Config.getJIRARequestSpec()
                 .when()
-                .get(jiraAPIURI + "/issue/" + issueKey + "?expand=transitions.fields")
+                .get(Config.jiraRestURI + "/issue/" + issueKey + "?expand=transitions.fields")
                 .thenReturn().jsonPath();
 
         String jsonPathToTransitionId = String.format(
@@ -94,10 +91,11 @@ public class Test {
             logger.error("Can't create JSON Object for transition change", e);
         }
 
-        given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword).and()
+        Config.getJIRARequestSpec()
                 .contentType("application/json").and()
                 .body(obj.toString())
                 .when()
-                .post(jiraAPIURI + "issue/" + issueKey + "/transitions");
+                .post(Config.jiraRestURI + "issue/" + issueKey + "/transitions");
     }
+
 }

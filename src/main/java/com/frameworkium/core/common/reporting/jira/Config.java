@@ -1,16 +1,24 @@
 package com.frameworkium.core.common.reporting.jira;
 
 import com.frameworkium.core.common.properties.Property;
+import io.restassured.specification.RequestSpecification;
+
+import static io.restassured.RestAssured.given;
 
 public class Config {
 
     public static final boolean FailTestOnlyIfAssertionError = true;
 
-    public static final String jiraUsername = Property.JIRA_USERNAME.getValue();
-    public static final String jiraPassword = Property.JIRA_PASSWORD.getValue();
-
     public static final String jiraRestURI = "/rest/api/latest/";
     public static final String zapiRestURI = "/rest/zapi/latest/";
+
+    public static RequestSpecification getJIRARequestSpec() {
+        return given()
+                .baseUri(Property.JIRA_URL.getValue())
+                .auth().preemptive().basic(
+                        Property.JIRA_USERNAME.getValue(),
+                        Property.JIRA_PASSWORD.getValue());
+    }
 
     public static class ZAPI_STATUS {
         //These should correspond to your ZAPI result IDs

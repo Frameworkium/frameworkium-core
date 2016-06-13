@@ -1,23 +1,22 @@
 package com.frameworkium.core.common.reporting.jira.api;
 
-import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.jira.Config;
 import io.restassured.path.json.JsonPath;
 
 import java.util.List;
 
-import static io.restassured.RestAssured.given;
-
 public class SearchIssues {
 
-    private final static String jiraAPIURI = Property.JIRA_URL.getValue() + Config.jiraRestURI;
     private final JsonPath jsonPath;
 
     public SearchIssues(final String query) {
         try {
-            jsonPath = given().auth().preemptive().basic(Config.jiraUsername, Config.jiraPassword)
+            jsonPath = Config.getJIRARequestSpec()
                     .when()
-                    .get(jiraAPIURI + String.format("search?jql=%s&maxResults=1000", query))
+                    .get(String.format(
+                            "%s/search?jql=%s&maxResults=1000",
+                            Config.jiraRestURI,
+                            query))
                     .thenReturn().jsonPath();
 
         } catch (RuntimeException re) {

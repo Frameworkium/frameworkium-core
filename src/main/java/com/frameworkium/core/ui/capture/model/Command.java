@@ -33,7 +33,8 @@ public class Command {
                 this.value = element.getText();
             } else if (!element.getTagName().isEmpty()) {
                 this.using = "css";
-                this.value = element.getTagName() + "." + element.getAttribute("class");
+                this.value = element.getTagName() + "."
+                        + element.getAttribute("class").replace(" ", ".");
             } else {
                 // must be something weird
                 this.using = "n/a";
