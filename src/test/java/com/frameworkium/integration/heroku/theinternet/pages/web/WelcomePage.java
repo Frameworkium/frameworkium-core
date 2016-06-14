@@ -84,12 +84,6 @@ public class WelcomePage extends BasePage<WelcomePage> {
         return PageFactory.newInstance(DynamicLoadingPage.class);
     }
 
-    @Step("Click the File Upload link")
-    public FileUploadPage clickFileUploadLink() {
-        fileUploadLink.click();
-        return PageFactory.newInstance(FileUploadPage.class);
-    }
-    
     @Step("Click the Frames link")
     public FramesPage clickFramesLink() {
         framesLink.click();

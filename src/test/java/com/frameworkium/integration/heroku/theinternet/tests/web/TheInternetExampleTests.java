@@ -99,23 +99,6 @@ public class TheInternetExampleTests extends BaseTest {
                 .isTrue();
     }
 
-    @Issue("HEROKU-7")
-    @Test(description = "File Upload")
-    public void fileUpload() {
-
-        // Pick a local file we're going to upload
-        File fileToUpload = new File("textfile.txt");
-
-        // Navigate to the upload page
-        FileUploadPage fileUploadPage = WelcomePage.open().then().clickFileUploadLink();
-
-        // Upload the file and confirm we land on the success page
-        FileUploadSuccessPage successPage = fileUploadPage.uploadFile(fileToUpload);
-
-        // Confirm that the uploaded files list contains our filename
-        assertThat(successPage.getUploadedFiles()).contains(fileToUpload.getName());
-    }
-
     @Issue("HEROKU-15")
     @Test(description = "iFrames test")
     public void iframes() {
