@@ -1,10 +1,9 @@
 package com.frameworkium.core.ui.pages;
 
+import com.frameworkium.core.ui.AwaitedConditions;
 import com.frameworkium.core.ui.annotations.*;
 import com.frameworkium.core.ui.driver.WebDriverWrapper;
 import com.frameworkium.core.ui.tests.BaseTest;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
@@ -46,48 +45,6 @@ public final class Visibility {
     public Visibility(Wait<WebDriver> wait, JavascriptExecutor driver) {
         this.wait = wait;
         this.driver = driver;
-    }
-
-    /**
-     * Custom wait which fills the gap left by Selenium whereby
-     * <code>not({@link ExpectedConditions#visibilityOf(WebElement)})</code>
-     * will fail if the element is not present, but
-     * {@link ExpectedConditions#invisibilityOfElementLocated(By)}
-     * waits for either not visibility or not present.
-     *
-     * @param element the element to wait for
-     * @return an {@link ExpectedCondition} which returns <strong>false</strong>
-     * iff the element is visible, otherwise <strong>true</strong>.
-     */
-    public static ExpectedCondition<Boolean> notPresentOrInvisible(
-            WebElement element) {
-        return driver -> {
-            try {
-                return !element.isDisplayed();
-            } catch (NoSuchElementException
-                    | StaleElementReferenceException e) {
-                return true;
-            }
-        };
-    }
-
-    /**
-     * Overloaded {@link Visibility#notPresentOrInvisible(WebElement)}
-     * for {@link List} of {@link WebElement}s.
-     *
-     * @param elements the list of {@link WebElement}s to wait for
-     * @return an {@link ExpectedCondition} which returns <strong>false</strong>
-     * iff any element is visible, otherwise <strong>true</strong>.
-     * @see Visibility#notPresentOrInvisible(WebElement)
-     */
-    public static ExpectedCondition<List<WebElement>> notPresentOrInvisible(
-            List<WebElement> elements) {
-
-        return driver ->
-                elements.stream()
-                        .noneMatch(WebElement::isDisplayed)
-                        ? elements
-                        : null;
     }
 
     /**
@@ -176,8 +133,8 @@ public final class Visibility {
         applyToWebElements(
                 field,
                 getObjectFromField(pageObject, field),
-                we -> wait.until(notPresentOrInvisible(we)),
-                list -> wait.until(notPresentOrInvisible(list)));
+                we -> wait.until(AwaitedConditions.notPresentOrInvisible(we)),
+                list -> wait.until(AwaitedConditions.notPresentOrInvisible(list)));
     }
 
     /**

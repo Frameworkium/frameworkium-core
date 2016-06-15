@@ -158,7 +158,7 @@ public abstract class BasePage<T extends BasePage<T>> {
      * are finished by invoking the provided callback. This callback is always
      * injected into the executed function as the last argument.
      * <p>
-     * If executeAsyncScript throws an Exception it's caught and logged
+     * If executeAsyncScript throws an Exception it's caught and logged.
      *
      * @param javascript the JavaScript code to execute
      * @return One of Boolean, Long, String, List, WebElement, or null.
