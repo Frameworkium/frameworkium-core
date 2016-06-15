@@ -1,0 +1,10 @@
+<aspectj>
+  <!--
+      This file is required so that we only weave classes which require injection.
+      Otherwise things get very slow! This is required for the @Step's
+   -->
+  <weaver options="">
+    <include within="ru.yandex.qatools.allure.*"/>
+    <include within="com.frameworkium..*"/>
+  </weaver>
+</aspectj>
