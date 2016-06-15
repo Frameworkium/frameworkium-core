@@ -35,8 +35,8 @@ public enum Property {
     RESOLUTION("resolution"),
     FIREFOX_PROFILE("firefoxProfile");
 
-    private String value;
     private static Map configMap = null;
+    private String value;
 
     Property(final String key) {
         this.value = retrieveValue(key);
@@ -50,15 +50,16 @@ public enum Property {
         return StringUtils.isNotEmpty(value);
     }
 
-    private String retrieveValue(final String key) {
+    private String retrieveValue(String key) {
         if (System.getProperty(key) != null) {
             return System.getProperty(key);
+        } else {
+            return getValueFromConfigFile(key);
         }
-        if (configMap == null && System.getProperty("config") != null) {
-            configMap = (Map) new Yaml()
-                    .load(ClassLoader.getSystemResourceAsStream(
-                            System.getProperty("config")));
-        }
+    }
+
+    private String getValueFromConfigFile(String key) {
+        loadConfigFileIfRequired();
 
         if (configMap != null) {
             Object configValue = configMap.get(key);
@@ -66,7 +67,14 @@ public enum Property {
                 return configValue.toString();
             }
         }
-
         return null;
+    }
+
+    private void loadConfigFileIfRequired() {
+        if (configMap == null && System.getProperty("config") != null) {
+            configMap = (Map) new Yaml()
+                    .load(ClassLoader.getSystemResourceAsStream(
+                            System.getProperty("config")));
+        }
     }
 }
