@@ -1,6 +1,7 @@
 package com.frameworkium.core.common.listeners;
 
 import com.frameworkium.core.common.properties.Property;
+import com.frameworkium.core.common.reporting.TestIdUtils;
 import com.frameworkium.core.common.reporting.jira.Config;
 import com.frameworkium.core.common.reporting.jira.api.Test;
 import com.frameworkium.core.common.reporting.jira.zapi.Execution;
@@ -234,7 +235,7 @@ public class ResultLoggerListener implements ITestListener {
      */
     private String getIssueOrTestCaseIdAnnotation(ITestResult result) {
         Method method = result.getMethod().getConstructorOrMethod().getMethod();
-        return BaseTest.getIssueOrTestCaseIdValue(method).orElse("");
+        return TestIdUtils.getIssueOrTestCaseIdValue(method).orElse("");
     }
 
     private String getOSInfo() {

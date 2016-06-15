@@ -1,6 +1,7 @@
 package com.frameworkium.core.ui.tests;
 
 import com.frameworkium.core.common.listeners.*;
+import com.frameworkium.core.common.reporting.TestIdUtils;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.common.reporting.allure.AllureProperties;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
@@ -17,10 +18,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-import org.testng.IMethodInstance;
 import org.testng.annotations.*;
-import ru.yandex.qatools.allure.annotations.Issue;
-import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -109,40 +107,12 @@ public abstract class BaseTest
      */
     private static void initialiseNewScreenshotCapture(Method testMethod) {
         if (ScreenshotCapture.isRequired()) {
-            Optional<String> testID = getIssueOrTestCaseIdValue(testMethod);
+            Optional<String> testID = TestIdUtils.getIssueOrTestCaseIdValue(testMethod);
             if (testID.orElse("").isEmpty()) {
                 logger.warn("{} doesn't have a TestID annotation.", testMethod.getName());
                 testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));
             }
             capture.set(new ScreenshotCapture(testID.orElse("n/a")));
-        }
-    }
-
-    /**
-     * TODO: doesn't belong in this class
-     *
-     * @param method the method to check for test ID annotations.
-     * @return Optional of the {@link TestCaseId} or {@link Issue} value.
-     * @throws IllegalStateException if {@link TestCaseId} and {@link Issue}
-     *                               are both specified inconstantly.
-     */
-    public static Optional<String> getIssueOrTestCaseIdValue(Method method) {
-        TestCaseId tcIdAnnotation = method.getAnnotation(TestCaseId.class);
-        Issue issueAnnotation = method.getAnnotation(Issue.class);
-
-        if (!isNull(issueAnnotation) && !isNull(tcIdAnnotation)
-                && !issueAnnotation.value().equals(tcIdAnnotation.value())) {
-            throw new IllegalStateException(
-                    "TestCaseId and Issue annotation are both specified but " +
-                            "not equal for method: " + method.toString());
-        }
-
-        if (!isNull(issueAnnotation)) {
-            return Optional.of(issueAnnotation.value());
-        } else if (!isNull(tcIdAnnotation)) {
-            return Optional.of(tcIdAnnotation.value());
-        } else {
-            return Optional.empty();
         }
     }
 
@@ -171,16 +141,6 @@ public abstract class BaseTest
         return driver.get().getDriver();
     }
 
-    /**
-     * @param iMethod the {@link IMethodInstance} to check for test ID annotations.
-     * @return Optional of either the {@link TestCaseId} or {@link Issue} value.
-     * @throws IllegalStateException if {@link TestCaseId} and {@link Issue}
-     *                               are specified inconstantly.
-     */
-    public static Optional<String> getIssueOrTestCaseIdValue(IMethodInstance iMethod) {
-        Method method = iMethod.getMethod().getConstructorOrMethod().getMethod();
-        return getIssueOrTestCaseIdValue(method);
-    }
 
     /** Loops through all active driver types and tears them down */
     @AfterSuite(alwaysRun = true)

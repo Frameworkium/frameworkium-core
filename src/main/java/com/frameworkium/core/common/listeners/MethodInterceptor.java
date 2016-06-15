@@ -1,5 +1,6 @@
 package com.frameworkium.core.common.listeners;
 
+import com.frameworkium.core.common.reporting.TestIdUtils;
 import com.frameworkium.core.common.reporting.jira.api.SearchIssues;
 import com.frameworkium.core.ui.driver.Driver;
 import org.apache.logging.log4j.LogManager;
@@ -11,7 +12,6 @@ import java.util.List;
 
 import static com.frameworkium.core.common.properties.Property.JIRA_URL;
 import static com.frameworkium.core.common.properties.Property.JQL_QUERY;
-import static com.frameworkium.core.ui.tests.BaseTest.getIssueOrTestCaseIdValue;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -40,7 +40,7 @@ public class MethodInterceptor implements IMethodInterceptor {
             logger.info("Filtering specified tests to run with JQL query results");
 
             List<IMethodInstance> methodsWithTestIDs = methodsToBeFiltered.stream()
-                    .filter(m -> getIssueOrTestCaseIdValue(m).isPresent())
+                    .filter(m -> TestIdUtils.getIssueOrTestCaseIdValue(m).isPresent())
                     .collect(toList());
 
             List<String> testIDsFromJQL =
@@ -48,7 +48,7 @@ public class MethodInterceptor implements IMethodInterceptor {
 
             List<IMethodInstance> methodsToRun = methodsWithTestIDs.stream()
                     .filter(m -> testIDsFromJQL
-                            .contains(getIssueOrTestCaseIdValue(m)
+                            .contains(TestIdUtils.getIssueOrTestCaseIdValue(m)
                                     .orElseThrow(IllegalStateException::new)))
                     .collect(toList());
 
