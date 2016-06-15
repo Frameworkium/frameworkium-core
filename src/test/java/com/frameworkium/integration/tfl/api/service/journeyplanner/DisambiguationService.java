@@ -6,7 +6,7 @@ import io.restassured.RestAssured;
 import io.restassured.specification.ResponseSpecification;
 import org.apache.http.HttpStatus;
 
-import static com.frameworkium.integration.tfl.api.constant.Endpoint.JOURNEY_PLANNER;
+import static com.frameworkium.integration.tfl.api.constant.TFLEndpoint.JOURNEY_PLANNER;
 
 public class DisambiguationService extends BaseTFLService {
 

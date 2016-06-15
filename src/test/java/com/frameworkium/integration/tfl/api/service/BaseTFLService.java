@@ -1,7 +1,7 @@
 package com.frameworkium.integration.tfl.api.service;
 
 import com.frameworkium.core.api.services.BaseService;
-import com.frameworkium.integration.tfl.api.constant.Endpoint;
+import com.frameworkium.integration.tfl.api.constant.TFLEndpoint;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
@@ -16,7 +16,7 @@ public class BaseTFLService extends BaseService {
      */
     @Override
     protected RequestSpecification getRequestSpec() {
-        return RestAssured.given().baseUri(Endpoint.BASE_URI.getUrl());
+        return RestAssured.given().baseUri(TFLEndpoint.BASE_URI.getUrl());
     }
 
     /**

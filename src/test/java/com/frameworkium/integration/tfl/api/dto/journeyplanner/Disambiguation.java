@@ -8,5 +8,4 @@ import java.util.List;
 public class Disambiguation {
 
     public List<DisambiguationOption> disambiguationOptions;
-    public String matchStatus;
 }

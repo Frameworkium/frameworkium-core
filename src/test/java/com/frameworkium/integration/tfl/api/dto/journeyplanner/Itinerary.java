@@ -7,7 +7,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Itinerary {
 
-    public List<JourneyDto> journeys;
+    public List<Journey> journeys;
 
     public int getShortestJourneyDuration() {
         return journeys.stream()
