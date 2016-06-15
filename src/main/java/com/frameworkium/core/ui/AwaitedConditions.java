@@ -3,6 +3,7 @@ package com.frameworkium.core.ui;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 
 import java.util.List;
 
@@ -36,13 +37,13 @@ public class AwaitedConditions {
      * Overloaded {@link AwaitedConditions#notPresentOrInvisible(WebElement)}
      * for {@link List} of {@link WebElement}s.
      *
-     * @param elements the list of {@link WebElement}s to wait for
+     * @param elements the lazy proxy for <code>List&lt;WebElement&gt;</code> to wait for
      * @return an {@link ExpectedCondition} which returns <strong>false</strong>
      * iff any element is visible, otherwise <strong>true</strong>.
      * @see AwaitedConditions#notPresentOrInvisible(WebElement)
      */
-    public static ExpectedCondition<List<WebElement>> notPresentOrInvisible(
-            List<WebElement> elements) {
+    public static ExpectedCondition<List<? extends WebElement>> notPresentOrInvisible(
+            List<? extends WebElement> elements) {
 
         return driver ->
                 elements.stream()
@@ -59,7 +60,7 @@ public class AwaitedConditions {
         return driver ->
                 (Boolean) ((JavascriptExecutor) driver)
                         .executeScript(
-                                "return !!window.jQuery && $.active === 0;");
+                                "return !!window.jQuery && jQuery.active === 0;");
     }
 
     /**
@@ -69,8 +70,8 @@ public class AwaitedConditions {
      * @param expectedSize expected expectedSize to be greater than
      * @return the original list if list size is greater than expectedSize, else null
      */
-    public static ExpectedCondition<List<WebElement>> sizeGreaterThan(
-            List<WebElement> list, long expectedSize) {
+    public static ExpectedCondition<List<? extends WebElement>> sizeGreaterThan(
+            List<? extends WebElement> list, int expectedSize) {
 
         return driver ->
                 list.size() > expectedSize
@@ -85,8 +86,8 @@ public class AwaitedConditions {
      * @param expectedSize expected expectedSize to be less than
      * @return the original list if list size is less than expectedSize, else null
      */
-    public static ExpectedCondition<List<WebElement>> sizeLessThan(
-            List<WebElement> list, long expectedSize) {
+    public static ExpectedCondition<List<? extends WebElement>> sizeLessThan(
+            List<? extends WebElement> list, int expectedSize) {
 
         return driver ->
                 list.size() < expectedSize

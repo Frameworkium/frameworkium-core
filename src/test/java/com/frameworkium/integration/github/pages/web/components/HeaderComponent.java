@@ -13,6 +13,8 @@ import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.element.*;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+
 @Name("Github Header")
 @FindBy(css = "header")
 public class HeaderComponent extends HtmlElement {
@@ -39,8 +41,7 @@ public class HeaderComponent extends HtmlElement {
 
     @Step("Search for the text '{0}'")
     public SearchResultsPage search(String searchText) {
-        searchBox.sendKeys(searchText);
-        searchBox.sendKeys(Keys.ENTER);
+        searchBox.sendKeys(searchText + Keys.ENTER);
         return PageFactory.newInstance(SearchResultsPage.class);
     }
 
@@ -51,9 +52,9 @@ public class HeaderComponent extends HtmlElement {
         WebElement link = homeLink.getWrappedElement();
         // hide the home link
         BaseTest.getDriver().executeScript("arguments[0].style.visibility='hidden';", link);
-        wait.until(ExpectedConditions.not(ExpectedConditions.visibilityOf(link)));
+        wait.until(ExpectedConditions.not(visibilityOf(link)));
         // test force visible works
         new Visibility().forceVisible(link);
-        wait.until(ExpectedConditions.visibilityOf(link));
+        wait.until(visibilityOf(link));
     }
 }

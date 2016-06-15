@@ -20,13 +20,13 @@ public class FirefoxImpl extends AbstractDriver {
     @Override
     public WebDriver getWebDriver(DesiredCapabilities capabilities) {
         if (Property.FIREFOX_PROFILE.isSpecified()) {
-            File profileFile = new File(Property.FIREFOX_PROFILE.getValue());
             FirefoxProfile firefoxProfile;
+            String fireFoxProfile = Property.FIREFOX_PROFILE.getValue();
+            File profileFile = new File(fireFoxProfile);
             if (profileFile.isFile() || profileFile.isDirectory()) {
                 firefoxProfile = new FirefoxProfile(profileFile);
             } else {
-                firefoxProfile = new ProfilesIni().getProfile(
-                        Property.FIREFOX_PROFILE.getValue());
+                firefoxProfile = new ProfilesIni().getProfile(fireFoxProfile);
             }
             return new FirefoxDriver(firefoxProfile);
         } else {

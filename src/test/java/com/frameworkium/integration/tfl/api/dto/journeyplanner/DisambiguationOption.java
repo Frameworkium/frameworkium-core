@@ -8,6 +8,5 @@ public class DisambiguationOption {
 
     public String parameterValue;
     public Place place;
-    public Integer matchQuality;
 
 }

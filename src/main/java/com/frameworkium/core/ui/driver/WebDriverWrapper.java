@@ -24,7 +24,7 @@ public class WebDriverWrapper extends EventFiringWebDriver {
         if (wd instanceof RemoteWebDriver) {
             return (RemoteWebDriver) wd;
         } else {
-            throw new RuntimeException(wd + " is not an instance of RemoteWebDriver");
+            throw new IllegalStateException(wd + " is not an instance of RemoteWebDriver");
         }
     }
 
@@ -33,7 +33,7 @@ public class WebDriverWrapper extends EventFiringWebDriver {
         if (wd instanceof AppiumDriver) {
             return (AppiumDriver) wd;
         } else {
-            throw new RuntimeException(wd + " is not an instance of AppiumDriver");
+            throw new IllegalStateException(wd + " is not an instance of AppiumDriver");
         }
     }
 }

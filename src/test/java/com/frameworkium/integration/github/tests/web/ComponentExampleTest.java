@@ -27,6 +27,7 @@ public class ComponentExampleTest extends BaseTest {
         List<String> searchResults = explorePage.with().theHeader()
                 .search("Selenium")
                 .getRepoNames();
+
         assertThat(searchResults).contains("SeleniumHQ/selenium");
     }
 

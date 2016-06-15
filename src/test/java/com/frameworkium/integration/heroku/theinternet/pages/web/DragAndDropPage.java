@@ -60,11 +60,9 @@ public class DragAndDropPage extends BasePage<DragAndDropPage> {
      */
     private String javascriptToSimulateDragDrop() {
         if (jQueryJS.isEmpty()) {
-            Boolean isJQueryAvailable = (Boolean) executeJS("return typeof $ !== 'undefined';");
+            Boolean isJQueryAvailable = (Boolean) executeJS("return !!window.jQuery;");
             if (!isJQueryAvailable) {
-                logger.debug("about to get jQuery");
                 jQueryJS = RestAssured.get(JQUERY_JS_URI).asString();
-                logger.debug("got jQuery");
             }
         }
 
@@ -72,8 +70,8 @@ public class DragAndDropPage extends BasePage<DragAndDropPage> {
     }
 
     /**
-     * @param from the JQuery selector for the element to initially click and then drag
-     * @param to   the JQuery selector for the target element where the from element will be dropped
+     * @param from the jQuery selector for the element to initially click and then drag
+     * @param to   the jQuery selector for the target element where the from element will be dropped
      */
     private void simulateDragAndDrop(String from, String to) {
         executeJS(javascriptToSimulateDragDrop());

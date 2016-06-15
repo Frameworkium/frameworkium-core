@@ -51,12 +51,11 @@ public final class Visibility {
      * The main entry point for {@link BasePage}.
      * For each Field:
      * <ul>
-     * <li>Ensures either 0 or 1 Frameworkium Visibility annotations are used.</li>
-     * <li>Waits for the (in)visibility of elements annotated by visibility annotations.</li>
+     * <li>Ensures either 0 or 1 Frameworkium Visibility annotations are present.</li>
+     * <li>Waits for the (in)visibility of elements annotated by annotations.</li>
      * </ul>
      *
-     * @param pageObject the "page object" e.g. extends {@link BasePage}
-     *                   or {@link TypifiedElement} or {@link HtmlElement}.
+     * @param pageObject the "page object" i.e. extends {@link BasePage} or {@link HtmlElement}.
      */
     public void waitForAnnotatedElementVisibility(Object pageObject) {
 
@@ -153,12 +152,16 @@ public final class Visibility {
     }
 
     @SuppressWarnings("unchecked")
-    private void applyToWebElements(Field field, Object obj, Consumer<WebElement> fun, Consumer<List<WebElement>> listFun) {
+    private void applyToWebElements(
+            Field field,
+            Object objectFromField,
+            Consumer<WebElement> fun,
+            Consumer<List<WebElement>> listFun) {
 
         if (isWebElementList(field) || isTypifiedElementList(field) || isHtmlElementList(field)) {
-            listFun.accept((List<WebElement>) obj);
-        } else if (obj instanceof WebElement) {
-            fun.accept((WebElement) obj);
+            listFun.accept((List<WebElement>) objectFromField);
+        } else if (objectFromField instanceof WebElement) {
+            fun.accept((WebElement) objectFromField);
         } else {
             throw new IllegalArgumentException(
                     "Only elements of type HtmlElement, TypifiedElement, WebElement or " +

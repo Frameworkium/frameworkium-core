@@ -27,7 +27,6 @@ public class SortableDataTablesPage extends BasePage<SortableDataTablesPage> {
     @FindBy(css = "table#table2")
     private Table table2;
 
-
     @Step("Get table 1 column {0} contents")
     public List<String> getTable1ColumnContents(String colHeader) {
         return getColumnContents(table1, colHeader);

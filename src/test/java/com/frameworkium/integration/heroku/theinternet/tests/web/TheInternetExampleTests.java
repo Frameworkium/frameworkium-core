@@ -6,32 +6,17 @@ import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.Issue;
 
-import java.io.File;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
 public class TheInternetExampleTests extends BaseTest {
 
-    @Issue("HEROKU-1")
-    @Test(description = "Basic Auth")
-    public void basicAuth() {
-
-        String pageSource = WelcomePage.open().then()
-                // Navigate to the basic auth page
-                .clickBasicAuth("admin", "admin")
-                .getSource();
-
-        // Assert that the returned page has the text present
-        assertThat(pageSource).contains(
-                "Congratulations! You must have the proper credentials.");
-    }
-
     @Issue("HEROKU-2")
     @Test(description = "Checkboxes")
     public void checkBoxes() {
 
-        CheckboxesPage checkboxesPage = WelcomePage.open().then()
+        CheckboxesPage checkboxesPage = WelcomePage.open(15).then()
                 // Navigate to the checkboxes page
                 .clickCheckboxesLink()
                 // Set all checkboxes to checked via alternative method
@@ -68,11 +53,6 @@ public class TheInternetExampleTests extends BaseTest {
         DynamicLoadingExamplePage dynamicLoadingExamplePage =
                 WelcomePage.open().then().clickDynamicLoading().then().clickExample1();
 
-        // Assert that the element is hidden
-        assertThat(dynamicLoadingExamplePage.isElementDisplayed())
-                .named("element visibility")
-                .isFalse();
-
         // Click start and wait for element to be displayed
         dynamicLoadingExamplePage.clickStart().then().waitForElementToBeDisplayed();
 
@@ -85,11 +65,6 @@ public class TheInternetExampleTests extends BaseTest {
         dynamicLoadingExamplePage =
                 WelcomePage.open().then().clickDynamicLoading().then().clickExample2();
 
-        // Assert that the element is hidden
-        assertThat(dynamicLoadingExamplePage.isElementPresent())
-                .named("element visibility")
-                .isFalse();
-
         // Click start and wait for element to be displayed
         dynamicLoadingExamplePage.clickStart().then().waitForElementToBeDisplayed();
 
@@ -97,30 +72,6 @@ public class TheInternetExampleTests extends BaseTest {
         assertThat(dynamicLoadingExamplePage.isElementDisplayed())
                 .named("element visibility")
                 .isTrue();
-    }
-
-    @Issue("HEROKU-15")
-    @Test(description = "iFrames test")
-    public void iframes() {
-
-        IFramePage iframePage = WelcomePage.open().then()
-                //Navigate to the frames page
-                .clickFramesLink()
-                //Browse to iframes page
-                .clickIFrameLink();
-
-        // Clear text
-        iframePage.clearTextInEditor();
-
-        // Enter some text in the editor
-        String text = "hello";
-        iframePage.enterTextInEditor(text);
-
-        // Assert that it entered it correctly
-        assertThat(iframePage.getTextInEditor()).isEqualTo(text);
-
-        // Enter some bold text in the editor
-        iframePage.enterBoldTextInEditor(" some more text");
     }
 
     @Issue("HEROKU-9")

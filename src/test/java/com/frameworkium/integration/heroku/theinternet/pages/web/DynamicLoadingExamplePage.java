@@ -3,7 +3,6 @@ package com.frameworkium.integration.heroku.theinternet.pages.web;
 import com.frameworkium.core.ui.annotations.Invisible;
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
@@ -43,11 +42,4 @@ public class DynamicLoadingExamplePage extends BasePage<DynamicLoadingExamplePag
         return dynamicElement.isDisplayed();
     }
 
-    public boolean isElementPresent() {
-        try {
-            return dynamicElement.isDisplayed();
-        } catch (NoSuchElementException e) {
-            return false;
-        }
-    }
 }

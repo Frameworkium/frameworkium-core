@@ -51,11 +51,30 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
-     * Creates a new {@link Wait} with the specified timeout then calls
-     * {@link BasePage#get()}.
-     *
-     * @param timeout the timeout, in seconds, for the new wait for this page
+     * @param url the url to open before initialising
      * @return new instance of a PageObject of type T, see {@link BasePage#get()}
+     * @see BasePage#get()
+     */
+    public T get(String url) {
+        driver.get(url);
+        return get();
+    }
+
+    /**
+     * @param url     the url to open before initialising
+     * @param timeout the timeout, in seconds, for the new {@link Wait} for this page
+     * @return new instance of a PageObject of type T, see {@link BasePage#get()}
+     * @see BasePage#get()
+     */
+    public T get(String url, long timeout) {
+        wait = BaseTest.newWaitWithTimeout(timeout);
+        return get(url);
+    }
+
+    /**
+     * @param timeout the timeout, in seconds, for the new {@link Wait} for this page
+     * @return new instance of a PageObject of type T, see {@link BasePage#get()}
+     * @see BasePage#get()
      */
     public T get(long timeout) {
         wait = BaseTest.newWaitWithTimeout(timeout);
@@ -73,8 +92,8 @@ public abstract class BasePage<T extends BasePage<T>> {
      * <li>Log page load to Allure and Capture</li>
      * </ul>
      *
-     * @return the PageObject populated with lazy proxies which are checked for
-     * visibility based upon appropriate Frameworkium annotations.
+     * @return the PageObject, of type T, populated with lazy proxies which are
+     * checked for visibility based upon appropriate Frameworkium annotations.
      */
     @SuppressWarnings("unchecked")
     public T get() {
@@ -136,21 +155,6 @@ public abstract class BasePage<T extends BasePage<T>> {
         return returnObj;
     }
 
-    /** Method to wait for AngularJS requests to finish on the page */
-    protected void waitForAngularRequestsToFinish() {
-        ngDriver.waitForAngularRequestsToFinish();
-    }
-
-    public T get(String url, long timeout) {
-        wait = BaseTest.newWaitWithTimeout(timeout);
-        return get(url);
-    }
-
-    public T get(String url) {
-        driver.get(url);
-        return get();
-    }
-
     /**
      * Execute an asynchronous piece of JavaScript in the context of the
      * currently selected frame or window. Unlike executing synchronous
@@ -174,6 +178,11 @@ public abstract class BasePage<T extends BasePage<T>> {
             logger.debug("Failed Javascript:" + javascript, e);
         }
         return returnObj;
+    }
+
+    /** Method to wait for AngularJS requests to finish on the page */
+    protected void waitForAngularRequestsToFinish() {
+        ngDriver.waitForAngularRequestsToFinish();
     }
 
     /** @return Returns the title of the web page */

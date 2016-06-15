@@ -1,5 +1,6 @@
 package com.frameworkium.integration.heroku.theinternet.pages.web;
 
+import com.frameworkium.core.ui.annotations.ForceVisible;
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
 import com.frameworkium.core.ui.pages.PageFactory;
@@ -11,14 +12,11 @@ import ru.yandex.qatools.htmlelements.element.Link;
 public class WelcomePage extends BasePage<WelcomePage> {
 
     @Visible
-    @Name("Basic auth link")
-    @FindBy(linkText = "Basic Auth")
-    private Link basicAuthLink;
-
     @Name("Checkboxes link")
     @FindBy(linkText = "Checkboxes")
     private Link checkboxesLink;
 
+    @ForceVisible // just to test it, not required
     @Name("Drag and Drop link")
     @FindBy(linkText = "Drag and Drop")
     private Link dragAndDropLink;
@@ -27,17 +25,9 @@ public class WelcomePage extends BasePage<WelcomePage> {
     @FindBy(linkText = "Dynamic Loading")
     private Link dynamicLoadingLink;
 
-    @Name("File Upload Link")
-    @FindBy(linkText = "File Upload")
-    private Link fileUploadLink;
-
     @Name("Hovers Link")
     @FindBy(linkText = "Hovers")
     private Link hoversLink;
-    
-    @Name("Frames Link")
-    @FindBy(linkText = "Frames")
-    private Link framesLink;
 
     @Name("JavaScript Alerts Link")
     @FindBy(linkText = "JavaScript Alerts")
@@ -57,19 +47,16 @@ public class WelcomePage extends BasePage<WelcomePage> {
                 WelcomePage.class, "http://the-internet.herokuapp.com");
     }
 
-    @Step("Click the Dynamic Loading link - user: {0}, password {1}")
-    public BasicAuthSuccessPage clickBasicAuth(String username, String password) {
-        // For this sort of authentication, Selenium cannot handle the dialog
-        // box that appears if you click the link.
-        // Instead, we can provide the username and password in the URL:
-        String url = formatBasicAuthURL(username, password, basicAuthLink.getReference());
-        return PageFactory.newInstance(BasicAuthSuccessPage.class, url);
+    @Step("Navigate to http://the-internet.herokuapp.com")
+    public static WelcomePage open(long timeout) {
+        return PageFactory.newInstance(
+                WelcomePage.class, "http://the-internet.herokuapp.com", timeout);
     }
 
     @Step("Click the Checkboxes link")
     public CheckboxesPage clickCheckboxesLink() {
         checkboxesLink.click();
-        return PageFactory.newInstance(CheckboxesPage.class);
+        return PageFactory.newInstance(CheckboxesPage.class, 15);
     }
 
     @Step("Click the Drag And Drop link")
@@ -82,12 +69,6 @@ public class WelcomePage extends BasePage<WelcomePage> {
     public DynamicLoadingPage clickDynamicLoading() {
         dynamicLoadingLink.click();
         return PageFactory.newInstance(DynamicLoadingPage.class);
-    }
-
-    @Step("Click the Frames link")
-    public FramesPage clickFramesLink() {
-        framesLink.click();
-        return PageFactory.newInstance(FramesPage.class);
     }
     
     @Step("Click the Hovers link")
@@ -112,10 +93,5 @@ public class WelcomePage extends BasePage<WelcomePage> {
     public SortableDataTablesPage clickSortableDataTablesLink() {
         sortableDataTablesLink.click();
         return PageFactory.newInstance(SortableDataTablesPage.class);
-    }
-
-    private String formatBasicAuthURL(String username, String password, String originalURL) {
-        return String.format("http://%s:%s@%s",
-                username, password, originalURL.replace("http://", ""));
     }
 }
