@@ -1,12 +1,18 @@
 package com.frameworkium.core.ui.tests;
 
-import com.frameworkium.core.common.listeners.*;
+import com.frameworkium.core.common.listeners.MethodInterceptor;
+import com.frameworkium.core.common.listeners.ResultLoggerListener;
+import com.frameworkium.core.common.listeners.TestListener;
 import com.frameworkium.core.common.reporting.TestIdUtils;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.common.reporting.allure.AllureProperties;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
-import com.frameworkium.core.ui.driver.*;
-import com.frameworkium.core.ui.listeners.*;
+import com.frameworkium.core.ui.driver.Driver;
+import com.frameworkium.core.ui.driver.DriverSetup;
+import com.frameworkium.core.ui.driver.WebDriverWrapper;
+import com.frameworkium.core.ui.listeners.CaptureListener;
+import com.frameworkium.core.ui.listeners.SauceLabsListener;
+import com.frameworkium.core.ui.listeners.ScreenshotListener;
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
@@ -14,16 +20,21 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.*;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.testng.annotations.*;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.isNull;
 
@@ -165,7 +176,6 @@ public abstract class BaseTest
     public static WebDriverWrapper getDriver() {
         return driver.get().getDriver();
     }
-
 
     /** Loops through all active driver types and tears them down */
     @AfterSuite(alwaysRun = true)
