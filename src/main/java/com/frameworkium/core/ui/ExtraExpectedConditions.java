@@ -13,10 +13,10 @@ import java.util.List;
  * <p>
  * The main motivation is to provide useful {@link ExpectedCondition}'s for our
  * lazy proxied {@link WebElement}, {@link TypifiedElement} and {@link HtmlElement}'s.
- * Hence the methods here generally take <code>? extends WebElement</code>
+ * Hence the methods here generally accept <code>? extends WebElement</code>
  * rather than {@link By} because we typically use <code>@FindBy</code> annotations.
  */
-public class AwaitedConditions {
+public class ExtraExpectedConditions {
 
     /**
      * Custom wait which fills the gap left by Selenium whereby
@@ -41,13 +41,13 @@ public class AwaitedConditions {
     }
 
     /**
-     * Overloaded {@link AwaitedConditions#notPresentOrInvisible(WebElement)}
+     * Overloaded {@link ExtraExpectedConditions#notPresentOrInvisible(WebElement)}
      * for {@link List} of {@link WebElement}s.
      *
      * @param elements the lazy proxy for <code>List&lt;WebElement&gt;</code> to wait for
      * @return an {@link ExpectedCondition} which returns <strong>false</strong>
      * iff any element is visible, otherwise <strong>true</strong>.
-     * @see AwaitedConditions#notPresentOrInvisible(WebElement)
+     * @see ExtraExpectedConditions#notPresentOrInvisible(WebElement)
      */
     public static ExpectedCondition<List<? extends WebElement>> notPresentOrInvisible(
             List<? extends WebElement> elements) {

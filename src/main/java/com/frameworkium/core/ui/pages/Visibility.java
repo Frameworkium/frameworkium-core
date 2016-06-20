@@ -1,13 +1,12 @@
 package com.frameworkium.core.ui.pages;
 
-import com.frameworkium.core.ui.AwaitedConditions;
+import com.frameworkium.core.ui.ExtraExpectedConditions;
 import com.frameworkium.core.ui.annotations.*;
 import com.frameworkium.core.ui.driver.WebDriverWrapper;
 import com.frameworkium.core.ui.tests.BaseTest;
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.*;
+import org.openqa.selenium.support.ui.Wait;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
-import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -132,8 +131,8 @@ public final class Visibility {
         applyToWebElements(
                 field,
                 getObjectFromField(pageObject, field),
-                we -> wait.until(AwaitedConditions.notPresentOrInvisible(we)),
-                list -> wait.until(AwaitedConditions.notPresentOrInvisible(list)));
+                we -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(we)),
+                list -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(list)));
     }
 
     /**

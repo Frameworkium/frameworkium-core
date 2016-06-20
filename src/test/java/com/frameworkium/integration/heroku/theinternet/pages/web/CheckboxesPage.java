@@ -1,6 +1,6 @@
 package com.frameworkium.integration.heroku.theinternet.pages.web;
 
-import com.frameworkium.core.ui.AwaitedConditions;
+import com.frameworkium.core.ui.ExtraExpectedConditions;
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
 import org.openqa.selenium.support.FindBy;
@@ -24,7 +24,7 @@ public class CheckboxesPage extends BasePage<CheckboxesPage> {
         allCheckboxes.stream().forEach(CheckBox::select);
 
         // not required for this test, just testing it doesn't fail
-        wait.until(AwaitedConditions.jQueryAjaxDone());
+        wait.until(ExtraExpectedConditions.jQueryAjaxDone());
 
         return this;
     }

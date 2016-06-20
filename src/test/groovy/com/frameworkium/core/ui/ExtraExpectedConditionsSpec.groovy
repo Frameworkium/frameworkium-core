@@ -1,10 +1,16 @@
 package com.frameworkium.core.ui
 
-import org.openqa.selenium.*
-import org.openqa.selenium.support.ui.*
+import com.frameworkium.core.ui.driver.WebDriverWrapper
+import org.openqa.selenium.NoSuchElementException
+import org.openqa.selenium.TimeoutException
+import org.openqa.selenium.WebDriver
+import org.openqa.selenium.WebElement
+import org.openqa.selenium.support.ui.Clock
+import org.openqa.selenium.support.ui.FluentWait
+import org.openqa.selenium.support.ui.Sleeper
 import spock.lang.Specification
 
-class AwaitedConditionsSpec extends Specification {
+class ExtraExpectedConditionsSpec extends Specification {
 
     def mockElement = Mock(WebElement)
     def wait = new FluentWait<>(Mock(WebDriver), Mock(Clock), Mock(Sleeper))
@@ -15,8 +21,8 @@ class AwaitedConditionsSpec extends Specification {
         given: "The element is not displayed"
             mockElement.isDisplayed() >> false >> { throw new NoSuchElementException("") }
         when: "waiting for the item not to be present or invisible"
-            wait.until(AwaitedConditions.notPresentOrInvisible(mockElement))
-            wait.until(AwaitedConditions.notPresentOrInvisible(mockElement))
+            wait.until(ExtraExpectedConditions.notPresentOrInvisible(mockElement))
+            wait.until(ExtraExpectedConditions.notPresentOrInvisible(mockElement))
         then: "nothing is thrown"
             noExceptionThrown()
     }
@@ -25,7 +31,7 @@ class AwaitedConditionsSpec extends Specification {
         given: "The element is displayed"
             mockElement.isDisplayed() >> true
         when: "waiting for the item not to be present or invisible"
-            wait.until(AwaitedConditions.notPresentOrInvisible(mockElement))
+            wait.until(ExtraExpectedConditions.notPresentOrInvisible(mockElement))
         then: "a timeout exception is thrown"
             thrown(TimeoutException)
     }
@@ -36,8 +42,8 @@ class AwaitedConditionsSpec extends Specification {
         given: "The elements are not displayed"
             mockElement.isDisplayed() >> false
         when: "waiting for the items not to be present or invisible"
-            wait.until(AwaitedConditions.notPresentOrInvisible(webElements))
-            wait.until(AwaitedConditions.notPresentOrInvisible([]))
+            wait.until(ExtraExpectedConditions.notPresentOrInvisible(webElements))
+            wait.until(ExtraExpectedConditions.notPresentOrInvisible([]))
         then: "nothing is thrown"
             noExceptionThrown()
     }
@@ -46,13 +52,28 @@ class AwaitedConditionsSpec extends Specification {
         given: "The elements are displayed"
             mockElement.isDisplayed() >> true
         when: "waiting for the items not to be present or invisible"
-            wait.until(AwaitedConditions.notPresentOrInvisible([mockElement] * 2))
+            wait.until(ExtraExpectedConditions.notPresentOrInvisible([mockElement] * 2))
         then: "a timeout exception is thrown"
             thrown(TimeoutException)
     }
 
-    // jQueryAjaxDone not testable due to cast driver to JavascriptExecutor
-    // ...
+    // jQueryAjaxDone()
+    def "waiting for jQueryAjaxDone runs some assumed correct JavaScript"() {
+        given: "A driver which can be cast to JavascriptExecutor"
+            def mockWDWrapper = Mock(WebDriverWrapper, constructorArgs: [Mock(WebDriver)])
+            def jsWait = new FluentWait<>(mockWDWrapper, Mock(Clock), Mock(Sleeper))
+        when: "Waiting for jQuery ajax"
+            jsWait.until(ExtraExpectedConditions.jQueryAjaxDone())
+        then: "nothing is thrown if ajax is finish"
+            1 * mockWDWrapper.executeScript(_ as String) >> true
+            noExceptionThrown()
+
+        when: "Waiting for jQuery ajax"
+            jsWait.until(ExtraExpectedConditions.jQueryAjaxDone())
+        then: "Timeout is thrown if ajax is not finish"
+            1 * mockWDWrapper.executeScript(_ as String) >> false
+            thrown(TimeoutException)
+    }
 
     def static listSize = 3
     def webElements = [mockElement] * listSize
@@ -61,14 +82,14 @@ class AwaitedConditionsSpec extends Specification {
 
     def "waiting for list size to be greater than a number less than its size passes"() {
         when: "waiting for the list size to be greater than its size"
-            wait.until(AwaitedConditions.sizeGreaterThan(webElements, listSize - 1))
+            wait.until(ExtraExpectedConditions.sizeGreaterThan(webElements, listSize - 1))
         then: "nothing is thrown"
             noExceptionThrown()
     }
 
     def "waiting for list size to be greater than a number greater or equal than its size fails"() {
         when: "waiting for the list size to be greater than or equal its size"
-            wait.until(AwaitedConditions.sizeGreaterThan(webElements, size))
+            wait.until(ExtraExpectedConditions.sizeGreaterThan(webElements, size))
         then: "a timeout exception is thrown"
             thrown(TimeoutException)
         where:
@@ -79,14 +100,14 @@ class AwaitedConditionsSpec extends Specification {
 
     def "waiting for list size to be less than a number greater than its size passes"() {
         when: "waiting for the list size to be less than its size"
-            wait.until(AwaitedConditions.sizeLessThan(webElements, listSize + 1))
+            wait.until(ExtraExpectedConditions.sizeLessThan(webElements, listSize + 1))
         then: "nothing is thrown"
             noExceptionThrown()
     }
 
     def "waiting for list size to be less than a number less or equal to its size fails"() {
         when: "waiting for the list size to be less than or equal to its size"
-            wait.until(AwaitedConditions.sizeLessThan(webElements, size))
+            wait.until(ExtraExpectedConditions.sizeLessThan(webElements, size))
         then: "a timeout exception is thrown"
             thrown(TimeoutException)
         where:
