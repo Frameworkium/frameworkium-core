@@ -48,8 +48,11 @@ public class AllureProperties {
         if (!isNull(System.getenv("BUILD_URL"))) {
             props.setProperty("Jenkins build URL", System.getenv("BUILD_URL"));
         }
-        if (!isNull(System.getenv("threads"))) {
-            props.setProperty("Test Thread Count", System.getenv("threads"));
+        if (!isNull(System.getProperty("threads"))) {
+            props.setProperty("Test Thread Count", System.getProperty("threads"));
+        }
+        if (!isNull(System.getProperty("config"))) {
+            props.setProperty("Config file", System.getProperty("config"));
         }
 
         // Now get all UI-specific properties
