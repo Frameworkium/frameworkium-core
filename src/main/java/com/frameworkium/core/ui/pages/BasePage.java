@@ -20,6 +20,7 @@ public abstract class BasePage<T extends BasePage<T>> {
     protected final Logger logger = LogManager.getLogger(this);
     protected final WebDriver driver;
     protected Wait<WebDriver> wait;
+    /** Visibility with current page wait and driver */
     protected Visibility visibility;
 
     private NgWebDriver ngDriver;
@@ -68,6 +69,7 @@ public abstract class BasePage<T extends BasePage<T>> {
      */
     public T get(String url, long timeout) {
         wait = BaseTest.newWaitWithTimeout(timeout);
+        visibility = new Visibility(wait, BaseTest.getDriver());
         return get(url);
     }
 
