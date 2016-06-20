@@ -13,8 +13,8 @@ import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.*;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
@@ -66,13 +66,17 @@ public abstract class BaseTest
         capture = ThreadLocal.withInitial(() -> null);
     }
 
+    public static void configureBrowserBeforeUse() {
+        configureBrowserBeforeTest(null);
+    }
+
     /**
-     * The methods which configure the browser once a test runs
+     * Configure the browser before a test method runs.
      * <ul>
-     * <li>Maximises browser based on the driver type</li>
-     * <li>Initialises screenshot capture if needed</li>
-     * <li>Resets the browser if another test ran prior</li>
+     * <li>Resets the browser if already initialised</li>
+     * <li>Maximises browser based on settings</li>
      * <li>Sets the user agent of the browser</li>
+     * <li>Initialises screenshot capture if needed</li>
      * </ul>
      *
      * @param testMethod The test method about to be executed
@@ -104,7 +108,7 @@ public abstract class BaseTest
      * @param testMethod Test method passed from the test script
      */
     private static void initialiseNewScreenshotCapture(Method testMethod) {
-        if (ScreenshotCapture.isRequired()) {
+        if (ScreenshotCapture.isRequired() && testMethod != null) {
             Optional<String> testID = TestIdUtils.getIssueOrTestCaseIdValue(testMethod);
             if (testID.orElse("").isEmpty()) {
                 logger.warn("{} doesn't have a TestID annotation.", testMethod.getName());
