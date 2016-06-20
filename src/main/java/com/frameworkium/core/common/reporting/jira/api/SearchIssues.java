@@ -9,20 +9,18 @@ public class SearchIssues {
 
     private final JsonPath jsonPath;
 
-    public SearchIssues(final String query) {
+    public SearchIssues(String query) {
         try {
             jsonPath = Config.getJIRARequestSpec()
+                    .param("jql", query)
+                    .param("maxResults", 1000)
                     .when()
-                    .get(String.format(
-                            "%s/search?jql=%s&maxResults=1000",
-                            Config.jiraRestURI,
-                            query))
+                    .get(Config.jiraRestURI + "search")
                     .thenReturn().jsonPath();
-
         } catch (RuntimeException re) {
-            throw new RuntimeException("Problem with JIRA or JQL.");
+            throw new RuntimeException("Problem with JIRA or JQL.", re);
         }
-        if (null == jsonPath || null == jsonPath.getList("issues")) {
+        if (jsonPath == null || jsonPath.getList("issues") == null) {
             throw new RuntimeException(String.format("No JIRA issues returned by specified JQL '%s'", query));
         }
     }
