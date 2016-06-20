@@ -42,14 +42,6 @@ public enum Property {
         this.value = retrieveValue(key);
     }
 
-    public String getValue() {
-        return this.value;
-    }
-
-    public boolean isSpecified() {
-        return StringUtils.isNotEmpty(value);
-    }
-
     private String retrieveValue(String key) {
         if (System.getProperty(key) != null) {
             return System.getProperty(key);
@@ -76,5 +68,17 @@ public enum Property {
                     .load(ClassLoader.getSystemResourceAsStream(
                             System.getProperty("config")));
         }
+    }
+
+    public static boolean wantToMaximise() {
+        return MAXIMISE.isSpecified() && Boolean.parseBoolean(MAXIMISE.getValue());
+    }
+
+    public boolean isSpecified() {
+        return StringUtils.isNotEmpty(value);
+    }
+
+    public String getValue() {
+        return this.value;
     }
 }

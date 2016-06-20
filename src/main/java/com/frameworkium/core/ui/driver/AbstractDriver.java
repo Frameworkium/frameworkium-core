@@ -13,27 +13,33 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.frameworkium.core.common.properties.Property.MAXIMISE;
 import static com.frameworkium.core.ui.driver.DriverSetup.useRemoteDriver;
 
 public abstract class AbstractDriver implements Driver {
 
-    private static final String HOSTNAME_OR_IP_AND_PORT_REGEX = "[\\dA-Za-z.:%-]+";
-
-    private WebDriverWrapper webDriverWrapper;
     protected final static Logger logger = LogManager.getLogger(AbstractDriver.class);
+    private static final String HOSTNAME_OR_IP_AND_PORT_REGEX = "[\\dA-Za-z.:%-]+";
+    private WebDriverWrapper webDriverWrapper;
 
-    /** Creates the Wrapped Driver object */
+    /** Creates the Wrapped Driver object and maximises if required. */
     public void initialise() {
-        DesiredCapabilities caps = getDesiredCapabilities();
+        DesiredCapabilities caps = addProxy(getDesiredCapabilities());
+        logger.debug("Browser Capability: " + caps);
 
+        this.webDriverWrapper = setupEventFiringWebDriver(caps);
+
+        maximiseBrowserIfRequired();
+    }
+
+    private DesiredCapabilities addProxy(DesiredCapabilities caps) {
         Proxy currentProxy = getProxy();
         if (currentProxy != null) {
             caps.setCapability(CapabilityType.PROXY, currentProxy);
         }
+        return caps;
+    }
 
-        logger.debug("Browser Capability: " + caps);
-
+    private WebDriverWrapper setupEventFiringWebDriver(DesiredCapabilities caps) {
         WebDriverWrapper eventFiringWD = new WebDriverWrapper(getWebDriver(caps));
         eventFiringWD.register(new EventListener());
         if (ScreenshotCapture.isRequired()) {
@@ -41,9 +47,7 @@ public abstract class AbstractDriver implements Driver {
         }
         // TODO: allow parametrisation
         eventFiringWD.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
-        this.webDriverWrapper = eventFiringWD;
-
-        maximiseBrowserWindow();
+        return eventFiringWD;
     }
 
     /**
@@ -111,14 +115,17 @@ public abstract class AbstractDriver implements Driver {
     }
 
     /** Maximises the browser window based on maximise property */
-    public void maximiseBrowserWindow() {
-        boolean wantToMaximise = !MAXIMISE.isSpecified()
-                || Boolean.parseBoolean(MAXIMISE.getValue());
+    public void maximiseBrowserIfRequired() {
+        boolean wantToMaximise = Property.wantToMaximise();
         boolean ableToMaximise = !useRemoteDriver() && !Driver.isNative();
 
         if (wantToMaximise && ableToMaximise) {
-            this.webDriverWrapper.manage().window().maximize();
+            maximiseBrowserWindow();
         }
+    }
+
+    private void maximiseBrowserWindow() {
+        this.webDriverWrapper.manage().window().maximize();
     }
 
     /** {@inheritDoc} */
