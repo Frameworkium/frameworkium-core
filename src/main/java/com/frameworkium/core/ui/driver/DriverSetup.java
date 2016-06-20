@@ -30,13 +30,18 @@ public class DriverSetup {
     protected final static Logger logger = LogManager.getLogger(DriverSetup.class);
 
     /**
-     * Returns the driver to the base test, which initialises it
+     * Returns the initialises driver.
      *
      * @return A {@link Driver} Implementation
      */
-    public Driver returnDesiredDriverType() {
-        Driver browserDriver = returnBrowserObject(returnBrowserType());
-        return instantiateDesiredRemote(browserDriver);
+    public Driver instantiateDriver() {
+        Browser browser = getBrowserTypeFromProperty();
+        Driver driver = createDriverImpl(browser);
+        if (useRemoteDriver()) {
+            driver = instantiateDesiredRemote(driver);
+        }
+        driver.initialise();
+        return driver;
     }
 
     /**
@@ -45,25 +50,22 @@ public class DriverSetup {
      * @return The correct driver type based on parameters
      */
     private Driver instantiateDesiredRemote(Driver driver) {
-        if (useRemoteDriver()) {
-            DesiredCapabilities desiredCapabilities = driver.getDesiredCapabilities();
-            Platform platform = getPlatformType();
-            switch (returnRemoteType()) {
-                case SAUCE:
-                    return new SauceImpl(platform, desiredCapabilities);
-                case BROWSERSTACK:
-                    return new BrowserStackImpl(platform, desiredCapabilities);
-                case GRID:
-                    return new GridImpl(desiredCapabilities);
-                default:
-                    return driver;
-            }
-        } else {
-            return driver;
+
+        DesiredCapabilities desiredCapabilities = driver.getDesiredCapabilities();
+        Platform platform = getPlatformType();
+        switch (returnRemoteType()) {
+            case SAUCE:
+                return new SauceImpl(platform, desiredCapabilities);
+            case BROWSERSTACK:
+                return new BrowserStackImpl(platform, desiredCapabilities);
+            case GRID:
+                return new GridImpl(desiredCapabilities);
+            default:
+                return driver;
         }
     }
 
-    private Driver returnBrowserObject(Browser browser) {
+    private Driver createDriverImpl(Browser browser) {
         switch (browser) {
             case MARIONETTE:
                 return new MarionetteImpl();
@@ -115,7 +117,7 @@ public class DriverSetup {
      *
      * @return Browser Type
      */
-    private static Browser returnBrowserType() {
+    private static Browser getBrowserTypeFromProperty() {
         if (!Property.BROWSER.isSpecified()) {
             return DEFAULT_BROWSER;
         } else {

@@ -59,8 +59,7 @@ public abstract class BaseTest
     public static void instantiateDriverObject() {
         driver = ThreadLocal.withInitial(() -> {
             Driver newDriver =
-                    new DriverSetup().returnDesiredDriverType();
-            newDriver.initialise();
+                    new DriverSetup().instantiateDriver();
             activeDrivers.add(newDriver);
             return newDriver;
         });
