@@ -7,7 +7,7 @@ import ru.yandex.qatools.allure.annotations.Step;
 
 public class TestListener implements ITestListener {
 
-    private static final Logger logger = LogManager.getLogger(TestListener.class);
+    private final Logger logger = LogManager.getLogger();
 
     @Override
     public void onTestStart(ITestResult result) {

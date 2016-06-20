@@ -16,7 +16,8 @@ import static com.frameworkium.core.common.properties.Property.APP_PATH;
 
 public class SauceLabsListener extends SauceOnDemandTestListener {
 
-    private Logger logger = LogManager.getLogger(SauceLabsListener.class);
+    private static final Logger logger = LogManager.getLogger();
+
     private boolean isRunningOnSauceLabs = Sauce.isDesired();
 
     @Override

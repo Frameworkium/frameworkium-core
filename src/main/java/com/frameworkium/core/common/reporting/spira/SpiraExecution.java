@@ -19,7 +19,7 @@ import static io.restassured.RestAssured.given;
 
 public class SpiraExecution {
 
-    private final static Logger logger = LogManager.getLogger(SpiraExecution.class);
+    private final static Logger logger = LogManager.getLogger();
 
     private final static String spiraURI =
             Property.SPIRA_URL.getValue() + Config.spiraRestURI;

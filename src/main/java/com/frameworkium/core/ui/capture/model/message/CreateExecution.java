@@ -14,8 +14,7 @@ public final class CreateExecution {
     public SoftwareUnderTest softwareUnderTest;
     public String nodeAddress;
 
-    // transient to prevent logger getting serialised to JSON
-    private transient final Logger logger = LogManager.getLogger(CreateExecution.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public CreateExecution(String testID, String nodeAddress) {
 

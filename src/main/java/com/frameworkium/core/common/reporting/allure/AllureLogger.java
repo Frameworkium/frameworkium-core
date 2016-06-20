@@ -8,7 +8,8 @@ import ru.yandex.qatools.allure.events.StepFinishedEvent;
 import ru.yandex.qatools.allure.events.StepStartedEvent;
 
 public class AllureLogger {
-    private static final Logger logger = LogManager.getLogger(AllureLogger.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
     @Step("{0}")
     public static void logToAllure(String log) {

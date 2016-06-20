@@ -11,8 +11,8 @@ import java.util.List;
 
 public class Issue {
 
+    private final static Logger logger = LogManager.getLogger();
     private final String issueKey; // Jira Key e.g. KT-123
-    private final static Logger logger = LogManager.getLogger(Issue.class);
 
     public Issue(String issue) {
         this.issueKey = issue;

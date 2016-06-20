@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class EventListener implements WebDriverEventListener {
 
-    private static final Logger logger = LogManager.getLogger(EventListener.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public void afterChangeValueOf(WebElement element, WebDriver driver) {

@@ -27,7 +27,7 @@ public class DriverSetup {
         WINDOWS, OSX, IOS, ANDROID, NONE
     }
 
-    protected final static Logger logger = LogManager.getLogger(DriverSetup.class);
+    protected static final Logger logger = LogManager.getLogger();
 
     /**
      * Returns the initialises driver.

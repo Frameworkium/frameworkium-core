@@ -16,7 +16,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 public class Execution {
 
-    private final static Logger logger = LogManager.getLogger(Execution.class);
+    private final static Logger logger = LogManager.getLogger();
 
     private final String version;
     private final String issue;

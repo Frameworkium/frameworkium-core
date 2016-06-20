@@ -17,7 +17,7 @@ import static com.frameworkium.core.ui.driver.DriverSetup.useRemoteDriver;
 
 public abstract class AbstractDriver implements Driver {
 
-    protected final static Logger logger = LogManager.getLogger(AbstractDriver.class);
+    protected final static Logger logger = LogManager.getLogger();
     private static final String HOSTNAME_OR_IP_AND_PORT_REGEX = "[\\dA-Za-z.:%-]+";
     private WebDriverWrapper webDriverWrapper;
 

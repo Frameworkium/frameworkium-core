@@ -14,8 +14,7 @@ public class CreateScreenshot {
     public String errorMessage;
     public String screenshotBase64;
 
-    // transient to prevent logger getting serialised to JSON
-    private transient Logger logger = LogManager.getLogger(CreateScreenshot.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public CreateScreenshot(
             String executionID, Command command, String url,

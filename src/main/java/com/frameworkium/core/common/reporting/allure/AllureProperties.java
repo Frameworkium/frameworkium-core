@@ -12,7 +12,8 @@ import static com.frameworkium.core.common.properties.Property.*;
 import static java.util.Objects.isNull;
 
 public class AllureProperties {
-    private static final Logger logger = LogManager.getLogger(AllureProperties.class);
+
+    private static final Logger logger = LogManager.getLogger();
 
     public static void create() {
         try (FileOutputStream fos = new FileOutputStream("target/allure-results/environment.properties")) {

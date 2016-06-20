@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toList;
 
 public class MethodInterceptor implements IMethodInterceptor {
 
-    private static final Logger logger = LogManager.getLogger(MethodInterceptor.class);
+    private static final Logger logger = LogManager.getLogger();
     private static boolean interceptMethodsBasedOnName = false;
 
     @Override

@@ -8,7 +8,7 @@ import org.json.*;
 
 public class Test {
 
-    private final static Logger logger = LogManager.getLogger(Test.class);
+    private final static Logger logger = LogManager.getLogger();
 
     public static void changeIssueFieldValue(
             String issueKey, String fieldToUpdate, String resultValue) {

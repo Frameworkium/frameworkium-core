@@ -58,8 +58,7 @@ public abstract class BaseTest
     @BeforeSuite(alwaysRun = true)
     public static void instantiateDriverObject() {
         driver = ThreadLocal.withInitial(() -> {
-            Driver newDriver =
-                    new DriverSetup().instantiateDriver();
+            Driver newDriver = new DriverSetup().instantiateDriver();
             activeDrivers.add(newDriver);
             return newDriver;
         });

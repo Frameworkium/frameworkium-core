@@ -12,7 +12,7 @@ import java.util.Map;
 
 public abstract class BaseService {
 
-    protected final static Logger logger = LogManager.getLogger();
+    protected final Logger logger = LogManager.getLogger();
 
     /**
      * Used to define the RequestSpecification common to all operations

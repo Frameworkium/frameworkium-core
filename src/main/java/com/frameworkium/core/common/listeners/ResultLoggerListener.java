@@ -20,7 +20,7 @@ import static java.util.Objects.isNull;
 
 public class ResultLoggerListener implements ITestListener {
 
-    private Logger logger = LogManager.getLogger(ResultLoggerListener.class);
+    private final Logger logger = LogManager.getLogger();
 
     @Override
     public void onTestStart(ITestResult result) {

@@ -15,7 +15,6 @@ import io.restassured.specification.RequestSpecification;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.*;
 
@@ -24,7 +23,7 @@ import static com.frameworkium.core.ui.tests.BaseTest.executor;
 
 public class ScreenshotCapture {
 
-    private static final Logger logger = LogManager.getLogger(ScreenshotCapture.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private String executionID;
     private String testID;

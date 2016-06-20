@@ -19,7 +19,7 @@ import static com.frameworkium.core.ui.driver.DriverSetup.Browser.ELECTRON;
 
 public class ScreenshotListener extends TestListenerAdapter {
 
-    private static Logger logger = LogManager.getLogger(ScreenshotListener.class);
+    private static final Logger logger = LogManager.getLogger();
 
     @Override
     public void onTestFailure(ITestResult failingTest) {
