@@ -27,40 +27,30 @@ public class ScreenshotCapture {
     private static final Logger logger = LogManager.getLogger(ScreenshotCapture.class);
 
     private String executionID;
+    private String testID;
 
     private ScreenshotCapture() {
     }
 
     public ScreenshotCapture(String testID) {
-        initExecution(testID);
+        this.testID = testID;
+        logger.debug("About to initialise Capture execution for " + testID);
+        this.executionID = createExecution(new CreateExecution(testID, getNode()));
+        logger.debug("Capture executionID=" + executionID);
     }
 
-    public static boolean isRequired() {
-        boolean allRequirePropertiesSpecified =
-                CAPTURE_URL.isSpecified() &&
-                        SUT_NAME.isSpecified() &&
-                        SUT_VERSION.isSpecified();
-
-        return allRequirePropertiesSpecified && !Driver.isNative();
-    }
-
-    private void initExecution(String testID) {
-
-        String uri = CAPTURE_URL.getValue() + "/executions";
+    private String createExecution(CreateExecution createExecution) {
 
         try {
-            logger.debug("About to initialise Capture execution.");
-            CreateExecution createExecution =
-                    new CreateExecution(testID, getNode());
-            executionID = getRequestSpec()
+            return getRequestSpec()
                     .body(createExecution)
                     .when()
-                    .post(uri)
+                    .post(CAPTURE_URL.getValue() + "/executions")
                     .then().statusCode(201)
                     .extract().path("executionID").toString();
-            logger.debug("Capture executionID=" + executionID);
         } catch (Throwable t) {
             logger.error("Unable to create Capture execution.", t);
+            return null;
         }
     }
 
@@ -73,21 +63,8 @@ public class ScreenshotCapture {
             } else if (BrowserStack.isDesired()) {
                 node = "BrowserStack";
             } else {
-                RemoteWebDriver remoteDriver = BaseTest.getDriver().getWrappedRemoteWebDriver();
                 try {
-                    URL gridURL = new URL(Property.GRID_URL.getValue());
-                    String testSessionURI = String.format(
-                            "%s://%s:%d/grid/api/testsession?session=%s",
-                            gridURL.getProtocol(),
-                            gridURL.getHost(),
-                            gridURL.getPort(),
-                            remoteDriver.getSessionId());
-
-                    node = RestAssured
-                            .post(testSessionURI)
-                            .then()
-                            .extract().jsonPath()
-                            .getString("proxyId");
+                    node = getRemoteNodeAddress();
                 } catch (Throwable t) {
                     logger.warn("Failed to get node address of remote web driver");
                     logger.debug(t);
@@ -104,17 +81,44 @@ public class ScreenshotCapture {
         return node;
     }
 
+    private RequestSpecification getRequestSpec() {
+        return RestAssured.given()
+                .contentType(ContentType.JSON);
+    }
+
+    private String getRemoteNodeAddress() throws MalformedURLException {
+        return RestAssured
+                .post(getTestSessionURL())
+                .then()
+                .extract().jsonPath()
+                .getString("proxyId");
+    }
+
+    private String getTestSessionURL() throws MalformedURLException {
+        URL gridURL = new URL(Property.GRID_URL.getValue());
+        return String.format(
+                "%s://%s:%d/grid/api/testsession?session=%s",
+                gridURL.getProtocol(),
+                gridURL.getHost(),
+                gridURL.getPort(),
+                BaseTest.getDriver().getWrappedRemoteWebDriver().getSessionId());
+    }
+
+    public static boolean isRequired() {
+        return Property.allCapturePropertiesSpecified() && !Driver.isNative();
+    }
+
     public void takeAndSendScreenshot(
             Command command, WebDriver driver, String errorMessage) {
 
-        sendScreenshot(
+        CreateScreenshot createScreenshotMessage =
                 new CreateScreenshot(
                         executionID,
                         command,
                         driver.getCurrentUrl(),
                         errorMessage,
-                        getBase64Screenshot(driver))
-        );
+                        getBase64Screenshot(driver));
+        sendScreenshot(createScreenshotMessage);
     }
 
     private String getBase64Screenshot(WebDriver driver) {
@@ -124,31 +128,24 @@ public class ScreenshotCapture {
     private void sendScreenshot(CreateScreenshot createScreenshotMessage) {
 
         if (executionID == null) {
-            logger.debug("No Screenshot sent. Capture executionID is null.");
+            logger.debug("No Screenshot sent. Capture didn't initialise for " + testID);
             return;
         }
 
-        String uri = CAPTURE_URL.getValue() + "/screenshot";
-
         executor.execute(() -> {
-            logger.debug("About to send screenshot to Capture.");
+            logger.debug("About to send screenshot to Capture for " + testID);
             try {
                 getRequestSpec()
                         .body(createScreenshotMessage)
                         .when()
-                        .post(uri)
+                        .post(CAPTURE_URL.getValue() + "/screenshot")
                         .then()
                         .assertThat().statusCode(201);
-                logger.debug("Sent screenshot to Capture.");
+                logger.debug("Sent screenshot to Capture for " + testID);
             } catch (Throwable t) {
-                logger.warn("Failed sending screenshot to Capture.");
+                logger.warn("Failed sending screenshot to Capture for " + testID);
                 logger.debug(t);
             }
         });
-    }
-
-    private RequestSpecification getRequestSpec() {
-        return RestAssured.given()
-                .contentType(ContentType.JSON);
     }
 }

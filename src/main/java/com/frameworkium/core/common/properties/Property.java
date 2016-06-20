@@ -71,7 +71,8 @@ public enum Property {
     }
 
     public static boolean wantToMaximise() {
-        return MAXIMISE.isSpecified() && Boolean.parseBoolean(MAXIMISE.getValue());
+        return MAXIMISE.isSpecified()
+                && Boolean.parseBoolean(MAXIMISE.getValue());
     }
 
     public boolean isSpecified() {
@@ -80,5 +81,11 @@ public enum Property {
 
     public String getValue() {
         return this.value;
+    }
+
+    public static boolean allCapturePropertiesSpecified() {
+        return CAPTURE_URL.isSpecified() &&
+                SUT_NAME.isSpecified() &&
+                SUT_VERSION.isSpecified();
     }
 }
