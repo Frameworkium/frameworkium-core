@@ -20,18 +20,45 @@ public abstract class AbstractDriver implements Driver {
     protected final static Logger logger = LogManager.getLogger();
     private static final String HOSTNAME_OR_IP_AND_PORT_REGEX = "[\\dA-Za-z.:%-]+";
     private WebDriverWrapper webDriverWrapper;
+    private boolean isInitialised;
 
-    /** Creates the Wrapped Driver object and maximises if required. */
-    public void initialise() {
-        DesiredCapabilities caps = addProxy(getDesiredCapabilities());
-        logger.debug("Browser Capability: " + caps);
-
-        this.webDriverWrapper = setupEventFiringWebDriver(caps);
-
-        maximiseBrowserIfRequired();
+    /** {@inheritDoc} */
+    @Override
+    public void resetBrowser() {
+        tearDown();
+        initialise();
     }
 
-    private DesiredCapabilities addProxy(DesiredCapabilities caps) {
+    /** {@inheritDoc} */
+    @Override
+    public void tearDown() {
+        if (isInitialised) {
+            this.webDriverWrapper.quit();
+            isInitialised = false;
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public WebDriverWrapper getDriver() {
+        return this.webDriverWrapper;
+    }
+
+    /** Creates the Wrapped Driver object and maximises if required. */
+    private void initialise() {
+        if (!isInitialised) {
+            DesiredCapabilities capsFromImpl = getDesiredCapabilities();
+            DesiredCapabilities caps = addProxyIfRequired(capsFromImpl);
+            logger.debug("Browser Capabilities: " + caps);
+
+            this.webDriverWrapper = setupEventFiringWebDriver(caps);
+
+            maximiseBrowserIfRequired();
+            isInitialised = true;
+        }
+    }
+
+    private DesiredCapabilities addProxyIfRequired(DesiredCapabilities caps) {
         Proxy currentProxy = getProxy();
         if (currentProxy != null) {
             caps.setCapability(CapabilityType.PROXY, currentProxy);
@@ -50,6 +77,17 @@ public abstract class AbstractDriver implements Driver {
         return eventFiringWD;
     }
 
+    /** Maximises the browser window based on maximise property */
+    public void maximiseBrowserIfRequired() {
+
+        boolean wantToMaximise = Property.wantToMaximise();
+        boolean ableToMaximise = !useRemoteDriver() && !Driver.isNative();
+
+        if (wantToMaximise && ableToMaximise) {
+            this.webDriverWrapper.manage().window().maximize();
+        }
+    }
+
     /**
      * This method returns a proxy object with settings set by the system properties.
      * If no valid proxy argument is set then it returns null.
@@ -58,40 +96,42 @@ public abstract class AbstractDriver implements Driver {
      * or null if no valid proxy settings
      */
     private Proxy getProxy() {
-        if (Property.PROXY.isSpecified()) {
-            Proxy proxy = new Proxy();
-            String proxyString = Property.PROXY.getValue().toLowerCase();
-            switch (proxyString) {
-                case "system":
-                    proxy.setProxyType(ProxyType.SYSTEM);
-                    logger.debug("Using system proxy");
-                    break;
-                case "autodetect":
-                    proxy.setProxyType(ProxyType.AUTODETECT);
-                    logger.debug("Using autodetect proxy");
-                    break;
-                case "direct":
-                    proxy.setProxyType(ProxyType.DIRECT);
-                    logger.debug("Using direct i.e. (no) proxy");
-                    break;
-                default:
-                    if (verifyProxyAddress(proxyString)) {
-                        proxy.setProxyType(ProxyType.MANUAL)
-                                .setHttpProxy(proxyString)
-                                .setFtpProxy(proxyString)
-                                .setSslProxy(proxyString);
-                        logger.debug("Set all protocols to use proxy address: " + proxyString);
-                    } else {
-                        logger.error("Invalid proxy setting specified, acceptable values are: " +
-                                "system, autodetect, direct or {hostname}:{port}. " +
-                                "Tests will now use default setting for your browser");
-                        return null;
-                    }
-                    break;
-            }
-            return proxy;
+        if (!Property.PROXY.isSpecified()) {
+            return null;
         }
-        return null;
+
+        Proxy proxy = new Proxy();
+        String proxyString = Property.PROXY.getValue().toLowerCase();
+        switch (proxyString) {
+            case "system":
+                proxy.setProxyType(ProxyType.SYSTEM);
+                logger.debug("Using system proxy");
+                break;
+            case "autodetect":
+                proxy.setProxyType(ProxyType.AUTODETECT);
+                logger.debug("Using autodetect proxy");
+                break;
+            case "direct":
+                proxy.setProxyType(ProxyType.DIRECT);
+                logger.debug("Using direct i.e. (no) proxy");
+                break;
+            default:
+                // assumed to be a proxy url
+                if (isProxyAddressWellFormed(proxyString)) {
+                    proxy.setProxyType(ProxyType.MANUAL)
+                            .setHttpProxy(proxyString)
+                            .setFtpProxy(proxyString)
+                            .setSslProxy(proxyString);
+                    logger.debug("Set all protocols to use proxy address: " + proxyString);
+                } else {
+                    logger.error("Invalid proxy setting specified, acceptable values are: " +
+                            "system, autodetect, direct or {hostname}:{port}. " +
+                            "Tests will now use default setting for your browser");
+                    return null;
+                }
+                break;
+        }
+        return proxy;
     }
 
     /**
@@ -101,42 +141,8 @@ public abstract class AbstractDriver implements Driver {
      * @param proxyAddress The proxy value to verify
      * @return true if value is acceptable as a proxy, false otherwise
      */
-    private boolean verifyProxyAddress(final String proxyAddress) {
+    private boolean isProxyAddressWellFormed(String proxyAddress) {
         return proxyAddress.matches(HOSTNAME_OR_IP_AND_PORT_REGEX);
-    }
-
-    /**
-     * Returns the WebDriverWrapper with the initialised driver inside
-     *
-     * @return Initialised WebDriverWrapper
-     */
-    public WebDriverWrapper getDriver() {
-        return this.webDriverWrapper;
-    }
-
-    /** Maximises the browser window based on maximise property */
-    public void maximiseBrowserIfRequired() {
-        boolean wantToMaximise = Property.wantToMaximise();
-        boolean ableToMaximise = !useRemoteDriver() && !Driver.isNative();
-
-        if (wantToMaximise && ableToMaximise) {
-            maximiseBrowserWindow();
-        }
-    }
-
-    private void maximiseBrowserWindow() {
-        this.webDriverWrapper.manage().window().maximize();
-    }
-
-    /** {@inheritDoc} */
-    public void tearDown() {
-        this.webDriverWrapper.quit();
-    }
-
-    /** {@inheritDoc} */
-    public void resetBrowser() {
-        tearDown();
-        initialise();
     }
 
 }

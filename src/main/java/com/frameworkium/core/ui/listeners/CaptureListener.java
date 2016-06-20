@@ -15,7 +15,7 @@ import org.testng.*;
 public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private void takeScreenshotAndSend(Command command, WebDriver driver) {
-        BaseTest.getCapture().takeAndSendScreenshot(command, driver, null);
+        BaseTest.getCapture().takeAndSendScreenshot(command, driver);
     }
 
     private void takeScreenshotAndSend(String action, WebDriver driver) {
@@ -23,11 +23,11 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
         takeScreenshotAndSend(command, driver);
     }
 
-    private void takeScreenshotAndSend(
-            String action, WebDriver driver, Throwable thrw) {
-        Command command = new Command(action, "n/a", "n/a");
-        BaseTest.getCapture().takeAndSendScreenshot(
-                command, driver,
+    private void takeScreenshotAndSend(String action, WebDriver driver, Throwable thrw) {
+
+        BaseTest.getCapture().takeAndSendScreenshotWithError(
+                new Command(action, "n/a", "n/a"),
+                driver,
                 thrw.getMessage() + "\n" + ExceptionUtils.getStackTrace(thrw));
     }
 

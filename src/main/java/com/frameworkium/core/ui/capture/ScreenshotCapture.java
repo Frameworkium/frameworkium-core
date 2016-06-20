@@ -18,7 +18,7 @@ import org.openqa.selenium.*;
 
 import java.net.*;
 
-import static com.frameworkium.core.common.properties.Property.*;
+import static com.frameworkium.core.common.properties.Property.CAPTURE_URL;
 import static com.frameworkium.core.ui.tests.BaseTest.executor;
 
 public class ScreenshotCapture {
@@ -107,7 +107,11 @@ public class ScreenshotCapture {
         return Property.allCapturePropertiesSpecified() && !Driver.isNative();
     }
 
-    public void takeAndSendScreenshot(
+    public void takeAndSendScreenshot(Command command, WebDriver driver) {
+        takeAndSendScreenshotWithError(command, driver, null);
+    }
+
+    public void takeAndSendScreenshotWithError(
             Command command, WebDriver driver, String errorMessage) {
 
         CreateScreenshot createScreenshotMessage =

@@ -30,9 +30,7 @@ public class DriverSetup {
     protected static final Logger logger = LogManager.getLogger();
 
     /**
-     * Returns the initialises driver.
-     *
-     * @return A {@link Driver} Implementation
+     * @return An uninitialised desired {@link Driver} Implementation.
      */
     public Driver instantiateDriver() {
         Browser browser = getBrowserTypeFromProperty();
@@ -40,7 +38,6 @@ public class DriverSetup {
         if (useRemoteDriver()) {
             driver = instantiateDesiredRemote(driver);
         }
-        driver.initialise();
         return driver;
     }
 

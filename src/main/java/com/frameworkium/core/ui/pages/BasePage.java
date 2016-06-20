@@ -107,6 +107,7 @@ public abstract class BasePage<T extends BasePage<T>> {
             waitForAngularRequestsToFinish();
         }
         visibility.waitForAnnotatedElementVisibility(this);
+
         // log page load
         takePageLoadedScreenshotAndSendToCapture();
         logPageLoadToAllure();
@@ -116,7 +117,7 @@ public abstract class BasePage<T extends BasePage<T>> {
 
     private void logPageLoadToAllure() {
         try {
-            AllureLogger.logToAllure("Page '" + this.getClass().getName() + "' successfully loaded");
+            AllureLogger.logToAllure("Page '" + getClass().getName() + "' successfully loaded");
         } catch (Exception e) {
             logger.warn("Error logging page load, but loaded successfully", e);
         }
@@ -125,10 +126,8 @@ public abstract class BasePage<T extends BasePage<T>> {
     private void takePageLoadedScreenshotAndSendToCapture() {
         if (Property.CAPTURE_URL.isSpecified()) {
             try {
-                BaseTest.getCapture().takeAndSendScreenshot(
-                        new Command("load", null, this.getClass().getName()),
-                        driver,
-                        null);
+                Command command = new Command("load", null, getClass().getName());
+                BaseTest.getCapture().takeAndSendScreenshot(command, driver);
             } catch (Exception e) {
                 logger.warn("Failed to send loading screenshot to Capture.");
                 logger.debug(e);

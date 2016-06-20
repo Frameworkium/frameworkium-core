@@ -13,7 +13,7 @@ import java.util.List;
  * <p>
  * The main motivation is to provide useful {@link ExpectedCondition}'s for our
  * lazy proxied {@link WebElement}, {@link TypifiedElement} and {@link HtmlElement}'s.
- * Hence the methods here generally taking <code>? extends WebElement</code>
+ * Hence the methods here generally take <code>? extends WebElement</code>
  * rather than {@link By} because we typically use <code>@FindBy</code> annotations.
  */
 public class AwaitedConditions {

@@ -17,15 +17,11 @@ public interface Driver {
         return APP_PATH.isSpecified();
     }
 
-    /**
-     * @deprecated Will be replaced with a constructor, Factory method or
-     * perhaps builder pattern.
-     */
-    @Deprecated
-    void initialise();
-
     /** Reset the browser ready for another test. */
     void resetBrowser();
+
+    /** Method to tear down the driver object. */
+    void tearDown();
 
     /**
      * Implemented in each Driver Type to specify the capabilities of that browser.
@@ -44,7 +40,4 @@ public interface Driver {
 
     /** @return WebDriverWrapper which wraps the initialised driver. */
     WebDriverWrapper getDriver();
-
-    /** Method to tear down the driver object. */
-    void tearDown();
 }
