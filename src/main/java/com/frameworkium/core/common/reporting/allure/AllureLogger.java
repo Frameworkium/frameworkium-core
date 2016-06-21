@@ -11,16 +11,27 @@ public class AllureLogger {
 
     private static final Logger logger = LogManager.getLogger();
 
+    /**
+     * Uses the @Step annotation to log the given log message to Allure.
+     * @param log the log message to log to the allure report
+     */
     @Step("{0}")
     public static void logToAllure(String log) {
         logger.debug("Logged to allure: " + log);
     }
 
-    public static void __stepStart(String stepName) {
+    /**
+     * Logs the start of a step to your allure report
+     * Other steps will be sub-steps until you call stepFinish
+     *
+     * @param stepName the name of the step
+     */
+    public static void stepStart(String stepName) {
         Allure.LIFECYCLE.fire(new StepStartedEvent(stepName));
     }
 
-    public static void __stepFinish() {
+    /** Logs the end of a step. Ensure it matches a {@link #stepStart(String). */
+    public static void stepFinish() {
         Allure.LIFECYCLE.fire(new StepFinishedEvent());
     }
 

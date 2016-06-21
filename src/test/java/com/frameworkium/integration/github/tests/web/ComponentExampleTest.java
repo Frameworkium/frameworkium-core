@@ -15,7 +15,7 @@ public class ComponentExampleTest extends BaseTest {
 
     @Issue("CET-1")
     @Test(description = "Simple test showing the use of components")
-    public final void componentExampleTest() {
+    public final void component_example_test() {
 
         // Navigate to homepage then use the nav bar to go to the explore page
         ExplorePage explorePage = HomePage.open().then().with().theHeader().clickExplore();

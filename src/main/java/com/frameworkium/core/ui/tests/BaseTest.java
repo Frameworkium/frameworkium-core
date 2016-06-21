@@ -209,20 +209,20 @@ public abstract class BaseTest
      * Other steps will be sub-steps until you call stepFinish
      *
      * @param stepName the name of the step
-     * @deprecated use <code>AllureLogger.__stepStart(stepName)</code>
+     * @deprecated use <code>AllureLogger.stepStart(stepName)</code>
      */
     @Deprecated
     public void __stepStart(String stepName) {
-        AllureLogger.__stepStart(stepName);
+        AllureLogger.stepStart(stepName);
     }
 
     /**
      * Logs the end of a step
      *
-     * @deprecated use <code>AllureLogger.__stepFinish()</code>
+     * @deprecated use <code>AllureLogger.stepFinish()</code>
      */
     @Deprecated
     public void __stepFinish() {
-        AllureLogger.__stepFinish();
+        AllureLogger.stepFinish();
     }
 }
