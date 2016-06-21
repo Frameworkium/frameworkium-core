@@ -1,0 +1,56 @@
+language: java
+jdk: oraclejdk8
+
+dist: xenial
+
+addons:
+  firefox: "46.0.1"
+
+# disable default mvn install  
+install: true
+
+notifications:
+  slack: qaengineering:eTRqy0JhQOUtKHNO8mKLc8NC
+
+env:
+  global:
+    # set PATH to include desired firefox as the firefox-addon doesn't seem to work properly
+    - PATH="/tmp/firefox:$PATH"
+    - CAPTURE_URL="http://capture.ham1.co.uk:5000"
+    - SUT_NAME="frameworkium-core"
+    - SUT_VERSION=$TRAVIS_BRANCH
+    - THREAD_COUNT=2
+    - SELENIUM_MAJ_VER=2.53
+    - SELENIUM_VER=$SELENIUM_MAJ_VER.0
+
+before_script:
+  - "export DISPLAY=:99.0"
+  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
+
+script:
+  # install
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -U -q
+  
+  # Extract Firefox as the firefox-addon doesn't seem to work
+  - tar -xjf /tmp/firefox*.tar.bz2 --directory /tmp
+
+  # Download and setup Grid
+  - wget --no-check-certificate https://selenium-release.storage.googleapis.com/$SELENIUM_MAJ_VER/selenium-server-standalone-$SELENIUM_VER.jar --quiet
+  - java -jar selenium-server-standalone-$SELENIUM_VER.jar -role hub > /dev/null 2>&1 &
+  - sleep 2
+  - java -jar selenium-server-standalone-$SELENIUM_VER.jar -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=$THREAD_COUNT -port 5555 > /dev/null 2>&1 &
+  # set up chrome
+  #- ln -s /usr/bin/chromium-browser /tmp/google-chrome
+  #- wget http://chromedriver.storage.googleapis.com/2.22/chromedriver_linux32.zip --quiet
+  #- unzip chromedriver_linux32.zip
+  #- java -jar selenium-server-standalone-$SELENIUM_VER.jar -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=$THREAD_COUNT -port 5556 > /dev/null 2>&1 &
+  
+  # Run on Firefox on the grid
+  - mvn verify -Dthreads=$THREAD_COUNT -Dconfig=FirefoxGrid.yaml -DcaptureURL=$CAPTURE_URL -DsutName="$SUT_NAME" -DsutVersion="$SUT_VERSION"
+  # Run on chrome on the grid
+  # chromium crashes and google chrome doesn't work on travis
+  # - mvn verify -Dthreads=$THREAD_COUNT -Dbrowser=chrome -DgridURL=http://localhost:4444/wd/hub -DcaptureURL=$CAPTURE_URL -DsutName="$SUT_NAME" -DsutVersion="$SUT_VERSION"
+  # Run and log to Jira
+  - mvn verify -Dthreads=$THREAD_COUNT -Dconfig=FirefoxGrid.yaml -DjiraURL="http://52.29.130.45:8080" -DjqlQuery="issueKey=TEST-1" -DresultVersion="BUILD TEST VERSION" -DzapiCycleRegex="Test Cycle" -DjiraUsername=frameworkium -DjiraPassword=frameworkium
+  # Run on sauce
+  # - mvn verify -Dsauce=true -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.0 -Ddevice=iPad -DcaptureURL=$CAPTURE_URL -DsutName="$SUT_NAME" -DsutVersion="$SUT_VERSION"
