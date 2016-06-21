@@ -20,6 +20,7 @@ public enum Property {
     JIRA_RESULT_FIELDNAME("jiraResultFieldName"),
     JIRA_RESULT_TRANSITION("jiraResultTransition"),
     PROXY("proxy"),
+    MAX_RETRY_COUNT("maxRetryCount"),
     // UI specific
     BROWSER("browser"),
     BROWSER_VERSION("browserVersion"),
@@ -38,7 +39,7 @@ public enum Property {
     private static Map configMap = null;
     private String value;
 
-    Property(final String key) {
+    Property(String key) {
         this.value = retrieveValue(key);
     }
 
@@ -51,7 +52,9 @@ public enum Property {
     }
 
     private String getValueFromConfigFile(String key) {
-        loadConfigFileIfRequired();
+        if (configMap != null) {
+            loadConfigFile();
+        }
 
         if (configMap != null) {
             Object configValue = configMap.get(key);
@@ -62,27 +65,36 @@ public enum Property {
         return null;
     }
 
-    private void loadConfigFileIfRequired() {
-        if (configMap == null && System.getProperty("config") != null) {
-            configMap = (Map) new Yaml()
-                    .load(ClassLoader.getSystemResourceAsStream(
-                            System.getProperty("config")));
+    private void loadConfigFile() {
+        String configFileName = System.getProperty("config");
+        if (StringUtils.isNotEmpty(configFileName)) {
+            configMap = (Map) new Yaml().load(
+                    ClassLoader.getSystemResourceAsStream(configFileName));
         }
     }
 
+    /**
+     * @return true iff the maximise property is equal, ignoring case, to "true"
+     */
     public static boolean wantToMaximise() {
         return MAXIMISE.isSpecified()
                 && Boolean.parseBoolean(MAXIMISE.getValue());
     }
 
+    /**
+     * @return true iff the property is not empty ("") and not null
+     */
     public boolean isSpecified() {
         return StringUtils.isNotEmpty(value);
     }
 
     public String getValue() {
-        return this.value;
+        return value;
     }
 
+    /**
+     * @return true if all the require properties for Capture are specified
+     */
     public static boolean allCapturePropertiesSpecified() {
         return CAPTURE_URL.isSpecified() &&
                 SUT_NAME.isSpecified() &&

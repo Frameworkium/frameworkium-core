@@ -27,7 +27,6 @@ public class JourneyPlannerTest extends BaseTest {
         String to = disambiguationResult.getFirstDisambiguatedTo();
         stepFinish();
 
-
         int shortestJourneyDuration = new ItineraryService()
                 .getNationalItinerary(from, to)
                 .getShortestJourneyDuration();

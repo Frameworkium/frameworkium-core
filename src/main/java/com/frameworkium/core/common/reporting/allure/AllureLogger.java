@@ -13,11 +13,12 @@ public class AllureLogger {
 
     /**
      * Uses the @Step annotation to log the given log message to Allure.
-     * @param log the log message to log to the allure report
+     *
+     * @param message the message to log to the allure report
      */
     @Step("{0}")
-    public static void logToAllure(String log) {
-        logger.debug("Logged to allure: " + log);
+    public static void logToAllure(String message) {
+        logger.debug("Logged to allure: " + message);
     }
 
     /**
