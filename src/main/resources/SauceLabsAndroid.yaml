@@ -17,3 +17,5 @@ jiraUsername:
 jiraPassword:
 maximise:
 resolution:
+proxy:
+maxRetryCount:

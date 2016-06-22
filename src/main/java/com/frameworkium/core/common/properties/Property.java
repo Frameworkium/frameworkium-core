@@ -52,7 +52,7 @@ public enum Property {
     }
 
     private String getValueFromConfigFile(String key) {
-        if (configMap != null) {
+        if (configMap == null) {
             loadConfigFile();
         }
 
