@@ -66,8 +66,23 @@ public abstract class BaseTest
         capture = ThreadLocal.withInitial(() -> null);
     }
 
-    public static void configureBrowserBeforeUse() {
-        configureBrowserBeforeTest(null);
+    /**
+     * Find the calling method and pass it into
+     * {@link #configureBrowserBeforeTest(Method)} to configure the browser.
+     */
+    protected static void configureBrowserBeforeUse() {
+        Method method = getCallingMethod(Thread.currentThread().getStackTrace()[2]);
+        configureBrowserBeforeTest(method);
+    }
+
+    private static Method getCallingMethod(StackTraceElement stackTraceElement) {
+        String className = stackTraceElement.getClassName();
+        String methodName = stackTraceElement.getMethodName();
+        try {
+            return Class.forName(className).getDeclaredMethod(methodName);
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -108,7 +123,7 @@ public abstract class BaseTest
      * @param testMethod Test method passed from the test script
      */
     private static void initialiseNewScreenshotCapture(Method testMethod) {
-        if (ScreenshotCapture.isRequired() && testMethod != null) {
+        if (ScreenshotCapture.isRequired()) {
             Optional<String> testID = TestIdUtils.getIssueOrTestCaseIdValue(testMethod);
             if (testID.orElse("").isEmpty()) {
                 logger.warn("{} doesn't have a TestID annotation.", testMethod.getName());

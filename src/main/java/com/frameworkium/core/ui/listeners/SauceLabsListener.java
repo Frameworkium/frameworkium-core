@@ -18,7 +18,7 @@ public class SauceLabsListener extends SauceOnDemandTestListener {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private boolean isRunningOnSauceLabs = Sauce.isDesired();
+    private static final boolean isRunningOnSauceLabs = Sauce.isDesired();
 
     @Override
     public void onStart(ITestContext testContext) {
