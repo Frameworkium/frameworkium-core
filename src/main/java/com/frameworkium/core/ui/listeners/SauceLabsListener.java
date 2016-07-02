@@ -18,11 +18,11 @@ public class SauceLabsListener extends SauceOnDemandTestListener {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private static final boolean isRunningOnSauceLabs = Sauce.isDesired();
+    private static final boolean IS_RUNNING_ON_SAUCE_LABS = Sauce.isDesired();
 
     @Override
     public void onStart(ITestContext testContext) {
-        if (isRunningOnSauceLabs) {
+        if (IS_RUNNING_ON_SAUCE_LABS) {
             super.onStart(testContext);
 
             if (Driver.isNative()) {
@@ -37,7 +37,7 @@ public class SauceLabsListener extends SauceOnDemandTestListener {
 
     @Override
     public void onTestStart(ITestResult result) {
-        if (isRunningOnSauceLabs) {
+        if (IS_RUNNING_ON_SAUCE_LABS) {
             // TODO: thread safe?
             Sauce.updateJobName(
                     (SauceOnDemandSessionIdProvider) result.getInstance(),
@@ -49,14 +49,14 @@ public class SauceLabsListener extends SauceOnDemandTestListener {
 
     @Override
     public void onTestFailure(ITestResult tr) {
-        if (isRunningOnSauceLabs) {
+        if (IS_RUNNING_ON_SAUCE_LABS) {
             super.onTestFailure(tr);
         }
     }
 
     @Override
     public void onTestSuccess(ITestResult tr) {
-        if (isRunningOnSauceLabs) {
+        if (IS_RUNNING_ON_SAUCE_LABS) {
             super.onTestSuccess(tr);
         }
     }

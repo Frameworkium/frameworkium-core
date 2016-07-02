@@ -13,6 +13,7 @@ import org.testng.TestListenerAdapter;
 import ru.yandex.qatools.allure.annotations.Attachment;
 
 import java.io.*;
+import java.nio.file.*;
 
 import static com.frameworkium.core.common.properties.Property.BROWSER;
 import static com.frameworkium.core.ui.driver.DriverSetup.Browser.ELECTRON;
@@ -40,12 +41,13 @@ public class ScreenshotListener extends TestListenerAdapter {
         if (!ScreenshotCapture.isRequired()) {
             try {
                 String screenshotDirectory = System.getProperty("screenshotDirectory");
-                if (null == screenshotDirectory) {
+                if (screenshotDirectory == null) {
                     screenshotDirectory = "screenshots";
                 }
                 String absolutePath =
-                        screenshotDirectory + File.separator + System.currentTimeMillis() + "_" + testName + ".png";
-                File screenshot = new File(absolutePath);
+                        screenshotDirectory + File.separator
+                                + System.currentTimeMillis() + "_" + testName + ".png";
+                Path screenshot = Paths.get(absolutePath);
                 if (createFile(screenshot)) {
                     WebDriverWrapper driver = BaseTest.getDriver();
                     try {
@@ -63,41 +65,35 @@ public class ScreenshotListener extends TestListenerAdapter {
         }
     }
 
-    private boolean createFile(File screenshotFile) {
-        boolean fileCreated = false;
-
-        if (!screenshotFile.exists()) {
-            File parentDirectory = new File(screenshotFile.getParent());
-            if (parentDirectory.exists() || parentDirectory.mkdirs()) {
-                try {
-                    fileCreated = screenshotFile.createNewFile();
-                } catch (IOException e) {
-                    logger.error("Error creating screenshot", e);
-                }
+    private boolean createFile(Path screenshotPath) {
+        if (!Files.exists(screenshotPath)) {
+            try {
+                Files.createDirectories(screenshotPath.getParent());
+            } catch (IOException e) {
+                logger.error("Error creating screenshot", e);
             }
         }
 
-        return fileCreated;
+        return Files.exists(screenshotPath);
     }
 
     @Attachment(value = "Screenshot on failure", type = "image/png")
-    private byte[] writeScreenshotToFile(WebDriver driver, File screenshot) {
-        try (FileOutputStream screenshotStream = new FileOutputStream(screenshot)) {
+    private byte[] writeScreenshotToFile(WebDriver driver, Path screenshot) {
+        try (OutputStream screenshotStream = Files.newOutputStream(screenshot)) {
             byte[] bytes = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
             screenshotStream.write(bytes);
             screenshotStream.close();
             return bytes;
         } catch (IOException e) {
-            logger.error("Unable to write " + screenshot.getAbsolutePath(), e);
+            logger.error("Unable to write " + screenshot, e);
         }
         return null;
     }
 
     private boolean isScreenshotSupported() {
-        boolean defaultBrowser = !BROWSER.isSpecified();
         boolean isElectron = BROWSER.isSpecified()
                 && ELECTRON.equals(Browser.valueOf(BROWSER.getValue().toUpperCase()));
 
-        return defaultBrowser || !isElectron;
+        return !isElectron;
     }
 }

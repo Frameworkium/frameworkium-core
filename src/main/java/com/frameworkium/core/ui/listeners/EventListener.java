@@ -24,7 +24,7 @@ public class EventListener implements WebDriverEventListener {
     }
 
     @Override
-    public void afterFindBy(By by, WebElement arg1, WebDriver arg2) {
+    public void afterFindBy(By by, WebElement element, WebDriver driver) {
         logger.debug("found element " + by);
     }
 
@@ -71,7 +71,7 @@ public class EventListener implements WebDriverEventListener {
     }
 
     @Override
-    public void beforeFindBy(By by, WebElement element, WebDriver arg2) {
+    public void beforeFindBy(By by, WebElement element, WebDriver driver) {
         logger.debug("find element " + by);
     }
 

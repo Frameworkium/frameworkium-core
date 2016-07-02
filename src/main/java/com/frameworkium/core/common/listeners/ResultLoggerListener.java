@@ -2,8 +2,8 @@ package com.frameworkium.core.common.listeners;
 
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.TestIdUtils;
-import com.frameworkium.core.common.reporting.jira.Config;
-import com.frameworkium.core.common.reporting.jira.api.Test;
+import com.frameworkium.core.common.reporting.jira.JiraConfig;
+import com.frameworkium.core.common.reporting.jira.api.JiraTest;
 import com.frameworkium.core.common.reporting.jira.zapi.Execution;
 import com.frameworkium.core.common.reporting.spira.SpiraExecution;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
@@ -17,6 +17,7 @@ import java.lang.reflect.Method;
 
 import static com.frameworkium.core.common.properties.Property.CAPTURE_URL;
 import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.time.DateUtils.MILLIS_PER_SECOND;
 
 public class ResultLoggerListener implements ITestListener {
 
@@ -34,22 +35,22 @@ public class ResultLoggerListener implements ITestListener {
             if (zapiLoggingParamsProvided(result)) {
                 logger.info("Logging WIP to zapi");
                 new Execution(getIssueOrTestCaseIdAnnotation(result))
-                        .update(Config.ZAPI_STATUS.ZAPI_STATUS_WIP, comment, null);
+                        .update(JiraConfig.ZapiStatus.ZAPI_STATUS_WIP, comment, null);
             }
             if (jiraTransitionLoggingParamsProvided(result)) {
                 logger.info("Logging WIP to Jira using issue transitions");
                 moveThroughTransitions(getIssueOrTestCaseIdAnnotation(result),
-                        Config.JIRA_TRANSITION.JIRA_TRANSITION_WIP);
-                Test.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+                        JiraConfig.JiraTransition.JIRA_TRANSITION_WIP);
+                JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
             }
             if (jiraFieldLoggingParamsProvided(result)) {
                 logger.info("Logging WIP to jira by updating the specified field - "
                         + Property.JIRA_RESULT_FIELDNAME.getValue());
-                Test.changeIssueFieldValue(
+                JiraTest.changeIssueFieldValue(
                         getIssueOrTestCaseIdAnnotation(result),
                         Property.JIRA_RESULT_FIELDNAME.getValue(),
-                        Config.JIRA_FIELD_STATUS.JIRA_STATUS_WIP);
-                Test.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+                        JiraConfig.JiraFieldStatus.JIRA_STATUS_WIP);
+                JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
             }
         }
     }
@@ -57,7 +58,7 @@ public class ResultLoggerListener implements ITestListener {
     private void moveThroughTransitions(String issueAnnotation, String[] jiraTransitions) {
         for (String jiraTransition : jiraTransitions) {
             try {
-                Test.transitionIssue(issueAnnotation, jiraTransition);
+                JiraTest.transitionIssue(issueAnnotation, jiraTransition);
                 logger.debug(
                         "Performed transition '{}' on '{}'",
                         jiraTransition,
@@ -81,27 +82,27 @@ public class ResultLoggerListener implements ITestListener {
             if (zapiLoggingParamsProvided(result)) {
                 logger.info("Logging PASS to zapi");
                 new Execution(getIssueOrTestCaseIdAnnotation(result))
-                        .update(Config.ZAPI_STATUS.ZAPI_STATUS_PASS, comment, null);
+                        .update(JiraConfig.ZapiStatus.ZAPI_STATUS_PASS, comment, null);
             }
             if (jiraTransitionLoggingParamsProvided(result)) {
                 logger.info("Logging PASS to Jira using issue transitions");
                 moveThroughTransitions(getIssueOrTestCaseIdAnnotation(result),
-                        Config.JIRA_TRANSITION.JIRA_TRANSITION_PASS);
-                Test.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+                        JiraConfig.JiraTransition.JIRA_TRANSITION_PASS);
+                JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
             }
             if (jiraFieldLoggingParamsProvided(result)) {
                 logger.info("Logging PASS to jira by updating the specified field - "
                         + Property.JIRA_RESULT_FIELDNAME.getValue());
-                Test.changeIssueFieldValue(
+                JiraTest.changeIssueFieldValue(
                         getIssueOrTestCaseIdAnnotation(result),
                         Property.JIRA_RESULT_FIELDNAME.getValue(),
-                        Config.JIRA_FIELD_STATUS.JIRA_STATUS_PASS);
-                Test.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+                        JiraConfig.JiraFieldStatus.JIRA_STATUS_PASS);
+                JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
             }
             if (spiraLoggingParamsProvided(result)) {
                 new SpiraExecution().recordTestResult(
                         getIssueOrTestCaseIdAnnotation(result),
-                        Config.SPIRA_STATUS.SPIRA_STATUS_PASS,
+                        JiraConfig.SpiraStatus.SPIRA_STATUS_PASS,
                         comment,
                         result);
             }
@@ -111,8 +112,7 @@ public class ResultLoggerListener implements ITestListener {
     @Override
     public void onTestFailure(ITestResult result) {
 
-        if (!(result.getThrowable() instanceof AssertionError)
-                && Config.FailTestOnlyIfAssertionError) {
+        if (!(result.getThrowable() instanceof AssertionError)) {
             markAsBlocked(result);
         } else if (!getIssueOrTestCaseIdAnnotation(result).isEmpty()) {
 
@@ -121,27 +121,27 @@ public class ResultLoggerListener implements ITestListener {
             if (zapiLoggingParamsProvided(result)) {
                 logger.info("Logging FAIL to zapi");
                 new Execution(getIssueOrTestCaseIdAnnotation(result))
-                        .update(Config.ZAPI_STATUS.ZAPI_STATUS_FAIL, comment, null);
+                        .update(JiraConfig.ZapiStatus.ZAPI_STATUS_FAIL, comment, null);
             }
             if (jiraTransitionLoggingParamsProvided(result)) {
                 logger.info("Logging FAIL to Jira using issue transitions");
                 moveThroughTransitions(getIssueOrTestCaseIdAnnotation(result),
-                        Config.JIRA_TRANSITION.JIRA_TRANSITION_FAIL);
-                Test.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+                        JiraConfig.JiraTransition.JIRA_TRANSITION_FAIL);
+                JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
             }
             if (jiraFieldLoggingParamsProvided(result)) {
                 logger.info("Logging FAIL to jira by updating the specified field - "
                         + Property.JIRA_RESULT_FIELDNAME.getValue());
-                Test.changeIssueFieldValue(
+                JiraTest.changeIssueFieldValue(
                         getIssueOrTestCaseIdAnnotation(result),
                         Property.JIRA_RESULT_FIELDNAME.getValue(),
-                        Config.JIRA_FIELD_STATUS.JIRA_STATUS_FAIL);
-                Test.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+                        JiraConfig.JiraFieldStatus.JIRA_STATUS_FAIL);
+                JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
             }
             if (spiraLoggingParamsProvided(result)) {
                 new SpiraExecution().recordTestResult(
                         getIssueOrTestCaseIdAnnotation(result),
-                        Config.SPIRA_STATUS.SPIRA_STATUS_FAIL,
+                        JiraConfig.SpiraStatus.SPIRA_STATUS_FAIL,
                         comment,
                         result);
             }
@@ -163,27 +163,27 @@ public class ResultLoggerListener implements ITestListener {
             if (zapiLoggingParamsProvided(result)) {
                 logger.info("Logging BLOCKED to zapi");
                 new Execution(issueOrTestCaseId)
-                        .update(Config.ZAPI_STATUS.ZAPI_STATUS_BLOCKED, comment, null);
+                        .update(JiraConfig.ZapiStatus.ZAPI_STATUS_BLOCKED, comment, null);
             }
             if (jiraTransitionLoggingParamsProvided(result)) {
                 logger.info("Logging BLOCKED to Jira using issue transitions");
                 moveThroughTransitions(issueOrTestCaseId,
-                        Config.JIRA_TRANSITION.JIRA_TRANSITION_BLOCKED);
-                Test.addComment(issueOrTestCaseId, comment);
+                        JiraConfig.JiraTransition.JIRA_TRANSITION_BLOCKED);
+                JiraTest.addComment(issueOrTestCaseId, comment);
             }
             if (jiraFieldLoggingParamsProvided(result)) {
                 logger.info("Logging BLOCKED to jira by updating the specified field - "
                         + Property.JIRA_RESULT_FIELDNAME.getValue());
-                Test.changeIssueFieldValue(
+                JiraTest.changeIssueFieldValue(
                         issueOrTestCaseId,
                         Property.JIRA_RESULT_FIELDNAME.getValue(),
-                        Config.JIRA_FIELD_STATUS.JIRA_STATUS_BLOCKED);
-                Test.addComment(issueOrTestCaseId, comment);
+                        JiraConfig.JiraFieldStatus.JIRA_STATUS_BLOCKED);
+                JiraTest.addComment(issueOrTestCaseId, comment);
             }
             if (spiraLoggingParamsProvided(result)) {
                 new SpiraExecution().recordTestResult(
                         issueOrTestCaseId,
-                        Config.SPIRA_STATUS.SPIRA_STATUS_BLOCKED,
+                        JiraConfig.SpiraStatus.SPIRA_STATUS_BLOCKED,
                         comment,
                         result);
             }
@@ -256,7 +256,7 @@ public class ResultLoggerListener implements ITestListener {
                 .append(result.getMethod().getMethodName())
                 .append(System.lineSeparator())
                 .append("Duration: ")
-                .append(((result.getEndMillis() - result.getStartMillis()) / 1000))
+                .append(((result.getEndMillis() - result.getStartMillis()) / MILLIS_PER_SECOND))
                 .append("seconds")
                 .append(System.lineSeparator());
 

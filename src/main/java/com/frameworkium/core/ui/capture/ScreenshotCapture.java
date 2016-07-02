@@ -20,6 +20,7 @@ import java.net.*;
 
 import static com.frameworkium.core.common.properties.Property.CAPTURE_URL;
 import static com.frameworkium.core.ui.tests.BaseTest.executor;
+import static org.apache.http.HttpStatus.SC_CREATED;
 
 public class ScreenshotCapture {
 
@@ -45,7 +46,7 @@ public class ScreenshotCapture {
                     .body(createExecution)
                     .when()
                     .post(CAPTURE_URL.getValue() + "/executions")
-                    .then().statusCode(201)
+                    .then().statusCode(SC_CREATED)
                     .extract().path("executionID").toString();
         } catch (Throwable t) {
             logger.error("Unable to create Capture execution.", t);
@@ -143,7 +144,7 @@ public class ScreenshotCapture {
                         .when()
                         .post(CAPTURE_URL.getValue() + "/screenshot")
                         .then()
-                        .assertThat().statusCode(201);
+                        .assertThat().statusCode(SC_CREATED);
                 logger.debug("Sent screenshot to Capture for " + testID);
             } catch (Throwable t) {
                 logger.warn("Failed sending screenshot to Capture for " + testID);

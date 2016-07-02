@@ -96,8 +96,8 @@ public enum Property {
      * @return true if all the require properties for Capture are specified
      */
     public static boolean allCapturePropertiesSpecified() {
-        return CAPTURE_URL.isSpecified() &&
-                SUT_NAME.isSpecified() &&
-                SUT_VERSION.isSpecified();
+        return CAPTURE_URL.isSpecified()
+                && SUT_NAME.isSpecified()
+                && SUT_VERSION.isSpecified();
     }
 }

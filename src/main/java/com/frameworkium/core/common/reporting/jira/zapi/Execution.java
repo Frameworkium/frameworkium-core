@@ -1,7 +1,7 @@
 package com.frameworkium.core.common.reporting.jira.zapi;
 
 import com.frameworkium.core.common.properties.Property;
-import com.frameworkium.core.common.reporting.jira.Config;
+import com.frameworkium.core.common.reporting.jira.JiraConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,12 +16,12 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 public class Execution {
 
-    private final static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
 
     private final String version;
     private final String issue;
     private List<Integer> idList;
-    private int status;
+    private int currentStatus;
 
     public Execution(String issue) {
         this.version = Property.RESULT_VERSION.getValue();
@@ -40,15 +40,31 @@ public class Execution {
 
                 List<Integer> statusList = search.getExecutionStatuses();
                 if (!statusList.isEmpty()) {
-                    status = statusList.get(0);
+                    currentStatus = statusList.get(0);
                 }
             }
         }
         return idList;
     }
 
+    /**
+     * @return ZAPI execution status from the ITestResult status
+     */
+    public static int getZAPIStatus(int status) {
+        switch (status) {
+            case ITestResult.SUCCESS:
+                return JiraConfig.ZapiStatus.ZAPI_STATUS_PASS;
+            case ITestResult.FAILURE:
+                return JiraConfig.ZapiStatus.ZAPI_STATUS_FAIL;
+            case ITestResult.SKIP:
+                return JiraConfig.ZapiStatus.ZAPI_STATUS_BLOCKED;
+            default:
+                return JiraConfig.ZapiStatus.ZAPI_STATUS_FAIL;
+        }
+    }
+
     public int getExecutionStatus() {
-        return status;
+        return currentStatus;
     }
 
     public void update(int status, String comment, String attachment) {
@@ -62,13 +78,6 @@ public class Execution {
         }
     }
 
-    private void replaceExistingAttachment(Integer executionId, String attachment) {
-        if (isNotEmpty(attachment)) {
-            deleteExistingAttachments(executionId);
-            addAttachment(executionId, attachment);
-        }
-    }
-
     private void updateStatusAndComment(Integer executionId, int status, String comment) {
 
         JSONObject obj = new JSONObject();
@@ -77,14 +86,21 @@ public class Execution {
             int commentMaxLen = 750;
             obj.put("comment", StringUtils.abbreviate(comment, commentMaxLen));
 
-            Config.getJIRARequestSpec()
+            JiraConfig.getJIRARequestSpec()
                     .contentType("application/json")
                     .body(obj.toString())
                     .when()
-                    .put(Config.zapiRestURI + "execution/" + executionId + "/execute");
+                    .put(JiraConfig.REST_ZAPI_PATH + "execution/" + executionId + "/execute");
 
         } catch (JSONException e) {
             logger.error("Update status and comment failed", e);
+        }
+    }
+
+    private void replaceExistingAttachment(Integer executionId, String attachment) {
+        if (isNotEmpty(attachment)) {
+            deleteExistingAttachments(executionId);
+            addAttachment(executionId, attachment);
         }
     }
 
@@ -93,16 +109,16 @@ public class Execution {
         String path = "attachment/attachmentsByEntity?entityType=EXECUTION&entityId=" + executionId;
 
         List<String> fileIds =
-                Config.getJIRARequestSpec()
+                JiraConfig.getJIRARequestSpec()
                         .when()
-                        .get(Config.zapiRestURI + path).thenReturn().jsonPath()
+                        .get(JiraConfig.REST_ZAPI_PATH + path).thenReturn().jsonPath()
                         .getList("data.fileId", String.class);
 
         // Iterate over attachments
         fileIds.forEach(fileId ->
-                Config.getJIRARequestSpec()
+                JiraConfig.getJIRARequestSpec()
                         .when()
-                        .delete(Config.zapiRestURI + "attachment/" + fileId)
+                        .delete(JiraConfig.REST_ZAPI_PATH + "attachment/" + fileId)
         );
     }
 
@@ -110,24 +126,10 @@ public class Execution {
 
         String path = "attachment?entityType=EXECUTION&entityId=" + executionId;
 
-        Config.getJIRARequestSpec()
+        JiraConfig.getJIRARequestSpec()
                 .header("X-Atlassian-Token", "nocheck")
                 .multiPart(new File(attachment))
                 .when()
-                .post(Config.zapiRestURI + path);
-    }
-
-    /** Converts ITestResult status to ZAPI execution status */
-    public static int getZAPIStatus(int status) {
-        switch (status) {
-            case ITestResult.SUCCESS:
-                return Config.ZAPI_STATUS.ZAPI_STATUS_PASS;
-            case ITestResult.FAILURE:
-                return Config.ZAPI_STATUS.ZAPI_STATUS_FAIL;
-            case ITestResult.SKIP:
-                return Config.ZAPI_STATUS.ZAPI_STATUS_BLOCKED;
-            default:
-                return Config.ZAPI_STATUS.ZAPI_STATUS_FAIL;
-        }
+                .post(JiraConfig.REST_ZAPI_PATH + path);
     }
 }

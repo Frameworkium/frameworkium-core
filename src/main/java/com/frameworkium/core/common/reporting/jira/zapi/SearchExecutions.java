@@ -1,7 +1,7 @@
 package com.frameworkium.core.common.reporting.jira.zapi;
 
 import com.frameworkium.core.common.properties.Property;
-import com.frameworkium.core.common.reporting.jira.Config;
+import com.frameworkium.core.common.reporting.jira.JiraConfig;
 import io.restassured.path.json.JsonPath;
 
 import java.util.ArrayList;
@@ -13,9 +13,9 @@ public class SearchExecutions {
 
     public SearchExecutions(final String query) {
 
-        jsonPath = Config.getJIRARequestSpec()
+        jsonPath = JiraConfig.getJIRARequestSpec()
                 .when()
-                .get(Config.zapiRestURI + "zql/executeSearch?zqlQuery=" + query)
+                .get(JiraConfig.REST_ZAPI_PATH + "zql/executeSearch?zqlQuery=" + query)
                 .thenReturn().jsonPath();
     }
 

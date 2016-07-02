@@ -35,8 +35,8 @@ public class TestIdUtils {
         if (!isNull(issueAnnotation) && !isNull(tcIdAnnotation)
                 && !issueAnnotation.value().equals(tcIdAnnotation.value())) {
             throw new IllegalStateException(
-                    "TestCaseId and Issue annotation are both specified but " +
-                            "not equal for method: " + method.toString());
+                    "TestCaseId and Issue annotation are both specified but "
+                            + "not equal for method: " + method.toString());
         }
 
         if (!isNull(issueAnnotation)) {

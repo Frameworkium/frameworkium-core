@@ -17,8 +17,8 @@ import static com.frameworkium.core.ui.driver.DriverSetup.useRemoteDriver;
 
 public abstract class AbstractDriver implements Driver {
 
-    protected final static Logger logger = LogManager.getLogger();
-    private static final String HOSTNAME_OR_IP_AND_PORT_REGEX = "[\\dA-Za-z.:%-]+";
+    protected static final Logger logger = LogManager.getLogger();
+    private static final String HOSTNAME_OR_IP_PORT_REGEX = "[\\dA-Za-z.:%-]+";
     private WebDriverWrapper webDriverWrapper;
     private boolean isInitialised;
 
@@ -124,9 +124,9 @@ public abstract class AbstractDriver implements Driver {
                             .setSslProxy(proxyString);
                     logger.debug("Set all protocols to use proxy address: " + proxyString);
                 } else {
-                    logger.error("Invalid proxy setting specified, acceptable values are: " +
-                            "system, autodetect, direct or {hostname}:{port}. " +
-                            "Tests will now use default setting for your browser");
+                    logger.error("Invalid proxy setting specified, acceptable values are: "
+                            + "system, autodetect, direct or {hostname}:{port}. "
+                            + "Tests will now use default setting for your browser");
                     return null;
                 }
                 break;
@@ -142,7 +142,7 @@ public abstract class AbstractDriver implements Driver {
      * @return true if value is acceptable as a proxy, false otherwise
      */
     private boolean isProxyAddressWellFormed(String proxyAddress) {
-        return proxyAddress.matches(HOSTNAME_OR_IP_AND_PORT_REGEX);
+        return proxyAddress.matches(HOSTNAME_OR_IP_PORT_REGEX);
     }
 
 }

@@ -95,6 +95,8 @@ public class SauceImpl extends AbstractDriver {
                 }
                 desiredCapabilities.setCapability("deviceOrientation", "portrait");
                 break;
+            default:
+                throw new IllegalStateException("Unrecognised platform" + platform);
         }
     }
 
@@ -131,7 +133,7 @@ public class SauceImpl extends AbstractDriver {
                 }
                 break;
             default:
-                logger.error("Appium is only available on iOS/Android!");
+                throw new IllegalStateException("Appium is only available on iOS/Android");
         }
     }
 }

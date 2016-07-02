@@ -18,6 +18,8 @@ public abstract class BaseService {
      * Used to define the RequestSpecification common to all operations
      * defined in the given service. For example:
      * <pre><code>RestAssured.given().proxy(...)</code></pre>
+     *
+     * @return the RestAssured RequestSpecification with appropriate defaults
      */
     protected abstract RequestSpecification getRequestSpec();
 
@@ -27,6 +29,8 @@ public abstract class BaseService {
      * <pre>
      *     <code>getDefaultRequestSpecification().then().response().statusCode(200);</code>
      * </pre>
+     *
+     * @return the RestAssured ResponseSpecification with appropriate defaults
      */
     protected abstract ResponseSpecification getResponseSpec();
 

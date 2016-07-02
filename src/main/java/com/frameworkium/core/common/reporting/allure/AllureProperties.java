@@ -15,6 +15,9 @@ public class AllureProperties {
 
     private static final Logger logger = LogManager.getLogger();
 
+    /**
+     * Creates the Allure environment.properties file based on properties used.
+     */
     public static void create() {
         try (FileOutputStream fos = new FileOutputStream("target/allure-results/environment.properties")) {
             Properties props = new Properties();

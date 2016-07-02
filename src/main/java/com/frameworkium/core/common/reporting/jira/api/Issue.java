@@ -1,6 +1,6 @@
 package com.frameworkium.core.common.reporting.jira.api;
 
-import com.frameworkium.core.common.reporting.jira.Config;
+import com.frameworkium.core.common.reporting.jira.JiraConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
@@ -35,18 +35,18 @@ public class Issue {
             logger.error("Can't create JSON Object for linkIssues", e);
         }
 
-        Config.getJIRARequestSpec()
+        JiraConfig.getJIRARequestSpec()
                 .contentType("application/json")
                 .body(obj.toString())
                 .when()
-                .post(Config.jiraRestURI + "issueLink");
+                .post(JiraConfig.JIRA_REST_PATH + "issueLink");
     }
 
     public List<String> getAttachmentIds() {
 
-        return Config.getJIRARequestSpec()
+        return JiraConfig.getJIRARequestSpec()
                 .when()
-                .get(Config.jiraRestURI + "issue/" + issueKey)
+                .get(JiraConfig.JIRA_REST_PATH + "issue/" + issueKey)
                 .thenReturn().jsonPath()
                 .getList("fields.attachment.id");
     }
@@ -54,11 +54,11 @@ public class Issue {
     public void addAttachment(File attachment) {
         String url = String.format("issue/%s/attachments", issueKey);
 
-        Config.getJIRARequestSpec()
+        JiraConfig.getJIRARequestSpec()
                 .header("X-Atlassian-Token", "nocheck")
                 .multiPart(attachment).and()
                 .when()
-                .post(Config.jiraRestURI + url)
+                .post(JiraConfig.JIRA_REST_PATH + url)
                 .thenReturn().statusLine();
     }
 }

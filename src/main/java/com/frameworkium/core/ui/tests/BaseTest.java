@@ -177,8 +177,8 @@ public abstract class BaseTest
             executor.shutdown();
             executor.awaitTermination(15, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            logger.error("Executor was interrupted while shutting down. " +
-                    "Some tasks might not have been executed.");
+            logger.error("Executor was interrupted while shutting down. "
+                    + "Some tasks might not have been executed.");
         }
     }
 

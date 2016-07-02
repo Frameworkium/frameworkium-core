@@ -8,25 +8,24 @@ import org.apache.logging.log4j.Logger;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CreateScreenshot {
 
+    private static final Logger logger = LogManager.getLogger();
     public Command command;
     public String url;
     public String executionID;
     public String errorMessage;
     public String screenshotBase64;
 
-    private static final Logger logger = LogManager.getLogger();
-
     public CreateScreenshot(
             String executionID, Command command, String url,
             String errorMessage, String screenshotBase64) {
 
-        logger.debug(
-                String.format("Creating screenshot: executionID='%s', " +
-                                "Command.action='%s', url='%s', " +
-                                "errorMessage='%s', screenshotBase64.length=%d",
-                        executionID,
-                        command.action, url,
-                        errorMessage, screenshotBase64.length()));
+        logger.debug(String.format(
+                "Creating screenshot: executionID='%s', "
+                        + "Command.action='%s', url='%s', "
+                        + "errorMessage='%s', screenshotBase64.length=%d",
+                executionID,
+                command.action, url,
+                errorMessage, screenshotBase64.length()));
         this.executionID = executionID;
         this.command = command;
         this.url = url;

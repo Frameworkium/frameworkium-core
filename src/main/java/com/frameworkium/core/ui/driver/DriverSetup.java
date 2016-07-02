@@ -42,9 +42,10 @@ public class DriverSetup {
     }
 
     /**
-     * Uses the parameters given to determine which browser/remote/platform to use
+     * Uses parameters to determine which browser/remote/platform to use
      *
-     * @return The correct driver type based on parameters
+     * @param driver the desired (non-remote) driver implementation
+     * @return The (potentially) remote driver implementation based on parameters
      */
     private Driver instantiateDesiredRemote(Driver driver) {
 

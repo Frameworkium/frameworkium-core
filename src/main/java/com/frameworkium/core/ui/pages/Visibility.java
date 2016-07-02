@@ -136,8 +136,8 @@ public final class Visibility {
     }
 
     /**
-     * Calls {@link Visibility#forceVisible(WebElement)} after calling
-     * {@link Visibility#waitForFieldToBeVisible(Object, Field)}.
+     * Calls {@link Visibility#forceVisible(WebElement)} for each ForceVisible
+     * field then {@link Visibility#waitForFieldToBeVisible(Object, Field)}.
      */
     private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field) {
 
@@ -163,8 +163,8 @@ public final class Visibility {
             fun.accept((WebElement) objectFromField);
         } else {
             throw new IllegalArgumentException(
-                    "Only elements of type HtmlElement, TypifiedElement, WebElement or " +
-                            "Lists thereof are supported by Visibility annotations.");
+                    "Only elements of type HtmlElement, TypifiedElement, WebElement or "
+                            + "Lists thereof are supported by Visibility annotations.");
         }
     }
 
@@ -188,9 +188,9 @@ public final class Visibility {
      */
     public void forceVisible(WebElement element) {
         driver.executeScript(
-                "arguments[0].style.zindex='10000';" +
-                        "arguments[0].style.visibility='visible';" +
-                        "arguments[0].style.opacity='100';",
+                "arguments[0].style.zindex='10000';"
+                        + "arguments[0].style.visibility='visible';"
+                        + "arguments[0].style.opacity='100';",
                 element);
     }
 }
