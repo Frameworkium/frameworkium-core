@@ -33,18 +33,24 @@ import static java.util.Objects.isNull;
 public abstract class BaseTest
         implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
+    /** Submit tasks for async execution */
     public static final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    protected static final Logger logger = LogManager.getLogger();
+    /** Logger for subclasses (logs with correct class i.e. not BaseTest) */
+    protected final Logger logger = LogManager.getLogger(this);
+
+    /** Logger for this class */
+    private static final Logger baseLogger = LogManager.getLogger();
 
     private static final long DEFAULT_TIMEOUT_SECONDS = 10L;
 
+    // ThreadLocal things because we use static methods
     private static ThreadLocal<ScreenshotCapture> capture;
     private static ThreadLocal<Driver> driver;
     private static ThreadLocal<Wait<WebDriver>> wait;
     private static List<Driver> activeDrivers =
             Collections.synchronizedList(new ArrayList<>());
-    private static String userAgent;
+    private static String userAgent; // Assuming the same for any given test run
 
     /**
      * Method which runs first upon running a test, it will do the following:
@@ -104,7 +110,7 @@ public abstract class BaseTest
             userAgent = determineUserAgent();
             initialiseNewScreenshotCapture(testMethod);
         } catch (Exception e) {
-            logger.error("Failed to configure browser.", e);
+            baseLogger.error("Failed to configure browser.", e);
             throw new RuntimeException("Failed to configure browser.", e);
         }
     }
@@ -126,7 +132,7 @@ public abstract class BaseTest
         if (ScreenshotCapture.isRequired()) {
             Optional<String> testID = TestIdUtils.getIssueOrTestCaseIdValue(testMethod);
             if (testID.orElse("").isEmpty()) {
-                logger.warn("{} doesn't have a TestID annotation.", testMethod.getName());
+                baseLogger.warn("{} doesn't have a TestID annotation.", testMethod.getName());
                 testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));
             }
             capture.set(new ScreenshotCapture(testID.orElse("n/a")));
@@ -166,7 +172,7 @@ public abstract class BaseTest
             activeDrivers.stream().parallel()
                     .forEach(Driver::tearDown);
         } catch (Exception e) {
-            logger.warn("Session quit unexpectedly.", e);
+            baseLogger.warn("Session quit unexpectedly.", e);
         }
     }
 
@@ -177,7 +183,7 @@ public abstract class BaseTest
             executor.shutdown();
             executor.awaitTermination(15, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            logger.error("Executor was interrupted while shutting down. "
+            baseLogger.error("Executor was interrupted while shutting down. "
                     + "Some tasks might not have been executed.");
         }
     }
