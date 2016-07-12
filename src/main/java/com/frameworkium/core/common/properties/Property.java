@@ -17,7 +17,7 @@ public enum Property {
     JIRA_PASSWORD("jiraPassword"),
     SUT_NAME("sutName"),
     SUT_VERSION("sutVersion"),
-    JIRA_RESULT_FIELDNAME("jiraResultFieldName"),
+    JIRA_RESULT_FIELD_NAME("jiraResultFieldName"),
     JIRA_RESULT_TRANSITION("jiraResultTransition"),
     PROXY("proxy"),
     MAX_RETRY_COUNT("maxRetryCount"),

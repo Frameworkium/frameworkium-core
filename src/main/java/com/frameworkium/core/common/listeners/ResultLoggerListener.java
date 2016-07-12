@@ -45,10 +45,10 @@ public class ResultLoggerListener implements ITestListener {
             }
             if (jiraFieldLoggingParamsProvided(result)) {
                 logger.info("Logging WIP to jira by updating the specified field - "
-                        + Property.JIRA_RESULT_FIELDNAME.getValue());
+                        + Property.JIRA_RESULT_FIELD_NAME.getValue());
                 JiraTest.changeIssueFieldValue(
                         getIssueOrTestCaseIdAnnotation(result),
-                        Property.JIRA_RESULT_FIELDNAME.getValue(),
+                        Property.JIRA_RESULT_FIELD_NAME.getValue(),
                         JiraConfig.JiraFieldStatus.JIRA_STATUS_WIP);
                 JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
             }
@@ -92,10 +92,10 @@ public class ResultLoggerListener implements ITestListener {
             }
             if (jiraFieldLoggingParamsProvided(result)) {
                 logger.info("Logging PASS to jira by updating the specified field - "
-                        + Property.JIRA_RESULT_FIELDNAME.getValue());
+                        + Property.JIRA_RESULT_FIELD_NAME.getValue());
                 JiraTest.changeIssueFieldValue(
                         getIssueOrTestCaseIdAnnotation(result),
-                        Property.JIRA_RESULT_FIELDNAME.getValue(),
+                        Property.JIRA_RESULT_FIELD_NAME.getValue(),
                         JiraConfig.JiraFieldStatus.JIRA_STATUS_PASS);
                 JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
             }
@@ -131,10 +131,10 @@ public class ResultLoggerListener implements ITestListener {
             }
             if (jiraFieldLoggingParamsProvided(result)) {
                 logger.info("Logging FAIL to jira by updating the specified field - "
-                        + Property.JIRA_RESULT_FIELDNAME.getValue());
+                        + Property.JIRA_RESULT_FIELD_NAME.getValue());
                 JiraTest.changeIssueFieldValue(
                         getIssueOrTestCaseIdAnnotation(result),
-                        Property.JIRA_RESULT_FIELDNAME.getValue(),
+                        Property.JIRA_RESULT_FIELD_NAME.getValue(),
                         JiraConfig.JiraFieldStatus.JIRA_STATUS_FAIL);
                 JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
             }
@@ -173,10 +173,10 @@ public class ResultLoggerListener implements ITestListener {
             }
             if (jiraFieldLoggingParamsProvided(result)) {
                 logger.info("Logging BLOCKED to jira by updating the specified field - "
-                        + Property.JIRA_RESULT_FIELDNAME.getValue());
+                        + Property.JIRA_RESULT_FIELD_NAME.getValue());
                 JiraTest.changeIssueFieldValue(
                         issueOrTestCaseId,
-                        Property.JIRA_RESULT_FIELDNAME.getValue(),
+                        Property.JIRA_RESULT_FIELD_NAME.getValue(),
                         JiraConfig.JiraFieldStatus.JIRA_STATUS_BLOCKED);
                 JiraTest.addComment(issueOrTestCaseId, comment);
             }
@@ -216,7 +216,7 @@ public class ResultLoggerListener implements ITestListener {
 
     private Boolean jiraFieldLoggingParamsProvided(ITestResult result) {
         return Property.JIRA_URL.isSpecified()
-                && Property.JIRA_RESULT_FIELDNAME.isSpecified()
+                && Property.JIRA_RESULT_FIELD_NAME.isSpecified()
                 && !getIssueOrTestCaseIdAnnotation(result).isEmpty();
     }
 

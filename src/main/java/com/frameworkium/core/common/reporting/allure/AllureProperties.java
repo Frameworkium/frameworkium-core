@@ -42,8 +42,8 @@ public class AllureProperties {
             props.setProperty("allure.issues.tracker.pattern", JIRA_URL.getValue() + "/browse/%s");
             props.setProperty("allure.tests.management.pattern", JIRA_URL.getValue() + "/browse/%s");
         }
-        if (JIRA_RESULT_FIELDNAME.isSpecified()) {
-            props.setProperty("Jira Result Field Name", JIRA_RESULT_FIELDNAME.getValue());
+        if (JIRA_RESULT_FIELD_NAME.isSpecified()) {
+            props.setProperty("Jira Result Field Name", JIRA_RESULT_FIELD_NAME.getValue());
         }
         if (JIRA_RESULT_TRANSITION.isSpecified()) {
             props.setProperty("Jira Result Field Name", JIRA_RESULT_TRANSITION.getValue());
