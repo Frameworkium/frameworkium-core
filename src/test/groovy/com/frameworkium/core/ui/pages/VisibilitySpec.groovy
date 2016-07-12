@@ -18,12 +18,8 @@ class VisibilitySpec extends Specification {
     def wait = new FluentWait<>(Mock(WebDriver), Mock(Clock), Mock(Sleeper))
     def mockDriver = Mock(JavascriptExecutor)
 
-    def visibleElement = Mock(WebElement) {
-        isDisplayed() >> true
-    }
-    def invisibleElement = Mock(WebElement) {
-        isDisplayed() >> false
-    }
+    def visibleElement = Mock(WebElement) { isDisplayed() >> true }
+    def invisibleElement = Mock(WebElement) { isDisplayed() >> false }
 
     def sut = new Visibility(wait, mockDriver)
 

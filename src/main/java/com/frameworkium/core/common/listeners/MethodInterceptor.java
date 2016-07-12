@@ -100,11 +100,11 @@ public class MethodInterceptor implements IMethodInterceptor {
                 .collect(toList());
 
         if (methodsWithoutTestIds.size() > 0) {
-            logger.warn("The following tests don't have and TestIDs {}",
+            logger.warn("The following tests don't have TestIDs {}",
                     () -> methodsWithoutTestIds.stream().collect(joining(", ")));
         }
 
-        logger.info("Running {} tests specified by JQL query...", methodsPostFiltering.size());
+        logger.info("Running {} tests specified by JQL query", methodsPostFiltering.size());
     }
 
     private Method getMethodFromIMethod(IMethodInstance iMethod) {

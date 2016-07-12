@@ -25,18 +25,18 @@ public class ScreenshotListener extends TestListenerAdapter {
     @Override
     public void onTestFailure(ITestResult failingTest) {
         if (isScreenshotSupported()) {
-            takeScreenshot(failingTest.getName());
+            takeScreenshotAndSaveLocally(failingTest.getName());
         }
     }
 
     @Override
     public void onTestSkipped(ITestResult skippedTest) {
         if (isScreenshotSupported()) {
-            takeScreenshot(skippedTest.getName());
+            takeScreenshotAndSaveLocally(skippedTest.getName());
         }
     }
 
-    private void takeScreenshot(String testName) {
+    private void takeScreenshotAndSaveLocally(String testName) {
         // Take a local screenshot if capture is not enabled
         if (!ScreenshotCapture.isRequired()) {
             try {

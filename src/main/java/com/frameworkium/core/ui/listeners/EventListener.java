@@ -105,6 +105,8 @@ public class EventListener implements WebDriverEventListener {
         String str = element.toString();
         Pattern p = Pattern.compile("->\\s(.*)(?=\\])");
         Matcher m = p.matcher(str);
-        return m.find() && m.groupCount() > 0 ? m.group(1) : str;
+        return m.find() && m.groupCount() > 0
+                ? m.group(1)
+                : str;
     }
 }

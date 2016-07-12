@@ -18,7 +18,7 @@ import static com.frameworkium.core.ui.driver.DriverSetup.useRemoteDriver;
 public abstract class AbstractDriver implements Driver {
 
     protected static final Logger logger = LogManager.getLogger();
-    private static final String HOSTNAME_OR_IP_PORT_REGEX = "[\\dA-Za-z.:%-]+";
+    private static final String HOSTNAME_OR_IP_PORT_REGEX = "[\\dA-Za-z\\.\\-]+:[\\d]+";
     private WebDriverWrapper webDriverWrapper;
     private boolean isInitialised;
 
@@ -124,9 +124,9 @@ public abstract class AbstractDriver implements Driver {
                             .setSslProxy(proxyString);
                     logger.debug("Set all protocols to use proxy address: " + proxyString);
                 } else {
-                    logger.error("Invalid proxy setting specified, acceptable values are: "
+                    logger.error("Invalid proxy specified, acceptable values are: "
                             + "system, autodetect, direct or {hostname}:{port}. "
-                            + "Tests will now use default setting for your browser");
+                            + "Tests will use default setting for your browser");
                     return null;
                 }
                 break;
@@ -135,7 +135,7 @@ public abstract class AbstractDriver implements Driver {
     }
 
     /**
-     * This helper method verifies that a value is suitable for usage as a proxy address.
+     * This helper method verifies that a value is a suitable proxy address.
      * Selenium expects values of the format hostname:port or ip:port
      *
      * @param proxyAddress The proxy value to verify

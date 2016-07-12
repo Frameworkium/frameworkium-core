@@ -44,7 +44,7 @@ public abstract class BaseTest
 
     private static final long DEFAULT_TIMEOUT_SECONDS = 10L;
 
-    // ThreadLocal things because we use static methods
+    // Using ThreadLocal because everything is static
     private static ThreadLocal<ScreenshotCapture> capture;
     private static ThreadLocal<Driver> driver;
     private static ThreadLocal<Wait<WebDriver>> wait;
@@ -149,6 +149,8 @@ public abstract class BaseTest
     /**
      * @param timeout timeout in seconds for the {@link Wait}
      * @return a new {@link Wait} for the thread local driver and given timeout
+     * which also ignores {@link NoSuchElementException} and
+     * {@link StaleElementReferenceException}
      */
     public static Wait<WebDriver> newWaitWithTimeout(long timeout) {
         return new FluentWait<>(getDriver().getWrappedDriver())
