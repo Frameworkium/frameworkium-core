@@ -32,10 +32,8 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     private void sendFinalScreenshot(ITestResult result, String action) {
-        // As this can be called from any test type, ensure this is a UI test
-        // and capture is required
-        if ((result.getInstance() instanceof BaseTest)
-                && ScreenshotCapture.isRequired()) {
+        // As this can be called from any test type, ensure this is not an API test
+        if (ScreenshotCapture.isRequired() && !isFromApiTest(result)) {
             Throwable thrw = result.getThrowable();
             if (null != thrw) {
                 takeScreenshotAndSend(action, BaseTest.getDriver(), thrw);
@@ -44,6 +42,11 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
                 takeScreenshotAndSend(command, BaseTest.getDriver());
             }
         }
+    }
+
+    private boolean isFromApiTest(ITestResult result) {
+        return result.getInstance()
+                instanceof com.frameworkium.core.api.tests.BaseTest;
     }
 
     private void highlightElementAndSendScreenshot(
