@@ -48,7 +48,7 @@ public class ScreenshotListener extends TestListenerAdapter {
                         screenshotDirectory + File.separator
                                 + System.currentTimeMillis() + "_" + testName + ".png";
                 Path screenshot = Paths.get(absolutePath);
-                if (createFile(screenshot)) {
+                if (createScreenshotDirectory(screenshot.getParent())) {
                     WebDriverWrapper driver = BaseTest.getDriver();
                     try {
                         writeScreenshotToFile(driver, screenshot);
@@ -65,16 +65,15 @@ public class ScreenshotListener extends TestListenerAdapter {
         }
     }
 
-    private boolean createFile(Path screenshotPath) {
-        if (!Files.exists(screenshotPath)) {
+    private boolean createScreenshotDirectory(Path screenshotDirectory) {
+        if (!Files.isDirectory(screenshotDirectory)) {
             try {
-                Files.createDirectories(screenshotPath.getParent());
+                Files.createDirectories(screenshotDirectory);
             } catch (IOException e) {
-                logger.error("Error creating screenshot", e);
+                logger.error("Error creating screenshot directory", e);
             }
         }
-
-        return Files.exists(screenshotPath);
+        return Files.isDirectory(screenshotDirectory);
     }
 
     @Attachment(value = "Screenshot on failure", type = "image/png")
