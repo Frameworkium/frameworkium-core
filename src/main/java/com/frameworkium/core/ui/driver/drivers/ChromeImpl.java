@@ -36,9 +36,8 @@ public class ChromeImpl extends AbstractDriver {
 
         // Allow user to provide their own user directory, for custom chrome profiles
         if (Property.CHROME_USER_DATA_DIR.isSpecified()) {
-
             ChromeOptions options = new ChromeOptions();
-            options.addArguments(String.format("user-data-dir={0}",Property.CHROME_USER_DATA_DIR.getValue()));
+            options.addArguments(String.format("user-data-dir=%s",Property.CHROME_USER_DATA_DIR.getValue()));
 
             capabilities.setCapability(ChromeOptions.CAPABILITY, options);
         }
