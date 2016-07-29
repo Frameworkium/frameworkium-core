@@ -4,16 +4,14 @@ import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.capture.model.Command;
+import com.frameworkium.core.ui.js.JavascriptWait;
 import com.frameworkium.core.ui.tests.BaseTest;
-import com.paulhammant.ngwebdriver.NgWebDriver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.Wait;
 import ru.yandex.qatools.htmlelements.loader.HtmlElementLoader;
-
-import java.util.Objects;
 
 public abstract class BasePage<T extends BasePage<T>> {
 
@@ -22,15 +20,14 @@ public abstract class BasePage<T extends BasePage<T>> {
     protected Wait<WebDriver> wait;
     /** Visibility with current page wait and driver */
     protected Visibility visibility;
-
-    private NgWebDriver ngDriver;
+    protected JavascriptWait javascriptWait;
 
     /** Constructor, initialises all things useful. */
     public BasePage() {
         driver = BaseTest.getDriver();
         wait = BaseTest.getWait();
         visibility = new Visibility(wait, BaseTest.getDriver());
-        ngDriver = new NgWebDriver(BaseTest.getDriver());
+        javascriptWait = new JavascriptWait(driver, wait);
     }
 
     /**
@@ -89,7 +86,7 @@ public abstract class BasePage<T extends BasePage<T>> {
      * <p>
      * <ul>
      * <li>Initialises fields with lazy proxies</li>
-     * <li>Waits for AngularJS requests to finish loading, if present</li>
+     * <li>Waits for Javascript events including document ready & JS frameworks (if applicable)</li>
      * <li>Processes Frameworkium visibility annotations e.g. {@link Visible}</li>
      * <li>Log page load to Allure and Capture</li>
      * </ul>
@@ -100,15 +97,14 @@ public abstract class BasePage<T extends BasePage<T>> {
     @SuppressWarnings("unchecked")
     public T get() {
 
+        //Populate Page Object
         HtmlElementLoader.populatePageObject(this, driver);
 
-        // wait for page to load
-        if (isPageAngularJS()) {
-            waitForAngularRequestsToFinish();
-        }
+        //Wait for Elements & JS
         visibility.waitForAnnotatedElementVisibility(this);
+        javascriptWait.waitForJavascriptEventsOnLoad();
 
-        // log page load
+        //Log
         takePageLoadedScreenshotAndSendToCapture();
         logPageLoadToAllure();
 
@@ -135,8 +131,11 @@ public abstract class BasePage<T extends BasePage<T>> {
         }
     }
 
-    private boolean isPageAngularJS() {
-        return Objects.equals(executeJS("return typeof angular;"), "object");
+    /**
+     * Waits for all JS framework requests to finish on page
+     */
+    protected void waitForJavascriptFrameworkToFinish() {
+        javascriptWait.waitForJavascriptFramework();
     }
 
     /**
@@ -179,11 +178,6 @@ public abstract class BasePage<T extends BasePage<T>> {
             logger.debug("Failed Javascript:" + javascript, e);
         }
         return returnObj;
-    }
-
-    /** Method to wait for AngularJS requests to finish on the page */
-    protected void waitForAngularRequestsToFinish() {
-        ngDriver.waitForAngularRequestsToFinish();
     }
 
     /** @return Returns the title of the web page */
