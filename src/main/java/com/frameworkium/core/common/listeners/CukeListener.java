@@ -257,10 +257,10 @@ public class CukeListener implements Formatter, Reporter {
 
     private String retrieveTagValue(List<Tag> tags, String tagName){
         List<String> values = new ArrayList<>();
-        String tagSearch = "@" + tagName + ":";
+        String tagSearch = "@" + tagName + "(";
         for (Tag tag : tags){
             if(tag.getName().startsWith(tagSearch))
-                values.add(tag.getName().replace(tagSearch,"").trim());
+                values.add(tag.getName().replace(tagSearch,"").replace(")","").trim());
         }
         //Return a comma separated list
         return StringUtils.join(values,",");
