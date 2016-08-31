@@ -13,6 +13,7 @@ public class JiraConfig {
     public static RequestSpecification getJIRARequestSpec() {
         return given()
                 .baseUri(Property.JIRA_URL.getValue())
+                .relaxedHTTPSValidation()
                 .auth().preemptive().basic(
                         Property.JIRA_USERNAME.getValue(),
                         Property.JIRA_PASSWORD.getValue());
