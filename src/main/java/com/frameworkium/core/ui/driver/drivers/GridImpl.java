@@ -9,9 +9,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static com.frameworkium.core.common.properties.Property.BROWSER_VERSION;
-import static com.frameworkium.core.common.properties.Property.PLATFORM;
-import static com.frameworkium.core.common.properties.Property.PLATFORM_VERSION;
+import static com.frameworkium.core.common.properties.Property.*;
 
 public class GridImpl extends AbstractDriver {
 
@@ -33,6 +31,9 @@ public class GridImpl extends AbstractDriver {
         }
         if (PLATFORM.isSpecified()) {
             desiredCapabilities.setCapability("platform", PLATFORM_VERSION.getValue());
+        }
+        if(APPLICATION_NAME.isSpecified()){
+            desiredCapabilities.setCapability("applicationName", APPLICATION_NAME.getValue());
         }
         return desiredCapabilities;
     }
