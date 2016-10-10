@@ -30,6 +30,7 @@ public enum Property {
     CAPTURE_URL("captureURL"),
     GRID_URL("gridURL"),
     APP_PATH("appPath"),
+    APPLICATION_NAME("applicationName"),
     SAUCE("sauce"),
     BROWSER_STACK("browserStack"),
     MAXIMISE("maximise"),
