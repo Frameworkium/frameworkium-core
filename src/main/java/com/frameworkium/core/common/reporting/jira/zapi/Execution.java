@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import org.testng.ITestResult;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
@@ -67,11 +68,11 @@ public class Execution {
         return currentStatus;
     }
 
-    public void update(int status, String comment, String attachment) {
+    public void update(int status, String comment, String... attachments) {
         if (null != idList) {
             for (Integer executionId : idList) {
                 updateStatusAndComment(executionId, status, comment);
-                replaceExistingAttachment(executionId, attachment);
+                replaceExistingAttachments(executionId, attachments);
 
                 logger.debug("ZAPI Updater - Updated {} to status {}", issue, status);
             }
@@ -97,10 +98,10 @@ public class Execution {
         }
     }
 
-    private void replaceExistingAttachment(Integer executionId, String attachment) {
-        if (isNotEmpty(attachment)) {
+    private void replaceExistingAttachments(Integer executionId, String... attachments) {
+        if (attachments != null) {
             deleteExistingAttachments(executionId);
-            addAttachment(executionId, attachment);
+            addAttachments(executionId, attachments);
         }
     }
 
@@ -122,14 +123,16 @@ public class Execution {
         );
     }
 
-    private void addAttachment(Integer executionId, String attachment) {
+    private void addAttachments(Integer executionId, String... attachments) {
 
         String path = "attachment?entityType=EXECUTION&entityId=" + executionId;
 
-        JiraConfig.getJIRARequestSpec()
-                .header("X-Atlassian-Token", "nocheck")
-                .multiPart(new File(attachment))
-                .when()
-                .post(JiraConfig.REST_ZAPI_PATH + path);
+        Arrays.stream(attachments).filter(attachment -> attachment != null).forEach(attachment ->
+            JiraConfig.getJIRARequestSpec()
+                    .header("X-Atlassian-Token", "nocheck")
+                    .multiPart(new File(attachment))
+                    .when()
+                    .post(JiraConfig.REST_ZAPI_PATH + path)
+        );
     }
 }
