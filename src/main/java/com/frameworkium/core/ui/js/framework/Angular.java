@@ -8,7 +8,8 @@ public class Angular implements AbstractFramework {
 
     @Override
     public boolean isPresent(JavascriptExecutor javascriptExecutor) {
-        return (Boolean) javascriptExecutor.executeScript("return typeof angular == 'object';");
+        return (Boolean) javascriptExecutor.executeScript(
+                "return typeof angular == 'object';");
     }
 
     @Override

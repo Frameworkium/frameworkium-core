@@ -8,7 +8,8 @@ public class AngularTwo implements AbstractFramework {
 
     @Override
     public boolean isPresent(JavascriptExecutor javascriptExecutor) {
-        return (Boolean) javascriptExecutor.executeScript("return typeof ng == 'object';");
+        return (Boolean) javascriptExecutor.executeScript(
+                "return typeof ng == 'object';");
     }
 
     @Override
