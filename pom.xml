@@ -4,9 +4,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.Frameworkium</groupId>
-  <artifactId>Frameworkium-core</artifactId>
-  <version>2.1.1</version>
-  <name>Frameworkium-core</name>
+  <artifactId>frameworkium-core</artifactId>
+  <version>2.1.2</version>
+  <name>frameworkium-core</name>
   <description>
     Frameworkium core code.
     Referenced by the com.frameworkium project, with example tests.
@@ -43,9 +43,9 @@
       <version>2.53.1</version>
     </dependency>
     <dependency>
-      <groupId>com.github.detro.ghostdriver</groupId>
+      <groupId>com.codeborne</groupId>
       <artifactId>phantomjsdriver</artifactId>
-      <version>1.1.0</version>
+      <version>1.3.0</version>
       <exclusions>
         <exclusion>
           <groupId>org.seleniumhq.selenium</groupId>
