@@ -20,8 +20,8 @@ env:
     - SUT_NAME="frameworkium-core"
     - SUT_VERSION=$TRAVIS_BRANCH
     - THREAD_COUNT=2
-    - SELENIUM_MAJ_VER=3.0
-    - SELENIUM_VER=$SELENIUM_MAJ_VER.0
+    - SELENIUM_MAJ_VER=2.53
+    - SELENIUM_VER=$SELENIUM_MAJ_VER.1
 
 before_script:
   - export DISPLAY=:99.0
