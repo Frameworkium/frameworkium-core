@@ -73,4 +73,22 @@ public abstract class BaseService {
                 .extract();
     }
 
+    /**
+     * Performs specified HTTP verb request of the URL with the given body.
+     *
+     * @param method the HTTP method to request
+     * @param body   the body of the request
+     * @param url    the URL to request
+     * @return The response from the request
+     */
+    protected ExtractableResponse request(Method method, Object body, String url) {
+        return getRequestSpec()
+                .when()
+                .body(body)
+                .request(method, url)
+                .then()
+                .spec(getResponseSpec())
+                .extract();
+    }
+
 }

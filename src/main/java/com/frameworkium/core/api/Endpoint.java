@@ -6,7 +6,7 @@ public interface Endpoint {
      * Calls {@link String#format(String, Object...)} on the url.
      *
      * @param params Arguments referenced by the format specifiers in the url.
-     * @return A formatted URL String
+     * @return A formatted String representing the URL of the given constant.
      */
     String getUrl(Object... params);
 }
