@@ -66,7 +66,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     @Override
-    public void afterChangeValueOf(WebElement element, WebDriver driver) {
+    public void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] chars) {
         takeScreenshotAndSend("change", driver);
     }
 
@@ -119,7 +119,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     public void afterClickOn(WebElement element, WebDriver driver) {}
 
     @Override
-    public void beforeChangeValueOf(WebElement element, WebDriver driver) {}
+    public void beforeChangeValueOf(WebElement webElement, WebDriver webDriver, CharSequence[] charSequences) {}
 
     @Override
     public void afterFindBy(By by, WebElement arg1, WebDriver arg2) {}

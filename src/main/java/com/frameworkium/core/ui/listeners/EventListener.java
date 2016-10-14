@@ -14,7 +14,7 @@ public class EventListener implements WebDriverEventListener {
     private static final Logger logger = LogManager.getLogger();
 
     @Override
-    public void afterChangeValueOf(WebElement element, WebDriver driver) {
+    public void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] charSequences) {
         logger.debug("changed value of element with " + getLocatorFromElement(element));
     }
 
@@ -61,7 +61,7 @@ public class EventListener implements WebDriverEventListener {
     }
 
     @Override
-    public void beforeChangeValueOf(WebElement element, WebDriver driver) {
+    public void beforeChangeValueOf(WebElement element, WebDriver driver, CharSequence[] charSequences) {
         logger.debug("change value of element with " + getLocatorFromElement(element));
     }
 
