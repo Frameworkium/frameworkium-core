@@ -4,9 +4,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.Frameworkium</groupId>
-  <artifactId>Frameworkium-core</artifactId>
+  <artifactId>frameworkium-core</artifactId>
   <version>2.1.2</version>
-  <name>Frameworkium-core</name>
+  <name>frameworkium-core</name>
   <description>
     Frameworkium core code.
     Referenced by the com.frameworkium project, with example tests.
