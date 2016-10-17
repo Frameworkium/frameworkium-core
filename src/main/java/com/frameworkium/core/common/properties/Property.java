@@ -2,6 +2,7 @@ package com.frameworkium.core.common.properties;
 
 import org.apache.commons.lang3.StringUtils;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.error.YAMLException;
 
 import java.util.Map;
 
@@ -70,8 +71,13 @@ public enum Property {
     private void loadConfigFile() {
         String configFileName = System.getProperty("config");
         if (StringUtils.isNotEmpty(configFileName)) {
-            configMap = (Map) new Yaml().load(
-                    ClassLoader.getSystemResourceAsStream(configFileName));
+            try {
+                configMap = (Map) new Yaml().load(
+                        ClassLoader.getSystemResourceAsStream(configFileName));
+            } catch (YAMLException e) {
+                throw new RuntimeException(
+                        "Config file '" + configFileName + "' not found.", e);
+            }
         }
     }
 

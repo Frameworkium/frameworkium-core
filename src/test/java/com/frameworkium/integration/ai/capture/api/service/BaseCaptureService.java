@@ -19,7 +19,7 @@ public class BaseCaptureService extends BaseService {
     protected RequestSpecification getRequestSpec() {
         return RestAssured.given()
                 .baseUri(CaptureEndpoint.BASE_URI.getUrl())
-                .log().all() // uncomment to log each request
+                // .log().all() // uncomment to log each request
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON);
     }
