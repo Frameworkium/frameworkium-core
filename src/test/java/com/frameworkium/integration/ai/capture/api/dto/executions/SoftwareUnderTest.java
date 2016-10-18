@@ -10,7 +10,7 @@ public class SoftwareUnderTest {
 
     public static SoftwareUnderTest newInstance() {
         SoftwareUnderTest sut = new SoftwareUnderTest();
-        sut.name = "Fwium-core";
+        sut.name = "frameworkium-core";
         sut.version = "master";
         return sut;
     }

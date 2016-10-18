@@ -4,7 +4,7 @@ jdk: oraclejdk8
 dist: xenial
 
 addons:
-  firefox: "47.0.1"
+  firefox: "49.0.2"
 
 # disable default mvn install  
 install: true
@@ -15,12 +15,12 @@ notifications:
 env:
   global:
     # set PATH to include desired firefox as the firefox-addon doesn't seem to work properly
-    - PATH="/tmp/firefox:$PATH"
+    - PATH="/tmp/firefox:/tmp/geckodriver:$PATH"
     - CAPTURE_URL="https://capture.unity.perimeterusa.com:5000"
     - SUT_NAME="frameworkium-core"
     - SUT_VERSION=$TRAVIS_BRANCH
     - THREAD_COUNT=2
-    - SELENIUM_MAJ_VER=2.53
+    - SELENIUM_MAJ_VER=3.0
     - SELENIUM_VER=$SELENIUM_MAJ_VER.1
 
 before_script:
@@ -34,19 +34,27 @@ script:
   # Extract Firefox as the firefox-addon doesn't seem to work
   - tar -xjf /tmp/firefox*.tar.bz2 --directory /tmp
 
+  # Download and setup Marionette/geckodriver
+  - wget --no-check-certificate https://github.com/mozilla/geckodriver/releases/download/v0.11.1/geckodriver-v0.11.1-linux64.tar.gz
+  - tar -xzf geckodriver-v0.11.1-linux64.tar.gz --directory /tmp
+
   # Download and setup Grid
   - wget --no-check-certificate https://selenium-release.storage.googleapis.com/$SELENIUM_MAJ_VER/selenium-server-standalone-$SELENIUM_VER.jar --quiet
   - java -jar selenium-server-standalone-$SELENIUM_VER.jar -role hub > /dev/null 2>&1 &
   - sleep 2
-  - java -jar selenium-server-standalone-$SELENIUM_VER.jar -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=$THREAD_COUNT -port 5555 > /dev/null 2>&1 &
+  - java -Dwebdriver.gecko.driver=/tmp/geckodriver -jar selenium-server-standalone-$SELENIUM_VER.jar -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=$THREAD_COUNT -maxSession $THREAD_COUNT -port 5555 > /dev/null 2>&1 &
   # set up chrome
   #- ln -s /usr/bin/chromium-browser /tmp/google-chrome
-  #- wget http://chromedriver.storage.googleapis.com/2.22/chromedriver_linux32.zip --quiet
-  #- unzip chromedriver_linux32.zip
+  #- wget http://chromedriver.storage.googleapis.com/2.22/chromedriver_linux64.zip --quiet
+  #- unzip chromedriver_linux64.zip
   #- java -jar selenium-server-standalone-$SELENIUM_VER.jar -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=$THREAD_COUNT -port 5556 > /dev/null 2>&1 &
-  
-  # Run on Firefox on the grid
+
+  # Run on Firefox off the grid
+  - mvn verify -B -Dthreads=$THREAD_COUNT -Dbrowser=firefox -Dwebdriver.gecko.driver=/tmp/geckodriver
+
+  # Run on Firefox on the grid via gecko
   - mvn verify -B -Dthreads=$THREAD_COUNT -Dconfig=FirefoxGrid.yaml -DcaptureURL=$CAPTURE_URL -DsutName="$SUT_NAME" -DsutVersion="$SUT_VERSION"
+
   # Run on chrome on the grid
   # chromium crashes and google chrome doesn't work on travis
   # - mvn verify -Dthreads=$THREAD_COUNT -Dbrowser=chrome -DgridURL=http://localhost:4444/wd/hub -DcaptureURL=$CAPTURE_URL -DsutName="$SUT_NAME" -DsutVersion="$SUT_VERSION"

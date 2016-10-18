@@ -20,7 +20,7 @@ public class ComponentExampleTest extends BaseTest {
         // Navigate to homepage then use the nav bar to go to the explore page
         ExplorePage explorePage = HomePage.open().then().with().theHeader().clickExplore();
 
-        // not a good assertion, improving this is an exercise for the reader
+        // not a great assertion, improving this is an exercise for the reader
         assertThat(explorePage.getTitle()).isEqualTo("Explore · GitHub");
 
         // Search for "Selenium" and check SeleniumHQ/selenium is one of the returned repos.
@@ -34,8 +34,9 @@ public class ComponentExampleTest extends BaseTest {
     @TestCaseId("Force Visible")
     @Test(description = "force visible makes hidden element visible")
     public void force_visible_makes_hidden_element_visible() {
-        HomePage hp = HomePage.open();
-        hp.then().with().theHeader().testForceVisible();
+        HomePage.open()
+                .with().theHeader()
+                .testForceVisible();
     }
 
     @TestCaseId("Wait update")

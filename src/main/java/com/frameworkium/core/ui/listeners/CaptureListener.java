@@ -9,6 +9,8 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.testng.*;
 
+import static org.apache.commons.lang3.StringUtils.abbreviate;
+
 /**
  * Assumes {@link ScreenshotCapture}.isRequired() is true for WebDriver events.
  */
@@ -66,7 +68,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     @Override
-    public void afterChangeValueOf(WebElement element, WebDriver driver) {
+    public void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysSent) {
         takeScreenshotAndSend("change", driver);
     }
 
@@ -88,9 +90,24 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     @Override
     public void beforeScript(String script, WebDriver driver) {
-        if (!script.contains("navigator.userAgent")) {
-            takeScreenshotAndSend("script", driver);
+        // ignore scripts which are part of Frameworkium
+        if (!isFrameworkiumScript(script)) {
+            takeScreenshotAndSend(
+                    new Command("script", "n/a", abbreviate(script, 42)),
+                    driver);
         }
+    }
+
+    private boolean isFrameworkiumScript(String script) {
+        String browserAgentScript = "return navigator.userAgent;";
+        String angularCheckRegex = "return typeof (ng|angular) == 'object';";
+        String forceVisiblePrefix = "arguments[0].style.zindex='10000';";
+        String angularFrameworkContains = "angular.getTestability(el).whenStable(callback);";
+
+        return script.equals(browserAgentScript)
+                || script.matches(angularCheckRegex)
+                || script.startsWith(forceVisiblePrefix)
+                || script.contains(angularFrameworkContains);
     }
 
     /* Test end methods */
@@ -119,7 +136,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     public void afterClickOn(WebElement element, WebDriver driver) {}
 
     @Override
-    public void beforeChangeValueOf(WebElement element, WebDriver driver) {}
+    public void beforeChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend) {}
 
     @Override
     public void afterFindBy(By by, WebElement arg1, WebDriver arg2) {}

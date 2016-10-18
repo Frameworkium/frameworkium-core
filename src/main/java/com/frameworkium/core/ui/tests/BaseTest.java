@@ -179,12 +179,13 @@ public abstract class BaseTest
     /** Loops through all active driver types and tears them down */
     @AfterSuite(alwaysRun = true)
     public static void tearDownRemainingDrivers() {
+        baseLogger.debug("About to tear down remaining driver(s)");
         try {
-            activeDrivers.stream().parallel()
-                    .forEach(Driver::tearDown);
+            activeDrivers.forEach(Driver::tearDown);
         } catch (Exception e) {
             baseLogger.warn("Session quit unexpectedly.", e);
         }
+        baseLogger.debug("Finished remaining driver tear down");
     }
 
     /** Shuts down the {@link ExecutorService} */
