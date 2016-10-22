@@ -6,12 +6,14 @@ import org.openqa.selenium.JavascriptExecutor;
 
 public class AngularTwo implements AbstractFramework {
 
+    /** {@inheritDoc} */
     @Override
     public boolean isPresent(JavascriptExecutor javascriptExecutor) {
         return (Boolean) javascriptExecutor.executeScript(
                 "return typeof ng == 'object';");
     }
 
+    /** {@inheritDoc} */
     @Override
     public void waitToBeReady(JavascriptExecutor javascriptExecutor) {
         new NgWebDriver(javascriptExecutor).waitForAngular2RequestsToFinish();
