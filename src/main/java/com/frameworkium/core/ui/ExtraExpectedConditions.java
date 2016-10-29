@@ -7,6 +7,8 @@ import ru.yandex.qatools.htmlelements.element.HtmlElement;
 import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Frameworkium extension of {@link ExpectedConditions}.
@@ -30,14 +32,17 @@ public class ExtraExpectedConditions {
      * iff the element is visible, otherwise <strong>true</strong>.
      */
     public static ExpectedCondition<Boolean> notPresentOrInvisible(
-            WebElement element) {
-        return driver -> {
-            try {
-                return !element.isDisplayed();
-            } catch (NoSuchElementException e) {
-                return true;
-            }
-        };
+            final WebElement element) {
+
+        return expectedCondition(driver -> {
+                    try {
+                        return !element.isDisplayed();
+                    } catch (NoSuchElementException e) {
+                        return true;
+                    }
+                },
+                String.format(
+                        "element '%s' to not be present or be invisible", element));
     }
 
     /**
@@ -45,29 +50,23 @@ public class ExtraExpectedConditions {
      * for {@link List} of {@link WebElement}s.
      *
      * @param elements the lazy proxy for <code>List&lt;WebElement&gt;</code> to wait for
-     * @return an {@link ExpectedCondition} which returns <strong>false</strong>
-     * iff any element is visible, otherwise <strong>true</strong>.
+     * @return an {@link ExpectedCondition} which returns the <strong>list</strong>
+     * iff any element is visible, otherwise <strong>null</strong>.
      * @see ExtraExpectedConditions#notPresentOrInvisible(WebElement)
      */
     public static ExpectedCondition<List<? extends WebElement>> notPresentOrInvisible(
-            List<? extends WebElement> elements) {
+            final List<? extends WebElement> elements) {
 
-        return driver ->
-                elements.stream()
-                        .noneMatch(WebElement::isDisplayed)
-                        ? elements
-                        : null;
-    }
-
-    /**
-     * @return true iff jQuery is available and 0 ajax queries are active.
-     */
-    public static ExpectedCondition<Boolean> jQueryAjaxDone() {
-
-        return driver ->
-                (Boolean) ((JavascriptExecutor) driver)
-                        .executeScript(
-                                "return !!window.jQuery && jQuery.active === 0;");
+        return expectedCondition(driver ->
+                        elements.stream()
+                                .noneMatch(WebElement::isDisplayed)
+                                ? elements
+                                : null,
+                String.format(
+                        "the following elements to not be present or be invisible: %s",
+                        elements.stream()
+                                .map(WebElement::toString)
+                                .collect(Collectors.joining(", "))));
     }
 
     /**
@@ -80,10 +79,9 @@ public class ExtraExpectedConditions {
     public static ExpectedCondition<List<? extends WebElement>> sizeGreaterThan(
             List<? extends WebElement> list, int expectedSize) {
 
-        return driver ->
-                list.size() > expectedSize
-                        ? list
-                        : null;
+        return expectedCondition(
+                driver -> list.size() > expectedSize ? list : null,
+                "list size of " + list.size() + " to be greater than " + expectedSize);
     }
 
     /**
@@ -96,10 +94,19 @@ public class ExtraExpectedConditions {
     public static ExpectedCondition<List<? extends WebElement>> sizeLessThan(
             List<? extends WebElement> list, int expectedSize) {
 
-        return driver ->
-                list.size() < expectedSize
-                        ? list
-                        : null;
+        return expectedCondition(
+                driver -> list.size() < expectedSize ? list : null,
+                "list size of " + list.size() + " to be less than " + expectedSize);
+    }
+
+    /**
+     * @return true iff jQuery is available and 0 ajax queries are active.
+     */
+    public static ExpectedCondition<Boolean> jQueryAjaxDone() {
+
+        return javascriptExpectedCondition(
+                "return !!window.jQuery && jQuery.active === 0;",
+                "jQuery AJAX queries to not be active");
     }
 
     /**
@@ -111,8 +118,31 @@ public class ExtraExpectedConditions {
      */
     public static ExpectedCondition<Boolean> documentBodyReady() {
 
-        return driver ->
-                (Boolean) ((JavascriptExecutor) driver)
-                        .executeScript("return document.readyState == 'complete';");
+        return javascriptExpectedCondition(
+                "return document.readyState == 'complete';",
+                "the document ready state to equal 'complete'");
+    }
+
+    private static ExpectedCondition<Boolean> javascriptExpectedCondition(
+            String query, String message) {
+        return expectedCondition(
+                driver -> (Boolean) ((JavascriptExecutor) driver).executeScript(query),
+                message);
+    }
+
+    private static <T> ExpectedCondition<T> expectedCondition(
+            Function<WebDriver, T> function, String string) {
+
+        return new ExpectedCondition<T>() {
+            @Override
+            public T apply(WebDriver driver) {
+                return function.apply(driver);
+            }
+
+            @Override
+            public String toString() {
+                return string;
+            }
+        };
     }
 }
