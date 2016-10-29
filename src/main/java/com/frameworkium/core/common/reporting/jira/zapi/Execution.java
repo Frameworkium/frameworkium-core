@@ -10,9 +10,10 @@ import org.json.JSONObject;
 import org.testng.ITestResult;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
+import static com.frameworkium.core.common.reporting.jira.JiraConfig.REST_ZAPI_PATH;
+import static com.frameworkium.core.common.reporting.jira.JiraConfig.getJIRARequestSpec;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 public class Execution {
@@ -27,25 +28,22 @@ public class Execution {
     public Execution(String issue) {
         this.version = Property.RESULT_VERSION.getValue();
         this.issue = issue;
-        this.idList = getExecutionIds();
+        initExecutionIdsAndCurrentStatus();
     }
 
-    private List<Integer> getExecutionIds() {
-        if (null == idList) {
-            if (isNotEmpty(version) && isNotEmpty(issue)) {
-                String query = String.format(
-                        "issue='%s' and fixVersion='%s'", issue, version);
+    private void initExecutionIdsAndCurrentStatus() {
+        if (isNotEmpty(version) && isNotEmpty(issue)) {
+            String query = String.format(
+                    "issue='%s' and fixVersion='%s'", issue, version);
 
-                SearchExecutions search = new SearchExecutions(query);
-                idList = search.getExecutionIds();
+            SearchExecutions search = new SearchExecutions(query);
+            idList = search.getExecutionIds();
 
-                List<Integer> statusList = search.getExecutionStatuses();
-                if (!statusList.isEmpty()) {
-                    currentStatus = statusList.get(0);
-                }
+            List<Integer> statusList = search.getExecutionStatuses();
+            if (!statusList.isEmpty()) {
+                currentStatus = statusList.get(0);
             }
         }
-        return idList;
     }
 
     /**
@@ -87,11 +85,11 @@ public class Execution {
             int commentMaxLen = 750;
             obj.put("comment", StringUtils.abbreviate(comment, commentMaxLen));
 
-            JiraConfig.getJIRARequestSpec()
+            getJIRARequestSpec()
                     .contentType("application/json")
                     .body(obj.toString())
                     .when()
-                    .put(JiraConfig.REST_ZAPI_PATH + "execution/" + executionId + "/execute");
+                    .put(REST_ZAPI_PATH + "execution/" + executionId + "/execute");
 
         } catch (JSONException e) {
             logger.error("Update status and comment failed", e);
@@ -109,30 +107,28 @@ public class Execution {
 
         String path = "attachment/attachmentsByEntity?entityType=EXECUTION&entityId=" + executionId;
 
-        List<String> fileIds =
-                JiraConfig.getJIRARequestSpec()
-                        .when()
-                        .get(JiraConfig.REST_ZAPI_PATH + path).thenReturn().jsonPath()
-                        .getList("data.fileId", String.class);
-
-        // Iterate over attachments
-        fileIds.forEach(fileId ->
-                JiraConfig.getJIRARequestSpec()
-                        .when()
-                        .delete(JiraConfig.REST_ZAPI_PATH + "attachment/" + fileId)
-        );
+        getJIRARequestSpec()
+                .get(REST_ZAPI_PATH + path).thenReturn().jsonPath()
+                .getList("data.fileId", String.class)
+                .stream()
+                .map(fileId -> REST_ZAPI_PATH + "attachment/" + fileId)
+                .forEach(getJIRARequestSpec()::delete);
     }
 
     private void addAttachments(Integer executionId, String... attachments) {
 
-        String path = "attachment?entityType=EXECUTION&entityId=" + executionId;
+        String path = REST_ZAPI_PATH
+                + "attachment?entityType=EXECUTION&entityId=" + executionId;
 
-        Arrays.stream(attachments).filter(attachment -> attachment != null).forEach(attachment ->
-            JiraConfig.getJIRARequestSpec()
-                    .header("X-Atlassian-Token", "nocheck")
-                    .multiPart(new File(attachment))
-                    .when()
-                    .post(JiraConfig.REST_ZAPI_PATH + path)
-        );
+        Arrays.stream(attachments)
+                .filter(Objects::nonNull)
+                .map(File::new)
+                .forEach(attachment ->
+                        getJIRARequestSpec()
+                                .header("X-Atlassian-Token", "nocheck")
+                                .multiPart(attachment)
+                                .when()
+                                .post(path)
+                );
     }
 }
