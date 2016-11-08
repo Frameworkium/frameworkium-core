@@ -19,7 +19,6 @@ import org.openqa.selenium.*;
 import java.net.*;
 
 import static com.frameworkium.core.common.properties.Property.CAPTURE_URL;
-import static com.frameworkium.core.ui.tests.BaseTest.executor;
 import static org.apache.http.HttpStatus.SC_CREATED;
 
 public class ScreenshotCapture {
@@ -83,6 +82,7 @@ public class ScreenshotCapture {
 
     private RequestSpecification getRequestSpec() {
         return RestAssured.given()
+                .relaxedHTTPSValidation()
                 .contentType(ContentType.JSON);
     }
 
@@ -136,7 +136,7 @@ public class ScreenshotCapture {
             return;
         }
 
-        executor.execute(() -> {
+        BaseTest.screenshotExecutor.execute(() -> {
             logger.debug("About to send screenshot to Capture for " + testID);
             try {
                 getRequestSpec()

@@ -28,15 +28,13 @@ import org.openqa.selenium.support.ui.Wait;
 import org.testng.annotations.*;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.isNull;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Listeners({CaptureListener.class, ScreenshotListener.class,
         MethodInterceptor.class, SauceLabsListener.class,
@@ -44,8 +42,9 @@ import static java.util.Objects.isNull;
 public abstract class BaseTest
         implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
-    /** Submit tasks for async execution */
-    public static final ExecutorService executor = Executors.newSingleThreadExecutor();
+    /** Executor for submission of screenshot messages for async sending to capture */
+    public static final ExecutorService screenshotExecutor =
+            Executors.newSingleThreadExecutor();
 
     /** Logger for subclasses (logs with correct class i.e. not BaseTest) */
     protected final Logger logger = LogManager.getLogger(this);
@@ -165,7 +164,7 @@ public abstract class BaseTest
      */
     public static Wait<WebDriver> newWaitWithTimeout(long timeout) {
         return new FluentWait<>(getDriver().getWrappedDriver())
-                .withTimeout(timeout, TimeUnit.SECONDS)
+                .withTimeout(timeout, SECONDS)
                 .ignoring(NoSuchElementException.class)
                 .ignoring(StaleElementReferenceException.class);
     }
@@ -190,13 +189,20 @@ public abstract class BaseTest
 
     /** Shuts down the {@link ExecutorService} */
     @AfterSuite(alwaysRun = true)
-    public static void shutdownExecutor() {
+    public static void shutdownScreenshotExecutor() {
+        baseLogger.debug("Async screenshot capture: processing remaining backlog...");
+        screenshotExecutor.shutdown();
         try {
-            executor.shutdown();
-            executor.awaitTermination(15, TimeUnit.SECONDS);
+            boolean timeout = !screenshotExecutor.awaitTermination(60, SECONDS);
+            if (timeout) {
+                baseLogger.error("Async screenshot capture: shutdown timed out. "
+                        + "Some screenshots might not have been sent.");
+            } else {
+                baseLogger.debug("Async screenshot capture: finished backlog.");
+            }
         } catch (InterruptedException e) {
-            baseLogger.error("Executor was interrupted while shutting down. "
-                    + "Some tasks might not have been executed.");
+            baseLogger.error("Async screenshot capture: executor was interrupted. "
+                    + "Some screenshots might not have been sent.");
         }
     }
 
