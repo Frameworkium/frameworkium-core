@@ -20,7 +20,7 @@ public class HomePage extends BasePage<HomePage> {
 
     @Visible
     @Name("Marketing Sign-Up Banner")
-    @FindBy(css = "div.homepage-hero-intro")
+    @FindBy(css = ".jumbotron-home h1")
     private WebElement homepageHeroIntro;
 
     @Step("Navigate to the Github homepage")
