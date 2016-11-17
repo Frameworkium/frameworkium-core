@@ -122,7 +122,9 @@ public abstract class BasePage<T extends BasePage<T>> {
     private void takePageLoadedScreenshotAndSendToCapture() {
         if (Property.CAPTURE_URL.isSpecified()) {
             try {
-                Command command = new Command("load", null, getClass().getName());
+                String packageName = getClass().getPackage().getName();
+                String simplePageName = packageName.substring(packageName.lastIndexOf('.') + 1) + "." + getClass().getSimpleName();
+                Command command = new Command("load", "page", simplePageName);
                 BaseTest.getCapture().takeAndSendScreenshot(command, driver);
             } catch (Exception e) {
                 logger.warn("Failed to send loading screenshot to Capture.");
