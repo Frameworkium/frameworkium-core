@@ -16,7 +16,7 @@ env:
   global:
     # set PATH to include desired firefox as the firefox-addon doesn't seem to work properly
     - PATH="/tmp/firefox:$PATH"
-    - CAPTURE_URL="https://capture.ham1.co.uk:5000"
+    - CAPTURE_URL="https://capture.unity.perimeterusa.com:5000"
     - SUT_NAME="frameworkium-core"
     - SUT_VERSION=$TRAVIS_BRANCH
     - THREAD_COUNT=2
