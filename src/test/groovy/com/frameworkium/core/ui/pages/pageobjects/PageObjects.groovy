@@ -12,7 +12,7 @@ import ru.yandex.qatools.htmlelements.element.CheckBox
 import ru.yandex.qatools.htmlelements.element.HtmlElement
 import ru.yandex.qatools.htmlelements.element.TextInput
 
-public class PageObjects {
+class PageObjects {
 
     class SingleVisibleElement {
 

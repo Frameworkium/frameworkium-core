@@ -41,8 +41,7 @@ public class ExtraExpectedConditions {
                         return true;
                     }
                 },
-                String.format(
-                        "element '%s' to not be present or be invisible", element));
+                String.format("element '%s' to not be present or be invisible", element));
     }
 
     /**
