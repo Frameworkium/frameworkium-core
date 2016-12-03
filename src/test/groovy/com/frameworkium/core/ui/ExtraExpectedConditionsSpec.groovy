@@ -64,13 +64,32 @@ class ExtraExpectedConditionsSpec extends Specification {
             def jsWait = new FluentWait<>(mockWDWrapper, Mock(Clock), Mock(Sleeper))
         when: "Waiting for jQuery ajax"
             jsWait.until(ExtraExpectedConditions.jQueryAjaxDone())
-        then: "nothing is thrown if ajax is finish"
+        then: "nothing is thrown if ajax is finished"
             1 * mockWDWrapper.executeScript(_ as String) >> true
             noExceptionThrown()
 
         when: "Waiting for jQuery ajax"
             jsWait.until(ExtraExpectedConditions.jQueryAjaxDone())
-        then: "Timeout is thrown if ajax is not finish"
+        then: "Timeout is thrown if ajax is not finished"
+            1 * mockWDWrapper.executeScript(_ as String) >> false
+            thrown(TimeoutException)
+    }
+
+    // documentBodyReady()
+
+    def "waiting for documentBodyReady runs some assumed correct JavaScript"() {
+        given: "A driver which can be cast to JavascriptExecutor"
+            def mockWDWrapper = Mock(WebDriverWrapper, constructorArgs: [Mock(WebDriver)])
+            def jsWait = new FluentWait<>(mockWDWrapper, Mock(Clock), Mock(Sleeper))
+        when: "Waiting for document body ready"
+            jsWait.until(ExtraExpectedConditions.documentBodyReady())
+        then: "nothing is thrown if body is ready is finish"
+            1 * mockWDWrapper.executeScript(_ as String) >> true
+            noExceptionThrown()
+
+        when: "Waiting for documentBodyReady"
+            jsWait.until(ExtraExpectedConditions.documentBodyReady())
+        then: "Timeout is thrown if body is not ready"
             1 * mockWDWrapper.executeScript(_ as String) >> false
             thrown(TimeoutException)
     }
