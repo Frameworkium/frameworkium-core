@@ -32,7 +32,7 @@ public class GridImpl extends AbstractDriver {
         if (PLATFORM.isSpecified()) {
             desiredCapabilities.setCapability("platform", PLATFORM_VERSION.getValue());
         }
-        if(APPLICATION_NAME.isSpecified()){
+        if (APPLICATION_NAME.isSpecified()) {
             desiredCapabilities.setCapability("applicationName", APPLICATION_NAME.getValue());
         }
         return desiredCapabilities;

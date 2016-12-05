@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractDriver implements Driver {
 
     protected static final Logger logger = LogManager.getLogger();
+
     private static final String HOSTNAME_OR_IP_PORT_REGEX = "[\\dA-Za-z\\.\\-]+:[\\d]+";
     private WebDriverWrapper webDriverWrapper;
     private boolean isInitialised;

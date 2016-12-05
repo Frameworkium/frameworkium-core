@@ -35,7 +35,7 @@ public class ResultLoggerListener implements ITestListener {
             if (zapiLoggingParamsProvided(result)) {
                 logger.info("Logging WIP to zapi");
                 new Execution(getIssueOrTestCaseIdAnnotation(result))
-                        .update(JiraConfig.ZapiStatus.ZAPI_STATUS_WIP, comment, null);
+                        .update(JiraConfig.ZapiStatus.ZAPI_STATUS_WIP, comment);
             }
             if (jiraTransitionLoggingParamsProvided(result)) {
                 logger.info("Logging WIP to Jira using issue transitions");
@@ -82,7 +82,7 @@ public class ResultLoggerListener implements ITestListener {
             if (zapiLoggingParamsProvided(result)) {
                 logger.info("Logging PASS to zapi");
                 new Execution(getIssueOrTestCaseIdAnnotation(result))
-                        .update(JiraConfig.ZapiStatus.ZAPI_STATUS_PASS, comment, null);
+                        .update(JiraConfig.ZapiStatus.ZAPI_STATUS_PASS, comment);
             }
             if (jiraTransitionLoggingParamsProvided(result)) {
                 logger.info("Logging PASS to Jira using issue transitions");
@@ -121,7 +121,7 @@ public class ResultLoggerListener implements ITestListener {
             if (zapiLoggingParamsProvided(result)) {
                 logger.info("Logging FAIL to zapi");
                 new Execution(getIssueOrTestCaseIdAnnotation(result))
-                        .update(JiraConfig.ZapiStatus.ZAPI_STATUS_FAIL, comment, null);
+                        .update(JiraConfig.ZapiStatus.ZAPI_STATUS_FAIL, comment);
             }
             if (jiraTransitionLoggingParamsProvided(result)) {
                 logger.info("Logging FAIL to Jira using issue transitions");
@@ -163,7 +163,7 @@ public class ResultLoggerListener implements ITestListener {
             if (zapiLoggingParamsProvided(result)) {
                 logger.info("Logging BLOCKED to zapi");
                 new Execution(issueOrTestCaseId)
-                        .update(JiraConfig.ZapiStatus.ZAPI_STATUS_BLOCKED, comment, null);
+                        .update(JiraConfig.ZapiStatus.ZAPI_STATUS_BLOCKED, comment);
             }
             if (jiraTransitionLoggingParamsProvided(result)) {
                 logger.info("Logging BLOCKED to Jira using issue transitions");
