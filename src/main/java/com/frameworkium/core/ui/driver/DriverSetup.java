@@ -156,16 +156,12 @@ public class DriverSetup {
      * @return Class implementing AbstractDriver interface
      */
     private static Class<? extends AbstractDriver> getCustomBrowserImpl(String implClassName) {
-        try {
-            return new Reflections("")
-                    .getSubTypesOf(AbstractDriver.class)
-                    .stream()
-                    .filter(s -> s.getSimpleName().equals(implClassName))
-                    .findFirst()
-                    .get();
-        } catch (Exception e) {
-            throw new IllegalArgumentException(
-                        "Problem loading custom browser implementation: " + implClassName);
-        }
+        return new Reflections("")
+                .getSubTypesOf(AbstractDriver.class)
+                .stream()
+                .filter(s -> s.getSimpleName().equals(implClassName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Problem loading custom browser implementation: " + implClassName));
     }
 }
