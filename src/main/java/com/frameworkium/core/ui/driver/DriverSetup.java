@@ -9,8 +9,6 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.reflections.Reflections;
 
-import java.util.Set;
-
 public class DriverSetup {
 
     public static final Browser DEFAULT_BROWSER = Browser.FIREFOX;
@@ -66,32 +64,33 @@ public class DriverSetup {
     }
 
     private Driver createDriverImpl(Browser browser) {
-            switch (browser) {
-                case FIREFOX:
-                    return new FirefoxImpl();
-                case LEGACYFIREFOX:
-                    return new LegacyFirefoxImpl();
-                case CHROME:
-                    return new ChromeImpl();
-                case OPERA:
-                    return new OperaImpl();
-                case IE:
-                    return new InternetExplorerImpl();
-                case PHANTOMJS:
-                    return new PhantomJSImpl();
-                case SAFARI:
-                    return new SafariImpl();
-                case ELECTRON:
-                    return new ElectronImpl();
-                case CUSTOM:
-                    String customBrowserImpl = Property.CUSTOM_BROWSER_IMPL.getValue();
-                    try {
-                        return getCustomBrowserImpl(customBrowserImpl).newInstance();
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        throw new RuntimeException("Unable to use custom browser implementation - " + customBrowserImpl, e);
-                    }
-                default:
-                    throw new IllegalArgumentException("Invalid Browser specified");
+        switch (browser) {
+            case FIREFOX:
+                return new FirefoxImpl();
+            case LEGACYFIREFOX:
+                return new LegacyFirefoxImpl();
+            case CHROME:
+                return new ChromeImpl();
+            case OPERA:
+                return new OperaImpl();
+            case IE:
+                return new InternetExplorerImpl();
+            case PHANTOMJS:
+                return new PhantomJSImpl();
+            case SAFARI:
+                return new SafariImpl();
+            case ELECTRON:
+                return new ElectronImpl();
+            case CUSTOM:
+                String customBrowserImpl = Property.CUSTOM_BROWSER_IMPL.getValue();
+                try {
+                    return getCustomBrowserImpl(customBrowserImpl).newInstance();
+                } catch (InstantiationException | IllegalAccessException e) {
+                    throw new RuntimeException(
+                            "Unable to use custom browser implementation - " + customBrowserImpl, e);
+                }
+            default:
+                throw new IllegalArgumentException("Invalid Browser specified");
         }
     }
 
@@ -150,25 +149,19 @@ public class DriverSetup {
     }
 
     /**
-     * Returns custom AbstractDriver implementation based on string input. Uses reflections library to find options
+     * Returns custom AbstractDriver implementation based on class simple name.
+     * Uses reflections library to find options and chooses the first found.
      *
-     * @param implClassName the name of custom browser impl class (simpleName, not full path)
+     * @param implClassName the name of custom browser impl class (SimpleName, not full path)
      * @return Class implementing AbstractDriver interface
      */
     private static Class<? extends AbstractDriver> getCustomBrowserImpl(String implClassName) {
-        Reflections reflections = new Reflections("");
-        Set<Class<? extends AbstractDriver>> customDriverImpls = reflections.getSubTypesOf(AbstractDriver.class);
-
-        try {
-            Class<? extends AbstractDriver> customDriverImpl = customDriverImpls.stream()
-                    .filter(s -> s.getSimpleName().equals(implClassName))
-                    .findFirst()
-                    .get();
-
-            return customDriverImpl;
-
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Problem loading custom browser implementation: "+implClassName);
-        }
+        return new Reflections("")
+                .getSubTypesOf(AbstractDriver.class)
+                .stream()
+                .filter(s -> s.getSimpleName().equals(implClassName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Problem loading custom browser implementation: " + implClassName));
     }
 }
