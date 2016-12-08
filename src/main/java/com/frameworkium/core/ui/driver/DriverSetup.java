@@ -7,6 +7,9 @@ import com.frameworkium.core.ui.driver.remotes.Sauce;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.reflections.Reflections;
+
+import java.util.Set;
 
 public class DriverSetup {
 
@@ -14,7 +17,7 @@ public class DriverSetup {
 
     /** Supported drivers */
     public enum Browser {
-        FIREFOX, LEGACYFIREFOX, CHROME, OPERA, IE, PHANTOMJS, SAFARI, ELECTRON
+        FIREFOX, LEGACYFIREFOX, CHROME, OPERA, IE, PHANTOMJS, SAFARI, ELECTRON, CUSTOM
     }
 
     /** Supported remote grids */
@@ -80,6 +83,12 @@ public class DriverSetup {
                 return new SafariImpl();
             case ELECTRON:
                 return new ElectronImpl();
+            case CUSTOM:
+                try {
+                    return getCustomBrowserImpl(Property.BROWSER.getValue()).newInstance();
+                } catch (Exception e) {
+                    throw new IllegalArgumentException(String.format("Invalid custom browser type"));
+                }
             default:
                 throw new IllegalArgumentException("Invalid browser type.");
         }
@@ -118,7 +127,11 @@ public class DriverSetup {
         if (!Property.BROWSER.isSpecified()) {
             return DEFAULT_BROWSER;
         } else {
-            return Browser.valueOf(Property.BROWSER.getValue().toUpperCase());
+            try {
+                return Browser.valueOf(Property.BROWSER.getValue().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return Browser.CUSTOM;
+            }
         }
     }
 
@@ -135,5 +148,20 @@ public class DriverSetup {
         } else {
             return RemoteGrid.GRID;
         }
+    }
+
+    /**
+     * Returns custom AbstractDriver implementation based on string input. Uses reflections library to find options
+     *
+     * @param implClassName the name of custom browser impl class (simpleName, not full path)
+     * @return Class implementing AbstractDriver interface
+     */
+    private static Class<? extends AbstractDriver> getCustomBrowserImpl(String implClassName) {
+        Reflections reflections = new Reflections("");
+        Set<Class<? extends AbstractDriver>> customDriverImpls = reflections.getSubTypesOf(AbstractDriver.class);
+        return customDriverImpls.stream()
+                .filter(s -> s.getSimpleName().equals(implClassName))
+                .findFirst()
+                .get();
     }
 }

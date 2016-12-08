@@ -91,7 +91,7 @@ public class ScreenshotListener extends TestListenerAdapter {
 
     private boolean isScreenshotSupported() {
         boolean isElectron = BROWSER.isSpecified()
-                && ELECTRON.equals(Browser.valueOf(BROWSER.getValue().toUpperCase()));
+                && BROWSER.getValue().toUpperCase().equals(ELECTRON.name());
 
         return !isElectron;
     }
