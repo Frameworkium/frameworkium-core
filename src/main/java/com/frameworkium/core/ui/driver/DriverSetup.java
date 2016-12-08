@@ -66,31 +66,34 @@ public class DriverSetup {
     }
 
     private Driver createDriverImpl(Browser browser) {
-        switch (browser) {
-            case FIREFOX:
-                return new FirefoxImpl();
-            case LEGACYFIREFOX:
-                return new LegacyFirefoxImpl();
-            case CHROME:
-                return new ChromeImpl();
-            case OPERA:
-                return new OperaImpl();
-            case IE:
-                return new InternetExplorerImpl();
-            case PHANTOMJS:
-                return new PhantomJSImpl();
-            case SAFARI:
-                return new SafariImpl();
-            case ELECTRON:
-                return new ElectronImpl();
-            case CUSTOM:
-                try {
-                    return getCustomBrowserImpl(Property.BROWSER.getValue()).newInstance();
-                } catch (Exception e) {
-                    throw new IllegalArgumentException(String.format("Invalid custom browser type"));
-                }
-            default:
-                throw new IllegalArgumentException("Invalid browser type.");
+            switch (browser) {
+                case FIREFOX:
+                    return new FirefoxImpl();
+                case LEGACYFIREFOX:
+                    return new LegacyFirefoxImpl();
+                case CHROME:
+                    return new ChromeImpl();
+                case OPERA:
+                    return new OperaImpl();
+                case IE:
+                    return new InternetExplorerImpl();
+                case PHANTOMJS:
+                    return new PhantomJSImpl();
+                case SAFARI:
+                    return new SafariImpl();
+                case ELECTRON:
+                    return new ElectronImpl();
+                case CUSTOM:
+                    String customBrowserImpl = Property.CUSTOM_BROWSER_IMPL.getValue();
+                    try {
+                        return getCustomBrowserImpl(customBrowserImpl).newInstance();
+                    } catch (InstantiationException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                default:
+                    throw new IllegalArgumentException("Invalid Browser specified");
         }
     }
 
@@ -124,14 +127,12 @@ public class DriverSetup {
      * @return Browser Type
      */
     private static Browser getBrowserTypeFromProperty() {
-        if (!Property.BROWSER.isSpecified()) {
+        if (Property.CUSTOM_BROWSER_IMPL.isSpecified()) {
+            return Browser.CUSTOM;
+        } else if (!Property.BROWSER.isSpecified()) {
             return DEFAULT_BROWSER;
         } else {
-            try {
-                return Browser.valueOf(Property.BROWSER.getValue().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                return Browser.CUSTOM;
-            }
+            return Browser.valueOf(Property.BROWSER.getValue().toUpperCase());
         }
     }
 
@@ -159,9 +160,17 @@ public class DriverSetup {
     private static Class<? extends AbstractDriver> getCustomBrowserImpl(String implClassName) {
         Reflections reflections = new Reflections("");
         Set<Class<? extends AbstractDriver>> customDriverImpls = reflections.getSubTypesOf(AbstractDriver.class);
-        return customDriverImpls.stream()
-                .filter(s -> s.getSimpleName().equals(implClassName))
-                .findFirst()
-                .get();
+
+        try {
+            Class<? extends AbstractDriver> customDriverImpl = customDriverImpls.stream()
+                    .filter(s -> s.getSimpleName().equals(implClassName))
+                    .findFirst()
+                    .get();
+
+            return customDriverImpl;
+
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Problem loading custom browser implementation: "+implClassName);
+        }
     }
 }
