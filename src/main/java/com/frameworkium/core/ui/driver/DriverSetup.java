@@ -87,10 +87,8 @@ public class DriverSetup {
                     String customBrowserImpl = Property.CUSTOM_BROWSER_IMPL.getValue();
                     try {
                         return getCustomBrowserImpl(customBrowserImpl).newInstance();
-                    } catch (InstantiationException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        throw new RuntimeException("Unable to use custom browser implementation - " + customBrowserImpl, e);
                     }
                 default:
                     throw new IllegalArgumentException("Invalid Browser specified");
