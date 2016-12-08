@@ -26,32 +26,34 @@ public class ResultLoggerListener implements ITestListener {
     @Override
     public void onTestStart(ITestResult result) {
 
-        if (!getIssueOrTestCaseIdAnnotation(result).isEmpty()) {
+        if (getIssueOrTestCaseIdAnnotation(result).isEmpty()) {
+            return;
+        }
 
-            String comment = String.format(
-                    "Starting %s.%s",
-                    result.getTestClass().getName(), result.getMethod().getMethodName());
+        String comment = String.format(
+                "Starting %s.%s",
+                result.getTestClass().getName(),
+                result.getMethod().getMethodName());
 
-            if (zapiLoggingParamsProvided(result)) {
-                logger.info("Logging WIP to zapi");
-                new Execution(getIssueOrTestCaseIdAnnotation(result))
-                        .update(JiraConfig.ZapiStatus.ZAPI_STATUS_WIP, comment);
-            }
-            if (jiraTransitionLoggingParamsProvided(result)) {
-                logger.info("Logging WIP to Jira using issue transitions");
-                moveThroughTransitions(getIssueOrTestCaseIdAnnotation(result),
-                        JiraConfig.JiraTransition.JIRA_TRANSITION_WIP);
-                JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
-            }
-            if (jiraFieldLoggingParamsProvided(result)) {
-                logger.info("Logging WIP to jira by updating the specified field - "
-                        + Property.JIRA_RESULT_FIELD_NAME.getValue());
-                JiraTest.changeIssueFieldValue(
-                        getIssueOrTestCaseIdAnnotation(result),
-                        Property.JIRA_RESULT_FIELD_NAME.getValue(),
-                        JiraConfig.JiraFieldStatus.JIRA_STATUS_WIP);
-                JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
-            }
+        if (zapiLoggingParamsProvided(result)) {
+            logger.info("Logging WIP to zapi");
+            new Execution(getIssueOrTestCaseIdAnnotation(result))
+                    .update(JiraConfig.ZapiStatus.ZAPI_STATUS_WIP, comment);
+        }
+        if (jiraTransitionLoggingParamsProvided(result)) {
+            logger.info("Logging WIP to Jira using issue transitions");
+            moveThroughTransitions(getIssueOrTestCaseIdAnnotation(result),
+                    JiraConfig.JiraTransition.JIRA_TRANSITION_WIP);
+            JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+        }
+        if (jiraFieldLoggingParamsProvided(result)) {
+            logger.info("Logging WIP to jira by updating the specified field - "
+                    + Property.JIRA_RESULT_FIELD_NAME.getValue());
+            JiraTest.changeIssueFieldValue(
+                    getIssueOrTestCaseIdAnnotation(result),
+                    Property.JIRA_RESULT_FIELD_NAME.getValue(),
+                    JiraConfig.JiraFieldStatus.JIRA_STATUS_WIP);
+            JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
         }
     }
 
@@ -75,37 +77,40 @@ public class ResultLoggerListener implements ITestListener {
     @Override
     public void onTestSuccess(ITestResult result) {
 
-        if (!getIssueOrTestCaseIdAnnotation(result).isEmpty()) {
+        final String issueOrTestCaseId = getIssueOrTestCaseIdAnnotation(result);
 
-            String comment = "PASS" + System.lineSeparator() + this.baseComment(result);
+        if (issueOrTestCaseId.isEmpty()) {
+            return;
+        }
 
-            if (zapiLoggingParamsProvided(result)) {
-                logger.info("Logging PASS to zapi");
-                new Execution(getIssueOrTestCaseIdAnnotation(result))
-                        .update(JiraConfig.ZapiStatus.ZAPI_STATUS_PASS, comment);
-            }
-            if (jiraTransitionLoggingParamsProvided(result)) {
-                logger.info("Logging PASS to Jira using issue transitions");
-                moveThroughTransitions(getIssueOrTestCaseIdAnnotation(result),
-                        JiraConfig.JiraTransition.JIRA_TRANSITION_PASS);
-                JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
-            }
-            if (jiraFieldLoggingParamsProvided(result)) {
-                logger.info("Logging PASS to jira by updating the specified field - "
-                        + Property.JIRA_RESULT_FIELD_NAME.getValue());
-                JiraTest.changeIssueFieldValue(
-                        getIssueOrTestCaseIdAnnotation(result),
-                        Property.JIRA_RESULT_FIELD_NAME.getValue(),
-                        JiraConfig.JiraFieldStatus.JIRA_STATUS_PASS);
-                JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
-            }
-            if (spiraLoggingParamsProvided(result)) {
-                new SpiraExecution().recordTestResult(
-                        getIssueOrTestCaseIdAnnotation(result),
-                        JiraConfig.SpiraStatus.SPIRA_STATUS_PASS,
-                        comment,
-                        result);
-            }
+        String comment = "PASS" + System.lineSeparator() + baseComment(result);
+
+        if (zapiLoggingParamsProvided(result)) {
+            logger.info("Logging PASS to zapi");
+            new Execution(issueOrTestCaseId)
+                    .update(JiraConfig.ZapiStatus.ZAPI_STATUS_PASS, comment);
+        }
+        if (jiraTransitionLoggingParamsProvided(result)) {
+            logger.info("Logging PASS to Jira using issue transitions");
+            moveThroughTransitions(issueOrTestCaseId,
+                    JiraConfig.JiraTransition.JIRA_TRANSITION_PASS);
+            JiraTest.addComment(issueOrTestCaseId, comment);
+        }
+        if (jiraFieldLoggingParamsProvided(result)) {
+            logger.info("Logging PASS to jira by updating the specified field - "
+                    + Property.JIRA_RESULT_FIELD_NAME.getValue());
+            JiraTest.changeIssueFieldValue(
+                    issueOrTestCaseId,
+                    Property.JIRA_RESULT_FIELD_NAME.getValue(),
+                    JiraConfig.JiraFieldStatus.JIRA_STATUS_PASS);
+            JiraTest.addComment(issueOrTestCaseId, comment);
+        }
+        if (spiraLoggingParamsProvided(result)) {
+            new SpiraExecution().recordTestResult(
+                    issueOrTestCaseId,
+                    JiraConfig.SpiraStatus.SPIRA_STATUS_PASS,
+                    comment,
+                    result);
         }
     }
 
@@ -115,36 +120,39 @@ public class ResultLoggerListener implements ITestListener {
         if (!(result.getThrowable() instanceof AssertionError)) {
             markAsBlocked(result);
         } else if (!getIssueOrTestCaseIdAnnotation(result).isEmpty()) {
+            markAsFailed(result);
+        }
+    }
 
-            String comment = "FAIL" + System.lineSeparator() + this.baseComment(result);
+    private void markAsFailed(ITestResult result) {
+        String comment = "FAIL" + System.lineSeparator() + this.baseComment(result);
 
-            if (zapiLoggingParamsProvided(result)) {
-                logger.info("Logging FAIL to zapi");
-                new Execution(getIssueOrTestCaseIdAnnotation(result))
-                        .update(JiraConfig.ZapiStatus.ZAPI_STATUS_FAIL, comment);
-            }
-            if (jiraTransitionLoggingParamsProvided(result)) {
-                logger.info("Logging FAIL to Jira using issue transitions");
-                moveThroughTransitions(getIssueOrTestCaseIdAnnotation(result),
-                        JiraConfig.JiraTransition.JIRA_TRANSITION_FAIL);
-                JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
-            }
-            if (jiraFieldLoggingParamsProvided(result)) {
-                logger.info("Logging FAIL to jira by updating the specified field - "
-                        + Property.JIRA_RESULT_FIELD_NAME.getValue());
-                JiraTest.changeIssueFieldValue(
-                        getIssueOrTestCaseIdAnnotation(result),
-                        Property.JIRA_RESULT_FIELD_NAME.getValue(),
-                        JiraConfig.JiraFieldStatus.JIRA_STATUS_FAIL);
-                JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
-            }
-            if (spiraLoggingParamsProvided(result)) {
-                new SpiraExecution().recordTestResult(
-                        getIssueOrTestCaseIdAnnotation(result),
-                        JiraConfig.SpiraStatus.SPIRA_STATUS_FAIL,
-                        comment,
-                        result);
-            }
+        if (zapiLoggingParamsProvided(result)) {
+            logger.info("Logging FAIL to zapi");
+            new Execution(getIssueOrTestCaseIdAnnotation(result))
+                    .update(JiraConfig.ZapiStatus.ZAPI_STATUS_FAIL, comment);
+        }
+        if (jiraTransitionLoggingParamsProvided(result)) {
+            logger.info("Logging FAIL to Jira using issue transitions");
+            moveThroughTransitions(getIssueOrTestCaseIdAnnotation(result),
+                    JiraConfig.JiraTransition.JIRA_TRANSITION_FAIL);
+            JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+        }
+        if (jiraFieldLoggingParamsProvided(result)) {
+            logger.info("Logging FAIL to jira by updating the specified field - "
+                    + Property.JIRA_RESULT_FIELD_NAME.getValue());
+            JiraTest.changeIssueFieldValue(
+                    getIssueOrTestCaseIdAnnotation(result),
+                    Property.JIRA_RESULT_FIELD_NAME.getValue(),
+                    JiraConfig.JiraFieldStatus.JIRA_STATUS_FAIL);
+            JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+        }
+        if (spiraLoggingParamsProvided(result)) {
+            new SpiraExecution().recordTestResult(
+                    getIssueOrTestCaseIdAnnotation(result),
+                    JiraConfig.SpiraStatus.SPIRA_STATUS_FAIL,
+                    comment,
+                    result);
         }
     }
 
@@ -156,37 +164,39 @@ public class ResultLoggerListener implements ITestListener {
     private void markAsBlocked(ITestResult result) {
 
         String issueOrTestCaseId = getIssueOrTestCaseIdAnnotation(result);
-        if (!issueOrTestCaseId.isEmpty()) {
 
-            String comment = "BLOCKED" + System.lineSeparator() + this.baseComment(result);
+        if (issueOrTestCaseId.isEmpty()) {
+            return;
+        }
 
-            if (zapiLoggingParamsProvided(result)) {
-                logger.info("Logging BLOCKED to zapi");
-                new Execution(issueOrTestCaseId)
-                        .update(JiraConfig.ZapiStatus.ZAPI_STATUS_BLOCKED, comment);
-            }
-            if (jiraTransitionLoggingParamsProvided(result)) {
-                logger.info("Logging BLOCKED to Jira using issue transitions");
-                moveThroughTransitions(issueOrTestCaseId,
-                        JiraConfig.JiraTransition.JIRA_TRANSITION_BLOCKED);
-                JiraTest.addComment(issueOrTestCaseId, comment);
-            }
-            if (jiraFieldLoggingParamsProvided(result)) {
-                logger.info("Logging BLOCKED to jira by updating the specified field - "
-                        + Property.JIRA_RESULT_FIELD_NAME.getValue());
-                JiraTest.changeIssueFieldValue(
-                        issueOrTestCaseId,
-                        Property.JIRA_RESULT_FIELD_NAME.getValue(),
-                        JiraConfig.JiraFieldStatus.JIRA_STATUS_BLOCKED);
-                JiraTest.addComment(issueOrTestCaseId, comment);
-            }
-            if (spiraLoggingParamsProvided(result)) {
-                new SpiraExecution().recordTestResult(
-                        issueOrTestCaseId,
-                        JiraConfig.SpiraStatus.SPIRA_STATUS_BLOCKED,
-                        comment,
-                        result);
-            }
+        String comment = "BLOCKED" + System.lineSeparator() + this.baseComment(result);
+
+        if (zapiLoggingParamsProvided(result)) {
+            logger.info("Logging BLOCKED to zapi");
+            new Execution(issueOrTestCaseId)
+                    .update(JiraConfig.ZapiStatus.ZAPI_STATUS_BLOCKED, comment);
+        }
+        if (jiraTransitionLoggingParamsProvided(result)) {
+            logger.info("Logging BLOCKED to Jira using issue transitions");
+            moveThroughTransitions(issueOrTestCaseId,
+                    JiraConfig.JiraTransition.JIRA_TRANSITION_BLOCKED);
+            JiraTest.addComment(issueOrTestCaseId, comment);
+        }
+        if (jiraFieldLoggingParamsProvided(result)) {
+            logger.info("Logging BLOCKED to jira by updating the specified field - "
+                    + Property.JIRA_RESULT_FIELD_NAME.getValue());
+            JiraTest.changeIssueFieldValue(
+                    issueOrTestCaseId,
+                    Property.JIRA_RESULT_FIELD_NAME.getValue(),
+                    JiraConfig.JiraFieldStatus.JIRA_STATUS_BLOCKED);
+            JiraTest.addComment(issueOrTestCaseId, comment);
+        }
+        if (spiraLoggingParamsProvided(result)) {
+            new SpiraExecution().recordTestResult(
+                    issueOrTestCaseId,
+                    JiraConfig.SpiraStatus.SPIRA_STATUS_BLOCKED,
+                    comment,
+                    result);
         }
     }
 
@@ -248,9 +258,9 @@ public class ResultLoggerListener implements ITestListener {
 
     private String baseComment(ITestResult result) {
 
-        StringBuilder comment = new StringBuilder();
+        StringBuilder commentBuilder = new StringBuilder();
 
-        comment.append("Test: ")
+        commentBuilder.append("Test: ")
                 .append(result.getTestClass().getName())
                 .append(".")
                 .append(result.getMethod().getMethodName())
@@ -261,27 +271,27 @@ public class ResultLoggerListener implements ITestListener {
                 .append(System.lineSeparator());
 
         if (!isNull(System.getenv("BUILD_URL"))) {
-            comment.append("Jenkins build: ")
+            commentBuilder.append("Jenkins build: ")
                     .append(System.getenv("BUILD_URL"))
                     .append(System.lineSeparator());
         }
         if (ScreenshotCapture.isRequired()) {
-            comment.append("Capture API: ")
+            commentBuilder.append("Capture API: ")
                     .append(CAPTURE_URL.getValue())
                     .append(System.lineSeparator());
         }
-        comment.append("OS: ")
+        commentBuilder.append("OS: ")
                 .append(getOSInfo())
                 .append(System.lineSeparator())
                 .append("UserAgent: ")
                 .append(BaseTest.getUserAgent());
 
         if (!isNull(result.getThrowable())) {
-            comment.append(System.lineSeparator())
+            commentBuilder.append(System.lineSeparator())
                     .append("Stacktrace: ")
                     .append(Throwables.getStackTraceAsString(result.getThrowable()));
         }
 
-        return comment.toString();
+        return commentBuilder.toString();
     }
 }

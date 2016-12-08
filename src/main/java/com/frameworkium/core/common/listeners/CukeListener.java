@@ -6,6 +6,7 @@ import gherkin.formatter.Formatter;
 import gherkin.formatter.Reporter;
 import gherkin.formatter.model.*;
 import gherkin.formatter.model.Step;
+import org.apache.commons.lang3.StringUtils;
 import ru.yandex.qatools.allure.Allure;
 import ru.yandex.qatools.allure.config.AllureModelUtils;
 import ru.yandex.qatools.allure.events.*;
@@ -22,11 +23,6 @@ import static com.frameworkium.core.common.reporting.jira.JiraConfig.ZapiStatus.
 public class CukeListener implements Formatter, Reporter {
 
     private Allure lifecycle = Allure.LIFECYCLE;
-
-    public Allure getLifecycle() {
-        return lifecycle;
-    }
-
     private Boolean updateTCMStatus = true;
     private Feature featureInUse;
     private int scnStepBrokenCount = 0;
@@ -63,26 +59,39 @@ public class CukeListener implements Formatter, Reporter {
 
         //Update Title
         final String title = featureInUse.getName() + " | " + scenario.getName();
-        getLifecycle().fire(new UpdateTestCaseTitle(title));
+        lifecycle.fire(new UpdateTestCaseTitle(title));
 
         //Update Description
-        String description = "";
-        if (!featureInUse.getDescription().isEmpty())
-            description += "####Feature:" + System.lineSeparator();
-        description += featureInUse.getDescription() + System.lineSeparator();
-        if (!scenario.getDescription().isEmpty())
-            description += "####Scenario:" + System.lineSeparator();
-        description += scenario.getDescription();
-        if (!description.isEmpty())
-            getLifecycle().fire(new AddTestCaseDescriptionEvent(description));
+        final String description = buildFeatureAndScenarioDescription(scenario);
+        if (!description.isEmpty()) {
+            lifecycle.fire(new AddTestCaseDescriptionEvent(description));
+        }
 
         //Commit labels
-        getLifecycle().fire(new AddTestCaseLabelEvent(getLabels(scenario)));
+        lifecycle.fire(new AddTestCaseLabelEvent(getLabels(scenario)));
 
         //Update Zephyr with scen's test case = WIP
         if (updateTCMStatus) {
             updateTCMStatus(getTestCaseId(scenario), ZAPI_STATUS_WIP, "");
         }
+    }
+
+    private String buildFeatureAndScenarioDescription(Scenario scenario) {
+        StringBuilder descriptionBuilder = new StringBuilder();
+        final String featureDescription = featureInUse.getDescription();
+        if (!featureDescription.isEmpty()) {
+            descriptionBuilder.append("####Feature:")
+                    .append(System.lineSeparator())
+                    .append(featureDescription)
+                    .append(System.lineSeparator());
+        }
+        final String scenarioDescription = scenario.getDescription();
+        if (!scenarioDescription.isEmpty()) {
+            descriptionBuilder.append("####Scenario:")
+                    .append(System.lineSeparator())
+                    .append(scenarioDescription);
+        }
+        return descriptionBuilder.toString();
     }
 
     private List<Label> getLabels(Scenario scenario) {
@@ -92,14 +101,15 @@ public class CukeListener implements Formatter, Reporter {
         //Create feature label
         labels.add(AllureModelUtils.createFeatureLabel(featureInUse.getName()));
 
+        //Add feature and scenario tags
         List<Tag> featureAndScenarioTags = Stream
                 .concat(featureInUse.getTags().stream(),
                         scenario.getTags().stream())
                 .distinct()
                 .collect(Collectors.toList());
 
-        //Add feature and scenario tags
         labels.addAll(getStoryLabelsFromTags(featureAndScenarioTags));
+
         //Add testcaseId ref
         final String testKey = getTestCaseId(scenario.getTags()).split(",")[0];
         labels.add(AllureModelUtils.createTestLabel(testKey));
@@ -112,12 +122,11 @@ public class CukeListener implements Formatter, Reporter {
     }
 
     private void updateTCMStatus(List<String> testCaseIds, int status, String comment) {
-        for (String jiraId : testCaseIds) {
-            if (!jiraId.isEmpty()) {
-                comment = "Updated by CustomCukeListener" + System.lineSeparator() + comment;
-                new Execution(jiraId).update(status, comment);
-            }
-        }
+        final String updatedComment = "Updated by CustomCukeListener\n" + comment;
+        testCaseIds.stream()
+                .filter(StringUtils::isNotBlank)
+                .map(Execution::new)
+                .forEach(ex -> ex.update(status, updatedComment));
     }
 
     @Override
@@ -166,20 +175,24 @@ public class CukeListener implements Formatter, Reporter {
         if (match.getLocation() != null) {
             StepDefinitionMatch stepDef = (StepDefinitionMatch) match;
             Step step = (Step) getFieldValueInObject(stepDef, "step");
-            getLifecycle().fire(new StepStartedEvent(
+            lifecycle.fire(new StepStartedEvent(
                     step.getKeyword() + " " + step.getName()));
         }
     }
 
     @Override
     public void result(Result result) {
-        final String status = result.getStatus();
-        if (!"undefined".equals(status) && !"passed".equals(status)) {
+        if (resultIsBroken(result)) {
             scnStepBrokenCount++;
             latestError = result.getError();
-            getLifecycle().fire(new StepFailureEvent().withThrowable(latestError));
+            lifecycle.fire(new StepFailureEvent().withThrowable(latestError));
         }
-        getLifecycle().fire(new StepFinishedEvent());
+        lifecycle.fire(new StepFinishedEvent());
+    }
+
+    private boolean resultIsBroken(Result result) {
+        final String status = result.getStatus();
+        return !"undefined".equals(status) && !"passed".equals(status);
     }
 
     @Override
@@ -214,7 +227,7 @@ public class CukeListener implements Formatter, Reporter {
                 .concat(retrieveTagStream(tags, "Story"),
                         retrieveTagStream(tags, "Stories"))
                 .map(String::trim)
-                .filter(storyAnnotation -> !storyAnnotation.isEmpty())
+                .filter(StringUtils::isNotEmpty)
                 .map(AllureModelUtils::createStoryLabel)
                 .collect(Collectors.toList());
     }
@@ -250,17 +263,17 @@ public class CukeListener implements Formatter, Reporter {
     }
 
     public class AddTestCaseDescriptionEvent implements TestCaseEvent {
-        Description value;
+        Description description;
 
         public AddTestCaseDescriptionEvent(String description) {
-            this.value = new Description()
+            this.description = new Description()
                     .withValue(description)
                     .withType(DescriptionType.MARKDOWN);
         }
 
         @Override
         public void process(TestCaseResult context) {
-            context.setDescription(value);
+            context.setDescription(description);
         }
     }
 
@@ -273,14 +286,11 @@ public class CukeListener implements Formatter, Reporter {
 
         @Override
         public void process(TestCaseResult context) {
-            List<Label> labels = context.getLabels();
-            labels.addAll(labelsToAdd);
-            context.setLabels(labels);
+            context.getLabels().addAll(labelsToAdd);
         }
     }
 
     public class TestFailedEvent implements TestCaseEvent {
-
         Status status;
 
         public TestFailedEvent() {
@@ -293,5 +303,4 @@ public class CukeListener implements Formatter, Reporter {
             context.setStop(System.currentTimeMillis());
         }
     }
-
 }
