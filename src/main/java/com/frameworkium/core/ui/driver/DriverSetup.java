@@ -7,6 +7,7 @@ import com.frameworkium.core.ui.driver.remotes.Sauce;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.reflections.Reflections;
 
 public class DriverSetup {
 
@@ -14,7 +15,7 @@ public class DriverSetup {
 
     /** Supported drivers */
     public enum Browser {
-        FIREFOX, LEGACYFIREFOX, CHROME, OPERA, IE, PHANTOMJS, SAFARI, ELECTRON
+        FIREFOX, LEGACYFIREFOX, CHROME, OPERA, IE, PHANTOMJS, SAFARI, ELECTRON, CUSTOM
     }
 
     /** Supported remote grids */
@@ -80,8 +81,16 @@ public class DriverSetup {
                 return new SafariImpl();
             case ELECTRON:
                 return new ElectronImpl();
+            case CUSTOM:
+                String customBrowserImpl = Property.CUSTOM_BROWSER_IMPL.getValue();
+                try {
+                    return getCustomBrowserImpl(customBrowserImpl).newInstance();
+                } catch (InstantiationException | IllegalAccessException e) {
+                    throw new RuntimeException(
+                            "Unable to use custom browser implementation - " + customBrowserImpl, e);
+                }
             default:
-                throw new IllegalArgumentException("Invalid browser type.");
+                throw new IllegalArgumentException("Invalid Browser specified");
         }
     }
 
@@ -115,7 +124,9 @@ public class DriverSetup {
      * @return Browser Type
      */
     private static Browser getBrowserTypeFromProperty() {
-        if (!Property.BROWSER.isSpecified()) {
+        if (Property.CUSTOM_BROWSER_IMPL.isSpecified()) {
+            return Browser.CUSTOM;
+        } else if (!Property.BROWSER.isSpecified()) {
             return DEFAULT_BROWSER;
         } else {
             return Browser.valueOf(Property.BROWSER.getValue().toUpperCase());
@@ -135,5 +146,22 @@ public class DriverSetup {
         } else {
             return RemoteGrid.GRID;
         }
+    }
+
+    /**
+     * Returns custom AbstractDriver implementation based on class simple name.
+     * Uses reflections library to find options and chooses the first found.
+     *
+     * @param implClassName the name of custom browser impl class (SimpleName, not full path)
+     * @return Class implementing AbstractDriver interface
+     */
+    private static Class<? extends AbstractDriver> getCustomBrowserImpl(String implClassName) {
+        return new Reflections("")
+                .getSubTypesOf(AbstractDriver.class)
+                .stream()
+                .filter(s -> s.getSimpleName().equals(implClassName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Problem loading custom browser implementation: " + implClassName));
     }
 }

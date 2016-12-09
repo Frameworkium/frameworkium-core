@@ -37,7 +37,9 @@ public enum Property {
     MAXIMISE("maximise"),
     RESOLUTION("resolution"),
     FIREFOX_PROFILE("firefoxProfile"),
-    CHROME_USER_DATA_DIR("chromeUserDataDir");
+    CHROME_USER_DATA_DIR("chromeUserDataDir"),
+    CUSTOM_BROWSER_IMPL("customBrowserImpl");
+
 
     private static Map configMap = null;
     private String value;
