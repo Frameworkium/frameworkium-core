@@ -16,7 +16,8 @@ public class WelcomePage extends BasePage<WelcomePage> {
     @FindBy(linkText = "Checkboxes")
     private Link checkboxesLink;
 
-    @ForceVisible // test it doesn't error - force not required for this link
+    // ForceVisible not strictly required, just testing it doesn't error
+    @ForceVisible
     @Name("Drag and Drop link")
     @FindBy(linkText = "Drag and Drop")
     private Link dragAndDropLink;

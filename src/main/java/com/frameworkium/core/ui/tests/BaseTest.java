@@ -87,8 +87,8 @@ public abstract class BaseTest
      * {@link #configureBrowserBeforeTest(Method)} to configure the browser.
      */
     protected static void configureBrowserBeforeUse() {
-        Method method = getCallingMethod(Thread.currentThread().getStackTrace()[2]);
-        configureBrowserBeforeTest(method);
+        configureBrowserBeforeTest(
+                getCallingMethod(Thread.currentThread().getStackTrace()[2]));
     }
 
     private static Method getCallingMethod(StackTraceElement stackTraceElement) {
@@ -102,6 +102,24 @@ public abstract class BaseTest
     }
 
     /**
+     * @param testMethod The test method about to be executed
+     * @see #configureBrowserBeforeTest(String)
+     */
+    @BeforeMethod(alwaysRun = true)
+    public static void configureBrowserBeforeTest(Method testMethod) {
+        configureBrowserBeforeTest(getTestNameForCapture(testMethod));
+    }
+
+    private static String getTestNameForCapture(Method testMethod) {
+        Optional<String> testID = TestIdUtils.getIssueOrTestCaseIdValue(testMethod);
+        if (testID.orElse("").isEmpty()) {
+            baseLogger.warn("{} doesn't have a TestID annotation.", testMethod.getName());
+            testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));
+        }
+        return testID.orElse("n/a");
+    }
+
+    /**
      * Configure the browser before a test method runs.
      * <ul>
      * <li>Resets the browser if already initialised</li>
@@ -110,15 +128,16 @@ public abstract class BaseTest
      * <li>Initialises screenshot capture if needed</li>
      * </ul>
      *
-     * @param testMethod The test method about to be executed
+     * @param testName The test name about to be executed
      */
-    @BeforeMethod(alwaysRun = true)
-    public static void configureBrowserBeforeTest(Method testMethod) {
+    public static void configureBrowserBeforeTest(String testName) {
         try {
             driver.get().resetBrowser();
             wait.set(newDefaultWait());
             userAgent = determineUserAgent();
-            initialiseNewScreenshotCapture(testMethod);
+            if (ScreenshotCapture.isRequired()) {
+                initialiseNewScreenshotCapture(testName);
+            }
         } catch (Exception e) {
             baseLogger.error("Failed to configure browser.", e);
             throw new RuntimeException("Failed to configure browser.", e);
@@ -136,17 +155,10 @@ public abstract class BaseTest
     /**
      * Initialise the screenshot capture and link to issue/test case id
      *
-     * @param testMethod Test method passed from the test script
+     * @param testName Test method passed from the test script
      */
-    private static void initialiseNewScreenshotCapture(Method testMethod) {
-        if (ScreenshotCapture.isRequired()) {
-            Optional<String> testID = TestIdUtils.getIssueOrTestCaseIdValue(testMethod);
-            if (testID.orElse("").isEmpty()) {
-                baseLogger.warn("{} doesn't have a TestID annotation.", testMethod.getName());
-                testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));
-            }
-            capture.set(new ScreenshotCapture(testID.orElse("n/a")));
-        }
+    private static void initialiseNewScreenshotCapture(String testName) {
+        capture.set(new ScreenshotCapture(testName));
     }
 
     /**
@@ -180,11 +192,15 @@ public abstract class BaseTest
     @AfterSuite(alwaysRun = true)
     public static void tearDownRemainingDrivers() {
         baseLogger.debug("About to tear down remaining driver(s)");
-        try {
-            activeDrivers.forEach(Driver::tearDown);
-        } catch (Exception e) {
-            baseLogger.warn("Session quit unexpectedly.", e);
-        }
+
+        activeDrivers.forEach(driver -> {
+            try {
+                driver.tearDown();
+            } catch (Exception e) {
+                baseLogger.warn("Session quit unexpectedly.", e);
+            }
+        });
+
         baseLogger.debug("Finished remaining driver tear down");
     }
 

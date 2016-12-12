@@ -6,7 +6,7 @@ dist: xenial
 addons:
   firefox: "50.0"
 
-# disable default mvn install  
+# disable default mvn install
 install: true
 
 notifications:
