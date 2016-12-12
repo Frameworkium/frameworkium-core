@@ -5,7 +5,7 @@
 
   <groupId>com.github.frameworkium</groupId>
   <artifactId>frameworkium-core</artifactId>
-  <version>2.3.2</version>
+  <version>2.3.3-SNAPSHOT</version>
   <name>frameworkium-core</name>
   <description>
     Frameworkium core code.
@@ -33,7 +33,7 @@
   <properties>
     <threads>1</threads>
     <groups/>
-    <aspectj.version>1.8.9</aspectj.version>
+    <aspectj.version>1.8.10</aspectj.version>
   </properties>
 
   <dependencies>
@@ -60,7 +60,7 @@
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>6.9.13.6</version>
+      <version>6.10</version>
     </dependency>
     <dependency>
       <groupId>ru.yandex.qatools.allure</groupId>
@@ -81,7 +81,7 @@
     <dependency>
       <groupId>com.saucelabs</groupId>
       <artifactId>sauce_testng</artifactId>
-      <version>2.1.21</version>
+      <version>2.1.22</version>
     </dependency>
     <dependency>
       <groupId>com.saucelabs</groupId>
@@ -122,7 +122,7 @@
     <dependency>
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjweaver</artifactId>
-      <version>1.8.9</version>
+      <version>${aspectj.version}</version>
     </dependency>
     <dependency>
       <groupId>com.paulhammant</groupId>
@@ -188,7 +188,7 @@
       <version>1.2.5</version>
     </dependency>
 
-
+    <!-- Used for custom driver implementation lookup -->
     <dependency>
       <groupId>org.reflections</groupId>
       <artifactId>reflections</artifactId>
