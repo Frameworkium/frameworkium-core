@@ -19,7 +19,8 @@ public class TheInternetExampleTests extends BaseTest {
     @Test(description = "Checkboxes")
     public void checkBoxes() {
 
-        CheckboxesPage checkboxesPage = WelcomePage.open(15).then()
+        final int timeout = 15;
+        CheckboxesPage checkboxesPage = WelcomePage.open(timeout).then()
                 // Navigate to the checkboxes page
                 .clickCheckboxesLink()
                 // Set all checkboxes to checked via alternative method

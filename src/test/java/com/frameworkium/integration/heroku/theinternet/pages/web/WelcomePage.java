@@ -16,7 +16,7 @@ public class WelcomePage extends BasePage<WelcomePage> {
     @FindBy(linkText = "Checkboxes")
     private Link checkboxesLink;
 
-    @ForceVisible // just to test it, not required
+    @ForceVisible // test it doesn't error - force not required for this link
     @Name("Drag and Drop link")
     @FindBy(linkText = "Drag and Drop")
     private Link dragAndDropLink;
@@ -47,6 +47,12 @@ public class WelcomePage extends BasePage<WelcomePage> {
                 WelcomePage.class, "http://the-internet.herokuapp.com");
     }
 
+    /**
+     * Static factory method for this page object with specified timeout.
+     *
+     * @param timeout timeout in seconds
+     * @return An instance of this page object with specified wait timeout
+     */
     @Step("Navigate to http://the-internet.herokuapp.com")
     public static WelcomePage open(long timeout) {
         return PageFactory.newInstance(

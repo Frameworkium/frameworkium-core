@@ -6,6 +6,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.*;
 
+import static com.frameworkium.core.common.reporting.jira.JiraConfig.JIRA_REST_PATH;
+
 public class JiraTest {
 
     private static final Logger logger = LogManager.getLogger();
@@ -34,14 +36,14 @@ public class JiraTest {
                 .contentType("application/json").and()
                 .body(obj.toString())
                 .when()
-                .put(JiraConfig.JIRA_REST_PATH + "/issue/" + issueKey);
+                .put(JIRA_REST_PATH + "/issue/" + issueKey);
     }
 
     private static String getFieldId(String fieldName) {
 
         JsonPath jsonPath = JiraConfig.getJIRARequestSpec()
                 .when()
-                .get(JiraConfig.JIRA_REST_PATH + "/field")
+                .get(JIRA_REST_PATH + "/field")
                 .thenReturn().jsonPath();
 
         return jsonPath.getString(String.format("find {it.name == '%s'}.id", fieldName));
@@ -61,7 +63,7 @@ public class JiraTest {
                 .contentType("application/json")
                 .body(obj.toString())
                 .when()
-                .post(JiraConfig.JIRA_REST_PATH + "/issue/" + issueKey + "/comment");
+                .post(JIRA_REST_PATH + "/issue/" + issueKey + "/comment");
     }
 
     public static void transitionIssue(String issueKey, String transitionName) {
@@ -87,19 +89,18 @@ public class JiraTest {
                 .contentType("application/json").and()
                 .body(obj.toString())
                 .when()
-                .post(JiraConfig.JIRA_REST_PATH + "issue/" + issueKey + "/transitions");
+                .post(JIRA_REST_PATH + "issue/" + issueKey + "/transitions");
     }
 
     private static int getTransitionId(String issueKey, String transitionName) {
 
-        JsonPath jsonPath = JiraConfig.getJIRARequestSpec()
-                .when()
-                .get(JiraConfig.JIRA_REST_PATH + "/issue/" + issueKey + "?expand=transitions.fields")
-                .thenReturn().jsonPath();
-
-        String jsonPathToTransitionId = String.format(
+        final String jsonPathToTransitionId = String.format(
                 "transitions.find {it -> it.name == '%s'}.id", transitionName);
-        return Integer.parseInt(jsonPath.getString(jsonPathToTransitionId));
+        return JiraConfig.getJIRARequestSpec()
+                .get(JIRA_REST_PATH + "/issue/" + issueKey + "?expand=transitions.fields")
+                .thenReturn()
+                .jsonPath()
+                .getInt(jsonPathToTransitionId);
     }
 
 }
