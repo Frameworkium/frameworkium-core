@@ -172,7 +172,7 @@ public class CukeListener implements Formatter, Reporter {
 
     @Override
     public void match(Match match) {
-        if (match.getLocation() != null) {
+        if (match.getLocation() != null && scnStepBrokenCount == 0) {
             StepDefinitionMatch stepDef = (StepDefinitionMatch) match;
             Step step = (Step) getFieldValueInObject(stepDef, "step");
             lifecycle.fire(new StepStartedEvent(
@@ -182,12 +182,19 @@ public class CukeListener implements Formatter, Reporter {
 
     @Override
     public void result(Result result) {
-        if (resultIsBroken(result)) {
-            scnStepBrokenCount++;
-            latestError = result.getError();
-            lifecycle.fire(new StepFailureEvent().withThrowable(latestError));
+        if(resultIsNotSkipped(result)) {
+            if (resultIsBroken(result)) {
+                scnStepBrokenCount++;
+                latestError = result.getError();
+                lifecycle.fire(new StepFailureEvent().withThrowable(latestError));
+            }
+            lifecycle.fire(new StepFinishedEvent());
         }
-        lifecycle.fire(new StepFinishedEvent());
+    }
+
+    private boolean resultIsNotSkipped(Result result) {
+        final String status = result.getStatus();
+        return !"skipped".equals(status);
     }
 
     private boolean resultIsBroken(Result result) {
