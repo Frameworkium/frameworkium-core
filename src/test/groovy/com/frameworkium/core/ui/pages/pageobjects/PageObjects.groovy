@@ -3,6 +3,7 @@ package com.frameworkium.core.ui.pages.pageobjects
 import com.frameworkium.core.ui.annotations.ForceVisible
 import com.frameworkium.core.ui.annotations.Invisible
 import com.frameworkium.core.ui.annotations.Visible
+import com.frameworkium.core.ui.pages.BasePage
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.support.CacheLookup
 import org.openqa.selenium.support.FindBy
@@ -14,25 +15,25 @@ import ru.yandex.qatools.htmlelements.element.TextInput
 
 class PageObjects {
 
-    class SingleVisibleElement {
+    class SingleVisibleElement extends BasePage<SingleVisibleElement> {
 
         @Visible
         WebElement visibleElement
     }
 
-    class SingleInvisibleElement {
+    class SingleInvisibleElement extends BasePage<SingleInvisibleElement> {
 
         @Invisible
         TextInput invisibleTextInput
     }
 
-    class SingleForceVisibleElement {
+    class SingleForceVisibleElement extends BasePage<SingleForceVisibleElement> {
 
         @ForceVisible
         WebElement forceVisibleElement
     }
 
-    class ListOfElements {
+    class ListOfElements extends BasePage<ListOfElements> {
 
         @Visible
         List<WebElement> visibles
@@ -44,13 +45,13 @@ class PageObjects {
         List<WebElement> forceVisibles
     }
 
-    class VisibleComponent {
+    class VisibleComponent extends BasePage<VisibleComponent> {
 
         @Visible
         Component visibleComponent
     }
 
-    class VisibleComponents {
+    class VisibleComponents extends BasePage<VisibleComponents> {
 
         @Visible
         List<Component> visibleComponents
@@ -64,7 +65,7 @@ class PageObjects {
 
     // Invalid Page Objects:
 
-    class MultiVisibilityTypifiedElement {
+    class MultiVisibilityTypifiedElement extends BasePage<MultiVisibilityTypifiedElement> {
 
         @Visible
         @ForceVisible
@@ -76,7 +77,7 @@ class PageObjects {
         CheckBox myTypifiedElement
     }
 
-    class MultiVisibilityWebElement {
+    class MultiVisibilityWebElement extends BasePage<MultiVisibilityWebElement> {
 
         @Visible
         @Invisible
@@ -84,7 +85,7 @@ class PageObjects {
         WebElement myWebElement
     }
 
-    class UnsupportedFieldType {
+    class UnsupportedFieldType extends BasePage<UnsupportedFieldType> {
 
         @Visible
         String aStringIsNotAWebElement

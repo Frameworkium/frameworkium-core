@@ -35,7 +35,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 public abstract class BaseTest
         implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
-    /** Executor for submission of screenshot messages for async sending to capture */
+    /** Executor for async sending of screenshot messages to capture */
     public static final ExecutorService screenshotExecutor =
             Executors.newSingleThreadExecutor();
 
@@ -75,6 +75,16 @@ public abstract class BaseTest
         capture = ThreadLocal.withInitial(() -> null);
     }
 
+    /** Required for unit testing */
+    public static void setDriver(Driver newDriver) {
+        driver = ThreadLocal.withInitial(() -> newDriver);
+    }
+
+    /** Required for unit testing */
+    public static void setWait(Wait<WebDriver> newWait) {
+        wait = ThreadLocal.withInitial(() -> newWait);
+    }
+
     /**
      * Find the calling method and pass it into
      * {@link #configureBrowserBeforeTest(Method)} to configure the browser.
@@ -105,7 +115,7 @@ public abstract class BaseTest
 
     private static String getTestNameForCapture(Method testMethod) {
         Optional<String> testID = TestIdUtils.getIssueOrTestCaseIdValue(testMethod);
-        if (testID.orElse("").isEmpty()) {
+        if (!testID.isPresent() || testID.get().isEmpty()) {
             baseLogger.warn("{} doesn't have a TestID annotation.", testMethod.getName());
             testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));
         }

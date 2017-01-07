@@ -17,7 +17,7 @@ public class JavascriptWait {
     private final Wait<WebDriver> wait;
     private final JavascriptExecutor javascriptExecutor;
 
-    private SupportedFramework detectedFramework;
+    private AbstractFramework detectedFramework;
 
     public JavascriptWait(WebDriver driver, Wait<WebDriver> wait) {
         this.wait = wait;
@@ -25,13 +25,12 @@ public class JavascriptWait {
     }
 
     /**
-     * Default entry to {@link JavascriptWait}
-     *
-     * Following actions are waited on:
-     * <ul>
-     *     <li>Document state to be ready</li>
-     *     <li>If page is using a supported JS framework, it will detect & wait</li>
-     * </ul>
+     * Default entry to {@link JavascriptWait}.
+     * The following actions are waited for:
+     * <ol>
+     * <li>Document state to be ready</li>
+     * <li>If page is using a supported JS framework, it will detect and wait</li>
+     * </ol>
      */
     public void waitForJavascriptEventsOnLoad() {
         waitForDocumentReady();
@@ -43,26 +42,25 @@ public class JavascriptWait {
      * If a page is using a supported JS framework, it will wait until it's ready
      */
     public void waitForJavascriptFramework() {
-        if (detectedFramework != null) getFrameworkClass(detectedFramework).waitToBeReady(javascriptExecutor);
+        if (detectedFramework != null) {
+            detectedFramework.waitToBeReady(javascriptExecutor);
+        }
     }
 
     private void waitForDocumentReady() {
         wait.until(ExtraExpectedConditions.documentBodyReady());
     }
 
+    /**
+     * Assumes, implicitly, only one framework is present.
+     * If there are multiple we will pick an arbitrary one.
+     */
     private void detectFramework() {
         detectedFramework = Arrays.stream(SupportedFramework.values())
-                .filter(supportedFramework -> getFrameworkClass(supportedFramework).isPresent(javascriptExecutor))
+                .map(SupportedFramework::getInstance)
+                .filter(framework -> framework.isPresent(javascriptExecutor))
                 .findFirst()
                 .orElse(null);
-    }
-
-    private AbstractFramework getFrameworkClass(SupportedFramework supportedFramework) {
-        try {
-            return ((AbstractFramework) supportedFramework.getFrameworkClass().newInstance());
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e.toString());
-        }
     }
 
     /**
@@ -72,14 +70,18 @@ public class JavascriptWait {
         ANGULAR(Angular.class),
         ANGULAR_TWO(AngularTwo.class);
 
-        private Class frameworkClass;
+        private AbstractFramework frameworkInstance;
 
         SupportedFramework(Class<? extends AbstractFramework> frameworkClass) {
-            this.frameworkClass = frameworkClass;
+            try {
+                this.frameworkInstance = frameworkClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
         }
 
-        public Class getFrameworkClass() {
-            return this.frameworkClass;
+        public AbstractFramework getInstance() {
+            return frameworkInstance;
         }
     }
 }

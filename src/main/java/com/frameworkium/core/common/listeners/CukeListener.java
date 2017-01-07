@@ -182,7 +182,7 @@ public class CukeListener implements Formatter, Reporter {
 
     @Override
     public void result(Result result) {
-        if(resultIsNotSkipped(result)) {
+        if (resultIsNotSkipped(result)) {
             if (resultIsBroken(result)) {
                 scnStepBrokenCount++;
                 latestError = result.getError();

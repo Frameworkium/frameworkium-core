@@ -106,7 +106,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.21</version>
+      <version>1.7.22</version>
     </dependency>
     <dependency>
       <groupId>io.rest-assured</groupId>
@@ -229,13 +229,59 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.5.1</version>
+            <version>3.6.0</version>
             <configuration>
               <source>1.8</source>
               <target>1.8</target>
             </configuration>
           </plugin>
           <!-- Unit tests -->
+          <plugin>
+            <!-- Code coverage -->
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.7.8</version>
+            <executions>
+              <execution>
+                <id>jacoco-initialize</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+                <configuration>
+                  <!-- Property name containing settings for JaCoCo runtime agent. -->
+                  <propertyName>surefireArgLine</propertyName>
+                </configuration>
+              </execution>
+              <!-- Ensures that the code coverage report for unit tests is
+             created after unit tests have been run. -->
+              <execution>
+                <id>post-unit-test</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+              </execution>
+              <!-- Property pointing to the JaCoCo runtime agent which is passed
+              as VM argument when Maven the Failsafe plugin is executed. -->
+              <execution>
+                <id>pre-integration-test</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+                <configuration>
+                  <propertyName>failsafeArgLine</propertyName>
+                </configuration>
+              </execution>
+              <execution>
+                <id>post-integration-test</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
           <plugin>
             <!-- Compiles Groovy code. -->
             <groupId>org.codehaus.gmavenplus</groupId>
@@ -255,6 +301,8 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <version>2.19.1</version>
             <configuration>
+              <!-- Sets arg line for jacoco agent when unit tests are run. -->
+              <argLine>${surefireArgLine}</argLine>
               <includes>
                 <include>*/*Spec.*</include>
               </includes>
@@ -269,7 +317,7 @@
             </dependencies>
           </plugin>
 
-          <!-- Integration tests using failsafe-plugin -->
+          <!-- Integration tests (using failsafe-plugin) -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
@@ -291,6 +339,7 @@
               <testFailureIgnore>false</testFailureIgnore>
               <argLine>
                 -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                ${failsafeArgLine}
               </argLine>
             </configuration>
             <executions>
