@@ -82,44 +82,43 @@ public class TheInternetExampleTests extends BaseTest {
     @Test(description = "Hovers")
     public void hovers() {
 
-        throw new SkipException("Doesn't work with Selenium 3/Marionette");
+        skipTestIfFirefox();
 
         // Navigate to the hovers page
-        //HoversPage hoversPage = WelcomePage.open().then().clickHoversLink();
+        HoversPage hoversPage = WelcomePage.open().then().clickHoversLink();
 
         // Confirm that the caption under the first figure contains expected text
-        //assertThat(hoversPage.getFirstFigureCaption()).contains("name: user1");
+        assertThat(hoversPage.getFirstFigureCaption()).contains("name: user1");
+
     }
 
     @Issue("HEROKU-11")
     @Test(description = "Javascript Alerts")
     public void javascriptAlerts() {
 
-
-        throw new SkipException("Doesn't work with Selenium 3/Marionette");
         // Navigate to the javascript alerts page
-        //JavaScriptAlertsPage javascriptAlerts =
-        //        WelcomePage.open().then()
-        //                .clickJavascriptAlertsLink()
-        //                .clickAlertButtonAndAccept();
-        //
-        //assertThat(javascriptAlerts.getResultText())
-        //        .isEqualTo("You successfuly clicked an alert");
+        JavaScriptAlertsPage javascriptAlerts =
+                WelcomePage.open().then()
+                        .clickJavascriptAlertsLink()
+                        .clickAlertButtonAndAccept();
+
+        assertThat(javascriptAlerts.getResultText())
+                .isEqualTo("You successfuly clicked an alert");
     }
 
     @Issue("HEROKU-12")
     @Test(description = "Key Presses")
     public void keypresses() {
 
-        throw new SkipException("Doesn't work with Selenium 3/Marionette");
+        skipTestIfFirefox();
         // Navigate to the key presses page
-        //KeyPressesPage keyPressesPage = WelcomePage
-        //        .open()
-        //        .clickKeyPressesLink()
-        //        .enterKeyPress(Keys.ENTER);
-        //
-        //assertThat(keyPressesPage.getResultText())
-        //        .isEqualTo("You entered: " + Keys.ENTER.name());
+        KeyPressesPage keyPressesPage = WelcomePage
+                .open()
+                .clickKeyPressesLink()
+                .enterKeyPress(Keys.ENTER);
+
+        assertThat(keyPressesPage.getResultText())
+                .isEqualTo("You entered: " + Keys.ENTER.name());
     }
 
     @Issue("HEROKU-14")
@@ -145,5 +144,13 @@ public class TheInternetExampleTests extends BaseTest {
 
         // Confirm that "Bach" is then the first surname in table 2
         assertThat(lastNameColumn.get(0)).isEqualTo("Bach");
+    }
+
+    private void skipTestIfFirefox() {
+        String browserName = getDriver().getWrappedRemoteWebDriver()
+                .getCapabilities().getBrowserName();
+        if (browserName.contains("firefox")) {
+            throw new SkipException("Doesn't work with Marionette/Gecko v0.18.0");
+        }
     }
 }

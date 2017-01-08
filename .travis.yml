@@ -22,6 +22,7 @@ env:
     - THREAD_COUNT=2
     - SELENIUM_MAJ_VER=3.0
     - SELENIUM_VER=$SELENIUM_MAJ_VER.1
+    - GECKO_VER=0.13.0
 
 before_script:
   - export DISPLAY=:99.0
@@ -39,8 +40,8 @@ script:
   - tar -xjf /tmp/firefox*.tar.bz2 --directory /tmp
 
   # Download and setup Marionette/geckodriver grid node
-  - wget --quiet --no-check-certificate https://github.com/mozilla/geckodriver/releases/download/v0.11.1/geckodriver-v0.11.1-linux64.tar.gz
-  - tar -xzf geckodriver-v0.11.1-linux64.tar.gz --directory /tmp
+  - wget --quiet --no-check-certificate https://github.com/mozilla/geckodriver/releases/download/v$GECKO_VER/geckodriver-v$GECKO_VER-linux64.tar.gz
+  - tar -xzf geckodriver-v$GECKO_VER-linux64.tar.gz --directory /tmp
   - java -Dwebdriver.gecko.driver=/tmp/geckodriver -jar selenium-server-standalone-$SELENIUM_VER.jar -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=$THREAD_COUNT -maxSession $THREAD_COUNT -port 5555 > /dev/null 2>&1 &
 
   # set up chrome
@@ -63,7 +64,7 @@ script:
   - mvn verify -B -Dthreads=$THREAD_COUNT -Dconfig=FirefoxGrid.yaml -DjiraURL="http://52.29.130.45:8080" -DjqlQuery="issueKey=TEST-1" -DresultVersion="BUILD TEST VERSION" -DzapiCycleRegex="Test Cycle" -DjiraUsername=frameworkium -DjiraPassword=frameworkium
 
   # Run using custom browserImpl (and subset of tests)
-  - mvn verify -B -Dthreads=$THREAD_COUNT -DcustomBrowserImpl=CustomFirefoxImpl -Dwebdriver.gecko.driver=/tmp/geckodriver -Dit.test=TheInternetExampleTests 2> /dev/null
+  - mvn verify -B -Dthreads=$THREAD_COUNT -DcustomBrowserImpl=CustomFirefoxImpl -Dwebdriver.gecko.driver=/tmp/geckodriver -Dit.test=DocumentationTest 2> /dev/null
 
   # Run on sauce
   # - mvn verify -Dsauce=true -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.0 -Ddevice=iPad -DcaptureURL=$CAPTURE_URL -DsutName="$SUT_NAME" -DsutVersion="$SUT_VERSION"
