@@ -5,7 +5,7 @@
 
   <groupId>com.github.frameworkium</groupId>
   <artifactId>frameworkium-core</artifactId>
-  <version>2.3.3-SNAPSHOT</version>
+  <version>2.3.3</version>
   <name>frameworkium-core</name>
   <description>
     Frameworkium core code.
@@ -226,6 +226,7 @@
       </properties>
       <build>
         <plugins>
+          <!-- Compiles Java -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
@@ -235,9 +236,9 @@
               <target>1.8</target>
             </configuration>
           </plugin>
-          <!-- Unit tests -->
+
+          <!-- Code coverage -->
           <plugin>
-            <!-- Code coverage -->
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
             <version>0.7.8</version>
@@ -248,12 +249,11 @@
                   <goal>prepare-agent</goal>
                 </goals>
                 <configuration>
-                  <!-- Property name containing settings for JaCoCo runtime agent. -->
+                  <!-- Property containing settings for JaCoCo runtime agent -->
                   <propertyName>surefireArgLine</propertyName>
                 </configuration>
               </execution>
-              <!-- Ensures that the code coverage report for unit tests is
-             created after unit tests have been run. -->
+              <!-- Ensures unit test coverage report is created after running tests -->
               <execution>
                 <id>post-unit-test</id>
                 <phase>test</phase>
@@ -261,8 +261,7 @@
                   <goal>report</goal>
                 </goals>
               </execution>
-              <!-- Property pointing to the JaCoCo runtime agent which is passed
-              as VM argument when Maven the Failsafe plugin is executed. -->
+              <!-- Property for JaCoCo runtime agent, passed to Failsafe plugin -->
               <execution>
                 <id>pre-integration-test</id>
                 <phase>pre-integration-test</phase>
@@ -282,8 +281,9 @@
               </execution>
             </executions>
           </plugin>
+
+          <!-- Compiles Groovy code for Spock unit tests-->
           <plugin>
-            <!-- Compiles Groovy code. -->
             <groupId>org.codehaus.gmavenplus</groupId>
             <artifactId>gmavenplus-plugin</artifactId>
             <version>1.5</version>
@@ -296,18 +296,20 @@
               </execution>
             </executions>
           </plugin>
+
+          <!-- Spock unit tests (using surefire-plugin) -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <version>2.19.1</version>
             <configuration>
-              <!-- Sets arg line for jacoco agent when unit tests are run. -->
+              <!-- Sets arg line for jacoco agent when unit tests are run -->
               <argLine>${surefireArgLine}</argLine>
               <includes>
                 <include>*/*Spec.*</include>
               </includes>
             </configuration>
-            <!-- Required to run Spock tests with JUnit not TestNG -->
+            <!-- Required to run Spock tests with JUnit and not TestNG -->
             <dependencies>
               <dependency>
                 <groupId>org.apache.maven.surefire</groupId>
@@ -351,6 +353,8 @@
               </execution>
             </executions>
           </plugin>
+
+          <!-- Used to attach sources to jar -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
