@@ -65,8 +65,7 @@
     <dependency>
       <groupId>ru.yandex.qatools.allure</groupId>
       <artifactId>allure-testng-adaptor</artifactId>
-      <!-- version 1.5.0.RC2 hasn't been updated since Jan. -->
-      <version>1.4.24.RC3</version>
+      <version>1.5.0</version>
     </dependency>
     <dependency>
       <groupId>ru.yandex.qatools.htmlelements</groupId>

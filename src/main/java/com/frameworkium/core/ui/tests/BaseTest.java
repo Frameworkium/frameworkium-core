@@ -30,8 +30,9 @@ import static java.util.Objects.isNull;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Listeners({CaptureListener.class, ScreenshotListener.class,
-        MethodInterceptor.class, SauceLabsListener.class,
-        TestListener.class, ResultLoggerListener.class})
+            MethodInterceptor.class, SauceLabsListener.class,
+            TestListener.class, ResultLoggerListener.class,
+            VideoListener.class})
 public abstract class BaseTest
         implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
@@ -189,6 +190,13 @@ public abstract class BaseTest
      */
     public static WebDriverWrapper getDriver() {
         return driver.get().getDriver();
+    }
+
+    /**
+     * @return the {@link Driver} instance for the requesting thread
+     */
+    public static Driver getFrameworkDriver() {
+        return driver.get();
     }
 
     /** Loops through all active driver types and tears them down */
