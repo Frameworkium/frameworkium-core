@@ -60,5 +60,3 @@ test-output/
 logs/
 null/
 screenshots/
-
-src/test/java/com/tfl/tests/web/PageCheckerTest.java
