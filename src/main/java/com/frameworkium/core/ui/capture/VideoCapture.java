@@ -6,7 +6,6 @@ import org.apache.http.HttpStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.remote.SessionId;
 import org.testng.ITestResult;
 import ru.yandex.qatools.allure.annotations.Attachment;
 
@@ -16,42 +15,32 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import static com.frameworkium.core.common.properties.Property.VIDEO_CAPTURE_URL;
-import static com.frameworkium.core.ui.tests.BaseTest.getDriver;
 
 public class VideoCapture {
 
     private static final String videoFolder = "capturedVideo";
-    private static final SimpleDateFormat videoNameDateFormat = new SimpleDateFormat("dd-mm-yyyy-HH-mm-ss");
     private static final Logger logger = LogManager.getLogger();
 
-    private URL videoCaptureUrl;
+    private static HashMap<String, String> testMap = new HashMap<>();
 
     public static boolean isRequired() {
         return VIDEO_CAPTURE_URL.isSpecified();
     }
 
-    public void saveVideo(ITestResult iTestResult, SessionId sessionId) {
-        if (getDriver() == null) return;
+    public static void addTest(ITestResult iTestResult, String sessionId) {
+        testMap.put(iTestResult.getName(), sessionId);
+    }
 
-        try {
-            setVideoCaptureUrl(sessionId);
-        }
-        catch (MalformedURLException e) {
-            logger.error("Unable to parse Grid URL", e);
-            return;
-        }
-
-        String currentDateTime = videoNameDateFormat.format(new Date());
-        String testName = iTestResult.getName();
-
+    public static void saveVideo(ITestResult iTestResult) {
+        String sessionId = testMap.get(iTestResult.getName());
+        URL videoCaptureURL = getVideoCaptureURL(sessionId);
         byte[] rawVideo;
         try {
-            rawVideo = getVideo();
+            rawVideo = getVideo(videoCaptureURL);
         } catch (InterruptedException | TimeoutException e) {
             logger.error(String.format("Timed out waiting for Session ID %s to become available after 6 seconds.", sessionId));
             return;
@@ -63,9 +52,9 @@ public class VideoCapture {
             String fileName = String.format(
                     "%s/%s-%s.%s",
                     videoFolder,
-                    testName,
-                    currentDateTime,
-                    videoCaptureUrl.getFile().substring(videoCaptureUrl.getFile().lastIndexOf("."))
+                    iTestResult.getName(),
+                    iTestResult.getEndMillis(),
+                    videoCaptureURL.getFile().substring(videoCaptureURL.getFile().lastIndexOf(".") + 1)
             );
             Files.write(Paths.get(fileName), rawVideo);
             logger.info(String.format("Captured video from grid: %s", fileName));
@@ -75,15 +64,21 @@ public class VideoCapture {
         }
     }
 
-    private void setVideoCaptureUrl(SessionId sessionId) throws MalformedURLException {
-        this.videoCaptureUrl = new URL(String.format(VIDEO_CAPTURE_URL.getValue(), sessionId));
+    private static URL getVideoCaptureURL(String sessionId) {
+        try
+        {
+            return new URL(String.format(VIDEO_CAPTURE_URL.getValue(), sessionId));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Video Capture URL provided was invalid", e);
+        }
     }
 
-    @Attachment(value = "Video on failure")
-    private byte[] getVideo() throws TimeoutException, InterruptedException {
+    @Attachment(value = "Video on Failure", type = "video/mp4")
+    private static byte[] getVideo(URL videoCaptureURL) throws TimeoutException, InterruptedException {
         int i = 0;
         while (i++ < 4) {
-            Response response = RestAssured.get(videoCaptureUrl);
+            logger.debug("Download URL for Video Capture: " + videoCaptureURL);
+            Response response = RestAssured.get(videoCaptureURL);
             if (response.getStatusCode() == HttpStatus.SC_OK) return response.asByteArray();
             TimeUnit.SECONDS.sleep(2);
         }

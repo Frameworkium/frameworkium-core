@@ -17,11 +17,11 @@ public interface Driver {
         return APP_PATH.isSpecified();
     }
 
-    /** Reset the browser ready for another test. */
-    void resetBrowser();
-
     /** Method to tear down the driver object. */
     void tearDown();
+
+    /** Method to set-up the driver object. */
+    void initialise();
 
     /**
      * Implemented in each Driver Type to specify the capabilities of that browser.

@@ -28,9 +28,6 @@ public class ScreenshotCapture {
     private String executionID;
     private String testID;
 
-    private ScreenshotCapture() {
-    }
-
     public ScreenshotCapture(String testID) {
         this.testID = testID;
         logger.debug("About to initialise Capture execution for " + testID);
