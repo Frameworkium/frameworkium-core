@@ -25,13 +25,6 @@ public abstract class AbstractDriver implements Driver {
 
     /** {@inheritDoc} */
     @Override
-    public void resetBrowser() {
-        tearDown();
-        initialise();
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void tearDown() {
         if (isInitialised) {
             this.webDriverWrapper.quit();
@@ -46,7 +39,7 @@ public abstract class AbstractDriver implements Driver {
     }
 
     /** Creates the Wrapped Driver object and maximises if required. */
-    private void initialise() {
+    public void initialise() {
         if (!isInitialised) {
             DesiredCapabilities capsFromImpl = getDesiredCapabilities();
             DesiredCapabilities caps = addProxyIfRequired(capsFromImpl);
