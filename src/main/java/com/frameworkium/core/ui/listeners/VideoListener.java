@@ -12,7 +12,7 @@ public class VideoListener extends TestListenerAdapter {
 
     @Override
     public void onTestStart(ITestResult iTestResult) {
-        if (isRequired()) VideoCapture.addTest(iTestResult, BaseTest.getDriverSessionId());
+        if (isRequired()) VideoCapture.addTest(iTestResult, BaseTest.getThreadSessionId());
     }
 
     @Override

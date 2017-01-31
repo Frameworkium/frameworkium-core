@@ -53,12 +53,12 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     /** Logger for this class */
     private static final Logger baseLogger = LogManager.getLogger();
 
-    private static final long DEFAULT_TIMEOUT_SECONDS = 10L;
+    /** Driver related constant */
+    public static final long DEFAULT_TIMEOUT_SECONDS = 10L;
 
-    private static ThreadLocal<ScreenshotCapture> capture;
-    private static ThreadLocal<Driver> driver;
-    private static ThreadLocal<Wait<WebDriver>> wait;
-    private static ThreadLocal<String> sessionId;
+    private static final ThreadLocal<ScreenshotCapture> capture = ThreadLocal.withInitial(() -> null);
+    private static final ThreadLocal<Driver> driver = ThreadLocal.withInitial(() -> null);
+    private static final ThreadLocal<Wait<WebDriver>> wait = ThreadLocal.withInitial(() -> null);
     private static String userAgent;
 
     /**
@@ -72,10 +72,8 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      */
     @BeforeMethod(alwaysRun = true)
     public static void instantiateDriverObject() {
-        driver = ThreadLocal.withInitial(() -> new DriverSetup().instantiateDriver());
-        wait = ThreadLocal.withInitial(BaseTest::newDefaultWait);
-        capture = ThreadLocal.withInitial(() -> null);
-        sessionId = ThreadLocal.withInitial(BaseTest::getThreadSessionId);
+        driver.set(new DriverSetup().instantiateDriver());
+        wait.set(newDefaultWait());
     }
 
     /**
@@ -126,12 +124,12 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     /** Required for unit testing */
     public static void setDriver(Driver newDriver) {
-        driver = ThreadLocal.withInitial(() -> newDriver);
+        driver.set(newDriver);
     }
 
     /** Required for unit testing */
     public static void setWait(Wait<WebDriver> newWait) {
-        wait = ThreadLocal.withInitial(() -> newWait);
+        wait.set(newWait);
     }
 
     /**
@@ -244,9 +242,6 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     public static Optional<String> getUserAgent() {
         return Optional.ofNullable(userAgent);
     }
-
-    /** @return the WebDriver session ID **/
-    public static String getDriverSessionId() { return sessionId.get(); }
 
     /** @return the Session id for the current thread */
     public static String getThreadSessionId() {
