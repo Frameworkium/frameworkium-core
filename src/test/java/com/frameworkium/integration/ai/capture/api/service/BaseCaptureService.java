@@ -17,7 +17,7 @@ public class BaseCaptureService extends BaseService {
      */
     @Override
     protected RequestSpecification getRequestSpec() {
-        return requestSpecification.given()
+        return RestAssured.given()
                 .baseUri(CaptureEndpoint.BASE_URI.getUrl())
                 .relaxedHTTPSValidation() // trusts even invalid certs
                 // .log().all() // uncomment to log each request
