@@ -39,12 +39,9 @@ import java.util.concurrent.Executors;
 import static java.util.Objects.isNull;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-@Listeners({CaptureListener.class, ScreenshotListener.class,
-            MethodInterceptor.class, SauceLabsListener.class,
-            TestListener.class, ResultLoggerListener.class,
-            VideoListener.class})
-public abstract class BaseTest
-        implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
+@Listeners({CaptureListener.class, ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class, TestListener.class,
+            ResultLoggerListener.class, VideoListener.class})
+public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
     /** Executor for async sending of screenshot messages to capture */
     public static final ExecutorService screenshotExecutor =
@@ -62,7 +59,7 @@ public abstract class BaseTest
     private static ThreadLocal<Driver> driver;
     private static ThreadLocal<Wait<WebDriver>> wait;
     private static ThreadLocal<String> sessionId;
-    private static String userAgent; // Assuming the same for any given test run
+    private static String userAgent;
 
     /**
      * Method which runs first upon running a test, it will do the following:
@@ -74,11 +71,11 @@ public abstract class BaseTest
      * </ul>
      */
     @BeforeMethod(alwaysRun = true)
-    public void instantiateDriverObject() {
+    public static void instantiateDriverObject() {
         driver = ThreadLocal.withInitial(() -> new DriverSetup().instantiateDriver());
         wait = ThreadLocal.withInitial(BaseTest::newDefaultWait);
         capture = ThreadLocal.withInitial(() -> null);
-        sessionId = ThreadLocal.withInitial(this::getSessionId);
+        sessionId = ThreadLocal.withInitial(BaseTest::getThreadSessionId);
     }
 
     /**
@@ -86,7 +83,7 @@ public abstract class BaseTest
      * @see #configureBrowserBeforeTest(String)
      */
     @BeforeMethod(alwaysRun = true, dependsOnMethods = "instantiateDriverObject")
-    public void configureBrowserBeforeTest(Method testMethod) {
+    public static void configureBrowserBeforeTest(Method testMethod) {
         configureBrowserBeforeTest(getTestNameForCapture(testMethod));
     }
 
@@ -94,7 +91,7 @@ public abstract class BaseTest
      * Tears down the browser after the test method
      */
     @AfterMethod(alwaysRun = true)
-    public void tearDownBrowser() {
+    public static void tearDownBrowser() {
         try {
             driver.get().tearDown();
         } catch (Exception e) {
@@ -141,7 +138,7 @@ public abstract class BaseTest
      * Find the calling method and pass it into
      * {@link #configureBrowserBeforeTest(Method)} to configure the browser.
      */
-    protected void configureBrowserBeforeUse() {
+    protected static void configureBrowserBeforeUse() {
         configureBrowserBeforeTest(
                 getCallingMethod(Thread.currentThread().getStackTrace()[2]));
     }
@@ -176,7 +173,7 @@ public abstract class BaseTest
      *
      * @param testName The test name about to be executed
      */
-    private void configureBrowserBeforeTest(String testName) {
+    private static void configureBrowserBeforeTest(String testName) {
         try {
             wait.set(newDefaultWait());
             userAgent = determineUserAgent();
@@ -189,7 +186,7 @@ public abstract class BaseTest
         }
     }
 
-    private String determineUserAgent() {
+    private static String determineUserAgent() {
         try {
             return (String) getDriver().executeScript("return navigator.userAgent;");
         } catch (Exception e) {
@@ -251,11 +248,16 @@ public abstract class BaseTest
     /** @return the WebDriver session ID **/
     public static String getDriverSessionId() { return sessionId.get(); }
 
+    /** @return the Session id for the current thread */
+    public static String getThreadSessionId() {
+        SessionId sessionId = getDriver().getWrappedRemoteWebDriver().getSessionId();
+        return isNull(sessionId) ? null : sessionId.toString();
+    }
+
     /** @return the Job id for the current thread */
     @Override
     public String getSessionId() {
-        SessionId sessionId = getDriver().getWrappedRemoteWebDriver().getSessionId();
-        return isNull(sessionId) ? null : sessionId.toString();
+        return getThreadSessionId();
     }
 
     /**

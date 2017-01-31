@@ -21,15 +21,11 @@ public abstract class AbstractDriver implements Driver {
 
     private static final String HOSTNAME_OR_IP_PORT_REGEX = "[\\dA-Za-z\\.\\-]+:[\\d]+";
     private WebDriverWrapper webDriverWrapper;
-    private boolean isInitialised;
 
     /** {@inheritDoc} */
     @Override
     public void tearDown() {
-        if (isInitialised) {
-            this.webDriverWrapper.quit();
-            isInitialised = false;
-        }
+        this.webDriverWrapper.quit();
     }
 
     /** {@inheritDoc} */
@@ -40,16 +36,13 @@ public abstract class AbstractDriver implements Driver {
 
     /** Creates the Wrapped Driver object and maximises if required. */
     public void initialise() {
-        if (!isInitialised) {
-            DesiredCapabilities capsFromImpl = getDesiredCapabilities();
-            DesiredCapabilities caps = addProxyIfRequired(capsFromImpl);
-            logger.debug("Browser Capabilities: " + caps);
+        DesiredCapabilities capsFromImpl = getDesiredCapabilities();
+        DesiredCapabilities caps = addProxyIfRequired(capsFromImpl);
+        logger.debug("Browser Capabilities: " + caps);
 
-            this.webDriverWrapper = setupEventFiringWebDriver(caps);
+        this.webDriverWrapper = setupEventFiringWebDriver(caps);
 
-            maximiseBrowserIfRequired();
-            isInitialised = true;
-        }
+        maximiseBrowserIfRequired();
     }
 
     private DesiredCapabilities addProxyIfRequired(DesiredCapabilities caps) {
@@ -72,13 +65,13 @@ public abstract class AbstractDriver implements Driver {
     }
 
     /** Maximises the browser window based on maximise property */
-    protected void maximiseBrowserIfRequired() {
+    private void maximiseBrowserIfRequired() {
         if (isMaximiseRequired()) {
             this.webDriverWrapper.manage().window().maximize();
         }
     }
 
-    protected boolean isMaximiseRequired() {
+    private boolean isMaximiseRequired() {
         boolean ableToMaximise = !Sauce.isDesired()
                 && !BrowserStack.isDesired()
                 && !Driver.isNative();
