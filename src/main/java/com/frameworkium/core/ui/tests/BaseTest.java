@@ -171,7 +171,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      *
      * @param testName The test name about to be executed
      */
-    private static void configureBrowserBeforeTest(String testName) {
+    public static void configureBrowserBeforeTest(String testName) {
         try {
             wait.set(newDefaultWait());
             userAgent = determineUserAgent();
