@@ -38,6 +38,7 @@ public class DriverSetup {
         if (useRemoteDriver()) {
             driver = instantiateDesiredRemote(driver);
         }
+        driver.initialise();
         return driver;
     }
 
