@@ -28,7 +28,7 @@ public class DocumentationTest extends BaseTest {
                 .getGuideTitle();
 
         assertThat(guideTitle)
-                .isEqualTo("Bootstrap");
+                .contains("Bootstrap");
     }
 
 }
