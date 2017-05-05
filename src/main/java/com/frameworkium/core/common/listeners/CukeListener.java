@@ -1,6 +1,8 @@
 package com.frameworkium.core.common.listeners;
 
 import com.frameworkium.core.common.reporting.jira.zapi.Execution;
+
+import cucumber.runtime.CucumberException;
 import cucumber.runtime.StepDefinitionMatch;
 import gherkin.formatter.Formatter;
 import gherkin.formatter.Reporter;
@@ -186,6 +188,9 @@ public class CukeListener implements Formatter, Reporter {
             if (resultIsBroken(result)) {
                 scnStepBrokenCount++;
                 latestError = result.getError();
+                if (latestError instanceof CucumberException) {
+                    latestError = latestError.getCause();
+                }
                 lifecycle.fire(new StepFailureEvent().withThrowable(latestError));
             }
             lifecycle.fire(new StepFinishedEvent());
@@ -247,7 +252,8 @@ public class CukeListener implements Formatter, Reporter {
                 .map(name -> name
                         .replace(tagSearch, "")
                         .replace(")", "")
-                        .trim());
+                        .trim()
+                        .replaceAll("^\"|\"$", ""));
     }
 
     private String retrieveTagValue(List<Tag> tags, String tagName) {
