@@ -41,6 +41,6 @@ public class DeveloperGuidePage extends BasePage<DeveloperGuidePage> {
     }
 
     public String getGuideTitle() {
-        return guideTitle.getText();
+        return getTitle();
     }
 }
