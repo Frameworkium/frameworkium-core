@@ -30,7 +30,7 @@ public class HeaderComponent extends HtmlElement {
 
     @Visible
     @Name("Explore Link")
-    @FindBy(css = "header nav a.nav-item-explore")
+    @FindBy(css = "nav a[data-ga-click$='item:explore']")
     private Link exploreLink;
 
     @Step("Go to the explore page")
