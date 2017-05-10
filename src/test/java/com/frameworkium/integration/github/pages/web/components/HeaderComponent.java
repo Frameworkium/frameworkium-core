@@ -49,23 +49,23 @@ public class HeaderComponent extends HtmlElement {
     private Link exploreLink;
 
     private HeaderComponent showHeaderMenu() {
-    	Wait<WebDriver> wait = BaseTest.newDefaultWait();
-    	// Workaround due to flaky GitHub site
-    	
-    	// If browser is opened with width of 960 pixels or less
-    	// then the Header Menu is not displayed and a 'Hamburger' button is displayed instead. 
-    	// This button needs to be clicked to display the Header Menu.
-    	if (!headerMenu.isDisplayed()) {
-    		if (!hamburgerButton.isDisplayed()) {
-        		// Sometimes the Hamburger button is not initially displayed
-    			// so click the Header element to display the button 
-    			this.click();
-    		}
-    		hamburgerButton.click();
-       		
-       		// Ensure the Header Menu is displayed before attempting to click a link
-       		wait.until(ExpectedConditions.visibilityOf(headerMenu));
-    	}
+        Wait<WebDriver> wait = BaseTest.newDefaultWait();
+        // Workaround due to flaky GitHub site
+
+        // If browser is opened with width of 960 pixels or less
+        // then the Header Menu is not displayed and a 'Hamburger' button is displayed instead. 
+        // This button needs to be clicked to display the Header Menu.
+        if (!headerMenu.isDisplayed()) {
+            if (!hamburgerButton.isDisplayed()) {
+                // Sometimes the Hamburger button is not initially displayed
+                // so click the Header element to display the button 
+                this.click();
+            }
+            hamburgerButton.click();
+    		
+            // Ensure the Header Menu is displayed before attempting to click a link
+            wait.until(ExpectedConditions.visibilityOf(headerMenu));
+        }
         return this;
     }
     
