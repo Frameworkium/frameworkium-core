@@ -4,14 +4,20 @@ import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.PageFactory;
 import com.frameworkium.core.ui.pages.Visibility;
 import com.frameworkium.core.ui.tests.BaseTest;
-import com.frameworkium.integration.github.pages.web.*;
-import org.openqa.selenium.*;
+import com.frameworkium.integration.github.pages.web.ExplorePage;
+import com.frameworkium.integration.github.pages.web.SearchResultsPage;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Wait;
 import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
-import ru.yandex.qatools.htmlelements.element.*;
+import ru.yandex.qatools.htmlelements.element.Button;
+import ru.yandex.qatools.htmlelements.element.HtmlElement;
+import ru.yandex.qatools.htmlelements.element.Link;
+import ru.yandex.qatools.htmlelements.element.TextInput;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
@@ -28,13 +34,18 @@ public class HeaderComponent extends HtmlElement {
     @FindBy(name = "q")
     private TextInput searchBox;
 
-    @Visible
+    @Name("Hamburger button")
+    @FindBy(className = "btn-link")
+    private Button hamburgerButton;
+
     @Name("Explore Link")
-    @FindBy(css = "header nav a.nav-item-explore")
+    @FindBy(css = "nav a[href='/explore']")
     private Link exploreLink;
 
     @Step("Go to the explore page")
     public ExplorePage clickExplore() {
+        if (hamburgerButton.isDisplayed())
+            hamburgerButton.click();
         exploreLink.click();
         return PageFactory.newInstance(ExplorePage.class);
     }
