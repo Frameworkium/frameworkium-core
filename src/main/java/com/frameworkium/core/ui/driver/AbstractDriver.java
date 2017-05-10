@@ -13,30 +13,22 @@ import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
+
+import static com.frameworkium.core.ui.tests.BaseTest.DEFAULT_TIMEOUT_SECONDS;
 
 public abstract class AbstractDriver implements Driver {
 
     protected static final Logger logger = LogManager.getLogger();
 
-    private static final String HOSTNAME_OR_IP_PORT_REGEX = "[\\dA-Za-z\\.\\-]+:[\\d]+";
     private WebDriverWrapper webDriverWrapper;
-    private boolean isInitialised;
-
-    /** {@inheritDoc} */
-    @Override
-    public void resetBrowser() {
-        tearDown();
-        initialise();
-    }
 
     /** {@inheritDoc} */
     @Override
     public void tearDown() {
-        if (isInitialised) {
-            this.webDriverWrapper.quit();
-            isInitialised = false;
-        }
+        this.webDriverWrapper.quit();
     }
 
     /** {@inheritDoc} */
@@ -46,17 +38,14 @@ public abstract class AbstractDriver implements Driver {
     }
 
     /** Creates the Wrapped Driver object and maximises if required. */
-    private void initialise() {
-        if (!isInitialised) {
-            DesiredCapabilities capsFromImpl = getDesiredCapabilities();
-            DesiredCapabilities caps = addProxyIfRequired(capsFromImpl);
-            logger.debug("Browser Capabilities: " + caps);
+    public void initialise() {
+        DesiredCapabilities capsFromImpl = getDesiredCapabilities();
+        DesiredCapabilities caps = addProxyIfRequired(capsFromImpl);
+        logger.debug("Browser Capabilities: " + caps);
 
-            this.webDriverWrapper = setupEventFiringWebDriver(caps);
+        this.webDriverWrapper = setupEventFiringWebDriver(caps);
 
-            maximiseBrowserIfRequired();
-            isInitialised = true;
-        }
+        maximiseBrowserIfRequired();
     }
 
     private DesiredCapabilities addProxyIfRequired(DesiredCapabilities caps) {
@@ -73,19 +62,18 @@ public abstract class AbstractDriver implements Driver {
         if (ScreenshotCapture.isRequired()) {
             eventFiringWD.register(new CaptureListener());
         }
-        // TODO: allow parametrisation
-        eventFiringWD.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
+        eventFiringWD.manage().timeouts().setScriptTimeout(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         return eventFiringWD;
     }
 
     /** Maximises the browser window based on maximise property */
-    protected void maximiseBrowserIfRequired() {
+    private void maximiseBrowserIfRequired() {
         if (isMaximiseRequired()) {
             this.webDriverWrapper.manage().window().maximize();
         }
     }
 
-    protected boolean isMaximiseRequired() {
+    private boolean isMaximiseRequired() {
         boolean ableToMaximise = !Sauce.isDesired()
                 && !BrowserStack.isDesired()
                 && !Driver.isNative();
@@ -121,33 +109,20 @@ public abstract class AbstractDriver implements Driver {
                 logger.debug("Using direct i.e. (no) proxy");
                 break;
             default:
-                // assumed to be a proxy url
-                if (isProxyAddressWellFormed(proxyString)) {
+                try {
+                    URI proxyURI = new URI(Property.PROXY.getValue());
+                    proxyString = String.format("%s:%d", proxyURI.getHost(), proxyURI.getPort());
                     proxy.setProxyType(ProxyType.MANUAL)
                             .setHttpProxy(proxyString)
                             .setFtpProxy(proxyString)
                             .setSslProxy(proxyString);
                     logger.debug("Set all protocols to use proxy address: " + proxyString);
-                } else {
-                    logger.error("Invalid proxy specified, acceptable values are: "
-                            + "system, autodetect, direct or {hostname}:{port}. "
-                            + "Tests will use default setting for your browser");
-                    return null;
+                } catch (URISyntaxException e) {
+                    logger.error("Invalid proxy specified, acceptable values are: system, autodetect, direct or http://{hostname}:{port}.");
                 }
                 break;
         }
         return proxy;
-    }
-
-    /**
-     * This helper method verifies that a value is a suitable proxy address.
-     * Selenium expects values of the format hostname:port or ip:port
-     *
-     * @param proxyAddress The proxy value to verify
-     * @return true if value is acceptable as a proxy, false otherwise
-     */
-    private boolean isProxyAddressWellFormed(String proxyAddress) {
-        return proxyAddress.matches(HOSTNAME_OR_IP_PORT_REGEX);
     }
 
 }

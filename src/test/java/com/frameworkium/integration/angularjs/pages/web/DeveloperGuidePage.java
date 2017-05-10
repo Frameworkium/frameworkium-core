@@ -5,9 +5,13 @@ import com.frameworkium.core.ui.pages.BasePage;
 import com.frameworkium.core.ui.pages.PageFactory;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.element.Link;
 import ru.yandex.qatools.htmlelements.element.TextInput;
+
+import java.util.Arrays;
 
 public class DeveloperGuidePage extends BasePage<DeveloperGuidePage> {
 
@@ -21,8 +25,12 @@ public class DeveloperGuidePage extends BasePage<DeveloperGuidePage> {
     private Link bootstrapSearchItem;
 
     @Name("Guide article title")
-    @FindBy(css = "h1")
+    @FindBy(css = ".main-grid h1")
     private WebElement guideTitle;
+
+    @Name("Loading")
+    @FindBy(id= "loading")
+    private WebElement loading;
 
     public static DeveloperGuidePage open() {
         return PageFactory.newInstance(
@@ -37,6 +45,7 @@ public class DeveloperGuidePage extends BasePage<DeveloperGuidePage> {
     public DeveloperGuidePage clickBootstrapSearchItem() {
         bootstrapSearchItem.click();
         waitForJavascriptFrameworkToFinish();
+        wait.until(ExpectedConditions.invisibilityOfAllElements(Arrays.asList(loading)));
         return this;
     }
 
