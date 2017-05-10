@@ -60,3 +60,5 @@ test-output/
 logs/
 null/
 screenshots/
+capturedVideo/
+src/test/java/com/tfl/tests/web/PageCheckerTest.java
