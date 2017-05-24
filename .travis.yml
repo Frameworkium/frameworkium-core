@@ -4,7 +4,7 @@ jdk: oraclejdk8
 dist: xenial
 
 addons:
-  firefox: "52.1.0esr"
+  firefox: "53.0.3"
 
 # disable default mvn install
 install: true
@@ -51,7 +51,7 @@ script:
   #- java -jar selenium-server-standalone-$SELENIUM_VER.jar -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=$THREAD_COUNT -port 5556 > /dev/null 2>&1 &
 
   # Run on Firefox off the grid
-  - mvn verify -B -Dthreads=$THREAD_COUNT -Dbrowser=firefox -Dwebdriver.gecko.driver=/tmp/geckodriver 2> /dev/null
+  - mvn verify -B -Dthreads=1 -Dbrowser=firefox -Dwebdriver.gecko.driver=/tmp/geckodriver 2> /dev/null
 
   # Run on Firefox on the grid via gecko
   - mvn verify -B -Dthreads=$THREAD_COUNT -Dconfig=FirefoxGrid.yaml -DcaptureURL=$CAPTURE_URL -DsutName="$SUT_NAME" -DsutVersion="$SUT_VERSION"
