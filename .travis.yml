@@ -4,7 +4,7 @@ jdk: oraclejdk8
 dist: xenial
 
 addons:
-  firefox: "52.1.0"
+  firefox: "52.1.0esr"
 
 # disable default mvn install
 install: true
