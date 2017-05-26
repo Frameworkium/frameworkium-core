@@ -39,9 +39,8 @@ public class HeaderComponent extends HtmlElement {
     @Name("Hamburger button")
     @FindBy(className = "btn-link")
     private Button hamburgerButton;
-    
-    @Name("Header Menu")
-    @FindBy(css = "nav.site-header-nav")
+
+    @FindBy(css = "nav")
     private WebElement headerMenu;
 
     @Name("Explore Link")
@@ -78,6 +77,7 @@ public class HeaderComponent extends HtmlElement {
 
     @Step("Search for the text '{0}'")
     public SearchResultsPage search(String searchText) {
+    	showHeaderMenu();
         searchBox.sendKeys(searchText + Keys.ENTER);
         return PageFactory.newInstance(SearchResultsPage.class);
     }

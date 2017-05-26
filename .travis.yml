@@ -4,7 +4,7 @@ jdk: oraclejdk8
 dist: xenial
 
 addons:
-  firefox: "50.0"
+  firefox: "56.0"
 
 # disable default mvn install
 install: true
@@ -20,9 +20,11 @@ env:
     - SUT_NAME="frameworkium-core"
     - SUT_VERSION=$TRAVIS_BRANCH
     - THREAD_COUNT=2
-    - SELENIUM_MAJ_VER=3.0
-    - SELENIUM_VER=$SELENIUM_MAJ_VER.1
-    - GECKO_VER=0.13.0
+    - SELENIUM_MAJ_VER=3.5
+    - SELENIUM_VER=${SELENIUM_MAJ_VER}.3
+    - SELENIUM_JAR=selenium-server-standalone-${SELENIUM_VER}.jar
+    - GECKO_VER=0.19.0
+    - CHROME_DRIVER_VER=2.31
 
 before_script:
   - export DISPLAY=:99.0

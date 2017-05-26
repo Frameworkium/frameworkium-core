@@ -4,6 +4,7 @@ import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.driver.drivers.*;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.remote.DesiredCapabilities;

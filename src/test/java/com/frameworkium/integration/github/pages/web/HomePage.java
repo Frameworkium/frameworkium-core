@@ -18,10 +18,9 @@ public class HomePage extends BasePage<HomePage> {
     @Name("Header")
     private HeaderComponent header;
 
-    @Visible
-    @Name("Marketing Sign-Up Banner")
-    @FindBy(css = ".jumbotron-home h1")
-    private WebElement homepageHeroIntro;
+    @Name("Sign up for GithHub button")
+    @FindBy(css = "form[class*='signup'] button")
+    private WebElement signUpButton;
 
     @Step("Navigate to the Github homepage")
     public static HomePage open() {

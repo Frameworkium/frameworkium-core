@@ -186,7 +186,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     private static String determineUserAgent() {
         try {
-            return (String) getDriver().executeScript("return navigator.userAgent;");
+            return Driver.isNative() ? "" : (String) getDriver().executeScript("return navigator.userAgent;");
         } catch (Exception e) {
             return null;
         }
