@@ -5,7 +5,7 @@
 
   <groupId>com.github.frameworkium</groupId>
   <artifactId>frameworkium-core</artifactId>
-  <version>2.3.4</version>
+  <version>2.4.1</version>
   <name>frameworkium-core</name>
   <description>
     Frameworkium core code.
@@ -40,7 +40,7 @@
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>3.0.1</version>
+      <version>3.4.0</version>
     </dependency>
     <dependency>
       <groupId>com.codeborne</groupId>
@@ -88,11 +88,6 @@
       <version>1.0.35</version>
     </dependency>
     <dependency>
-      <groupId>com.google.truth</groupId>
-      <artifactId>truth</artifactId>
-      <version>0.30</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
       <version>2.8</version>
@@ -117,6 +112,11 @@
           <artifactId>groovy</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>0.30</version>
     </dependency>
     <dependency>
       <groupId>org.aspectj</groupId>
