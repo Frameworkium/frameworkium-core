@@ -10,6 +10,7 @@ import org.testng.ITestResult;
 import ru.yandex.qatools.allure.annotations.Attachment;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -44,6 +45,9 @@ public class VideoCapture {
         } catch (InterruptedException | TimeoutException e) {
             logger.error(String.format("Timed out waiting for Session ID %s to become available after 6 seconds.", sessionId));
             return;
+        } catch (ConnectException e) {
+            logger.error(String.format("Connection was refused for Session ID %s while trying to retrieve the video.", sessionId));
+            return;
         }
 
         Path path = Paths.get(videoFolder);
@@ -74,7 +78,7 @@ public class VideoCapture {
     }
 
     @Attachment(value = "Video on Failure", type = "video/mp4")
-    private static byte[] getVideo(URL videoCaptureURL) throws TimeoutException, InterruptedException {
+    private static byte[] getVideo(URL videoCaptureURL) throws TimeoutException, InterruptedException, ConnectException {
         int i = 0;
         while (i++ < 4) {
             logger.debug("Download URL for Video Capture: " + videoCaptureURL);
