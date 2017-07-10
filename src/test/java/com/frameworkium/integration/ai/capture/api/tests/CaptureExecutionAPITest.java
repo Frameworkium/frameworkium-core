@@ -3,6 +3,7 @@ package com.frameworkium.integration.ai.capture.api.tests;
 import com.frameworkium.core.api.tests.BaseTest;
 import com.frameworkium.integration.ai.capture.api.dto.executions.*;
 import com.frameworkium.integration.ai.capture.api.service.executions.ExecutionService;
+import com.frameworkium.integration.ai.capture.api.tests.Utils.Equality;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -40,12 +41,7 @@ public class CaptureExecutionAPITest extends BaseTest {
 
         // check it matches input
         Execution ex = filteredExecutions.get(0);
-        assertThat(ex.browser).isEqualTo(createMessage.browser);
-        assertThat(ex.softwareUnderTest).isEqualTo(createMessage.softwareUnderTest);
-        assertThat(ex.testID).isEqualTo(createMessage.testID);
-        assertThat(ex.nodeAddress).isEqualTo(createMessage.nodeAddress);
-        // check is has the default status of new
-        assertThat(ex.currentStatus).isEqualTo("new");
+        Equality.checkExecutionInput(createMessage, ex);
 
         // check total is at least the number of results returns
         assertThat(latestExecutions.total)

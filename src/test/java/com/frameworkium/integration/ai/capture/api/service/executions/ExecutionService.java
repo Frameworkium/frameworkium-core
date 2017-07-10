@@ -30,4 +30,14 @@ public class ExecutionService extends BaseCaptureService {
                 CaptureEndpoint.EXECUTIONS.getUrl())
                 .as(ExecutionResults.class);
     }
+
+    @Step("Get specific Capture Execution from Execution id")
+    public Execution getExecution(String id){
+        return getRequestSpec()
+                .get(CaptureEndpoint.GET_EXECUTION.getUrl(id))
+                .then()
+                .assertThat().statusCode(HttpStatus.SC_OK)
+                .extract()
+                .as(Execution.class);
+    }
 }
