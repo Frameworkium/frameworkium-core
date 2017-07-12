@@ -4,7 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 /** Execution message. */
-public class Execution extends BaseDTO {
+public class Execution extends BaseDTO<Execution> {
 
     // used in the create
     public String testID;

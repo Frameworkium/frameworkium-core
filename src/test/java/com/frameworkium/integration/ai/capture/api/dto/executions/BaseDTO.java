@@ -11,13 +11,14 @@ import java.io.ObjectOutputStream;
 /**
  * Base Data transfer object for all data objects to extend from
  */
-public class BaseDTO {
+public class BaseDTO<T extends BaseDTO> {
 
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
