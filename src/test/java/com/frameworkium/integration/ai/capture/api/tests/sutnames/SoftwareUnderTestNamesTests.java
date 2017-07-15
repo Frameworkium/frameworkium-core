@@ -25,7 +25,14 @@ public class SoftwareUnderTestNamesTests extends BaseTest {
     public void setUp(){
         // create execution
         final Execution createMessage = Execution.newCreateInstance();
+        expectedSutName = "Capture";
+
+        /*This would be better but capture does not yet have delete endpoint
+        to clear down all the different systems that would be generated
+
         expectedSutName = "sutName " + randomUUID().toString();
+        */
+
         createMessage.softwareUnderTest.name = expectedSutName;
         String id = new ExecutionService()
                 .createExecution(createMessage)
@@ -49,7 +56,7 @@ public class SoftwareUnderTestNamesTests extends BaseTest {
         // get Names and store as response object.
         Names responseNames = new GetSutNamesService().getNames();
         //assert success
-        assertThat(expectedNames).containsAllIn(responseNames.names);
+        assertThat(responseNames.names).containsAllIn(expectedNames);
     }
 
 }
