@@ -14,14 +14,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Wait;
 import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
-import ru.yandex.qatools.htmlelements.element.Button;
-import ru.yandex.qatools.htmlelements.element.HtmlElement;
-import ru.yandex.qatools.htmlelements.element.Link;
-import ru.yandex.qatools.htmlelements.element.TextInput;
+import ru.yandex.qatools.htmlelements.element.*;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
-
-import org.apache.tools.ant.taskdefs.WaitFor;
 
 @Name("Github Header")
 @FindBy(css = "header")
@@ -32,25 +27,20 @@ public class HeaderComponent extends HtmlElement {
     @FindBy(css = "a.header-logo-invertocat")
     private Link homeLink;
 
-    @Name("Search Box")
     @FindBy(name = "q")
     private TextInput searchBox;
 
-    @Name("Hamburger button")
     @FindBy(className = "btn-link")
     private Button hamburgerButton;
-    
-    @Name("Header Menu")
-    @FindBy(css = "nav.site-header-nav")
+
+    @FindBy(css = "nav")
     private WebElement headerMenu;
 
-    @Name("Explore Link")
     @FindBy(css = "nav a[href='/explore']")
     private Link exploreLink;
 
     private HeaderComponent showHeaderMenu() {
         Wait<WebDriver> wait = BaseTest.newDefaultWait();
-        // Workaround due to flaky GitHub site
 
         // If browser is opened with width of 960 pixels or less
         // then the Header Menu is not displayed and a 'Hamburger' button is displayed instead. 
@@ -62,13 +52,13 @@ public class HeaderComponent extends HtmlElement {
                 this.click();
             }
             hamburgerButton.click();
-    		
+
             // Ensure the Header Menu is displayed before attempting to click a link
             wait.until(ExpectedConditions.visibilityOf(headerMenu));
         }
         return this;
     }
-    
+
     @Step("Go to the explore page")
     public ExplorePage clickExplore() {
         showHeaderMenu();
@@ -88,7 +78,8 @@ public class HeaderComponent extends HtmlElement {
 
         WebElement link = homeLink.getWrappedElement();
         // hide the home link
-        BaseTest.getDriver().executeScript("arguments[0].style.visibility='hidden';", link);
+        BaseTest.getDriver().executeScript(
+                "arguments[0].style.visibility='hidden';", link);
         wait.until(ExpectedConditions.not(visibilityOf(link)));
         // test force visible works
         new Visibility().forceVisible(link);
