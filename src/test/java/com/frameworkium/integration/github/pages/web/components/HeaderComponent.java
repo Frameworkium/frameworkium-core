@@ -39,7 +39,7 @@ public class HeaderComponent extends HtmlElement {
     @FindBy(css = "nav a[href='/explore']")
     private Link exploreLink;
 
-    private HeaderComponent showHeaderMenu() {
+    private void showHeaderMenuIfCollapsed() {
         Wait<WebDriver> wait = BaseTest.newDefaultWait();
 
         // If browser is opened with width of 960 pixels or less
@@ -56,18 +56,18 @@ public class HeaderComponent extends HtmlElement {
             // Ensure the Header Menu is displayed before attempting to click a link
             wait.until(ExpectedConditions.visibilityOf(headerMenu));
         }
-        return this;
     }
 
     @Step("Go to the explore page")
     public ExplorePage clickExplore() {
-        showHeaderMenu();
+        showHeaderMenuIfCollapsed();
         exploreLink.click();
         return PageFactory.newInstance(ExplorePage.class);
     }
 
     @Step("Search for the text '{0}'")
     public SearchResultsPage search(String searchText) {
+        showHeaderMenuIfCollapsed();
         searchBox.sendKeys(searchText + Keys.ENTER);
         return PageFactory.newInstance(SearchResultsPage.class);
     }
