@@ -19,7 +19,7 @@ env:
     - CAPTURE_URL="https://capture.unity.perimeterusa.com:5000"
     - SUT_NAME="frameworkium-core"
     - SUT_VERSION=$TRAVIS_BRANCH
-    - THREAD_COUNT=2
+    - THREAD_COUNT=1
     - SELENIUM_MAJ_VER=3.4
     - SELENIUM_VER=$SELENIUM_MAJ_VER.0
     - GECKO_VER=0.18.0
