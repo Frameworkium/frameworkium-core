@@ -33,12 +33,12 @@ script:
   
   # Download and setup Grid
   - wget --quiet --no-check-certificate https://selenium-release.storage.googleapis.com/${SELENIUM_MAJ_VER}/selenium-server-standalone-${SELENIUM_VER}.jar
-  - java -XmX128m -jar selenium-server-standalone-${SELENIUM_VER}.jar -role hub > /dev/null 2>&1 &
+  - java -Xmx128m -jar selenium-server-standalone-${SELENIUM_VER}.jar -role hub > /dev/null 2>&1 &
 
   # Download and setup Marionette/geckodriver grid node
   - wget --quiet --no-check-certificate https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VER}/geckodriver-v${GECKO_VER}-linux64.tar.gz
   - tar -xzf geckodriver-v${GECKO_VER}-linux64.tar.gz --directory /tmp
-  - java -XmX128m -Dwebdriver.gecko.driver=/tmp/geckodriver -jar selenium-server-standalone-${SELENIUM_VER}.jar -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > /dev/null 2>&1 &
+  - java -Xmx128m -Dwebdriver.gecko.driver=/tmp/geckodriver -jar selenium-server-standalone-${SELENIUM_VER}.jar -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > /dev/null 2>&1 &
 
   # set up chrome
   #- ln -s /usr/bin/chromium-browser /tmp/google-chrome
