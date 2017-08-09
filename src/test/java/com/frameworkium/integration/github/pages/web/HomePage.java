@@ -8,7 +8,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.allure.annotations.Step;
-import ru.yandex.qatools.htmlelements.annotations.Name;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 

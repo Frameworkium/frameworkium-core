@@ -12,12 +12,18 @@ public class VideoListener extends TestListenerAdapter {
 
     @Override
     public void onTestStart(ITestResult iTestResult) {
-        if (isRequired()) VideoCapture.addTest(iTestResult, BaseTest.getThreadSessionId());
+        if (isRequired()) {
+            VideoCapture.addTest(iTestResult, BaseTest.getThreadSessionId());
+        }
     }
 
     @Override
     public void onFinish(ITestContext iTestContext) {
-        if (isRequired()) iTestContext.getFailedTests().getAllResults().forEach(VideoCapture::saveVideo);
+        if (isRequired()) {
+            iTestContext.getFailedTests()
+                    .getAllResults()
+                    .forEach(VideoCapture::saveVideo);
+        }
     }
 
 }
