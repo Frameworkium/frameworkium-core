@@ -15,10 +15,9 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElem
 public class HomePage extends BasePage<HomePage> {
 
     @Visible
-    @Name("Header")
     private HeaderComponent header;
 
-    @Name("Sign up for GithHub button")
+    @Visible
     @FindBy(css = "form[class*='signup'] button")
     private WebElement signUpButton;
 
