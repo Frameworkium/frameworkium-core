@@ -10,6 +10,7 @@ import ru.yandex.qatools.htmlelements.element.HtmlElement;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
@@ -58,8 +59,20 @@ public final class Visibility {
      */
     public void waitForAnnotatedElementVisibility(Object pageObject) {
 
-        Field[] allFields = pageObject.getClass().getDeclaredFields();
-        Arrays.stream(allFields)
+    	Class <? extends Object> clazz = pageObject.getClass();
+    	// Get the declared fields from the current class
+    	final List<Field> allFields = new ArrayList<Field>(Arrays.asList(clazz.getDeclaredFields()));
+    	
+    	// Get any declared fields from super classes
+    	// i.e. when a page object extends a custom class which itself extends HtmlElement
+    	for(clazz = clazz.getSuperclass(); 
+    	    ((clazz != null) && (clazz != BasePage.class) && (clazz != HtmlElement.class));
+    		clazz = clazz.getSuperclass()) {
+    		Stream.of(clazz.getDeclaredFields()).
+    		        forEach(f->allFields.add(f));
+    	}
+    	        		
+        allFields.stream()
                 .filter(this::validateFieldVisibilityAnnotations)
                 .forEach(field ->
                         invokeWaitFunctionForField(field, pageObject));
