@@ -4,6 +4,7 @@ import com.frameworkium.core.ui.ExtraExpectedConditions;
 import com.frameworkium.core.ui.annotations.*;
 import com.frameworkium.core.ui.driver.WebDriverWrapper;
 import com.frameworkium.core.ui.tests.BaseTest;
+import javassist.Modifier;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.Wait;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
@@ -18,6 +19,7 @@ import java.util.stream.Stream;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
+import static org.testng.Assert.fail;
 import static ru.yandex.qatools.htmlelements.utils.HtmlElementUtils.*;
 
 /**
@@ -60,22 +62,33 @@ public final class Visibility {
     public void waitForAnnotatedElementVisibility(Object pageObject) {
 
         Class <? extends Object> clazz = pageObject.getClass();
+
         // Get the declared fields from the current class
         final List<Field> allFields = new ArrayList<Field>(Arrays.asList(clazz.getDeclaredFields()));
 
-        // Get any declared fields from super classes
-        // i.e. when a page object extends a custom class which itself extends HtmlElement
-        for(clazz = clazz.getSuperclass(); 
-            ((clazz != null) && (clazz != BasePage.class) && (clazz != HtmlElement.class));
-            clazz = clazz.getSuperclass()) {
-            Stream.of(clazz.getDeclaredFields()).
-                    forEach(f->allFields.add(f));
-        }
+        // Get the declared fields from the super class
+        final List<Field> superClassFields = getDeclaredFieldsFromSuperClasses(clazz);
 
-        allFields.stream()
+        Stream.concat(allFields.stream(),superClassFields.stream())
                 .filter(this::validateFieldVisibilityAnnotations)
                 .forEach(field ->
                         invokeWaitFunctionForField(field, pageObject));
+    }
+
+    private List<Field> getDeclaredFieldsFromSuperClasses(Class <? extends Object> clazz) {
+        final List<Field> fields = new ArrayList<Field>();
+
+        // Get any declared fields from super classes
+        // i.e. when a page object extends a custom class which itself extends HtmlElement
+        for(clazz = clazz.getSuperclass();
+            ((clazz != null) && (clazz != BasePage.class) && (clazz != HtmlElement.class));
+            clazz = clazz.getSuperclass()) {
+            Stream.of(clazz.getDeclaredFields())
+                     // Filter out static fields
+                    .filter(m->!Modifier.isStatic(m.getModifiers()))
+                    .forEach(f->fields.add(f));
+        }
+        return fields;
     }
 
     private boolean validateFieldVisibilityAnnotations(Field field) {
