@@ -62,7 +62,9 @@ public abstract class AbstractDriver implements Driver {
         if (ScreenshotCapture.isRequired()) {
             eventFiringWD.register(new CaptureListener());
         }
-        eventFiringWD.manage().timeouts().setScriptTimeout(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        if (!Driver.isNative()) {
+            eventFiringWD.manage().timeouts().setScriptTimeout(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        }
         return eventFiringWD;
     }
 
