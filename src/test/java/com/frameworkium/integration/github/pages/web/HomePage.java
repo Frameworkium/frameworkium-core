@@ -15,13 +15,11 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElem
 public class HomePage extends BasePage<HomePage> {
 
     @Visible
-    @Name("Header")
     private HeaderComponent header;
 
     @Visible
-    @Name("Marketing Sign-Up Banner")
-    @FindBy(css = ".jumbotron-home h1")
-    private WebElement homepageHeroIntro;
+    @FindBy(css = "form[class*='signup'] button")
+    private WebElement signUpButton;
 
     @Step("Navigate to the Github homepage")
     public static HomePage open() {

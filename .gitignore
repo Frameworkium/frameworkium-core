@@ -1,11 +1,7 @@
 # Compiled source #
 ###################
-*.com
 *.class
-*.dll
 *.exe
-*.o
-*.so
 
 # Packages #
 ############
@@ -23,8 +19,6 @@
 # Logs and databases #
 ######################
 *.log
-*.sql
-*.sqlite
 
 # OS generated files #
 ######################
@@ -33,24 +27,24 @@ ehthumbs.db
 Icon?
 Thumbs.db
 
-# IntelliJ #
-############
-*.iml
-*.ipr
-*.iws
-.idea
-
 # Maven #
 #########
 target/
 
 # IDEs #
 ########
+# IntelliJ #
+*.iml
+*.ipr
+*.iws
+.idea
+# Eclipse #
 .classpath
 .metadata/
 .project
 .settings
 .checkstyle
+# NetBeans #
 nbactions.xml
 
 # Other things #
@@ -58,7 +52,5 @@ nbactions.xml
 ajcore.*.txt
 test-output/
 logs/
-null/
 screenshots/
 capturedVideo/
-src/test/java/com/tfl/tests/web/PageCheckerTest.java

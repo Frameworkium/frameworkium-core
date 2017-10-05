@@ -14,9 +14,8 @@ public class ExplorePage extends BasePage<ExplorePage> {
     private HeaderComponent header;
 
     @Visible
-    @Name("Explore Content")
-    @FindBy(css = "div.explore-marketing-header")
-    private WebElement marketingBanner;
+    @FindBy(css = "#explore-featured")
+    private WebElement featuredDiv;
 
     public HeaderComponent theHeader() {
         return header;
