@@ -59,19 +59,19 @@ public final class Visibility {
      */
     public void waitForAnnotatedElementVisibility(Object pageObject) {
 
-    	Class <? extends Object> clazz = pageObject.getClass();
-    	// Get the declared fields from the current class
-    	final List<Field> allFields = new ArrayList<Field>(Arrays.asList(clazz.getDeclaredFields()));
-    	
-    	// Get any declared fields from super classes
-    	// i.e. when a page object extends a custom class which itself extends HtmlElement
-    	for(clazz = clazz.getSuperclass(); 
-    	    ((clazz != null) && (clazz != BasePage.class) && (clazz != HtmlElement.class));
-    		clazz = clazz.getSuperclass()) {
-    		Stream.of(clazz.getDeclaredFields()).
-    		        forEach(f->allFields.add(f));
-    	}
-    	        		
+        Class <? extends Object> clazz = pageObject.getClass();
+        // Get the declared fields from the current class
+        final List<Field> allFields = new ArrayList<Field>(Arrays.asList(clazz.getDeclaredFields()));
+
+        // Get any declared fields from super classes
+        // i.e. when a page object extends a custom class which itself extends HtmlElement
+        for(clazz = clazz.getSuperclass(); 
+            ((clazz != null) && (clazz != BasePage.class) && (clazz != HtmlElement.class));
+            clazz = clazz.getSuperclass()) {
+            Stream.of(clazz.getDeclaredFields()).
+                    forEach(f->allFields.add(f));
+        }
+
         allFields.stream()
                 .filter(this::validateFieldVisibilityAnnotations)
                 .forEach(field ->
