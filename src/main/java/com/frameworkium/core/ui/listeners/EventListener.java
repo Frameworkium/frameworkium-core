@@ -112,21 +112,21 @@ public class EventListener implements WebDriverEventListener {
     
     @Override
     public void beforeAlertAccept(WebDriver webDriver) {
-    	logger.debug("before alert accept");
+        logger.debug("before alert accept");
     }
     
     @Override
     public void afterAlertAccept(WebDriver webDriver) {
-    	logger.debug("after alert accept");
+        logger.debug("after alert accept");
     }
     
     @Override
     public void beforeAlertDismiss(WebDriver webDriver) {
-    	logger.debug("before alert dismiss");
+        logger.debug("before alert dismiss");
     }
     
     @Override
     public void afterAlertDismiss(WebDriver webDriver) {
-    	logger.debug("after alert accept");
+        logger.debug("after alert accept");
     }  
 }
