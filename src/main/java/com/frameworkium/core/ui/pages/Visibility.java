@@ -61,10 +61,10 @@ public final class Visibility {
      */
     public void waitForAnnotatedElementVisibility(Object pageObject) {
 
-        Class <? extends Object> clazz = pageObject.getClass();
+        Class <?> clazz = pageObject.getClass();
 
         // Get the declared fields from the current class
-        final List<Field> allFields = new ArrayList<Field>(Arrays.asList(clazz.getDeclaredFields()));
+        final List<Field> allFields = new ArrayList<>(Arrays.asList(clazz.getDeclaredFields()));
 
         // Get the declared fields from the super class
         final List<Field> superClassFields = getDeclaredFieldsFromSuperClasses(clazz);
@@ -75,15 +75,15 @@ public final class Visibility {
                         invokeWaitFunctionForField(field, pageObject));
     }
 
-    private List<Field> getDeclaredFieldsFromSuperClasses(Class <? extends Object> clazz) {
-        final List<Field> fields = new ArrayList<Field>();
+    private List<Field> getDeclaredFieldsFromSuperClasses(Class <?> clazz) {
+        final List<Field> fields = new ArrayList<>();
 
         // Get any declared fields from super classes
         // i.e. when a page object extends a custom class which itself extends HtmlElement
-        for(clazz = clazz.getSuperclass();
-            ((clazz != null) && (clazz != BasePage.class) && (clazz != HtmlElement.class));
-            clazz = clazz.getSuperclass()) {
-            Stream.of(clazz.getDeclaredFields())
+        for(Class<?> c = clazz.getSuperclass();
+            ((c != null) && (c != BasePage.class) && (c != HtmlElement.class));
+            c = c.getSuperclass()) {
+            Stream.of(c.getDeclaredFields())
                      // Filter out static fields
                     .filter(m->!Modifier.isStatic(m.getModifiers()))
                     .forEach(f->fields.add(f));
