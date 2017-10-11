@@ -19,13 +19,12 @@ public class CreateScreenshot {
             String executionID, Command command, String url,
             String errorMessage, String screenshotBase64) {
 
-        logger.debug(String.format(
-                "Creating screenshot: executionID='%s', "
-                        + "Command.action='%s', url='%s', "
-                        + "errorMessage='%s', screenshotBase64.length=%d",
+        logger.debug("Creating screenshot: executionID='{}', "
+                        + "Command.action='{}', url='{}', "
+                        + "errorMessage='{}', screenshotBase64.length={}",
                 executionID,
                 command.action, url,
-                errorMessage, screenshotBase64.length()));
+                errorMessage, screenshotBase64.length());
         this.executionID = executionID;
         this.command = command;
         this.url = url;
