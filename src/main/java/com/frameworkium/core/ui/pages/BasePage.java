@@ -4,6 +4,7 @@ import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.capture.model.Command;
+import com.frameworkium.core.ui.driver.Driver;
 import com.frameworkium.core.ui.js.JavascriptWait;
 import com.frameworkium.core.ui.tests.BaseTest;
 import org.apache.logging.log4j.LogManager;
@@ -11,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.Wait;
+
 import ru.yandex.qatools.htmlelements.loader.HtmlElementLoader;
 
 public abstract class BasePage<T extends BasePage<T>> {
@@ -106,7 +108,9 @@ public abstract class BasePage<T extends BasePage<T>> {
 
         //Wait for Elements & JS
         visibility.waitForAnnotatedElementVisibility(this);
-        javascriptWait.waitForJavascriptEventsOnLoad();
+        if (!Driver.isNative()) {
+            javascriptWait.waitForJavascriptEventsOnLoad();
+        }
 
         //Log
         takePageLoadedScreenshotAndSendToCapture();
