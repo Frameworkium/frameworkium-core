@@ -14,8 +14,7 @@ public class ExplorePage extends BasePage<ExplorePage> {
     private HeaderComponent header;
 
     @Visible
-    @FindBy(css = "#explore-featured")
-    private WebElement featuredDiv;
+    private WebElement trending;
 
     public HeaderComponent theHeader() {
         return header;
