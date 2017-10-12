@@ -5,7 +5,7 @@
 
   <groupId>com.github.frameworkium</groupId>
   <artifactId>frameworkium-core</artifactId>
-  <version>2.4.3-SNAPSHOT</version>
+  <version>2.4.3</version>
   <name>frameworkium-core</name>
   <description>
     Frameworkium core code.
