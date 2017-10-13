@@ -235,9 +235,9 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      */
     public static Wait<WebDriver> newWaitWithTimeout(long timeout) {
         return new FluentWait<>(getDriver().getWrappedDriver())
-            .withTimeout(timeout, SECONDS)
-            .ignoring(NoSuchElementException.class)
-            .ignoring(StaleElementReferenceException.class);
+                .withTimeout(timeout, SECONDS)
+                .ignoring(NoSuchElementException.class)
+                .ignoring(StaleElementReferenceException.class);
     }
 
     /**

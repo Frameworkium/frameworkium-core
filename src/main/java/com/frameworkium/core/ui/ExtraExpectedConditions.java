@@ -38,12 +38,12 @@ public class ExtraExpectedConditions {
     public static ExpectedCondition<Boolean> notPresentOrInvisible(final WebElement element) {
 
         return expectedCondition(driver -> {
-            try {
-                return !element.isDisplayed();
-            } catch (NoSuchElementException e) {
-                return true;
-            }
-        },
+                    try {
+                        return !element.isDisplayed();
+                    } catch (NoSuchElementException e) {
+                        return true;
+                    }
+                },
                 String.format("element '%s' to not be present or be invisible", element));
     }
 
@@ -82,8 +82,8 @@ public class ExtraExpectedConditions {
             List<? extends WebElement> list, int expectedSize) {
 
         return expectedCondition(
-            driver -> list.size() > expectedSize ? list : null,
-            "list size of " + list.size() + " to be greater than " + expectedSize);
+                driver -> list.size() > expectedSize ? list : null,
+                "list size of " + list.size() + " to be greater than " + expectedSize);
     }
 
     /**
@@ -97,8 +97,8 @@ public class ExtraExpectedConditions {
             List<? extends WebElement> list, int expectedSize) {
 
         return expectedCondition(
-            driver -> list.size() < expectedSize ? list : null,
-            "list size of " + list.size() + " to be less than " + expectedSize);
+                driver -> list.size() < expectedSize ? list : null,
+                "list size of " + list.size() + " to be less than " + expectedSize);
     }
 
     /**
@@ -130,8 +130,8 @@ public class ExtraExpectedConditions {
     private static ExpectedCondition<Boolean> javascriptExpectedCondition(
             String query, String message) {
         return expectedCondition(
-            driver -> (Boolean) ((JavascriptExecutor) driver).executeScript(query),
-            message);
+                driver -> (Boolean) ((JavascriptExecutor) driver).executeScript(query),
+                message);
     }
 
     private static <T> ExpectedCondition<T> expectedCondition(

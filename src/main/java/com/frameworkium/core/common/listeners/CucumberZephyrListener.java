@@ -155,8 +155,14 @@ public class CucumberZephyrListener implements Formatter, Reporter {
 
     private Stream<String> retrieveTagStream(List<Tag> tags, String tagName) {
         final String tagSearch = "@" + tagName + "(";
-        return tags.stream().map(Tag::getName).filter(name -> name.startsWith(tagSearch))
-                        .map(name -> name.replace(tagSearch, "").replace(")", "").trim().replaceAll("^\"|\"$", ""));
+        return tags.stream()
+                .map(Tag::getName)
+                .filter(name -> name.startsWith(tagSearch))
+                .map(name -> name
+                        .replace(tagSearch, "")
+                        .replace(")", "")
+                        .trim()
+                        .replaceAll("^\"|\"$", ""));
     }
 
     private String retrieveTagValue(List<Tag> tags, String tagName) {

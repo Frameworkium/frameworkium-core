@@ -61,9 +61,9 @@ public class SpiraExecution {
 
         // TODO: use RestAssured
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost request = new HttpPost(SPIRA_URI + "/test-runs/record?"
-                        + "username=" + SpiraConfig.USERNAME + "&"
-                        + "api-key=" + SpiraConfig.API_KEY.replace("{", "%7B").replace("}", "%7D"));
+        HttpPost request = new HttpPost(SPIRA_URI + "/test-runs/record?" +
+                "username=" + SpiraConfig.USERNAME + "&" +
+                "api-key=" + SpiraConfig.API_KEY.replace("{", "%7B").replace("}", "%7D"));
         StringEntity jsonBody;
         try {
             jsonBody = new StringEntity(json);

@@ -15,7 +15,6 @@ import net.sf.uadetector.service.UADetectorServiceFactory;
 
 import java.util.Optional;
 
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Browser {
 

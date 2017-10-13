@@ -87,8 +87,9 @@ public class MethodInterceptor implements IMethodInterceptor {
             List<IMethodInstance> methodsWithTestIDs,
             List<IMethodInstance> methodsPostFiltering) {
 
-        logger.debug("Running the following test methods:\n{}",
-            () -> methodsPostFiltering.stream().map(m -> getMethodFromIMethod(m).getName())
+        logger.debug("Running the following test methods:\n{}", () ->
+                methodsPostFiltering.stream()
+                        .map(m -> getMethodFromIMethod(m).getName())
                         .collect(joining("\n")));
 
         List<String> methodsWithoutTestIds = methodsPreFiltering.stream()
@@ -98,7 +99,7 @@ public class MethodInterceptor implements IMethodInterceptor {
 
         if (methodsWithoutTestIds.size() > 0) {
             logger.warn("The following tests don't have TestIDs {}",
-                () -> methodsWithoutTestIds.stream().collect(joining(", ")));
+                    () -> methodsWithoutTestIds.stream().collect(joining(", ")));
         }
 
         logger.info("Running {} tests specified by JQL query", methodsPostFiltering.size());
