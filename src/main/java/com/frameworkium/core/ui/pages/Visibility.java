@@ -145,10 +145,10 @@ public final class Visibility {
 
         Object objectFromField = getObjectFromField(pageObject, field);
         applyToWebElements(
-                field,
-                objectFromField,
-                we -> wait.until(visibilityOf(we)),
-                list -> wait.until(visibilityOfAllElements(list)));
+            field,
+            objectFromField,
+            we -> wait.until(visibilityOf(we)),
+            list -> wait.until(visibilityOfAllElements(list)));
 
         // recurse inside HtmlElements
         if (isHtmlElementList(field)) {
@@ -163,10 +163,10 @@ public final class Visibility {
     private void waitForFieldToBeInvisible(Object pageObject, Field field) {
 
         applyToWebElements(
-                field,
-                getObjectFromField(pageObject, field),
-                we -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(we)),
-                list -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(list)));
+            field,
+            getObjectFromField(pageObject, field),
+            we -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(we)),
+            list -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(list)));
     }
 
     /**
@@ -176,10 +176,10 @@ public final class Visibility {
     private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field) {
 
         applyToWebElements(
-                field,
-                getObjectFromField(pageObject, field),
-                this::forceVisible,
-                list -> list.forEach(this::forceVisible));
+            field,
+            getObjectFromField(pageObject, field),
+            this::forceVisible,
+            list -> list.forEach(this::forceVisible));
 
         waitForFieldToBeVisible(pageObject, field);
     }
