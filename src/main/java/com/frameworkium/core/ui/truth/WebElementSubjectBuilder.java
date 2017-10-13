@@ -7,7 +7,8 @@ import org.openqa.selenium.WebElement;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public final class WebElementSubjectBuilder extends CustomSubjectBuilder {
+public class WebElementSubjectBuilder extends CustomSubjectBuilder {
+
     private WebElementSubjectBuilder(FailureMetadata metadata) {
         super(metadata);
     }

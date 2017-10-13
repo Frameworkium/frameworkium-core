@@ -9,7 +9,8 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertAbout;
 import static com.google.common.truth.Truth.assert_;
 
-public final class WebElementTruth {
+public class WebElementTruth {
+
     private static CustomSubjectBuilder.Factory<WebElementSubjectBuilder> elements() {
         return WebElementSubjectBuilder.elements();
     }

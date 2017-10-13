@@ -1,14 +1,11 @@
 package com.frameworkium.core.ui.truth;
 
-
-import com.google.common.truth.FailureMetadata;
-import com.google.common.truth.StringSubject;
-import com.google.common.truth.Subject;
+import com.google.common.truth.*;
 import org.openqa.selenium.WebElement;
 
 import javax.annotation.Nullable;
 
-public final class WebElementSubject extends Subject<WebElementSubject, WebElement> {
+public class WebElementSubject extends Subject<WebElementSubject, WebElement> {
 
     WebElementSubject(FailureMetadata metadata, @Nullable WebElement actual) {
         super(metadata, actual);
