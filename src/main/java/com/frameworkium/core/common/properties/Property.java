@@ -40,7 +40,8 @@ public enum Property {
     CHROME_USER_DATA_DIR("chromeUserDataDir"),
     CUSTOM_BROWSER_IMPL("customBrowserImpl"),
     REUSE_BROWSER("reuseBrowser"),
-    THREADS("threads");
+    THREADS("threads"),
+    HEADLESS("headless");
 
     private static Map configMap = null;
     private String value;

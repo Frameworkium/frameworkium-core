@@ -36,6 +36,8 @@ public class ChromeImpl extends AbstractDriver {
                     "user-data-dir=" + Property.CHROME_USER_DATA_DIR.getValue());
         }
 
+        chromeOptions.setHeadless(isHeadlessRun());
+
         return chromeOptions;
     }
 
