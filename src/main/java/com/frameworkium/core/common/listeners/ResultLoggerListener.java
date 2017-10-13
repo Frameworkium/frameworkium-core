@@ -1,5 +1,9 @@
 package com.frameworkium.core.common.listeners;
 
+import static com.frameworkium.core.common.properties.Property.CAPTURE_URL;
+import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.time.DateUtils.MILLIS_PER_SECOND;
+
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.TestIdUtils;
 import com.frameworkium.core.common.reporting.jira.JiraConfig;
@@ -11,13 +15,11 @@ import com.frameworkium.core.ui.tests.BaseTest;
 import com.google.common.base.Throwables;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.testng.*;
+import org.testng.ITestContext;
+import org.testng.ITestListener;
+import org.testng.ITestResult;
 
 import java.lang.reflect.Method;
-
-import static com.frameworkium.core.common.properties.Property.CAPTURE_URL;
-import static java.util.Objects.isNull;
-import static org.apache.commons.lang3.time.DateUtils.MILLIS_PER_SECOND;
 
 public class ResultLoggerListener implements ITestListener {
 
@@ -236,12 +238,13 @@ public class ResultLoggerListener implements ITestListener {
     }
 
     /**
-     * @return the value of either the @Issue or @TestCaseId annotation for the
-     * provided test result.
+     * This method gets the value of either the @Issue or @TestCaseId annotation for the provided test result.
      * If both are specified but if their values are not equal an
-     * {@link IllegalStateException} will be thrown, otherwise, their value will
-     * be returned.
-     * If neither are specified then the empty string will be returned.
+     * {@link java.lang.IllegalStateException} will be thrown, otherwise, their value will
+     * be returned. If neither are specified then the empty string will be returned.
+     *
+     * @param result The test result
+     * @return the value of either the @Issue or @TestCaseId annotation for the provided test result.
      */
     private String getIssueOrTestCaseIdAnnotation(ITestResult result) {
         Method method = result.getMethod().getConstructorOrMethod().getMethod();

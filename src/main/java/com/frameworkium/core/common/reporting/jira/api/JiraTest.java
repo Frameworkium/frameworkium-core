@@ -1,19 +1,26 @@
 package com.frameworkium.core.common.reporting.jira.api;
 
+import static com.frameworkium.core.common.reporting.jira.JiraConfig.JIRA_REST_PATH;
+
 import com.frameworkium.core.common.reporting.jira.JiraConfig;
 import io.restassured.path.json.JsonPath;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.*;
-
-import static com.frameworkium.core.common.reporting.jira.JiraConfig.JIRA_REST_PATH;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class JiraTest {
 
     private static final Logger logger = LogManager.getLogger();
 
-    public static void changeIssueFieldValue(
-            String issueKey, String fieldToUpdate, String resultValue) {
+    /**
+     * Create and send a PUT request to JIRA to change the value of a field.
+     * @param issueKey
+     * @param fieldToUpdate
+     * @param resultValue
+     */
+    public static void changeIssueFieldValue(String issueKey, String fieldToUpdate, String resultValue) {
 
         JSONObject obj = new JSONObject();
         JSONObject fieldObj = new JSONObject();
@@ -49,6 +56,11 @@ public class JiraTest {
         return jsonPath.getString(String.format("find {it.name == '%s'}.id", fieldName));
     }
 
+    /**
+     * Create and post a JSON request for a comment update in JIRA.
+     * @param issueKey
+     * @param commentToAdd
+     */
     public static void addComment(String issueKey, String commentToAdd) {
 
         JSONObject obj = new JSONObject();
@@ -66,6 +78,11 @@ public class JiraTest {
                 .post(JIRA_REST_PATH + "/issue/" + issueKey + "/comment");
     }
 
+    /**
+     * Create and post a JSON request for a transition change in JIRA.
+     * @param issueKey
+     * @param transitionName
+     */
     public static void transitionIssue(String issueKey, String transitionName) {
 
         logger.debug("Transition name: " + transitionName);

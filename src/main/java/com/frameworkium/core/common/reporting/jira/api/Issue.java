@@ -11,13 +11,20 @@ import java.util.List;
 
 public class Issue {
 
-    private final static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
     private final String issueKey; // Jira Key e.g. KT-123
 
     public Issue(String issue) {
         this.issueKey = issue;
     }
 
+    /**
+     * Create and post a JSON request to JIRA to get issues.
+     *
+     * @param type
+     * @param inwardIssue
+     * @param outwardIssue
+     */
     public void linkIssues(String type, String inwardIssue, String outwardIssue) {
         JSONObject obj = new JSONObject();
         JSONObject typeObj = new JSONObject();
@@ -42,6 +49,11 @@ public class Issue {
                 .post(JiraConfig.JIRA_REST_PATH + "issueLink");
     }
 
+    /**
+     * Get the attachment ids.
+     *
+     * @return
+     */
     public List<String> getAttachmentIds() {
 
         return JiraConfig.getJIRARequestSpec()
@@ -51,6 +63,11 @@ public class Issue {
                 .getList("fields.attachment.id");
     }
 
+    /**
+     * Add a new file attachment to the JIRA issue.
+     *
+     * @param attachment
+     */
     public void addAttachment(File attachment) {
         String url = String.format("issue/%s/attachments", issueKey);
 

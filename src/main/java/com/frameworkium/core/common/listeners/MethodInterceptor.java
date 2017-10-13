@@ -1,19 +1,21 @@
 package com.frameworkium.core.common.listeners;
 
+import static com.frameworkium.core.common.properties.Property.JIRA_URL;
+import static com.frameworkium.core.common.properties.Property.JQL_QUERY;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
 import com.frameworkium.core.common.reporting.TestIdUtils;
 import com.frameworkium.core.common.reporting.jira.api.SearchIssues;
 import com.frameworkium.core.ui.driver.Driver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.testng.*;
+import org.testng.IMethodInstance;
+import org.testng.IMethodInterceptor;
+import org.testng.ITestContext;
 
 import java.lang.reflect.Method;
 import java.util.List;
-
-import static com.frameworkium.core.common.properties.Property.JIRA_URL;
-import static com.frameworkium.core.common.properties.Property.JQL_QUERY;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 
 public class MethodInterceptor implements IMethodInterceptor {
 
@@ -48,8 +50,7 @@ public class MethodInterceptor implements IMethodInterceptor {
 
             List<IMethodInstance> methodsToRun = methodsWithTestIDs.stream()
                     .filter(m -> testIDsFromJQL
-                            .contains(TestIdUtils.getIssueOrTestCaseIdValue(m)
-                                    .orElseThrow(IllegalStateException::new)))
+                        .contains(TestIdUtils.getIssueOrTestCaseIdValue(m).orElseThrow(IllegalStateException::new)))
                     .collect(toList());
 
             logTestMethodInformation(
@@ -72,12 +73,9 @@ public class MethodInterceptor implements IMethodInterceptor {
 
                     boolean appTest = clazz.endsWith("AppTest");
                     boolean mobiTest = clazz.endsWith("MobiTest");
-                    boolean nonMobileNotAppMobiTest =
-                            !Driver.isMobile() && !appTest && !mobiTest;
-                    boolean nativeAppTest =
-                            Driver.isNative() && appTest;
-                    boolean nonNativeMobiTest =
-                            !Driver.isNative() && mobiTest;
+                    boolean nonMobileNotAppMobiTest = !Driver.isMobile() && !appTest && !mobiTest;
+                    boolean nativeAppTest = Driver.isNative() && appTest;
+                    boolean nonNativeMobiTest = !Driver.isNative() && mobiTest;
 
                     return nonMobileNotAppMobiTest || nativeAppTest || nonNativeMobiTest;
                 })
@@ -89,9 +87,8 @@ public class MethodInterceptor implements IMethodInterceptor {
             List<IMethodInstance> methodsWithTestIDs,
             List<IMethodInstance> methodsPostFiltering) {
 
-        logger.debug("Running the following test methods:\n{}", () ->
-                methodsPostFiltering.stream()
-                        .map(m -> getMethodFromIMethod(m).getName())
+        logger.debug("Running the following test methods:\n{}",
+            () -> methodsPostFiltering.stream().map(m -> getMethodFromIMethod(m).getName())
                         .collect(joining("\n")));
 
         List<String> methodsWithoutTestIds = methodsPreFiltering.stream()
@@ -101,7 +98,7 @@ public class MethodInterceptor implements IMethodInterceptor {
 
         if (methodsWithoutTestIds.size() > 0) {
             logger.warn("The following tests don't have TestIDs {}",
-                    () -> methodsWithoutTestIds.stream().collect(joining(", ")));
+                () -> methodsWithoutTestIds.stream().collect(joining(", ")));
         }
 
         logger.info("Running {} tests specified by JQL query", methodsPostFiltering.size());

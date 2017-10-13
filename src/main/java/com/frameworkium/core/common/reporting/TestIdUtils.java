@@ -1,5 +1,7 @@
 package com.frameworkium.core.common.reporting;
 
+import static java.util.Objects.isNull;
+
 import org.testng.IMethodInstance;
 import ru.yandex.qatools.allure.annotations.Issue;
 import ru.yandex.qatools.allure.annotations.TestCaseId;
@@ -7,11 +9,11 @@ import ru.yandex.qatools.allure.annotations.TestCaseId;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-import static java.util.Objects.isNull;
-
 public class TestIdUtils {
 
     /**
+     * Get issue or test case ID.
+     *
      * @param iMethod the {@link IMethodInstance} to check for test ID annotations.
      * @return Optional of either the {@link TestCaseId} or {@link Issue} value.
      * @throws IllegalStateException if {@link TestCaseId} and {@link Issue}
@@ -23,6 +25,8 @@ public class TestIdUtils {
     }
 
     /**
+     * Get issue or test case ID for a method.
+     *
      * @param method the method to check for test ID annotations.
      * @return Optional of the {@link TestCaseId} or {@link Issue} value.
      * @throws IllegalStateException if {@link TestCaseId} and {@link Issue}

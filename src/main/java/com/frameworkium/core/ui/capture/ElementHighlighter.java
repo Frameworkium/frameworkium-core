@@ -1,6 +1,9 @@
 package com.frameworkium.core.ui.capture;
 
-import org.openqa.selenium.*;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 public class ElementHighlighter {
 
@@ -11,17 +14,24 @@ public class ElementHighlighter {
         js = (JavascriptExecutor) driver;
     }
 
-    public void highlightElement(WebElement elem) {
+    /**
+     * Highlight a WebElement.
+     * @param webElement to highlight
+     */
+    public void highlightElement(WebElement webElement) {
 
-        previousElem = elem; // remember the new element
+        previousElem = webElement; // remember the new element
         try {
             // TODO: save the previous border
-            js.executeScript("arguments[0].style.border='3px solid red'", elem);
+            js.executeScript("arguments[0].style.border='3px solid red'", webElement);
         } catch (StaleElementReferenceException ignored) {
             // something went wrong, but no need to crash for highlighting
         }
     }
 
+    /**
+     * Unhighlight the previously highlighted WebElement.
+     */
     public void unhighlightPrevious() {
 
         try {

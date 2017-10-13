@@ -1,5 +1,7 @@
 package com.frameworkium.core.ui.driver.drivers;
 
+import static java.util.Collections.singletonList;
+
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.driver.AbstractDriver;
 import com.google.common.collect.ImmutableMap;
@@ -9,8 +11,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.Map;
-
-import static java.util.Collections.singletonList;
 
 public class ChromeImpl extends AbstractDriver {
 

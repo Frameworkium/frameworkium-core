@@ -1,5 +1,7 @@
 package com.frameworkium.core.ui.capture;
 
+import static com.frameworkium.core.common.properties.Property.VIDEO_CAPTURE_URL;
+
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
@@ -19,7 +21,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-import static com.frameworkium.core.common.properties.Property.VIDEO_CAPTURE_URL;
 
 public class VideoCapture {
 
@@ -36,6 +37,10 @@ public class VideoCapture {
         testMap.put(iTestResult.getName(), sessionId);
     }
 
+    /**
+     * Save Video.
+     * @param iTestResult
+     */
     public static void saveVideo(ITestResult iTestResult) {
         String sessionId = testMap.get(iTestResult.getName());
         URL videoCaptureURL = getVideoCaptureURL(sessionId);
@@ -43,16 +48,21 @@ public class VideoCapture {
         try {
             rawVideo = getVideo(videoCaptureURL);
         } catch (InterruptedException | TimeoutException e) {
-            logger.error(String.format("Timed out waiting for Session ID %s to become available after 6 seconds.", sessionId));
+            logger.error(String.format("Timed out waiting for Session ID %s to become available "
+                + "after 6 seconds.", sessionId));
             return;
         } catch (ConnectException e) {
-            logger.error(String.format("Connection was refused for Session ID %s while trying to retrieve the video.", sessionId));
+            logger.error(String.format("Connection was refused for Session ID %s while "
+                +
+                "trying to retrieve the video.", sessionId));
             return;
         }
 
         Path path = Paths.get(videoFolder);
         try {
-            if (!Files.exists(path)) Files.createDirectory(path);
+            if (!Files.exists(path)) {
+                Files.createDirectory(path);
+            }
             String fileName = String.format(
                     "%s/%s-%s.%s",
                     videoFolder,
@@ -62,8 +72,7 @@ public class VideoCapture {
             );
             Files.write(Paths.get(fileName), rawVideo);
             logger.info(String.format("Captured video from grid: %s", fileName));
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Failed creating directory/file for video capture", e);
         }
     }
@@ -78,12 +87,15 @@ public class VideoCapture {
     }
 
     @Attachment(value = "Video on Failure", type = "video/mp4")
-    private static byte[] getVideo(URL videoCaptureURL) throws TimeoutException, InterruptedException, ConnectException {
+    private static byte[] getVideo(URL videoCaptureURL) throws TimeoutException,
+        InterruptedException, ConnectException {
         int i = 0;
         while (i++ < 4) {
             logger.debug("Download URL for Video Capture: " + videoCaptureURL);
             Response response = RestAssured.get(videoCaptureURL);
-            if (response.getStatusCode() == HttpStatus.SC_OK) return response.asByteArray();
+            if (response.getStatusCode() == HttpStatus.SC_OK) {
+                return response.asByteArray();
+            }
             TimeUnit.SECONDS.sleep(2);
         }
         throw new TimeoutException();

@@ -1,6 +1,10 @@
 package com.frameworkium.core.ui;
 
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
@@ -12,8 +16,8 @@ import java.util.stream.Collectors;
 
 /**
  * Frameworkium extension of {@link ExpectedConditions}.
- * <p>
- * The main motivation is to provide useful {@link ExpectedCondition}'s for our
+ *
+ * <p>The main motivation is to provide useful {@link ExpectedCondition}'s for our
  * lazy proxied {@link WebElement}, {@link TypifiedElement} and {@link HtmlElement}'s.
  * Hence the methods here generally accept <code>? extends WebElement</code>
  * rather than {@link By} because we typically use <code>@FindBy</code> annotations.
@@ -29,18 +33,17 @@ public class ExtraExpectedConditions {
      *
      * @param element the element to wait for
      * @return an {@link ExpectedCondition} which returns <strong>false</strong>
-     * iff the element is visible, otherwise <strong>true</strong>.
+     *      if the element is visible, otherwise <strong>true</strong>.
      */
-    public static ExpectedCondition<Boolean> notPresentOrInvisible(
-            final WebElement element) {
+    public static ExpectedCondition<Boolean> notPresentOrInvisible(final WebElement element) {
 
         return expectedCondition(driver -> {
-                    try {
-                        return !element.isDisplayed();
-                    } catch (NoSuchElementException e) {
-                        return true;
-                    }
-                },
+            try {
+                return !element.isDisplayed();
+            } catch (NoSuchElementException e) {
+                return true;
+            }
+        },
                 String.format("element '%s' to not be present or be invisible", element));
     }
 
@@ -50,7 +53,7 @@ public class ExtraExpectedConditions {
      *
      * @param elements the lazy proxy for <code>List&lt;WebElement&gt;</code> to wait for
      * @return an {@link ExpectedCondition} which returns the <strong>list</strong>
-     * iff any element is visible, otherwise <strong>null</strong>.
+     *      iff any element is visible, otherwise <strong>null</strong>.
      * @see ExtraExpectedConditions#notPresentOrInvisible(WebElement)
      */
     public static ExpectedCondition<List<? extends WebElement>> notPresentOrInvisible(
@@ -79,8 +82,8 @@ public class ExtraExpectedConditions {
             List<? extends WebElement> list, int expectedSize) {
 
         return expectedCondition(
-                driver -> list.size() > expectedSize ? list : null,
-                "list size of " + list.size() + " to be greater than " + expectedSize);
+            driver -> list.size() > expectedSize ? list : null,
+            "list size of " + list.size() + " to be greater than " + expectedSize);
     }
 
     /**
@@ -94,11 +97,13 @@ public class ExtraExpectedConditions {
             List<? extends WebElement> list, int expectedSize) {
 
         return expectedCondition(
-                driver -> list.size() < expectedSize ? list : null,
-                "list size of " + list.size() + " to be less than " + expectedSize);
+            driver -> list.size() < expectedSize ? list : null,
+            "list size of " + list.size() + " to be less than " + expectedSize);
     }
 
     /**
+     * Wait until a jQuery is done.
+     *
      * @return true iff jQuery is available and 0 ajax queries are active.
      */
     public static ExpectedCondition<Boolean> jQueryAjaxDone() {
@@ -113,7 +118,7 @@ public class ExtraExpectedConditions {
      * Useful for javascript loading on page-load.
      *
      * @return a {@link ExpectedCondition} which returns <strong>false</strong> if the document
-     * isn't ready, and <string>true</string> if the document is ready
+     *          isn't ready, and <string>true</string> if the document is ready
      */
     public static ExpectedCondition<Boolean> documentBodyReady() {
 
@@ -125,8 +130,8 @@ public class ExtraExpectedConditions {
     private static ExpectedCondition<Boolean> javascriptExpectedCondition(
             String query, String message) {
         return expectedCondition(
-                driver -> (Boolean) ((JavascriptExecutor) driver).executeScript(query),
-                message);
+            driver -> (Boolean) ((JavascriptExecutor) driver).executeScript(query),
+            message);
     }
 
     private static <T> ExpectedCondition<T> expectedCondition(

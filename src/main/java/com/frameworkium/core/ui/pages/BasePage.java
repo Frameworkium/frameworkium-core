@@ -19,11 +19,15 @@ public abstract class BasePage<T extends BasePage<T>> {
     protected final Logger logger = LogManager.getLogger(this);
     protected final WebDriver driver;
     protected Wait<WebDriver> wait;
-    /** Visibility with current page wait and driver */
+    /**
+     * Visibility with current page wait and driver.
+     */
     protected Visibility visibility;
     protected JavascriptWait javascriptWait;
 
-    /** Constructor, initialises all things useful. */
+    /**
+     * Constructor, initialises all things useful.
+     */
     public BasePage() {
         driver = BaseTest.getDriver();
         wait = BaseTest.getWait();
@@ -32,8 +36,9 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
-     * @return the current page object.
-     * Useful for e.g. MyPage.get().then().doSomething();
+     * Get the current page object.
+     *
+     * @return the current page object Useful for e.g. MyPage.get().then().doSomething()
      */
     @SuppressWarnings("unchecked")
     public T then() {
@@ -41,8 +46,9 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
-     * @return the current page object.
-     * Useful for e.g. MyPage.get().then().with().aComponent().clickHome();
+     * Get current page object.
+     *
+     * @return the current page object Useful for e.g. MyPage.get().then().with().aComponent().clickHome();
      */
     @SuppressWarnings("unchecked")
     public T with() {
@@ -50,8 +56,9 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
+     * Get new instance of a PageObject of type T, see {@link BasePage#get()}.
      * @param url the url to open before initialising
-     * @return new instance of a PageObject of type T, see {@link BasePage#get()}
+     * @return PageObject of type T
      * @see BasePage#get()
      */
     public T get(String url) {
@@ -60,6 +67,7 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
+     * Get new instance of a PageObject of type T, see {@link BasePage#get()} updating the timeout.
      * @param url     the url to open before initialising
      * @param timeout the timeout, in seconds, for the new {@link Wait} for this page
      * @return new instance of a PageObject of type T, see {@link BasePage#get()}
@@ -71,6 +79,7 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
+     * Get new instance of a PageObject of type T, see {@link BasePage#get()} updating the timeout.
      * @param timeout the timeout, in seconds, for the new {@link Wait} for this page
      * @return new instance of a PageObject of type T, see {@link BasePage#get()}
      * @see BasePage#get()
@@ -80,24 +89,18 @@ public abstract class BasePage<T extends BasePage<T>> {
         return get();
     }
 
-    private void updatePageTimeout(long timeout) {
-        wait = BaseTest.newWaitWithTimeout(timeout);
-        visibility = new Visibility(wait, BaseTest.getDriver());
-        javascriptWait = new JavascriptWait(driver, wait);
-    }
-
     /**
-     * Initialises the PageObject.
-     * <p>
-     * <ul>
-     * <li>Initialises fields with lazy proxies</li>
-     * <li>Waits for Javascript events including document ready & JS frameworks (if applicable)</li>
-     * <li>Processes Frameworkium visibility annotations e.g. {@link Visible}</li>
-     * <li>Log page load to Allure and Capture</li>
-     * </ul>
-     *
-     * @return the PageObject, of type T, populated with lazy proxies which are
-     * checked for visibility based upon appropriate Frameworkium annotations.
+    * Initialises the PageObject.
+    *
+    * <p><ul>
+    * <li>Initialises fields with lazy proxies</li>
+    * <li>Waits for Javascript events including document ready & JS frameworks (if applicable)</li>
+    * <li>Processes Frameworkium visibility annotations e.g. {@link Visible}</li>
+    * <li>Log page load to Allure and Capture</li>
+    * </ul>
+    *
+    * @return the PageObject, of type T, populated with lazy proxies which are checked
+     *      for visibility based upon appropriate Frameworkium annotations
      */
     @SuppressWarnings("unchecked")
     public T get() {
@@ -118,6 +121,12 @@ public abstract class BasePage<T extends BasePage<T>> {
         return (T) this;
     }
 
+    private void updatePageTimeout(long timeout) {
+        wait = BaseTest.newWaitWithTimeout(timeout);
+        visibility = new Visibility(wait, BaseTest.getDriver());
+        javascriptWait = new JavascriptWait(driver, wait);
+    }
+
     private void logPageLoadToAllure() {
         try {
             AllureLogger.logToAllure("Page '" + getClass().getName() + "' successfully loaded");
@@ -130,8 +139,8 @@ public abstract class BasePage<T extends BasePage<T>> {
         if (Property.CAPTURE_URL.isSpecified()) {
             try {
                 BaseTest.getCapture().takeAndSendScreenshot(
-                        new Command("load", "page", getSimplePageObjectName()),
-                        driver);
+                    new Command("load", "page", getSimplePageObjectName()),
+                    driver);
             } catch (Exception e) {
                 logger.warn("Failed to send loading screenshot to Capture.");
                 logger.debug(e);
@@ -142,18 +151,20 @@ public abstract class BasePage<T extends BasePage<T>> {
     private String getSimplePageObjectName() {
         String packageName = getClass().getPackage().getName();
         return packageName.substring(packageName.lastIndexOf('.') + 1)
-                + "."
-                + getClass().getSimpleName();
+            + "."
+            + getClass().getSimpleName();
     }
 
     /**
-     * Waits for all JS framework requests to finish on page
+     * Waits for all JS framework requests to finish on page.
      */
     protected void waitForJavascriptFrameworkToFinish() {
         javascriptWait.waitForJavascriptFramework();
     }
 
     /**
+     * Execute JavaScript.
+     *
      * @param javascript the Javascript to execute on the current page
      * @return One of Boolean, Long, String, List or WebElement. Or null.
      * @see JavascriptExecutor#executeScript(String, Object...)
@@ -176,8 +187,8 @@ public abstract class BasePage<T extends BasePage<T>> {
      * JavaScript, scripts executed with this method must explicitly signal they
      * are finished by invoking the provided callback. This callback is always
      * injected into the executed function as the last argument.
-     * <p>
-     * If executeAsyncScript throws an Exception it's caught and logged.
+     *
+     * <p>If executeAsyncScript throws an Exception it's caught and logged.
      *
      * @param javascript the JavaScript code to execute
      * @return One of Boolean, Long, String, List, WebElement, or null.
@@ -195,12 +206,18 @@ public abstract class BasePage<T extends BasePage<T>> {
         return returnObj;
     }
 
-    /** @return Returns the title of the web page */
+    /**
+     * Get title of the web page.
+     * @return title
+     */
     public String getTitle() {
         return driver.getTitle();
     }
 
-    /** @return Returns the source code of the current page */
+    /**
+     * Get page source code of the current page.
+     * @return source code
+     */
     public String getSource() {
         return driver.getPageSource();
     }

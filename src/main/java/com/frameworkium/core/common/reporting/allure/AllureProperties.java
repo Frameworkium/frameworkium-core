@@ -1,5 +1,19 @@
 package com.frameworkium.core.common.reporting.allure;
 
+import static com.frameworkium.core.common.properties.Property.APP_PATH;
+import static com.frameworkium.core.common.properties.Property.BROWSER;
+import static com.frameworkium.core.common.properties.Property.BROWSER_VERSION;
+import static com.frameworkium.core.common.properties.Property.BUILD;
+import static com.frameworkium.core.common.properties.Property.DEVICE;
+import static com.frameworkium.core.common.properties.Property.GRID_URL;
+import static com.frameworkium.core.common.properties.Property.JIRA_RESULT_FIELD_NAME;
+import static com.frameworkium.core.common.properties.Property.JIRA_RESULT_TRANSITION;
+import static com.frameworkium.core.common.properties.Property.JIRA_URL;
+import static com.frameworkium.core.common.properties.Property.PLATFORM;
+import static com.frameworkium.core.common.properties.Property.PLATFORM_VERSION;
+import static com.frameworkium.core.common.properties.Property.RESULT_VERSION;
+import static java.util.Objects.isNull;
+
 import com.frameworkium.core.ui.tests.BaseTest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,8 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import static com.frameworkium.core.common.properties.Property.*;
-import static java.util.Objects.isNull;
+
 
 public class AllureProperties {
 

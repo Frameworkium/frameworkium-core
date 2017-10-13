@@ -4,15 +4,13 @@ import static com.frameworkium.core.common.properties.Property.APP_PATH;
 import static com.frameworkium.core.common.properties.Property.DEVICE;
 import static com.frameworkium.core.common.properties.Property.PLATFORM_VERSION;
 
+import com.frameworkium.core.ui.driver.AbstractDriver;
+import io.appium.java_client.windows.WindowsDriver;
+import io.appium.java_client.windows.WindowsElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-
-import com.frameworkium.core.ui.driver.AbstractDriver;
-
-import io.appium.java_client.windows.WindowsDriver;
-import io.appium.java_client.windows.WindowsElement;
 
 public class WinAppDriverImpl extends AbstractDriver {
 

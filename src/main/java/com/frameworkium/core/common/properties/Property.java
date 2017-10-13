@@ -84,7 +84,9 @@ public enum Property {
     }
 
     /**
-     * @return true iff the maximise property is equal, ignoring case, to "true"
+     * Check if a browser needs to be maximised.
+     *
+     * @return true if the maximise property is equal, ignoring case, to "true"
      */
     public static boolean wantToMaximise() {
         return MAXIMISE.isSpecified()
@@ -92,7 +94,9 @@ public enum Property {
     }
 
     /**
-     * @return true iff the property is not empty ("") and not null
+     * Check if a property is specified.
+     *
+     * @return true if the property is not empty ("") and not null
      */
     public boolean isSpecified() {
         return StringUtils.isNotEmpty(value);
@@ -103,6 +107,8 @@ public enum Property {
     }
 
     /**
+     * Check if all properties required for integration with Capture are defined.
+     *
      * @return true if all the require properties for Capture are specified
      */
     public static boolean allCapturePropertiesSpecified() {

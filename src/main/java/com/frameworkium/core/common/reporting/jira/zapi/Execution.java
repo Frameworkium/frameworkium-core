@@ -1,5 +1,9 @@
 package com.frameworkium.core.common.reporting.jira.zapi;
 
+import static com.frameworkium.core.common.reporting.jira.JiraConfig.REST_ZAPI_PATH;
+import static com.frameworkium.core.common.reporting.jira.JiraConfig.getJIRARequestSpec;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.jira.JiraConfig;
 import org.apache.commons.lang3.StringUtils;
@@ -10,11 +14,9 @@ import org.json.JSONObject;
 import org.testng.ITestResult;
 
 import java.io.File;
-import java.util.*;
-
-import static com.frameworkium.core.common.reporting.jira.JiraConfig.REST_ZAPI_PATH;
-import static com.frameworkium.core.common.reporting.jira.JiraConfig.getJIRARequestSpec;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 public class Execution {
 
@@ -25,6 +27,10 @@ public class Execution {
     private List<Integer> idList;
     private int currentStatus;
 
+    /**
+     * Constructor that links an execution to an issue.
+     * @param issue
+     */
     public Execution(String issue) {
         this.version = Property.RESULT_VERSION.getValue();
         this.issue = issue;
@@ -47,6 +53,8 @@ public class Execution {
     }
 
     /**
+     * Gets the status of the status.
+     *
      * @return ZAPI execution status from the ITestResult status
      */
     public static int getZAPIStatus(int status) {
@@ -66,6 +74,13 @@ public class Execution {
         return currentStatus;
     }
 
+    /**
+     * Update issue with a comment and attachments.
+     *
+     * @param status
+     * @param comment
+     * @param attachments
+     */
     public void update(int status, String comment, String... attachments) {
         if (null != idList) {
             for (Integer executionId : idList) {
@@ -128,7 +143,6 @@ public class Execution {
                                 .header("X-Atlassian-Token", "nocheck")
                                 .multiPart(attachment)
                                 .when()
-                                .post(path)
-                );
+                                .post(path));
     }
 }

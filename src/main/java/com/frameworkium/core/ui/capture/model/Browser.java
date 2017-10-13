@@ -1,5 +1,11 @@
 package com.frameworkium.core.ui.capture.model;
 
+import static com.frameworkium.core.common.properties.Property.BROWSER;
+import static com.frameworkium.core.common.properties.Property.BROWSER_VERSION;
+import static com.frameworkium.core.common.properties.Property.DEVICE;
+import static com.frameworkium.core.common.properties.Property.PLATFORM;
+import static com.frameworkium.core.common.properties.Property.PLATFORM_VERSION;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.frameworkium.core.ui.driver.DriverSetup;
 import com.frameworkium.core.ui.tests.BaseTest;
@@ -9,7 +15,6 @@ import net.sf.uadetector.service.UADetectorServiceFactory;
 
 import java.util.Optional;
 
-import static com.frameworkium.core.common.properties.Property.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Browser {
@@ -20,6 +25,9 @@ public class Browser {
     public String platform;
     public String platformVersion;
 
+    /**
+     * Create browser object.
+     */
     public Browser() {
 
         Optional<String> userAgent = BaseTest.getUserAgent();

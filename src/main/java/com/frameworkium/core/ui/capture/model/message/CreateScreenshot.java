@@ -15,6 +15,14 @@ public class CreateScreenshot {
     public String errorMessage;
     public String screenshotBase64;
 
+    /**
+     * Create screenshot object.
+     * @param executionID
+     * @param command
+     * @param url
+     * @param errorMessage
+     * @param screenshotBase64
+     */
     public CreateScreenshot(
             String executionID, Command command, String url,
             String errorMessage, String screenshotBase64) {

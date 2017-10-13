@@ -1,11 +1,23 @@
 package com.frameworkium.core.ui.pages;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
+import static ru.yandex.qatools.htmlelements.utils.HtmlElementUtils.isHtmlElement;
+import static ru.yandex.qatools.htmlelements.utils.HtmlElementUtils.isHtmlElementList;
+import static ru.yandex.qatools.htmlelements.utils.HtmlElementUtils.isTypifiedElementList;
+
+import static ru.yandex.qatools.htmlelements.utils.HtmlElementUtils.isWebElementList;
+
 import com.frameworkium.core.ui.ExtraExpectedConditions;
-import com.frameworkium.core.ui.annotations.*;
+import com.frameworkium.core.ui.annotations.ForceVisible;
+import com.frameworkium.core.ui.annotations.Invisible;
+import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.driver.WebDriverWrapper;
 import com.frameworkium.core.ui.tests.BaseTest;
 import javassist.Modifier;
-import org.openqa.selenium.*;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Wait;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
 
@@ -16,11 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
-import static org.testng.Assert.fail;
-import static ru.yandex.qatools.htmlelements.utils.HtmlElementUtils.*;
 
 /**
  * All things Frameworkium-related dealing with PageObject element visibility.
@@ -41,6 +48,7 @@ public final class Visibility {
     }
 
     /**
+     * Constructor with a specific wait and JavaScript executor to use.
      * @param wait   a specific wait to use.
      * @param driver a specific {@link JavascriptExecutor} to use.
      */
@@ -61,7 +69,7 @@ public final class Visibility {
      */
     public void waitForAnnotatedElementVisibility(Object pageObject) {
 
-        Class <?> clazz = pageObject.getClass();
+        Class<?> clazz = pageObject.getClass();
 
         // Get the declared fields from the current class
         final List<Field> allFields = new ArrayList<>(Arrays.asList(clazz.getDeclaredFields()));
@@ -75,18 +83,18 @@ public final class Visibility {
                         invokeWaitFunctionForField(field, pageObject));
     }
 
-    private List<Field> getDeclaredFieldsFromSuperClasses(Class <?> clazz) {
+    private List<Field> getDeclaredFieldsFromSuperClasses(Class<?> clazz) {
         final List<Field> fields = new ArrayList<>();
 
         // Get any declared fields from super classes
         // i.e. when a page object extends a custom class which itself extends HtmlElement
-        for(Class<?> c = clazz.getSuperclass();
+        for (Class<?> c = clazz.getSuperclass();
             ((c != null) && (c != BasePage.class) && (c != HtmlElement.class));
             c = c.getSuperclass()) {
             Stream.of(c.getDeclaredFields())
-                     // Filter out static fields
-                    .filter(m->!Modifier.isStatic(m.getModifiers()))
-                    .forEach(f->fields.add(f));
+                    // Filter out static fields
+                    .filter(m -> !Modifier.isStatic(m.getModifiers()))
+                    .forEach(f -> fields.add(f));
         }
         return fields;
     }
@@ -137,10 +145,10 @@ public final class Visibility {
 
         Object objectFromField = getObjectFromField(pageObject, field);
         applyToWebElements(
-                field,
-                objectFromField,
-                we -> wait.until(visibilityOf(we)),
-                list -> wait.until(visibilityOfAllElements(list)));
+            field,
+            objectFromField,
+            we -> wait.until(visibilityOf(we)),
+            list -> wait.until(visibilityOfAllElements(list)));
 
         // recurse inside HtmlElements
         if (isHtmlElementList(field)) {
@@ -155,10 +163,10 @@ public final class Visibility {
     private void waitForFieldToBeInvisible(Object pageObject, Field field) {
 
         applyToWebElements(
-                field,
-                getObjectFromField(pageObject, field),
-                we -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(we)),
-                list -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(list)));
+            field,
+            getObjectFromField(pageObject, field),
+            we -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(we)),
+            list -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(list)));
     }
 
     /**
@@ -168,10 +176,10 @@ public final class Visibility {
     private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field) {
 
         applyToWebElements(
-                field,
-                getObjectFromField(pageObject, field),
-                this::forceVisible,
-                list -> list.forEach(this::forceVisible));
+            field,
+            getObjectFromField(pageObject, field),
+            this::forceVisible,
+            list -> list.forEach(this::forceVisible));
 
         waitForFieldToBeVisible(pageObject, field);
     }
@@ -206,7 +214,6 @@ public final class Visibility {
     /**
      * Executes JavaScript in an attempt to make the element visible
      * e.g. for elements which are occluded but are required for interaction.
-     * <p>
      * To apply this to a list of WebElements, try the following:
      * <code>elements.forEach(Visibility::forceVisible)</code>
      *

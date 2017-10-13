@@ -10,7 +10,7 @@ import org.openqa.selenium.support.ui.Wait;
 import java.util.Arrays;
 
 /**
- * Frameworkium implementation of waiting for JS events on page-load
+ * Frameworkium implementation of waiting for JS events on page-load.
  */
 public class JavascriptWait {
 
@@ -39,7 +39,7 @@ public class JavascriptWait {
     }
 
     /**
-     * If a page is using a supported JS framework, it will wait until it's ready
+     * If a page is using a supported JS framework, it will wait until it's ready.
      */
     public void waitForJavascriptFramework() {
         if (detectedFramework != null) {
@@ -64,7 +64,7 @@ public class JavascriptWait {
     }
 
     /**
-     * Supported JS Frameworks within Frameworkium and their class which implement {@link AbstractFramework}
+     * Supported JS Frameworks within Frameworkium and their class which implement {@link AbstractFramework}.
      */
     private enum SupportedFramework {
         ANGULAR(Angular.class),

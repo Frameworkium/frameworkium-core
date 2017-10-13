@@ -11,6 +11,10 @@ public class SearchExecutions {
 
     private final JsonPath jsonPath;
 
+    /**
+     * Constructor with the execution query.
+     * @param query
+     */
     public SearchExecutions(final String query) {
 
         jsonPath = JiraConfig.getJIRARequestSpec()
@@ -20,6 +24,8 @@ public class SearchExecutions {
     }
 
     /**
+     * Get execution IDs.
+     *
      * @return the execution Ids returned by the search.
      */
     public List<Integer> getExecutionIds() {
@@ -28,6 +34,8 @@ public class SearchExecutions {
     }
 
     /**
+     * Get status IDs.
+     *
      * @return the execution status Ids returned by the search.
      */
     public List<Integer> getExecutionStatuses() {

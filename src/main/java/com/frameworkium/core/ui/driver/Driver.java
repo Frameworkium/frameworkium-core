@@ -1,18 +1,24 @@
 package com.frameworkium.core.ui.driver;
 
+import static com.frameworkium.core.common.properties.Property.APP_PATH;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import static com.frameworkium.core.common.properties.Property.APP_PATH;
-
 public interface Driver {
 
-    /** @return whether using mobile or not */
+    /**
+     * Check whether the driver is for a mobile device.
+     * @return whether using mobile or not
+     * */
     static boolean isMobile() {
         return false;
     }
 
-    /** @return whether a native app is being tested. */
+    /**
+     * Check whether the driver is for a native mobile app.
+     * @return whether a native app is being tested.
+     **/
     static boolean isNative() {
         return APP_PATH.isSpecified();
     }
@@ -38,6 +44,8 @@ public interface Driver {
      */
     WebDriver getWebDriver(DesiredCapabilities capabilities);
 
-    /** @return WebDriverWrapper which wraps the initialised driver. */
+    /**
+     * Getter for the driver that wraps the initialised driver.
+     * @return WebDriverWrapper */
     WebDriverWrapper getDriver();
 }

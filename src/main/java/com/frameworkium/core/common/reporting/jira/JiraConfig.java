@@ -1,15 +1,19 @@
 package com.frameworkium.core.common.reporting.jira;
 
+import static io.restassured.RestAssured.given;
+
 import com.frameworkium.core.common.properties.Property;
 import io.restassured.specification.RequestSpecification;
-
-import static io.restassured.RestAssured.given;
 
 public class JiraConfig {
 
     public static final String JIRA_REST_PATH = "/rest/api/latest/";
     public static final String REST_ZAPI_PATH = "/rest/zapi/latest/";
 
+    /**
+     * Basic request to send to JIRA and authenticate successfully.
+     * @return
+     */
     public static RequestSpecification getJIRARequestSpec() {
         return given()
                 .baseUri(Property.JIRA_URL.getValue())
@@ -21,7 +25,7 @@ public class JiraConfig {
 
     /**
      * These should correspond to your ZAPI result IDs and
-     * are only used if logging to Zephyr for JIRA
+     * are only used if logging to Zephyr for JIRA.
      */
     public static class ZapiStatus {
 
@@ -33,7 +37,7 @@ public class JiraConfig {
 
     /**
      * These should correspond to your field options
-     * if logging a test result to a field
+     * if logging a test result to a field.
      */
     public static class JiraFieldStatus {
         public static final String JIRA_STATUS_PASS = "Pass";
@@ -57,7 +61,7 @@ public class JiraConfig {
 
     /**
      * These should correspond to your field options
-     * if logging a test result to a field
+     * if logging a test result to a field.
      */
     public static class SpiraStatus {
         public static final int SPIRA_STATUS_PASS = 2;

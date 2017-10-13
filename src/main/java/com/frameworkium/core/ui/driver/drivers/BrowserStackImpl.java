@@ -1,5 +1,7 @@
 package com.frameworkium.core.ui.driver.drivers;
 
+import static com.frameworkium.core.ui.driver.DriverSetup.Platform;
+
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.driver.AbstractDriver;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
@@ -10,14 +12,17 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static com.frameworkium.core.ui.driver.DriverSetup.Platform;
-
 public class BrowserStackImpl extends AbstractDriver {
 
     private URL remoteURL;
     private Platform platform;
     private DesiredCapabilities desiredCapabilities;
 
+    /**
+     * Implementation of driver for BrowserStack.
+     * @param platform
+     * @param browserDesiredCapabilities
+     */
     public BrowserStackImpl(
             Platform platform, DesiredCapabilities browserDesiredCapabilities) {
 
@@ -30,12 +35,22 @@ public class BrowserStackImpl extends AbstractDriver {
         }
     }
 
+    /**
+     * Get desired capabilities.
+     * @return
+     */
     public DesiredCapabilities getDesiredCapabilities() {
         setCapabilitiesBasedOnPlatform();
         desiredCapabilities.setCapability("browserstack.debug", true);
         return desiredCapabilities;
     }
 
+    /**
+     * Get web driver.
+     *
+     * @param capabilities Capabilities of the browser
+     * @return
+     */
     public WebDriver getWebDriver(DesiredCapabilities capabilities) {
         return new RemoteWebDriver(remoteURL, capabilities);
     }
@@ -66,6 +81,8 @@ public class BrowserStackImpl extends AbstractDriver {
                     desiredCapabilities.setCapability(
                             "browserName", Property.DEVICE.getValue().split(" ")[0]);
                 }
+                break;
+            default:
                 break;
         }
     }

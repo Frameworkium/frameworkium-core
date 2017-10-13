@@ -1,15 +1,19 @@
 package com.frameworkium.core.ui.listeners;
 
+import static org.apache.commons.lang3.StringUtils.abbreviate;
+
 import com.frameworkium.core.ui.capture.ElementHighlighter;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.tests.BaseTest;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.WebDriverEventListener;
-import org.testng.*;
-
-import static org.apache.commons.lang3.StringUtils.abbreviate;
+import org.testng.ITestContext;
+import org.testng.ITestListener;
+import org.testng.ITestResult;
 
 /**
  * Assumes {@link ScreenshotCapture}.isRequired() is true for WebDriver events.

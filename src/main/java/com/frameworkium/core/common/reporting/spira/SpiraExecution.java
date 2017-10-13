@@ -1,5 +1,7 @@
 package com.frameworkium.core.common.reporting.spira;
 
+import static io.restassured.RestAssured.given;
+
 import com.frameworkium.core.common.properties.Property;
 import io.restassured.RestAssured;
 import org.apache.http.client.methods.HttpPost;
@@ -15,8 +17,6 @@ import org.testng.ITestResult;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-import static io.restassured.RestAssured.given;
-
 public class SpiraExecution {
 
     private static final Logger logger = LogManager.getLogger();
@@ -24,8 +24,15 @@ public class SpiraExecution {
     private static final String SPIRA_URI =
             Property.SPIRA_URL.getValue() + SpiraConfig.REST_PATH;
 
-    public void recordTestResult(
-            String issue, int resultId, String comment, ITestResult result) {
+    /**
+     * Record test result.
+     *
+     * @param issue
+     * @param resultId
+     * @param comment
+     * @param result
+     */
+    public void recordTestResult(String issue, int resultId, String comment, ITestResult result) {
 
         JSONObject obj = new JSONObject();
         try {
@@ -54,9 +61,9 @@ public class SpiraExecution {
 
         // TODO: use RestAssured
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost request = new HttpPost(SPIRA_URI + "/test-runs/record?" +
-                "username=" + SpiraConfig.USERNAME + "&" +
-                "api-key=" + SpiraConfig.API_KEY.replace("{", "%7B").replace("}", "%7D"));
+        HttpPost request = new HttpPost(SPIRA_URI + "/test-runs/record?"
+                        + "username=" + SpiraConfig.USERNAME + "&"
+                        + "api-key=" + SpiraConfig.API_KEY.replace("{", "%7B").replace("}", "%7D"));
         StringEntity jsonBody;
         try {
             jsonBody = new StringEntity(json);
@@ -73,6 +80,12 @@ public class SpiraExecution {
         }
     }
 
+    /**
+     * Get release ID.
+     *
+     * @param releaseName
+     * @return
+     */
     public String getReleaseId(String releaseName) {
         RestAssured.baseURI = SPIRA_URI;
         String path = String.format(

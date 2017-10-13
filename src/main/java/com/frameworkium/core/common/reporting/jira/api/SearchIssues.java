@@ -10,6 +10,10 @@ public class SearchIssues {
     private static final int MAX_SEARCH_RESULTS = 1000;
     private final JsonPath jsonPath;
 
+    /**
+     * Search all issues that match a string.
+     * @param query
+     */
     public SearchIssues(String query) {
         try {
             jsonPath = JiraConfig.getJIRARequestSpec()

@@ -1,5 +1,8 @@
 package com.frameworkium.core.ui.tests;
 
+import static java.util.Objects.isNull;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import com.frameworkium.core.common.listeners.MethodInterceptor;
 import com.frameworkium.core.common.listeners.ResultLoggerListener;
 import com.frameworkium.core.common.listeners.TestListener;
@@ -36,24 +39,29 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static java.util.Objects.isNull;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-@Listeners({CaptureListener.class, ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class, TestListener.class,
-            ResultLoggerListener.class, VideoListener.class})
+@Listeners( {CaptureListener.class, ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class,
+    TestListener.class, ResultLoggerListener.class, VideoListener.class})
 public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
-    /** Executor for async sending of screenshot messages to capture */
+    /**
+     * Executor for async sending of screenshot messages to capture.
+     */
     public static final ExecutorService screenshotExecutor =
-            Executors.newSingleThreadExecutor();
+        Executors.newSingleThreadExecutor();
 
-    /** Logger for subclasses (logs with correct class i.e. not BaseTest) */
+    /**
+     * Logger for subclasses (logs with correct class i.e. not BaseTest).
+     */
     protected final Logger logger = LogManager.getLogger(this);
 
-    /** Logger for this class */
+    /**
+     * Logger for this class.
+     */
     private static final Logger baseLogger = LogManager.getLogger();
 
-    /** Driver related constant */
+    /**
+     * Driver related constant.
+     */
     public static final long DEFAULT_TIMEOUT_SECONDS = 10L;
 
     private static final ThreadLocal<ScreenshotCapture> capture = ThreadLocal.withInitial(() -> null);
@@ -62,7 +70,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     private static String userAgent;
 
     /**
-     * Method which runs first upon running a test, it will do the following:
+     * Method which runs first upon running a test, it will do the following.
      * <ul>
      * <li>Retrieve the {@link Driver} and initialise the {@link WebDriver}</li>
      * <li>Initialise the {@link Wait}</li>
@@ -77,87 +85,14 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     /**
+     * Configure browser before test.
+     *
      * @param testMethod The test method about to be executed
      * @see #configureBrowserBeforeTest(String)
      */
     @BeforeMethod(alwaysRun = true, dependsOnMethods = "instantiateDriverObject")
     public static void configureBrowserBeforeTest(Method testMethod) {
         configureBrowserBeforeTest(getTestNameForCapture(testMethod));
-    }
-
-    /**
-     * Tears down the browser after the test method
-     */
-    @AfterMethod(alwaysRun = true)
-    public static void tearDownBrowser() {
-        try {
-            driver.get().tearDown();
-        } catch (Exception e) {
-            baseLogger.warn("Session quit unexpectedly.", e);
-        }
-    }
-
-    /** Shuts down the {@link ExecutorService} */
-    @AfterSuite(alwaysRun = true)
-    public static void shutdownScreenshotExecutor() {
-        baseLogger.debug("Async screenshot capture: processing remaining backlog...");
-        screenshotExecutor.shutdown();
-        try {
-            boolean timeout = !screenshotExecutor.awaitTermination(60, SECONDS);
-            if (timeout) {
-                baseLogger.error("Async screenshot capture: shutdown timed out. "
-                        + "Some screenshots might not have been sent.");
-            } else {
-                baseLogger.debug("Async screenshot capture: finished backlog.");
-            }
-        } catch (InterruptedException e) {
-            baseLogger.error("Async screenshot capture: executor was interrupted. "
-                    + "Some screenshots might not have been sent.");
-        }
-    }
-
-    /** Creates the allure properties for the report */
-    @AfterSuite(alwaysRun = true)
-    public static void createAllureProperties() {
-        AllureProperties.create();
-    }
-
-    /** Required for unit testing */
-    public static void setDriver(Driver newDriver) {
-        driver.set(newDriver);
-    }
-
-    /** Required for unit testing */
-    public static void setWait(Wait<WebDriver> newWait) {
-        wait.set(newWait);
-    }
-
-    /**
-     * Find the calling method and pass it into
-     * {@link #configureBrowserBeforeTest(Method)} to configure the browser.
-     */
-    protected static void configureBrowserBeforeUse() {
-        configureBrowserBeforeTest(
-                getCallingMethod(Thread.currentThread().getStackTrace()[2]));
-    }
-
-    private static Method getCallingMethod(StackTraceElement stackTraceElement) {
-        String className = stackTraceElement.getClassName();
-        String methodName = stackTraceElement.getMethodName();
-        try {
-            return Class.forName(className).getDeclaredMethod(methodName);
-        } catch (ClassNotFoundException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static String getTestNameForCapture(Method testMethod) {
-        Optional<String> testID = TestIdUtils.getIssueOrTestCaseIdValue(testMethod);
-        if (!testID.isPresent() || testID.get().isEmpty()) {
-            baseLogger.warn("{} doesn't have a TestID annotation.", testMethod.getName());
-            testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));
-        }
-        return testID.orElse("n/a");
     }
 
     /**
@@ -184,6 +119,89 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         }
     }
 
+    /**
+     * Tears down the browser after the test method.
+     */
+    @AfterMethod(alwaysRun = true)
+    public static void tearDownBrowser() {
+        try {
+            driver.get().tearDown();
+        } catch (Exception e) {
+            baseLogger.warn("Session quit unexpectedly.", e);
+        }
+    }
+
+    /**
+     * Shuts down the {@link ExecutorService}.
+     */
+    @AfterSuite(alwaysRun = true)
+    public static void shutdownScreenshotExecutor() {
+        baseLogger.debug("Async screenshot capture: processing remaining backlog...");
+        screenshotExecutor.shutdown();
+        try {
+            boolean timeout = !screenshotExecutor.awaitTermination(60, SECONDS);
+            if (timeout) {
+                baseLogger.error("Async screenshot capture: shutdown timed out. "
+                    + "Some screenshots might not have been sent.");
+            } else {
+                baseLogger.debug("Async screenshot capture: finished backlog.");
+            }
+        } catch (InterruptedException e) {
+            baseLogger.error("Async screenshot capture: executor was interrupted. "
+                + "Some screenshots might not have been sent.");
+        }
+    }
+
+    /**
+     * Creates the allure properties for the report.
+     */
+    @AfterSuite(alwaysRun = true)
+    public static void createAllureProperties() {
+        AllureProperties.create();
+    }
+
+    /**
+     * Required for unit testing.
+     */
+    public static void setDriver(Driver newDriver) {
+        driver.set(newDriver);
+    }
+
+    /**
+     * Required for unit testing.
+     */
+    public static void setWait(Wait<WebDriver> newWait) {
+        wait.set(newWait);
+    }
+
+    /**
+     * Find the calling method and pass it into
+     * {@link #configureBrowserBeforeTest(Method)} to configure the browser.
+     */
+    protected static void configureBrowserBeforeUse() {
+        configureBrowserBeforeTest(
+            getCallingMethod(Thread.currentThread().getStackTrace()[2]));
+    }
+
+    private static Method getCallingMethod(StackTraceElement stackTraceElement) {
+        String className = stackTraceElement.getClassName();
+        String methodName = stackTraceElement.getMethodName();
+        try {
+            return Class.forName(className).getDeclaredMethod(methodName);
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static String getTestNameForCapture(Method testMethod) {
+        Optional<String> testID = TestIdUtils.getIssueOrTestCaseIdValue(testMethod);
+        if (!testID.isPresent() || testID.get().isEmpty()) {
+            baseLogger.warn("{} doesn't have a TestID annotation.", testMethod.getName());
+            testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));
+        }
+        return testID.orElse("n/a");
+    }
+
     private static String determineUserAgent() {
         try {
             return Driver.isNative() ? "" : (String) getDriver().executeScript("return navigator.userAgent;");
@@ -193,7 +211,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     /**
-     * Initialise the screenshot capture and link to issue/test case id
+     * Initialise the screenshot capture and link to issue/test case id.
      *
      * @param testName Test method passed from the test script
      */
@@ -202,62 +220,79 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     /**
-     * @return a new {@link Wait} for the thread local driver and default timeout
+     * Create a new {@link Wait} for the thread local driver and default timeout.
+     * @return a new {@link Wait} for the thread local driver and default timeout.
      */
     public static Wait<WebDriver> newDefaultWait() {
         return newWaitWithTimeout(DEFAULT_TIMEOUT_SECONDS);
     }
 
     /**
+     * Create a new {@link Wait} with timeout.
      * @param timeout timeout in seconds for the {@link Wait}
-     * @return a new {@link Wait} for the thread local driver and given timeout
-     * which also ignores {@link NoSuchElementException} and
-     * {@link StaleElementReferenceException}
+     * @return a new {@link Wait} for the thread local driver and given timeout which also ignores {@link
+     * NoSuchElementException} and {@link StaleElementReferenceException}
      */
     public static Wait<WebDriver> newWaitWithTimeout(long timeout) {
         return new FluentWait<>(getDriver().getWrappedDriver())
-                .withTimeout(timeout, SECONDS)
-                .ignoring(NoSuchElementException.class)
-                .ignoring(StaleElementReferenceException.class);
+            .withTimeout(timeout, SECONDS)
+            .ignoring(NoSuchElementException.class)
+            .ignoring(StaleElementReferenceException.class);
     }
 
     /**
-     * @return the {@link WebDriverWrapper} instance for the requesting thread
+     * Get {@link WebDriverWrapper} instance for the requesting thread.
+     * @return the {@link WebDriverWrapper}
      */
     public static WebDriverWrapper getDriver() {
         return driver.get().getDriver();
     }
 
-    /** @return the {@link ScreenshotCapture} object for the current test */
+    /**
+     * Get {@link ScreenshotCapture} object for the current test.
+     * @return the {@link ScreenshotCapture} object
+     */
     public static ScreenshotCapture getCapture() {
         return capture.get();
     }
 
-    /** @return The default {@link Wait} */
+    /**
+     * Get the default {@link Wait}.
+     * @return {@link Wait}
+     */
     public static Wait<WebDriver> getWait() {
         return wait.get();
     }
 
-    /** @return Optional of the current browser user agent */
+    /**
+     * Get current browser user agent.
+     * @return Optional of the current browser user agent
+     */
     public static Optional<String> getUserAgent() {
         return Optional.ofNullable(userAgent);
     }
 
-    /** @return the Session id for the current thread */
+    /**
+     * Get session id for the current thread.
+     * @return Session id
+     */
     public static String getThreadSessionId() {
         SessionId sessionId = getDriver().getWrappedRemoteWebDriver().getSessionId();
         return isNull(sessionId) ? null : sessionId.toString();
     }
 
-    /** @return the Job id for the current thread */
+    /**
+     * Get the Job id for the current thread.
+     * @return Job id
+     */
     @Override
     public String getSessionId() {
         return getThreadSessionId();
     }
 
     /**
-     * @return the {@link SauceOnDemandAuthentication} instance containing
-     * the Sauce username/access key
+     * Get {@link SauceOnDemandAuthentication} instance containing the Sauce username/access key.
+     * @return {@link SauceOnDemandAuthentication} instance
      */
     @Override
     public SauceOnDemandAuthentication getAuthentication() {
@@ -266,7 +301,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     /**
      * Logs the start of a step to your allure report
-     * Other steps will be sub-steps until you call stepFinish
+     * Other steps will be sub-steps until you call stepFinish.
      *
      * @param stepName the name of the step
      * @deprecated use <code>AllureLogger.stepStart(stepName)</code>
@@ -277,7 +312,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     /**
-     * Logs the end of a step
+     * Logs the end of a step.
      *
      * @deprecated use <code>AllureLogger.stepFinish()</code>
      */

@@ -16,7 +16,7 @@ import java.util.Map;
 
 public abstract class BaseService {
 
-    protected final static Logger logger = LogManager.getLogger();
+    protected static final  Logger logger = LogManager.getLogger();
 
     /* Set the proxy upon use */
     static {
