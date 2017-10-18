@@ -402,7 +402,7 @@
               <version>1.0.14</version>
               <configuration>
                   <!-- root directory that downloaded driver binaries will be stored in -->
-                  <rootStandaloneServerDirectory>drivers/binaries/</rootStandaloneServerDirectory>
+                  <rootStandaloneServerDirectory>drivers/bin/</rootStandaloneServerDirectory>
                   <!-- Where you want to store downloaded zip files -->
                   <downloadedZipFileDirectory>drivers/zip/</downloadedZipFileDirectory>
 
