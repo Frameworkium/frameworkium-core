@@ -5,7 +5,7 @@ import spock.lang.Specification
 
 class WebElementSubjectSpec extends Specification {
 
-    def "displayed element passes is displayed assertion"() {
+    def "element is displayed, passes isDisplayed() assertion"() {
         given:
             def webElement = Mock(WebElement)
         when:
@@ -15,7 +15,7 @@ class WebElementSubjectSpec extends Specification {
             noExceptionThrown()
     }
 
-    def "not displayed element fails is displayed assertion"() {
+    def "element not displayed, isDisplayed() assertion throws Error"() {
         given:
             def webElement = Mock(WebElement)
         when:
@@ -23,6 +23,6 @@ class WebElementSubjectSpec extends Specification {
         then:
             1 * webElement.isDisplayed() >> false
             def error = thrown(AssertionError)
-            error.message == "Not true that WebElement (<Mock for type 'WebElement' named 'webElement'>) is displayed"
+            error.message ==~ /Not true that WebElement .* is displayed/
     }
 }
