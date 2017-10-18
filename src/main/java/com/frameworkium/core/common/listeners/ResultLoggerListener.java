@@ -1,9 +1,5 @@
 package com.frameworkium.core.common.listeners;
 
-import static com.frameworkium.core.common.properties.Property.CAPTURE_URL;
-import static java.util.Objects.isNull;
-import static org.apache.commons.lang3.time.DateUtils.MILLIS_PER_SECOND;
-
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.TestIdUtils;
 import com.frameworkium.core.common.reporting.jira.JiraConfig;
@@ -15,11 +11,13 @@ import com.frameworkium.core.ui.tests.BaseTest;
 import com.google.common.base.Throwables;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.testng.ITestContext;
-import org.testng.ITestListener;
-import org.testng.ITestResult;
+import org.testng.*;
 
 import java.lang.reflect.Method;
+
+import static com.frameworkium.core.common.properties.Property.CAPTURE_URL;
+import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.time.DateUtils.MILLIS_PER_SECOND;
 
 public class ResultLoggerListener implements ITestListener {
 
@@ -203,16 +201,13 @@ public class ResultLoggerListener implements ITestListener {
     }
 
     @Override
-    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
-    }
+    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {}
 
     @Override
-    public void onStart(ITestContext context) {
-    }
+    public void onStart(ITestContext context) {}
 
     @Override
-    public void onFinish(ITestContext context) {
-    }
+    public void onFinish(ITestContext context) {}
 
     private Boolean zapiLoggingParamsProvided(ITestResult result) {
         return Property.JIRA_URL.isSpecified()

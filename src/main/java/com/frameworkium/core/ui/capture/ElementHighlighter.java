@@ -1,9 +1,6 @@
 package com.frameworkium.core.ui.capture;
 
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
 public class ElementHighlighter {
 
@@ -16,6 +13,7 @@ public class ElementHighlighter {
 
     /**
      * Highlight a WebElement.
+     *
      * @param webElement to highlight
      */
     public void highlightElement(WebElement webElement) {
@@ -38,7 +36,7 @@ public class ElementHighlighter {
             // unhighlight the previously highlighted element
             js.executeScript("arguments[0].style.border='none'", previousElem);
         } catch (StaleElementReferenceException ignored) {
-            // the page was reloaded, the element isn't there
+            // the page was reloaded/changed, the same element isn't there
         }
     }
 }

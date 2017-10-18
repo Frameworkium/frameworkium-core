@@ -12,7 +12,6 @@ public class SearchIssues {
 
     /**
      * Search all issues that match a string.
-     * @param query
      */
     public SearchIssues(String query) {
         try {

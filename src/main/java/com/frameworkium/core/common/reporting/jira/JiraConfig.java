@@ -1,9 +1,9 @@
 package com.frameworkium.core.common.reporting.jira;
 
-import static io.restassured.RestAssured.given;
-
 import com.frameworkium.core.common.properties.Property;
 import io.restassured.specification.RequestSpecification;
+
+import static io.restassured.RestAssured.given;
 
 public class JiraConfig {
 
@@ -12,7 +12,6 @@ public class JiraConfig {
 
     /**
      * Basic request to send to JIRA and authenticate successfully.
-     * @return
      */
     public static RequestSpecification getJIRARequestSpec() {
         return given()

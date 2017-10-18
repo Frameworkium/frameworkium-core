@@ -1,19 +1,15 @@
 package com.frameworkium.core.ui.listeners;
 
-import static org.apache.commons.lang3.StringUtils.abbreviate;
-
 import com.frameworkium.core.ui.capture.ElementHighlighter;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.tests.BaseTest;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.events.WebDriverEventListener;
-import org.testng.ITestContext;
-import org.testng.ITestListener;
-import org.testng.ITestResult;
+import org.testng.*;
+
+import static org.apache.commons.lang3.StringUtils.abbreviate;
 
 /**
  * Assumes {@link ScreenshotCapture}.isRequired() is true for WebDriver events.
@@ -165,18 +161,18 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     @Override
     public void beforeFindBy(By by, WebElement element, WebDriver arg2) {}
-    
+
     @Override
     public void beforeAlertAccept(WebDriver webDriver) {}
-    
+
     @Override
     public void afterAlertAccept(WebDriver webDriver) {}
-    
+
     @Override
     public void beforeAlertDismiss(WebDriver webDriver) {}
-    
+
     @Override
-    public void afterAlertDismiss(WebDriver webDriver) {}  
+    public void afterAlertDismiss(WebDriver webDriver) {}
 
     @Override
     public void onTestStart(ITestResult result) {}

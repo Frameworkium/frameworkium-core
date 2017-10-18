@@ -25,8 +25,6 @@ public class Sauce {
 
     /**
      * Get the URL for the SauceLabs instance as configured by the parameters.
-     * @return URL for the SauceLabs instance
-     * @throws MalformedURLException
      */
     public static URL getURL() throws MalformedURLException {
         return new URL(String.format(
@@ -42,9 +40,6 @@ public class Sauce {
 
     /**
      * Update job name.
-     *
-     * @param sessionIdProvider
-     * @param name
      */
     public static void updateJobName(SauceOnDemandSessionIdProvider sessionIdProvider, String name) {
 

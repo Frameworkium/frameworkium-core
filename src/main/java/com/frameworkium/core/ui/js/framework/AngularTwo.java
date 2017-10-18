@@ -8,7 +8,6 @@ public class AngularTwo implements AbstractFramework {
 
     /**
      * Check if this is an Angular2 page.
-     *
      * {@inheritDoc}
      **/
     @Override
@@ -19,7 +18,6 @@ public class AngularTwo implements AbstractFramework {
 
     /**
      * Wait until Angular2 is completed.
-     *
      * {@inheritDoc}
      **/
     @Override

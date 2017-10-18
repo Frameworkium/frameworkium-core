@@ -9,7 +9,7 @@ public class Angular implements AbstractFramework {
     /**
      * Check if Angular is used.
      * {@inheritDoc}
-     * */
+     */
     @Override
     public boolean isPresent(JavascriptExecutor javascriptExecutor) {
         return (Boolean) javascriptExecutor.executeScript(
@@ -18,8 +18,8 @@ public class Angular implements AbstractFramework {
 
     /**
      * Wait for Angular to be ready.
-     *
-     * {@inheritDoc} */
+     * {@inheritDoc}
+     */
     @Override
     public void waitToBeReady(JavascriptExecutor javascriptExecutor) {
         new NgWebDriver(javascriptExecutor).waitForAngularRequestsToFinish();

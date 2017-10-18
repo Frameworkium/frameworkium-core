@@ -1,7 +1,5 @@
 package com.frameworkium.core.ui.capture;
 
-import static com.frameworkium.core.common.properties.Property.VIDEO_CAPTURE_URL;
-
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
@@ -12,15 +10,12 @@ import org.testng.ITestResult;
 import ru.yandex.qatools.allure.annotations.Attachment;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.*;
+import java.nio.file.*;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import static com.frameworkium.core.common.properties.Property.VIDEO_CAPTURE_URL;
 
 public class VideoCapture {
 
@@ -38,8 +33,7 @@ public class VideoCapture {
     }
 
     /**
-     * Save Video.
-     * @param iTestResult
+     * Save video to video folder.
      */
     public static void saveVideo(ITestResult iTestResult) {
         String sessionId = testMap.get(iTestResult.getName());
@@ -48,13 +42,14 @@ public class VideoCapture {
         try {
             rawVideo = getVideo(videoCaptureURL);
         } catch (InterruptedException | TimeoutException e) {
-            logger.error(String.format("Timed out waiting for Session ID %s to become available "
-                + "after 6 seconds.", sessionId));
+            logger.error(String.format(
+                    "Timed out waiting for Session ID %s to become available after 6 seconds.",
+                    sessionId));
             return;
         } catch (ConnectException e) {
-            logger.error(String.format("Connection was refused for Session ID %s while "
-                +
-                "trying to retrieve the video.", sessionId));
+            logger.error(String.format(
+                    "Connection was refused for Session ID %s while trying to retrieve the video.",
+                    sessionId));
             return;
         }
 
@@ -78,8 +73,7 @@ public class VideoCapture {
     }
 
     private static URL getVideoCaptureURL(String sessionId) {
-        try
-        {
+        try {
             return new URL(String.format(VIDEO_CAPTURE_URL.getValue(), sessionId));
         } catch (MalformedURLException e) {
             throw new RuntimeException("Video Capture URL provided was invalid", e);
@@ -87,8 +81,8 @@ public class VideoCapture {
     }
 
     @Attachment(value = "Video on Failure", type = "video/mp4")
-    private static byte[] getVideo(URL videoCaptureURL) throws TimeoutException,
-        InterruptedException, ConnectException {
+    private static byte[] getVideo(URL videoCaptureURL)
+            throws TimeoutException, InterruptedException, ConnectException {
         int i = 0;
         while (i++ < 4) {
             logger.debug("Download URL for Video Capture: " + videoCaptureURL);

@@ -1,13 +1,13 @@
 package com.frameworkium.core.common.reporting;
 
-import static java.util.Objects.isNull;
-
 import org.testng.IMethodInstance;
 import ru.yandex.qatools.allure.annotations.Issue;
 import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
+
+import static java.util.Objects.isNull;
 
 public class TestIdUtils {
 

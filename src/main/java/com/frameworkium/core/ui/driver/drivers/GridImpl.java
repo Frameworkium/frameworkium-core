@@ -1,12 +1,6 @@
 package com.frameworkium.core.ui.driver.drivers;
 
-import static com.frameworkium.core.common.properties.Property.APPLICATION_NAME;
-import static com.frameworkium.core.common.properties.Property.BROWSER_VERSION;
-import static com.frameworkium.core.common.properties.Property.PLATFORM;
-import static com.frameworkium.core.common.properties.Property.PLATFORM_VERSION;
-
 import com.frameworkium.core.common.properties.Property;
-
 import com.frameworkium.core.ui.driver.AbstractDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -15,6 +9,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static com.frameworkium.core.common.properties.Property.*;
+
 public class GridImpl extends AbstractDriver {
 
     private URL remoteURL;
@@ -22,7 +18,6 @@ public class GridImpl extends AbstractDriver {
 
     /**
      * Implementation of driver for the Selenium Grid .
-     * @param desiredCapabilities
      */
     public GridImpl(DesiredCapabilities desiredCapabilities) {
         this.desiredCapabilities = desiredCapabilities;

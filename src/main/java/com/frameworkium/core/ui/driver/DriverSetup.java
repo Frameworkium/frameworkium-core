@@ -1,17 +1,7 @@
 package com.frameworkium.core.ui.driver;
 
 import com.frameworkium.core.common.properties.Property;
-import com.frameworkium.core.ui.driver.drivers.BrowserStackImpl;
-import com.frameworkium.core.ui.driver.drivers.ChromeImpl;
-import com.frameworkium.core.ui.driver.drivers.ElectronImpl;
-import com.frameworkium.core.ui.driver.drivers.FirefoxImpl;
-import com.frameworkium.core.ui.driver.drivers.GridImpl;
-import com.frameworkium.core.ui.driver.drivers.InternetExplorerImpl;
-import com.frameworkium.core.ui.driver.drivers.LegacyFirefoxImpl;
-import com.frameworkium.core.ui.driver.drivers.OperaImpl;
-import com.frameworkium.core.ui.driver.drivers.PhantomJSImpl;
-import com.frameworkium.core.ui.driver.drivers.SafariImpl;
-import com.frameworkium.core.ui.driver.drivers.SauceImpl;
+import com.frameworkium.core.ui.driver.drivers.*;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
 import org.apache.logging.log4j.LogManager;
@@ -23,23 +13,17 @@ public class DriverSetup {
 
     public static final Browser DEFAULT_BROWSER = Browser.FIREFOX;
 
-    /**
-     * Supported drivers.
-     **/
+    /** Supported drivers. */
     public enum Browser {
         FIREFOX, LEGACYFIREFOX, CHROME, OPERA, IE, PHANTOMJS, SAFARI, ELECTRON, CUSTOM
     }
 
-    /**
-     * Supported remote grids.
-     **/
+    /** Supported remote grids. */
     private enum RemoteGrid {
         SAUCE, BROWSERSTACK, GRID
     }
 
-    /**
-     * Supported platforms for remote grids.
-     **/
+    /** Supported platforms for remote grids. */
     public enum Platform {
         WINDOWS, OSX, IOS, ANDROID, NONE
     }
@@ -48,6 +32,7 @@ public class DriverSetup {
 
     /**
      * Instantiate driver.
+     *
      * @return An uninitialised desired {@link Driver} Implementation.
      */
     public Driver instantiateDriver() {

@@ -14,7 +14,7 @@ public class CustomFirefoxImpl extends AbstractDriver {
 
     @Override
     public WebDriver getWebDriver(DesiredCapabilities capabilities) {
-            return new FirefoxDriver(capabilities);
+        return new FirefoxDriver(capabilities);
     }
 
 }

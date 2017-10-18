@@ -21,9 +21,9 @@ public class Issue {
     /**
      * Create and post a JSON request to JIRA to get issues.
      *
-     * @param type
-     * @param inwardIssue
-     * @param outwardIssue
+     * @param type         name of issue
+     * @param inwardIssue  inward issue key
+     * @param outwardIssue outward issue key
      */
     public void linkIssues(String type, String inwardIssue, String outwardIssue) {
         JSONObject obj = new JSONObject();
@@ -49,11 +49,7 @@ public class Issue {
                 .post(JiraConfig.JIRA_REST_PATH + "issueLink");
     }
 
-    /**
-     * Get the attachment ids.
-     *
-     * @return
-     */
+    /** Returns list of attachment IDs. */
     public List<String> getAttachmentIds() {
 
         return JiraConfig.getJIRARequestSpec()
@@ -63,11 +59,7 @@ public class Issue {
                 .getList("fields.attachment.id");
     }
 
-    /**
-     * Add a new file attachment to the JIRA issue.
-     *
-     * @param attachment
-     */
+    /** Adds the file attachment to the JIRA issue. */
     public void addAttachment(File attachment) {
         String url = String.format("issue/%s/attachments", issueKey);
 

@@ -1,8 +1,5 @@
 package com.frameworkium.core.ui.capture;
 
-import static com.frameworkium.core.common.properties.Property.CAPTURE_URL;
-import static org.apache.http.HttpStatus.SC_CREATED;
-
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.capture.model.message.CreateExecution;
@@ -17,14 +14,12 @@ import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.UnknownHostException;
+import java.net.*;
+
+import static com.frameworkium.core.common.properties.Property.CAPTURE_URL;
+import static org.apache.http.HttpStatus.SC_CREATED;
 
 public class ScreenshotCapture {
 
@@ -35,7 +30,6 @@ public class ScreenshotCapture {
 
     /**
      * Initialise Screenshot capture object for a test.
-     * @param testID
      */
     public ScreenshotCapture(String testID) {
         this.testID = testID;
@@ -120,9 +114,6 @@ public class ScreenshotCapture {
 
     /**
      * Take and send a screenshot with an error message.
-     * @param command
-     * @param driver
-     * @param errorMessage
      */
     public void takeAndSendScreenshotWithError(
             Command command, WebDriver driver, String errorMessage) {

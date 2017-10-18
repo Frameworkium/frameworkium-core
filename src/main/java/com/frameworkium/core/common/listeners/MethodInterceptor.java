@@ -1,21 +1,19 @@
 package com.frameworkium.core.common.listeners;
 
-import static com.frameworkium.core.common.properties.Property.JIRA_URL;
-import static com.frameworkium.core.common.properties.Property.JQL_QUERY;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-
 import com.frameworkium.core.common.reporting.TestIdUtils;
 import com.frameworkium.core.common.reporting.jira.api.SearchIssues;
 import com.frameworkium.core.ui.driver.Driver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.testng.IMethodInstance;
-import org.testng.IMethodInterceptor;
-import org.testng.ITestContext;
+import org.testng.*;
 
 import java.lang.reflect.Method;
 import java.util.List;
+
+import static com.frameworkium.core.common.properties.Property.JIRA_URL;
+import static com.frameworkium.core.common.properties.Property.JQL_QUERY;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 public class MethodInterceptor implements IMethodInterceptor {
 
@@ -49,8 +47,8 @@ public class MethodInterceptor implements IMethodInterceptor {
                     new SearchIssues(JQL_QUERY.getValue()).getKeys();
 
             List<IMethodInstance> methodsToRun = methodsWithTestIDs.stream()
-                    .filter(m -> testIDsFromJQL
-                        .contains(TestIdUtils.getIssueOrTestCaseIdValue(m).orElseThrow(IllegalStateException::new)))
+                    .filter(m -> testIDsFromJQL.contains(
+                            TestIdUtils.getIssueOrTestCaseIdValue(m).orElseThrow(IllegalStateException::new)))
                     .collect(toList());
 
             logTestMethodInformation(
@@ -99,7 +97,7 @@ public class MethodInterceptor implements IMethodInterceptor {
 
         if (methodsWithoutTestIds.size() > 0) {
             logger.warn("The following tests don't have TestIDs {}",
-                () -> methodsWithoutTestIds.stream().collect(joining(", ")));
+                    () -> methodsWithoutTestIds.stream().collect(joining(", ")));
         }
 
         logger.info("Running {} tests specified by JQL query", methodsPostFiltering.size());

@@ -13,7 +13,6 @@ public class SearchExecutions {
 
     /**
      * Constructor with the execution query.
-     * @param query
      */
     public SearchExecutions(final String query) {
 

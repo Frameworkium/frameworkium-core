@@ -1,7 +1,5 @@
 package com.frameworkium.core.ui.listeners;
 
-import static com.frameworkium.core.common.properties.Property.APP_PATH;
-
 import com.frameworkium.core.ui.driver.Driver;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
@@ -13,6 +11,8 @@ import org.testng.ITestResult;
 
 import java.io.File;
 import java.io.IOException;
+
+import static com.frameworkium.core.common.properties.Property.APP_PATH;
 
 public class SauceLabsListener extends SauceOnDemandTestListener {
 

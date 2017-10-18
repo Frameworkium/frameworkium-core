@@ -1,12 +1,5 @@
 package com.frameworkium.core.ui.driver.drivers;
 
-import static com.frameworkium.core.common.properties.Property.APP_PATH;
-import static com.frameworkium.core.common.properties.Property.BROWSER_VERSION;
-import static com.frameworkium.core.common.properties.Property.BUILD;
-import static com.frameworkium.core.common.properties.Property.DEVICE;
-import static com.frameworkium.core.common.properties.Property.PLATFORM_VERSION;
-import static com.frameworkium.core.ui.driver.DriverSetup.Platform;
-
 import com.frameworkium.core.ui.driver.AbstractDriver;
 import com.frameworkium.core.ui.driver.Driver;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
@@ -17,6 +10,9 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import static com.frameworkium.core.common.properties.Property.*;
+import static com.frameworkium.core.ui.driver.DriverSetup.Platform;
 
 public class SauceImpl extends AbstractDriver {
 
@@ -39,8 +35,6 @@ public class SauceImpl extends AbstractDriver {
 
     /**
      * Get desired capabilities.
-     *
-     * @return desiredCapabitilies
      */
     public DesiredCapabilities getDesiredCapabilities() {
         if (Driver.isNative()) {
@@ -63,25 +57,25 @@ public class SauceImpl extends AbstractDriver {
             case WINDOWS:
                 if (PLATFORM_VERSION.isSpecified()) {
                     desiredCapabilities.setCapability(
-                        "platform", "Windows " + PLATFORM_VERSION.getValue());
+                            "platform", "Windows " + PLATFORM_VERSION.getValue());
                 } else {
                     logger.error("Platform version needs to be specified when using Windows & SauceLabs!");
                 }
                 if (BROWSER_VERSION.isSpecified()) {
                     desiredCapabilities.setCapability(
-                        "version", BROWSER_VERSION.getValue());
+                            "version", BROWSER_VERSION.getValue());
                 }
                 break;
             case OSX:
                 if (PLATFORM_VERSION.isSpecified()) {
                     desiredCapabilities.setCapability(
-                        "platform", "OS X " + PLATFORM_VERSION.getValue());
+                            "platform", "OS X " + PLATFORM_VERSION.getValue());
                 } else {
                     logger.error("Platform version needs to be specified when using OSX & SauceLabs!");
                 }
                 if (BROWSER_VERSION.isSpecified()) {
                     desiredCapabilities.setCapability(
-                        "version", BROWSER_VERSION.getValue());
+                            "version", BROWSER_VERSION.getValue());
                 }
                 break;
             case ANDROID:
@@ -89,7 +83,7 @@ public class SauceImpl extends AbstractDriver {
                 desiredCapabilities.setCapability("platform", "Linux");
                 if (PLATFORM_VERSION.isSpecified()) {
                     desiredCapabilities.setCapability(
-                        "version", PLATFORM_VERSION.getValue());
+                            "version", PLATFORM_VERSION.getValue());
                 }
                 desiredCapabilities.setCapability("deviceName", "Android Emulator");
                 desiredCapabilities.setCapability("deviceOrientation", "portrait");
@@ -99,11 +93,11 @@ public class SauceImpl extends AbstractDriver {
                 desiredCapabilities.setCapability("platform", "OS X 10.10");
                 if (PLATFORM_VERSION.isSpecified()) {
                     desiredCapabilities.setCapability(
-                        "version", PLATFORM_VERSION.getValue());
+                            "version", PLATFORM_VERSION.getValue());
                 }
                 if (DEVICE.isSpecified()) {
                     desiredCapabilities.setCapability(
-                        "deviceName", DEVICE.getValue() + " Simulator");
+                            "deviceName", DEVICE.getValue() + " Simulator");
                 }
                 desiredCapabilities.setCapability("deviceOrientation", "portrait");
                 break;
@@ -114,7 +108,7 @@ public class SauceImpl extends AbstractDriver {
 
     private void setAppiumCapabilities() {
         desiredCapabilities.setCapability(
-            "app", "sauce-storage:" + new File(APP_PATH.getValue()).getName());
+                "app", "sauce-storage:" + new File(APP_PATH.getValue()).getName());
         desiredCapabilities.setCapability("appiumVersion", "1.4.10");
         desiredCapabilities.setCapability("deviceOrientation", "portrait");
         switch (platform) {
@@ -122,26 +116,26 @@ public class SauceImpl extends AbstractDriver {
                 desiredCapabilities = DesiredCapabilities.iphone();
                 if (DEVICE.isSpecified()) {
                     desiredCapabilities.setCapability(
-                        "deviceName", DEVICE.getValue() + " Simulator");
+                            "deviceName", DEVICE.getValue() + " Simulator");
                 }
                 desiredCapabilities.setCapability("platformName", "iOS");
                 desiredCapabilities.setCapability("browserName", "");
                 if (PLATFORM_VERSION.isSpecified()) {
                     desiredCapabilities.setCapability(
-                        "platformVersion", PLATFORM_VERSION.getValue());
+                            "platformVersion", PLATFORM_VERSION.getValue());
                 }
                 break;
             case ANDROID:
                 desiredCapabilities = DesiredCapabilities.android();
                 if (DEVICE.isSpecified()) {
                     desiredCapabilities.setCapability(
-                        "deviceName", DEVICE.getValue() + " Emulator");
+                            "deviceName", DEVICE.getValue() + " Emulator");
                 }
                 desiredCapabilities.setCapability("platformName", "Android");
                 desiredCapabilities.setCapability("browserName", "");
                 if (PLATFORM_VERSION.isSpecified()) {
                     desiredCapabilities.setCapability(
-                        "platformVersion", PLATFORM_VERSION.getValue());
+                            "platformVersion", PLATFORM_VERSION.getValue());
                 }
                 break;
             default:

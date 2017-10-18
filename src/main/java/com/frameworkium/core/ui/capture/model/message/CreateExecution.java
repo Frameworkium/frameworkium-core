@@ -18,8 +18,6 @@ public final class CreateExecution {
 
     /**
      * Create Capture execution.
-     * @param testID
-     * @param nodeAddress
      */
     public CreateExecution(String testID, String nodeAddress) {
 

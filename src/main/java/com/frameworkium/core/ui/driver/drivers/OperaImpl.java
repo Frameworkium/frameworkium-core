@@ -8,8 +8,9 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 /**
  * Driver for the Opera browser.
  *
- * @deprecated will be removed from core soon as if required can be used on a
- *      project specific basis with the new CustomDriverImpl feature.
+ * @deprecated will be removed from core soon.
+ *         If Opera is required then a project specific DriverImpl can
+ *         be created with the new CustomDriverImpl feature.
  */
 @Deprecated
 public class OperaImpl extends AbstractDriver {

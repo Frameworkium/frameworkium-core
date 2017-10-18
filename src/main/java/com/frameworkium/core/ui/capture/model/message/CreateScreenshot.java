@@ -17,11 +17,6 @@ public class CreateScreenshot {
 
     /**
      * Create screenshot object.
-     * @param executionID
-     * @param command
-     * @param url
-     * @param errorMessage
-     * @param screenshotBase64
      */
     public CreateScreenshot(
             String executionID, Command command, String url,

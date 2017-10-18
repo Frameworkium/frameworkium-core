@@ -1,28 +1,22 @@
 package com.frameworkium.core.ui.listeners;
 
-import static com.frameworkium.core.common.properties.Property.BROWSER;
-import static com.frameworkium.core.ui.driver.DriverSetup.Browser.ELECTRON;
-
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.driver.DriverSetup.Browser;
 import com.frameworkium.core.ui.driver.WebDriverWrapper;
 import com.frameworkium.core.ui.tests.BaseTest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.Augmenter;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
 import ru.yandex.qatools.allure.annotations.Attachment;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
+import java.nio.file.*;
+
+import static com.frameworkium.core.common.properties.Property.BROWSER;
+import static com.frameworkium.core.ui.driver.DriverSetup.Browser.ELECTRON;
 
 public class ScreenshotListener extends TestListenerAdapter {
 
@@ -58,8 +52,8 @@ public class ScreenshotListener extends TestListenerAdapter {
                     WebDriverWrapper driver = BaseTest.getDriver();
                     try {
                         writeScreenshotToFile(driver, screenshot);
-                    } catch (ClassCastException classCastException) {
-                        //We need to augment our driver object
+                    } catch (ClassCastException cce) {
+                        // We need to augment our driver object
                         writeScreenshotToFile(new Augmenter().augment(driver), screenshot);
                     }
                     logger.info("Written screenshot to " + absolutePath);

@@ -1,9 +1,5 @@
 package com.frameworkium.core.ui.driver.drivers;
 
-import static com.frameworkium.core.common.properties.Property.APP_PATH;
-import static com.frameworkium.core.common.properties.Property.DEVICE;
-import static com.frameworkium.core.common.properties.Property.PLATFORM_VERSION;
-
 import com.frameworkium.core.ui.driver.AbstractDriver;
 import io.appium.java_client.windows.WindowsDriver;
 import io.appium.java_client.windows.WindowsElement;
@@ -11,6 +7,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import static com.frameworkium.core.common.properties.Property.*;
 
 public class WinAppDriverImpl extends AbstractDriver {
 
@@ -22,10 +20,10 @@ public class WinAppDriverImpl extends AbstractDriver {
         final DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
         desiredCapabilities.setCapability("platformName", "Windows");
         if (PLATFORM_VERSION.isSpecified()) {
-            desiredCapabilities.setCapability("platform",
-                "Windows " + PLATFORM_VERSION.getValue());
-            desiredCapabilities.setCapability("platformVersion",
-                PLATFORM_VERSION.getValue());
+            desiredCapabilities.setCapability(
+                    "platform", "Windows " + PLATFORM_VERSION.getValue());
+            desiredCapabilities.setCapability(
+                    "platformVersion", PLATFORM_VERSION.getValue());
         } else {
             logger.error("Platform version needs to be specified when using Windows!");
         }

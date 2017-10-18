@@ -3,9 +3,7 @@ package com.frameworkium.core.ui.listeners;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 
 import java.util.regex.Matcher;
@@ -111,24 +109,24 @@ public class EventListener implements WebDriverEventListener {
                 ? m.group(1)
                 : str;
     }
-    
+
     @Override
     public void beforeAlertAccept(WebDriver webDriver) {
         logger.debug("before alert accept");
     }
-    
+
     @Override
     public void afterAlertAccept(WebDriver webDriver) {
         logger.debug("after alert accept");
     }
-    
+
     @Override
     public void beforeAlertDismiss(WebDriver webDriver) {
         logger.debug("before alert dismiss");
     }
-    
+
     @Override
     public void afterAlertDismiss(WebDriver webDriver) {
         logger.debug("after alert accept");
-    }  
+    }
 }

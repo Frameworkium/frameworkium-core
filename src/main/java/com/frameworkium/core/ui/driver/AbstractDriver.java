@@ -1,7 +1,5 @@
 package com.frameworkium.core.ui.driver;
 
-import static com.frameworkium.core.ui.tests.BaseTest.DEFAULT_TIMEOUT_SECONDS;
-
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
@@ -18,6 +16,8 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
+
+import static com.frameworkium.core.ui.tests.BaseTest.DEFAULT_TIMEOUT_SECONDS;
 
 public abstract class AbstractDriver implements Driver {
 
@@ -36,7 +36,6 @@ public abstract class AbstractDriver implements Driver {
 
     /**
      * Getter.
-     *
      * {@inheritDoc}
      **/
     @Override
@@ -97,7 +96,7 @@ public abstract class AbstractDriver implements Driver {
      * If no valid proxy argument is set then it returns null.
      *
      * @return A Selenium proxy object for the current system properties
-     *       or null if no valid proxy settings.
+     *         or null if no valid proxy settings.
      */
     private Proxy getProxy() {
         if (!Property.PROXY.isSpecified()) {

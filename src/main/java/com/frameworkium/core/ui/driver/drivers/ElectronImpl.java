@@ -1,7 +1,5 @@
 package com.frameworkium.core.ui.driver.drivers;
 
-import static com.frameworkium.core.common.properties.Property.APP_PATH;
-
 import com.frameworkium.core.ui.driver.AbstractDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -11,6 +9,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.frameworkium.core.common.properties.Property.APP_PATH;
 
 public class ElectronImpl extends AbstractDriver {
 

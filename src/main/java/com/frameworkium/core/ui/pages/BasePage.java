@@ -19,15 +19,11 @@ public abstract class BasePage<T extends BasePage<T>> {
     protected final Logger logger = LogManager.getLogger(this);
     protected final WebDriver driver;
     protected Wait<WebDriver> wait;
-    /**
-     * Visibility with current page wait and driver.
-     */
+    /** Visibility with current page wait and driver. */
     protected Visibility visibility;
     protected JavascriptWait javascriptWait;
 
-    /**
-     * Constructor, initialises all things useful.
-     */
+    /** Constructor, initialises all things useful. */
     public BasePage() {
         driver = BaseTest.getDriver();
         wait = BaseTest.getWait();
@@ -36,9 +32,10 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
-     * Get the current page object.
+     * Get the current page object. Useful for e.g.
+     * <code>myPage.get().then().doSomething();</code>
      *
-     * @return the current page object Useful for e.g. MyPage.get().then().doSomething()
+     * @return the current page object
      */
     @SuppressWarnings("unchecked")
     public T then() {
@@ -46,9 +43,10 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
-     * Get current page object.
+     * Get current page object. Useful for e.g.
+     * <code>myPage.get().then().with().aComponent().clickHome();</code>
      *
-     * @return the current page object Useful for e.g. MyPage.get().then().with().aComponent().clickHome();
+     * @return the current page object
      */
     @SuppressWarnings("unchecked")
     public T with() {
@@ -57,6 +55,7 @@ public abstract class BasePage<T extends BasePage<T>> {
 
     /**
      * Get new instance of a PageObject of type T, see {@link BasePage#get()}.
+     *
      * @param url the url to open before initialising
      * @return PageObject of type T
      * @see BasePage#get()
@@ -67,7 +66,9 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
-     * Get new instance of a PageObject of type T, see {@link BasePage#get()} updating the timeout.
+     * Get new instance of a PageObject of type T,
+     * see {@link BasePage#get()} for updating the timeout.
+     *
      * @param url     the url to open before initialising
      * @param timeout the timeout, in seconds, for the new {@link Wait} for this page
      * @return new instance of a PageObject of type T, see {@link BasePage#get()}
@@ -79,7 +80,9 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
-     * Get new instance of a PageObject of type T, see {@link BasePage#get()} updating the timeout.
+     * Get new instance of a PageObject of type T,
+     * see {@link BasePage#get()} for updating the timeout.
+     *
      * @param timeout the timeout, in seconds, for the new {@link Wait} for this page
      * @return new instance of a PageObject of type T, see {@link BasePage#get()}
      * @see BasePage#get()
@@ -90,17 +93,16 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
-    * Initialises the PageObject.
-    *
-    * <p><ul>
-    * <li>Initialises fields with lazy proxies</li>
-    * <li>Waits for Javascript events including document ready & JS frameworks (if applicable)</li>
-    * <li>Processes Frameworkium visibility annotations e.g. {@link Visible}</li>
-    * <li>Log page load to Allure and Capture</li>
-    * </ul>
-    *
-    * @return the PageObject, of type T, populated with lazy proxies which are checked
-     *      for visibility based upon appropriate Frameworkium annotations
+     * Initialises the PageObject.
+     * <ul>
+     * <li>Initialises fields with lazy proxies</li>
+     * <li>Waits for Javascript events including document ready & JS frameworks (if applicable)</li>
+     * <li>Processes Frameworkium visibility annotations e.g. {@link Visible}</li>
+     * <li>Log page load to Allure and Capture</li>
+     * </ul>
+     *
+     * @return the PageObject, of type T, populated with lazy proxies which are
+     *         checked for visibility based upon appropriate Frameworkium annotations.
      */
     @SuppressWarnings("unchecked")
     public T get() {
@@ -139,8 +141,8 @@ public abstract class BasePage<T extends BasePage<T>> {
         if (Property.CAPTURE_URL.isSpecified()) {
             try {
                 BaseTest.getCapture().takeAndSendScreenshot(
-                    new Command("load", "page", getSimplePageObjectName()),
-                    driver);
+                        new Command("load", "page", getSimplePageObjectName()),
+                        driver);
             } catch (Exception e) {
                 logger.warn("Failed to send loading screenshot to Capture.");
                 logger.debug(e);
@@ -151,8 +153,8 @@ public abstract class BasePage<T extends BasePage<T>> {
     private String getSimplePageObjectName() {
         String packageName = getClass().getPackage().getName();
         return packageName.substring(packageName.lastIndexOf('.') + 1)
-            + "."
-            + getClass().getSimpleName();
+                + "."
+                + getClass().getSimpleName();
     }
 
     /**
@@ -206,18 +208,12 @@ public abstract class BasePage<T extends BasePage<T>> {
         return returnObj;
     }
 
-    /**
-     * Get title of the web page.
-     * @return title
-     */
+    /** Get title of the web page. */
     public String getTitle() {
         return driver.getTitle();
     }
 
-    /**
-     * Get page source code of the current page.
-     * @return source code
-     */
+    /** Get page source code of the current page. */
     public String getSource() {
         return driver.getPageSource();
     }

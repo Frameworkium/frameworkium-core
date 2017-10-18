@@ -13,9 +13,6 @@ public class Command {
 
     /**
      * Create Command object.
-     * @param action
-     * @param using
-     * @param value
      */
     public Command(String action, String using, String value) {
         this.action = action;
@@ -25,8 +22,6 @@ public class Command {
 
     /**
      * Create Command object.
-     * @param action
-     * @param element
      */
     public Command(String action, WebElement element) {
         this.action = action;

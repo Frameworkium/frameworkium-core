@@ -17,6 +17,8 @@
  -->
 <!-- Modified by: Sergey Tikhomirov, Tim Myerscough-->
 
+<!-- Modified for Frameworkium Core -->
+
 <module name="Checker">
     <property name="charset" value="UTF-8"/>
 
@@ -49,9 +51,6 @@
             <property name="max" value="120"/>
             <property name="ignorePattern"
                       value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
-        </module>
-        <module name="AvoidStarImport">
-            <property name="severity" value="warning"/>
         </module>
         <module name="OneTopLevelClass"/>
         <module name="NoLineWrap"/>
@@ -158,8 +157,8 @@
             <property name="braceAdjustment" value="0"/>
             <property name="caseIndent" value="4"/>
             <property name="throwsIndent" value="4"/>
-            <property name="lineWrappingIndentation" value="4"/>
             <property name="arrayInitIndent" value="2"/>
+            <property name="lineWrappingIndentation" value="8"/>
         </module>
         <module name="AbbreviationAsWordInName">
             <property name="ignoreFinal" value="false"/>
@@ -170,7 +169,7 @@
         <module name="CustomImportOrder">
             <property name="sortImportsInGroupAlphabetically" value="true"/>
             <property name="customImportOrderRules"
-                      value="STATIC###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE"/>
+                      value="SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE###STATIC"/>
             <property name="severity" value="warning"/>
         </module>
         <module name="MethodParamPad"/>
@@ -195,7 +194,6 @@
         </module>
         <module name="EmptyCatchBlock">
             <property name="exceptionVariableName" value="expected"/>
-
         </module>
         <module name="CommentsIndentation"/>
 
@@ -218,9 +216,6 @@
             <property name="minLineCount" value="2"/>
             <property name="allowedAnnotations" value="Override, Test, Before, After"/>
             <property name="allowThrowsTagsForSubclasses" value="true"/>
-        </module>
-        <module name="SingleLineJavadoc">
-            <property name="ignoreInlineTags" value="false"/>
         </module>
     </module>
 </module>
