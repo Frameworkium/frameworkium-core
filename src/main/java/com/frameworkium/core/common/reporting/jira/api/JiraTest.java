@@ -12,6 +12,7 @@ public class JiraTest {
 
     private static final Logger logger = LogManager.getLogger();
 
+    /** Create and send a PUT request to JIRA to change the value of a field. */
     public static void changeIssueFieldValue(
             String issueKey, String fieldToUpdate, String resultValue) {
 
@@ -49,6 +50,9 @@ public class JiraTest {
         return jsonPath.getString(String.format("find {it.name == '%s'}.id", fieldName));
     }
 
+    /**
+     * Create and post a JSON request for a comment update in JIRA.
+     */
     public static void addComment(String issueKey, String commentToAdd) {
 
         JSONObject obj = new JSONObject();
@@ -66,6 +70,9 @@ public class JiraTest {
                 .post(JIRA_REST_PATH + "/issue/" + issueKey + "/comment");
     }
 
+    /**
+     * Create and post a JSON request for a transition change in JIRA.
+     */
     public static void transitionIssue(String issueKey, String transitionName) {
 
         logger.debug("Transition name: " + transitionName);

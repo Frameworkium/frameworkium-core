@@ -1,35 +1,23 @@
 package com.frameworkium.core.ui.tests;
 
-import com.frameworkium.core.common.listeners.MethodInterceptor;
-import com.frameworkium.core.common.listeners.ResultLoggerListener;
-import com.frameworkium.core.common.listeners.TestListener;
+import com.frameworkium.core.common.listeners.*;
 import com.frameworkium.core.common.reporting.TestIdUtils;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.common.reporting.allure.AllureProperties;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
-import com.frameworkium.core.ui.driver.Driver;
-import com.frameworkium.core.ui.driver.DriverSetup;
-import com.frameworkium.core.ui.driver.WebDriverWrapper;
-import com.frameworkium.core.ui.listeners.CaptureListener;
-import com.frameworkium.core.ui.listeners.SauceLabsListener;
-import com.frameworkium.core.ui.listeners.ScreenshotListener;
-import com.frameworkium.core.ui.listeners.VideoListener;
+import com.frameworkium.core.ui.driver.*;
+import com.frameworkium.core.ui.listeners.*;
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Listeners;
+import org.testng.annotations.*;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -39,30 +27,30 @@ import java.util.concurrent.Executors;
 import static java.util.Objects.isNull;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-@Listeners({CaptureListener.class, ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class, TestListener.class,
-            ResultLoggerListener.class, VideoListener.class})
+@Listeners({CaptureListener.class, ScreenshotListener.class, MethodInterceptor.class, SauceLabsListener.class,
+        TestListener.class, ResultLoggerListener.class, VideoListener.class})
 public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
-    /** Executor for async sending of screenshot messages to capture */
+    /** Executor for async sending of screenshot messages to capture. */
     public static final ExecutorService screenshotExecutor =
             Executors.newSingleThreadExecutor();
 
-    /** Logger for subclasses (logs with correct class i.e. not BaseTest) */
-    protected final Logger logger = LogManager.getLogger(this);
-
-    /** Logger for this class */
-    private static final Logger baseLogger = LogManager.getLogger();
-
-    /** Driver related constant */
+    /** Driver related constant. */
     public static final long DEFAULT_TIMEOUT_SECONDS = 10L;
+
+    /** Logger for this class. */
+    private static final Logger baseLogger = LogManager.getLogger();
 
     private static final ThreadLocal<ScreenshotCapture> capture = ThreadLocal.withInitial(() -> null);
     private static final ThreadLocal<Driver> driver = ThreadLocal.withInitial(() -> null);
     private static final ThreadLocal<Wait<WebDriver>> wait = ThreadLocal.withInitial(() -> null);
     private static String userAgent;
 
+    /** Logger for subclasses (logs with correct class i.e. not BaseTest). */
+    protected final Logger logger = LogManager.getLogger(this);
+
     /**
-     * Method which runs first upon running a test, it will do the following:
+     * Method which runs first upon running a test, it will do the following.
      * <ul>
      * <li>Retrieve the {@link Driver} and initialise the {@link WebDriver}</li>
      * <li>Initialise the {@link Wait}</li>
@@ -77,6 +65,8 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     /**
+     * Configure browser before test.
+     *
      * @param testMethod The test method about to be executed
      * @see #configureBrowserBeforeTest(String)
      */
@@ -86,8 +76,30 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     /**
-     * Tears down the browser after the test method
+     * Configure the browser before a test method runs.
+     * <ul>
+     * <li>Resets the browser if already initialised</li>
+     * <li>Maximises browser based on settings</li>
+     * <li>Sets the user agent of the browser</li>
+     * <li>Initialises screenshot capture if needed</li>
+     * </ul>
+     *
+     * @param testName The test name about to be executed
      */
+    public static void configureBrowserBeforeTest(String testName) {
+        try {
+            wait.set(newDefaultWait());
+            userAgent = determineUserAgent();
+            if (ScreenshotCapture.isRequired()) {
+                initialiseNewScreenshotCapture(testName);
+            }
+        } catch (Exception e) {
+            baseLogger.error("Failed to configure browser.", e);
+            throw new RuntimeException("Failed to configure browser.", e);
+        }
+    }
+
+    /** Tears down the browser after the test method. */
     @AfterMethod(alwaysRun = true)
     public static void tearDownBrowser() {
         try {
@@ -97,7 +109,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         }
     }
 
-    /** Shuts down the {@link ExecutorService} */
+    /** Shuts down the {@link ExecutorService}. */
     @AfterSuite(alwaysRun = true)
     public static void shutdownScreenshotExecutor() {
         baseLogger.debug("Async screenshot capture: processing remaining backlog...");
@@ -116,18 +128,18 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         }
     }
 
-    /** Creates the allure properties for the report */
+    /** Creates the allure properties for the report. */
     @AfterSuite(alwaysRun = true)
     public static void createAllureProperties() {
         AllureProperties.create();
     }
 
-    /** Required for unit testing */
+    /** Required for unit testing. */
     public static void setDriver(Driver newDriver) {
         driver.set(newDriver);
     }
 
-    /** Required for unit testing */
+    /** Required for unit testing. */
     public static void setWait(Wait<WebDriver> newWait) {
         wait.set(newWait);
     }
@@ -160,30 +172,6 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         return testID.orElse("n/a");
     }
 
-    /**
-     * Configure the browser before a test method runs.
-     * <ul>
-     * <li>Resets the browser if already initialised</li>
-     * <li>Maximises browser based on settings</li>
-     * <li>Sets the user agent of the browser</li>
-     * <li>Initialises screenshot capture if needed</li>
-     * </ul>
-     *
-     * @param testName The test name about to be executed
-     */
-    public static void configureBrowserBeforeTest(String testName) {
-        try {
-            wait.set(newDefaultWait());
-            userAgent = determineUserAgent();
-            if (ScreenshotCapture.isRequired()) {
-                initialiseNewScreenshotCapture(testName);
-            }
-        } catch (Exception e) {
-            baseLogger.error("Failed to configure browser.", e);
-            throw new RuntimeException("Failed to configure browser.", e);
-        }
-    }
-
     private static String determineUserAgent() {
         try {
             return Driver.isNative() ? "" : (String) getDriver().executeScript("return navigator.userAgent;");
@@ -193,7 +181,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     /**
-     * Initialise the screenshot capture and link to issue/test case id
+     * Initialise the screenshot capture and link to issue/test case id.
      *
      * @param testName Test method passed from the test script
      */
@@ -201,18 +189,17 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         capture.set(new ScreenshotCapture(testName));
     }
 
-    /**
-     * @return a new {@link Wait} for the thread local driver and default timeout
-     */
+    /** Create a new {@link Wait} for the thread local driver and default timeout. */
     public static Wait<WebDriver> newDefaultWait() {
         return newWaitWithTimeout(DEFAULT_TIMEOUT_SECONDS);
     }
 
     /**
+     * Create a new {@link Wait} with timeout.
+     *
      * @param timeout timeout in seconds for the {@link Wait}
-     * @return a new {@link Wait} for the thread local driver and given timeout
-     * which also ignores {@link NoSuchElementException} and
-     * {@link StaleElementReferenceException}
+     * @return a new {@link Wait} for the thread local driver and given timeout which also ignores {@link
+     *         NoSuchElementException} and {@link StaleElementReferenceException}
      */
     public static Wait<WebDriver> newWaitWithTimeout(long timeout) {
         return new FluentWait<>(getDriver().getWrappedDriver())
@@ -222,42 +209,61 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     /**
-     * @return the {@link WebDriverWrapper} instance for the requesting thread
+     * Get {@link WebDriverWrapper} instance for the requesting thread.
+     *
+     * @return the {@link WebDriverWrapper}
      */
     public static WebDriverWrapper getDriver() {
         return driver.get().getDriver();
     }
 
-    /** @return the {@link ScreenshotCapture} object for the current test */
+    /**
+     * Get {@link ScreenshotCapture} object for the current test.
+     *
+     * @return the {@link ScreenshotCapture} object
+     */
     public static ScreenshotCapture getCapture() {
         return capture.get();
     }
 
-    /** @return The default {@link Wait} */
+    /** Get the default {@link Wait}. */
     public static Wait<WebDriver> getWait() {
         return wait.get();
     }
 
-    /** @return Optional of the current browser user agent */
+    /**
+     * Get current browser user agent.
+     *
+     * @return Optional of the current browser user agent
+     */
     public static Optional<String> getUserAgent() {
         return Optional.ofNullable(userAgent);
     }
 
-    /** @return the Session id for the current thread */
+    /**
+     * Get session id for the current thread.
+     *
+     * @return Session id
+     */
     public static String getThreadSessionId() {
         SessionId sessionId = getDriver().getWrappedRemoteWebDriver().getSessionId();
         return isNull(sessionId) ? null : sessionId.toString();
     }
 
-    /** @return the Job id for the current thread */
+    /**
+     * Get the Job id for the current thread.
+     *
+     * @return Job id
+     */
     @Override
     public String getSessionId() {
         return getThreadSessionId();
     }
 
     /**
-     * @return the {@link SauceOnDemandAuthentication} instance containing
-     * the Sauce username/access key
+     * Get {@link SauceOnDemandAuthentication} instance containing the Sauce username/access key.
+     *
+     * @return {@link SauceOnDemandAuthentication} instance
      */
     @Override
     public SauceOnDemandAuthentication getAuthentication() {
@@ -266,7 +272,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     /**
      * Logs the start of a step to your allure report
-     * Other steps will be sub-steps until you call stepFinish
+     * Other steps will be sub-steps until you call stepFinish.
      *
      * @param stepName the name of the step
      * @deprecated use <code>AllureLogger.stepStart(stepName)</code>
@@ -277,7 +283,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     /**
-     * Logs the end of a step
+     * Logs the end of a step.
      *
      * @deprecated use <code>AllureLogger.stepFinish()</code>
      */

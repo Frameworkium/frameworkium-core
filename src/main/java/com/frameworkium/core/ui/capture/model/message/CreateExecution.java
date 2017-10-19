@@ -16,6 +16,9 @@ public final class CreateExecution {
 
     private static final Logger logger = LogManager.getLogger();
 
+    /**
+     * Create Capture execution.
+     */
     public CreateExecution(String testID, String nodeAddress) {
 
         logger.debug("CreateExecution: testID='{}', nodeAddress='{}", testID, nodeAddress);

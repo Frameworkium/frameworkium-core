@@ -28,7 +28,7 @@ public class DeveloperGuidePage extends BasePage<DeveloperGuidePage> {
     private WebElement guideTitle;
 
     @Name("Loading")
-    @FindBy(id= "loading")
+    @FindBy(id = "loading")
     private WebElement loading;
 
     public static DeveloperGuidePage open() {

@@ -24,8 +24,10 @@ public class SpiraExecution {
     private static final String SPIRA_URI =
             Property.SPIRA_URL.getValue() + SpiraConfig.REST_PATH;
 
-    public void recordTestResult(
-            String issue, int resultId, String comment, ITestResult result) {
+    /**
+     * Record test result.
+     */
+    public void recordTestResult(String issue, int resultId, String comment, ITestResult result) {
 
         JSONObject obj = new JSONObject();
         try {
@@ -54,9 +56,9 @@ public class SpiraExecution {
 
         // TODO: use RestAssured
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost request = new HttpPost(SPIRA_URI + "/test-runs/record?" +
-                "username=" + SpiraConfig.USERNAME + "&" +
-                "api-key=" + SpiraConfig.API_KEY.replace("{", "%7B").replace("}", "%7D"));
+        HttpPost request = new HttpPost(SPIRA_URI + "/test-runs/record?"
+                + "username=" + SpiraConfig.USERNAME + "&"
+                + "api-key=" + SpiraConfig.API_KEY.replace("{", "%7B").replace("}", "%7D"));
         StringEntity jsonBody;
         try {
             jsonBody = new StringEntity(json);
@@ -73,6 +75,9 @@ public class SpiraExecution {
         }
     }
 
+    /**
+     * Get release ID.
+     */
     public String getReleaseId(String releaseName) {
         RestAssured.baseURI = SPIRA_URI;
         String path = String.format(

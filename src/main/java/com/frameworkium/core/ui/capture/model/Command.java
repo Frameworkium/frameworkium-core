@@ -11,12 +11,18 @@ public class Command {
     public String using;
     public String value;
 
+    /**
+     * Create Command object.
+     */
     public Command(String action, String using, String value) {
         this.action = action;
         this.using = using;
         this.value = value;
     }
 
+    /**
+     * Create Command object.
+     */
     public Command(String action, WebElement element) {
         this.action = action;
 

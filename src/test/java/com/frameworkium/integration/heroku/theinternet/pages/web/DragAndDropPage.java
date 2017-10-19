@@ -56,7 +56,7 @@ public class DragAndDropPage extends BasePage<DragAndDropPage> {
      * Fetches Javascript from the Internet used to be able to simulate Drag and Drop.
      *
      * @return a String containing the Javascript for JQuery (if not already present on the page)
-     * and code for simulating drag and drop.
+     *         and code for simulating drag and drop.
      */
     private String javascriptToSimulateDragDrop() {
         if (jQueryJS.isEmpty()) {

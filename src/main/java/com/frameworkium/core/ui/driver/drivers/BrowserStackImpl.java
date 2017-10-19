@@ -18,6 +18,9 @@ public class BrowserStackImpl extends AbstractDriver {
     private Platform platform;
     private DesiredCapabilities desiredCapabilities;
 
+    /**
+     * Implementation of driver for BrowserStack.
+     */
     public BrowserStackImpl(
             Platform platform, DesiredCapabilities browserDesiredCapabilities) {
 
@@ -30,12 +33,20 @@ public class BrowserStackImpl extends AbstractDriver {
         }
     }
 
+    /**
+     * Get desired capabilities.
+     */
     public DesiredCapabilities getDesiredCapabilities() {
         setCapabilitiesBasedOnPlatform();
         desiredCapabilities.setCapability("browserstack.debug", true);
         return desiredCapabilities;
     }
 
+    /**
+     * Get web driver.
+     *
+     * @param capabilities Capabilities of the browser
+     */
     public WebDriver getWebDriver(DesiredCapabilities capabilities) {
         return new RemoteWebDriver(remoteURL, capabilities);
     }
@@ -66,6 +77,8 @@ public class BrowserStackImpl extends AbstractDriver {
                     desiredCapabilities.setCapability(
                             "browserName", Property.DEVICE.getValue().split(" ")[0]);
                 }
+                break;
+            default:
                 break;
         }
     }

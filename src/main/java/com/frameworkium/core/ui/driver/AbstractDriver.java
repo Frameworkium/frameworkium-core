@@ -25,13 +25,19 @@ public abstract class AbstractDriver implements Driver {
 
     private WebDriverWrapper webDriverWrapper;
 
-    /** {@inheritDoc} */
+    /**
+     * Clean up code - quit the driver.
+     * {@inheritDoc}
+     */
     @Override
     public void tearDown() {
         this.webDriverWrapper.quit();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Getter.
+     * {@inheritDoc}
+     **/
     @Override
     public WebDriverWrapper getDriver() {
         return this.webDriverWrapper;
@@ -68,7 +74,9 @@ public abstract class AbstractDriver implements Driver {
         return eventFiringWD;
     }
 
-    /** Maximises the browser window based on maximise property */
+    /**
+     * Maximises the browser window based on maximise property.
+     **/
     private void maximiseBrowserIfRequired() {
         if (isMaximiseRequired()) {
             this.webDriverWrapper.manage().window().maximize();
@@ -84,11 +92,11 @@ public abstract class AbstractDriver implements Driver {
     }
 
     /**
-     * This method returns a proxy object with settings set by the system properties.
+     * Get proxy object with settings set by the system properties.
      * If no valid proxy argument is set then it returns null.
      *
      * @return A Selenium proxy object for the current system properties
-     * or null if no valid proxy settings
+     *         or null if no valid proxy settings.
      */
     private Proxy getProxy() {
         if (!Property.PROXY.isSpecified()) {

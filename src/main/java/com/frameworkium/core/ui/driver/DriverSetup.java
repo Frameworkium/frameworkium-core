@@ -13,17 +13,17 @@ public class DriverSetup {
 
     public static final Browser DEFAULT_BROWSER = Browser.FIREFOX;
 
-    /** Supported drivers */
+    /** Supported drivers. */
     public enum Browser {
         FIREFOX, LEGACYFIREFOX, CHROME, OPERA, IE, PHANTOMJS, SAFARI, ELECTRON, CUSTOM
     }
 
-    /** Supported remote grids */
+    /** Supported remote grids. */
     private enum RemoteGrid {
         SAUCE, BROWSERSTACK, GRID
     }
 
-    /** Supported platforms for remote grids */
+    /** Supported platforms for remote grids. */
     public enum Platform {
         WINDOWS, OSX, IOS, ANDROID, NONE
     }
@@ -31,6 +31,8 @@ public class DriverSetup {
     protected static final Logger logger = LogManager.getLogger();
 
     /**
+     * Instantiate driver.
+     *
      * @return An uninitialised desired {@link Driver} Implementation.
      */
     public Driver instantiateDriver() {
@@ -43,7 +45,7 @@ public class DriverSetup {
     }
 
     /**
-     * Uses parameters to determine which browser/remote/platform to use
+     * Uses parameters to determine which browser/remote/platform to use.
      *
      * @param driver the desired (non-remote) driver implementation
      * @return The (potentially) remote driver implementation based on parameters
@@ -96,7 +98,7 @@ public class DriverSetup {
     }
 
     /**
-     * Checks whether a remote driver is wanting to be used
+     * Checks whether a remote driver is wanting to be used.
      *
      * @return True/False to whether to use a remote driver
      */
@@ -107,7 +109,7 @@ public class DriverSetup {
     }
 
     /**
-     * Returns the platform type, if it's been given
+     * Returns the platform type, if it's been given.
      *
      * @return Platform type
      */
@@ -120,7 +122,7 @@ public class DriverSetup {
     }
 
     /**
-     * Returns the browser type and returns default if not specified
+     * Returns the browser type and returns default if not specified.
      *
      * @return Browser Type
      */
@@ -135,7 +137,7 @@ public class DriverSetup {
     }
 
     /**
-     * Returns what type of remote driver has been specified to be used
+     * Returns what type of remote driver has been specified to be used.
      *
      * @return Remote Driver Type
      */

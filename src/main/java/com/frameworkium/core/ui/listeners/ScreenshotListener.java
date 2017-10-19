@@ -52,7 +52,8 @@ public class ScreenshotListener extends TestListenerAdapter {
                     WebDriverWrapper driver = BaseTest.getDriver();
                     try {
                         writeScreenshotToFile(driver, screenshot);
-                    } catch (ClassCastException weNeedToAugmentOurDriverObject) {
+                    } catch (ClassCastException cce) {
+                        // We need to augment our driver object
                         writeScreenshotToFile(new Augmenter().augment(driver), screenshot);
                     }
                     logger.info("Written screenshot to " + absolutePath);

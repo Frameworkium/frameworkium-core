@@ -16,6 +16,9 @@ public class GridImpl extends AbstractDriver {
     private URL remoteURL;
     private DesiredCapabilities desiredCapabilities;
 
+    /**
+     * Implementation of driver for the Selenium Grid .
+     */
     public GridImpl(DesiredCapabilities desiredCapabilities) {
         this.desiredCapabilities = desiredCapabilities;
         try {
@@ -25,6 +28,9 @@ public class GridImpl extends AbstractDriver {
         }
     }
 
+    /**
+     * Get desired capabilities.
+     */
     public DesiredCapabilities getDesiredCapabilities() {
         if (BROWSER_VERSION.isSpecified()) {
             desiredCapabilities.setCapability("version", BROWSER_VERSION.getValue());

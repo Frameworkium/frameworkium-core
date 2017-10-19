@@ -22,8 +22,8 @@ public class AllureLogger {
     }
 
     /**
-     * Logs the start of a step to your allure report
-     * Other steps will be sub-steps until you call stepFinish
+     * Logs the start of a step to your allure report.
+     * Other steps will be sub-steps until you call stepFinish.
      *
      * @param stepName the name of the step
      */
@@ -31,7 +31,9 @@ public class AllureLogger {
         Allure.LIFECYCLE.fire(new StepStartedEvent(stepName));
     }
 
-    /** Logs the end of a step. Ensure it matches a {@link #stepStart(String). */
+    /**
+     * Logs the end of a step. Ensure it matches a {@link #stepStart(String)}.
+     **/
     public static void stepFinish() {
         Allure.LIFECYCLE.fire(new StepFinishedEvent());
     }

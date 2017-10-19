@@ -13,7 +13,7 @@ public class BaseCaptureService extends BaseService {
 
     /**
      * @return a Rest Assured {@link RequestSpecification} with the baseUri
-     * (and anything else required by most Capture services).
+     *         (and anything else required by most Capture services).
      */
     @Override
     protected RequestSpecification getRequestSpec() {
@@ -27,7 +27,7 @@ public class BaseCaptureService extends BaseService {
 
     /**
      * @return a Rest Assured {@link ResponseSpecification} with basic checks
-     * (and anything else required by most Capture services).
+     *         (and anything else required by most Capture services).
      */
     @Override
     protected ResponseSpecification getResponseSpec() {

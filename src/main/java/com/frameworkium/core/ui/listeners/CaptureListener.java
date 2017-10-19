@@ -161,18 +161,18 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     @Override
     public void beforeFindBy(By by, WebElement element, WebDriver arg2) {}
-    
+
     @Override
     public void beforeAlertAccept(WebDriver webDriver) {}
-    
+
     @Override
     public void afterAlertAccept(WebDriver webDriver) {}
-    
+
     @Override
     public void beforeAlertDismiss(WebDriver webDriver) {}
-    
+
     @Override
-    public void afterAlertDismiss(WebDriver webDriver) {}  
+    public void afterAlertDismiss(WebDriver webDriver) {}
 
     @Override
     public void onTestStart(ITestResult result) {}

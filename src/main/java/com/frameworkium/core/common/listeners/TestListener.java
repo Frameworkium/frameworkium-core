@@ -44,16 +44,13 @@ public class TestListener implements ITestListener {
     }
 
     @Override
-    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
-    }
+    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {}
 
     @Override
-    public void onStart(ITestContext context) {
-    }
+    public void onStart(ITestContext context) {}
 
     @Override
-    public void onFinish(ITestContext context) {
-    }
+    public void onFinish(ITestContext context) {}
 
     @Step("{0}")
     private void stepLogger(String toLog) {

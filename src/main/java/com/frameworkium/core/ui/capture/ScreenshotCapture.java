@@ -28,6 +28,9 @@ public class ScreenshotCapture {
     private String executionID;
     private String testID;
 
+    /**
+     * Initialise Screenshot capture object for a test.
+     */
     public ScreenshotCapture(String testID) {
         this.testID = testID;
         logger.debug("About to initialise Capture execution for " + testID);
@@ -109,6 +112,9 @@ public class ScreenshotCapture {
         takeAndSendScreenshotWithError(command, driver, null);
     }
 
+    /**
+     * Take and send a screenshot with an error message.
+     */
     public void takeAndSendScreenshotWithError(
             Command command, WebDriver driver, String errorMessage) {
 

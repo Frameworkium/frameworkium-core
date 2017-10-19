@@ -14,7 +14,7 @@ public abstract class BaseTest {
 
     protected final Logger logger = LogManager.getLogger(this);
 
-    /** Creates the allure properties for the report, after the test run */
+    /** Creates the allure properties for the report, after the test run. */
     @AfterSuite(alwaysRun = true)
     public static void createAllureProperties() {
         AllureProperties.create();

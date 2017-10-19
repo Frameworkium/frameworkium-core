@@ -201,16 +201,13 @@ public class ResultLoggerListener implements ITestListener {
     }
 
     @Override
-    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
-    }
+    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {}
 
     @Override
-    public void onStart(ITestContext context) {
-    }
+    public void onStart(ITestContext context) {}
 
     @Override
-    public void onFinish(ITestContext context) {
-    }
+    public void onFinish(ITestContext context) {}
 
     private Boolean zapiLoggingParamsProvided(ITestResult result) {
         return Property.JIRA_URL.isSpecified()
@@ -236,12 +233,13 @@ public class ResultLoggerListener implements ITestListener {
     }
 
     /**
-     * @return the value of either the @Issue or @TestCaseId annotation for the
-     * provided test result.
+     * This method gets the value of either the @Issue or @TestCaseId annotation for the provided test result.
      * If both are specified but if their values are not equal an
-     * {@link IllegalStateException} will be thrown, otherwise, their value will
-     * be returned.
-     * If neither are specified then the empty string will be returned.
+     * {@link java.lang.IllegalStateException} will be thrown, otherwise, their value will
+     * be returned. If neither are specified then the empty string will be returned.
+     *
+     * @param result The test result
+     * @return the value of either the @Issue or @TestCaseId annotation for the provided test result.
      */
     private String getIssueOrTestCaseIdAnnotation(ITestResult result) {
         Method method = result.getMethod().getConstructorOrMethod().getMethod();

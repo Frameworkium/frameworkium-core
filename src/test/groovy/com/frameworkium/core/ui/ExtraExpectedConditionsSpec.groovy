@@ -19,7 +19,9 @@ class ExtraExpectedConditionsSpec extends Specification {
 
     def "waiting for hidden element to be notPresentOrInvisible passes"() {
         given: "The element is not displayed"
-            mockElement.isDisplayed() >> false >> { throw new NoSuchElementException("") }
+            mockElement.isDisplayed() >> false >> {
+                throw new NoSuchElementException("")
+            }
         when: "waiting for the item not to be present or invisible"
             wait.until(ExtraExpectedConditions.notPresentOrInvisible(mockElement))
             wait.until(ExtraExpectedConditions.notPresentOrInvisible(mockElement))

@@ -8,6 +8,9 @@ public class SoftwareUnderTest {
     public String name;
     public String version;
 
+    /**
+     * Software under test object.
+     */
     public SoftwareUnderTest() {
         if (SUT_NAME.isSpecified()) {
             this.name = SUT_NAME.getValue();

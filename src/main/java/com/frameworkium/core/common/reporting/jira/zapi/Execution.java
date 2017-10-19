@@ -25,6 +25,9 @@ public class Execution {
     private List<Integer> idList;
     private int currentStatus;
 
+    /**
+     * Constructor that links an execution to an issue.
+     */
     public Execution(String issue) {
         this.version = Property.RESULT_VERSION.getValue();
         this.issue = issue;
@@ -47,6 +50,8 @@ public class Execution {
     }
 
     /**
+     * Gets the status of the status.
+     *
      * @return ZAPI execution status from the ITestResult status
      */
     public static int getZAPIStatus(int status) {
@@ -66,6 +71,9 @@ public class Execution {
         return currentStatus;
     }
 
+    /**
+     * Update issue with a comment and attachments.
+     */
     public void update(int status, String comment, String... attachments) {
         if (null != idList) {
             for (Integer executionId : idList) {
@@ -128,7 +136,6 @@ public class Execution {
                                 .header("X-Atlassian-Token", "nocheck")
                                 .multiPart(attachment)
                                 .when()
-                                .post(path)
-                );
+                                .post(path));
     }
 }

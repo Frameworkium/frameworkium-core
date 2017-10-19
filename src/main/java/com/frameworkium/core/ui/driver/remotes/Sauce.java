@@ -23,6 +23,9 @@ public class Sauce {
                     sauceAuth.getUsername(),
                     sauceAuth.getAccessKey());
 
+    /**
+     * Get the URL for the SauceLabs instance as configured by the parameters.
+     */
     public static URL getURL() throws MalformedURLException {
         return new URL(String.format(
                 "https://%s:%s@ondemand.saucelabs.com/wd/hub",
@@ -35,8 +38,10 @@ public class Sauce {
                 && Boolean.parseBoolean(Property.SAUCE.getValue());
     }
 
-    public static void updateJobName(
-            SauceOnDemandSessionIdProvider sessionIdProvider, String name) {
+    /**
+     * Update job name.
+     */
+    public static void updateJobName(SauceOnDemandSessionIdProvider sessionIdProvider, String name) {
 
         client.updateJobInfo(
                 sessionIdProvider.getSessionId(),

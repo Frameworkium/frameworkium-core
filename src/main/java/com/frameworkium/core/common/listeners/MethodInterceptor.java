@@ -47,9 +47,8 @@ public class MethodInterceptor implements IMethodInterceptor {
                     new SearchIssues(JQL_QUERY.getValue()).getKeys();
 
             List<IMethodInstance> methodsToRun = methodsWithTestIDs.stream()
-                    .filter(m -> testIDsFromJQL
-                            .contains(TestIdUtils.getIssueOrTestCaseIdValue(m)
-                                    .orElseThrow(IllegalStateException::new)))
+                    .filter(m -> testIDsFromJQL.contains(
+                            TestIdUtils.getIssueOrTestCaseIdValue(m).orElseThrow(IllegalStateException::new)))
                     .collect(toList());
 
             logTestMethodInformation(
@@ -72,12 +71,9 @@ public class MethodInterceptor implements IMethodInterceptor {
 
                     boolean appTest = clazz.endsWith("AppTest");
                     boolean mobiTest = clazz.endsWith("MobiTest");
-                    boolean nonMobileNotAppMobiTest =
-                            !Driver.isMobile() && !appTest && !mobiTest;
-                    boolean nativeAppTest =
-                            Driver.isNative() && appTest;
-                    boolean nonNativeMobiTest =
-                            !Driver.isNative() && mobiTest;
+                    boolean nonMobileNotAppMobiTest = !Driver.isMobile() && !appTest && !mobiTest;
+                    boolean nativeAppTest = Driver.isNative() && appTest;
+                    boolean nonNativeMobiTest = !Driver.isNative() && mobiTest;
 
                     return nonMobileNotAppMobiTest || nativeAppTest || nonNativeMobiTest;
                 })

@@ -19,6 +19,9 @@ public class WebDriverWrapper extends EventFiringWebDriver {
         return driver;
     }
 
+    /**
+     * Get remote web driver wrapper.
+     */
     public RemoteWebDriver getWrappedRemoteWebDriver() {
         WebDriver wd = getWrappedDriver();
         if (wd instanceof RemoteWebDriver) {
@@ -28,6 +31,9 @@ public class WebDriverWrapper extends EventFiringWebDriver {
         }
     }
 
+    /**
+     * Get Appium Driver.
+     */
     public AppiumDriver getWrappedAppiumDriver() {
         WebDriver wd = getWrappedDriver();
         if (wd instanceof AppiumDriver) {

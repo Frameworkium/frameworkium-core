@@ -2,9 +2,7 @@ package com.frameworkium.core.ui.listeners;
 
 import com.frameworkium.core.ui.capture.VideoCapture;
 import com.frameworkium.core.ui.tests.BaseTest;
-import org.testng.ITestContext;
-import org.testng.ITestResult;
-import org.testng.TestListenerAdapter;
+import org.testng.*;
 
 import static com.frameworkium.core.ui.capture.VideoCapture.isRequired;
 

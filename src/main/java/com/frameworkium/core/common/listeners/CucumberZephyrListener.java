@@ -7,7 +7,6 @@ import gherkin.formatter.Reporter;
 import gherkin.formatter.model.*;
 import org.apache.commons.lang3.StringUtils;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,28 +20,22 @@ public class CucumberZephyrListener implements Formatter, Reporter {
     private Throwable latestError;
 
     @Override
-    public void syntaxError(String s, String s1, List<String> list, String s2, Integer integer) {
-    }
+    public void syntaxError(String s, String s1, List<String> list, String s2, Integer integer) {}
 
     @Override
-    public void uri(String s) {
-    }
+    public void uri(String s) {}
 
     @Override
-    public void feature(Feature feature) {
-    }
+    public void feature(Feature feature) {}
 
     @Override
-    public void scenario(Scenario scenario) {
-    }
+    public void scenario(Scenario scenario) {}
 
     @Override
-    public void scenarioOutline(ScenarioOutline scenarioOutline) {
-    }
+    public void scenarioOutline(ScenarioOutline scenarioOutline) {}
 
     @Override
-    public void examples(Examples examples) {
-    }
+    public void examples(Examples examples) {}
 
     @Override
     public void startOfScenarioLifeCycle(Scenario scenario) {
@@ -70,7 +63,7 @@ public class CucumberZephyrListener implements Formatter, Reporter {
 
     @Override
     public void endOfScenarioLifeCycle(Scenario scenario) {
-        //Update Zephyr with scen's test result
+        // Update Zephyr with scen's test result
         if (updateTCMStatus) {
             final List<String> testCaseIds = getTestCaseId(scenario);
             if (scnStepBrokenCount > 0) {
@@ -82,37 +75,28 @@ public class CucumberZephyrListener implements Formatter, Reporter {
     }
 
     @Override
-    public void background(Background background) {
-    }
+    public void background(Background background) {}
 
     @Override
-    public void step(Step step) {
-    }
+    public void step(Step step) {}
 
     @Override
-    public void done() {
-    }
+    public void done() {}
 
     @Override
-    public void close() {
-    }
+    public void close() {}
 
     @Override
-    public void eof() {
-    }
+    public void eof() {}
 
     @Override
-    public void before(Match match, Result result) {
-    }
+    public void before(Match match, Result result) {}
 
     @Override
-    public void after(Match match, Result result) {
-    }
+    public void after(Match match, Result result) {}
 
     @Override
-    public void match(Match match) {
-
-    }
+    public void match(Match match) {}
 
     @Override
     public void result(Result result) {
@@ -138,32 +122,10 @@ public class CucumberZephyrListener implements Formatter, Reporter {
     }
 
     @Override
-    public void embedding(String s, byte[] bytes) {
-    }
+    public void embedding(String s, byte[] bytes) {}
 
     @Override
-    public void write(String s) {
-    }
-
-    private <T> Object getFieldValueInObject(T m, String field) {
-        try {
-            Field fieldInObject = getFieldInObject(m, field);
-            fieldInObject.setAccessible(true);
-            return fieldInObject.get(m);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private <T> Field getFieldInObject(T m, String field) throws NoSuchFieldException {
-        return m.getClass().getDeclaredField(field);
-    }
-
-    private String getTestCaseId(List<Tag> tags) {
-        return retrieveTagValue(tags, "TestCaseId");
-    }
-
-
+    public void write(String s) {}
 
     private Stream<String> retrieveTagStream(List<Tag> tags, String tagName) {
         final String tagSearch = "@" + tagName + "(";
@@ -176,16 +138,5 @@ public class CucumberZephyrListener implements Formatter, Reporter {
                         .trim()
                         .replaceAll("^\"|\"$", ""));
     }
-
-    private String retrieveTagValue(List<Tag> tags, String tagName) {
-
-        return retrieveTagStream(tags, tagName)
-                .collect(Collectors.joining(","));
-    }
-
-
-
-
-
 
 }

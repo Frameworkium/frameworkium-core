@@ -20,6 +20,9 @@ public class SauceImpl extends AbstractDriver {
     private Platform platform;
     private DesiredCapabilities desiredCapabilities;
 
+    /**
+     * Implementation of driver for SauceLbs.
+     */
     public SauceImpl(Platform platform, DesiredCapabilities desiredCapabilities) {
         this.platform = platform;
         this.desiredCapabilities = desiredCapabilities;
@@ -30,6 +33,9 @@ public class SauceImpl extends AbstractDriver {
         }
     }
 
+    /**
+     * Get desired capabilities.
+     */
     public DesiredCapabilities getDesiredCapabilities() {
         if (Driver.isNative()) {
             setAppiumCapabilities();

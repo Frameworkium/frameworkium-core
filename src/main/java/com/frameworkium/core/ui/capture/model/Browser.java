@@ -20,6 +20,9 @@ public class Browser {
     public String platform;
     public String platformVersion;
 
+    /**
+     * Create browser object.
+     */
     public Browser() {
 
         Optional<String> userAgent = BaseTest.getUserAgent();
