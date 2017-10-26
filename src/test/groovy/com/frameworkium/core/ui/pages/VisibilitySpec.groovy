@@ -124,7 +124,6 @@ class VisibilitySpec extends Specification {
             notThrown(Exception)
     }
 
-
     def "SubClassed Page check all Visible tags in hierarchy"() {
 
         given:
