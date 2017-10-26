@@ -64,7 +64,6 @@ public final class Visibility {
                 .stream()
                 .filter(field -> !Modifier.isStatic(field.getModifiers()))
                 .filter(this::validateFieldVisibilityAnnotations)
-                .peek(System.out::println)
                 .forEach(field -> invokeWaitFunctionForField(field, pageObject));
     }
 
