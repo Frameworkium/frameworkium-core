@@ -53,7 +53,7 @@ public final class Visibility {
      * For each Field:
      * <ul>
      * <li>Ensures either 0 or 1 Frameworkium Visibility annotations are present.</li>
-     * <li>Waits for the (in)visibility of elements annotated by annotations.</li>
+     * <li>Waits for the (in)visibility of elements based upon annotations.</li>
      * </ul>
      *
      * @param pageObject the "page object" i.e. extends {@link BasePage} or {@link HtmlElement}.
@@ -67,11 +67,14 @@ public final class Visibility {
                 .forEach(field -> invokeWaitFunctionForField(field, pageObject));
     }
 
+    /**
+     * Extracts all fields from a class (page object) and its super classes.
+     * This then behaves as expected if a page object extends a something
+     * which itself extends HtmlElement or BasePage.
+     */
     private List<Field> getDeclaredFieldsIncludingSuperClasses(Class<?> clazz) {
         final List<Field> fields = new ArrayList<>();
 
-        // Get any declared fields from super classes
-        // i.e. when a page object extends a custom class which itself extends HtmlElement
         for (Class<?> c = clazz;
                 ((c != null) && (c != BasePage.class) && (c != HtmlElement.class));
                 c = c.getSuperclass()) {
