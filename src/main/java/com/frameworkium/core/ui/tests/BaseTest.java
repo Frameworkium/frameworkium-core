@@ -1,6 +1,7 @@
 package com.frameworkium.core.ui.tests;
 
 import com.frameworkium.core.common.listeners.*;
+import com.frameworkium.core.common.properties.*;
 import com.frameworkium.core.common.reporting.TestIdUtils;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.common.reporting.allure.AllureProperties;
@@ -21,8 +22,7 @@ import org.testng.annotations.*;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 import static java.util.Objects.isNull;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -49,6 +49,40 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     /** Logger for subclasses (logs with correct class i.e. not BaseTest). */
     protected final Logger logger = LogManager.getLogger(this);
 
+    /** Pool of drivers to be reused. **/
+    private static BlockingQueue<Driver> driverPool;
+
+    /**
+     * Method which runs before the test suite to initialise a pool of thread drivers,
+     * if the REUSE_BROWSER property is defined. If it is not, the default behaviour of a driver
+     * per run will be followed.
+     */
+    @BeforeSuite
+    public static void initialiseDriverPool() {
+        if (Property.REUSE_BROWSER.isSpecified()) {
+            int threads = (Property.THREAD.isSpecified()) ? Integer.parseInt(Property.THREAD.getValue()) : 1;
+            driverPool = new ArrayBlockingQueue(threads);
+            for (int i = 0; i < threads; i++) {
+                driverPool.add(new DriverSetup().instantiateDriver());
+            }
+        }
+    }
+
+    /**
+     * Method which returns the next available driver from the pool.
+     * The pool should always have at least one, as it has been initialised with one driver
+     * per thread and each thread pushed its driver back to the pool, when it completes a test.
+     * <p>In the unlikely scenario that the previous execution didn't add the driver back to the pool
+     * for whatever reason, then create a new driver to return.</p>
+     * @return Driver the next available driver from the pool of drivers
+     */
+    public static Driver getNextAvailableDriverFromPool() {
+        if (driverPool.isEmpty()) {
+            driverPool.add(new DriverSetup().instantiateDriver());
+        }
+        return driverPool.remove();
+    }
+
     /**
      * Method which runs first upon running a test, it will do the following.
      * <ul>
@@ -60,7 +94,11 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      */
     @BeforeMethod(alwaysRun = true)
     public static void instantiateDriverObject() {
-        driver.set(new DriverSetup().instantiateDriver());
+        if (!Property.REUSE_BROWSER.isSpecified()) {
+            driver.set(new DriverSetup().instantiateDriver());
+        } else {
+            driver.set(getNextAvailableDriverFromPool());
+        }
         wait.set(newDefaultWait());
     }
 
@@ -103,9 +141,23 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     @AfterMethod(alwaysRun = true)
     public static void tearDownBrowser() {
         try {
-            driver.get().tearDown();
+            if (!Property.REUSE_BROWSER.isSpecified()) {
+                driver.get().tearDown();
+            } else {
+                driverPool.add(driver.get());
+            }
         } catch (Exception e) {
             baseLogger.warn("Session quit unexpectedly.", e);
+        }
+    }
+
+    /** Shuts down the {@link ExecutorService}. */
+    @AfterSuite(alwaysRun = true)
+    public static void tearDownSuite() {
+        if (Property.REUSE_BROWSER.isSpecified()) {
+            for (Driver driver : driverPool) {
+                driver.getDriver().quit();
+            }
         }
     }
 

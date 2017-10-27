@@ -39,7 +39,9 @@ public enum Property {
     FIREFOX_PROFILE("firefoxProfile"),
     VIDEO_CAPTURE_URL("videoCaptureUrl"),
     CHROME_USER_DATA_DIR("chromeUserDataDir"),
-    CUSTOM_BROWSER_IMPL("customBrowserImpl");
+    CUSTOM_BROWSER_IMPL("customBrowserImpl"),
+    REUSE_BROWSER("reuseBrowser"),
+    THREAD("threads");
 
     private static Map configMap = null;
     private String value;

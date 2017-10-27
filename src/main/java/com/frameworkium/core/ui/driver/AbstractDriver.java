@@ -31,7 +31,11 @@ public abstract class AbstractDriver implements Driver {
      */
     @Override
     public void tearDown() {
-        this.webDriverWrapper.quit();
+        if (Property.REUSE_BROWSER.isSpecified()) {
+            webDriverWrapper.manage().deleteAllCookies();
+        } else {
+            webDriverWrapper.quit();
+        }
     }
 
     /**
