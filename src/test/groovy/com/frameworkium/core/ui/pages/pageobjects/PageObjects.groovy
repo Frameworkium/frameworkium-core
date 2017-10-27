@@ -41,6 +41,9 @@ class PageObjects {
         @Invisible
         List<WebElement> invisibles
 
+        @Invisible
+        List<WebElement> emptyInvisible
+
         @ForceVisible
         List<WebElement> forceVisibles
     }
@@ -61,6 +64,12 @@ class PageObjects {
 
         @Visible
         WebElement myVisibleWebElement
+    }
+
+    class SubClassedPage extends SingleVisibleElement {
+
+        @Visible
+        WebElement subClassedVisibleWebElement
     }
 
     // Invalid Page Objects:

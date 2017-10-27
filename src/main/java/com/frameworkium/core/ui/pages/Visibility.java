@@ -53,39 +53,32 @@ public final class Visibility {
      * For each Field:
      * <ul>
      * <li>Ensures either 0 or 1 Frameworkium Visibility annotations are present.</li>
-     * <li>Waits for the (in)visibility of elements annotated by annotations.</li>
+     * <li>Waits for the (in)visibility of elements based upon annotations.</li>
      * </ul>
      *
      * @param pageObject the "page object" i.e. extends {@link BasePage} or {@link HtmlElement}.
      */
     public void waitForAnnotatedElementVisibility(Object pageObject) {
 
-        Class<?> clazz = pageObject.getClass();
-
-        // Get the declared fields from the current class
-        final List<Field> allFields = new ArrayList<>(Arrays.asList(clazz.getDeclaredFields()));
-
-        // Get the declared fields from the super class
-        final List<Field> superClassFields = getDeclaredFieldsFromSuperClasses(clazz);
-
-        Stream.concat(allFields.stream(), superClassFields.stream())
+        getDeclaredFieldsIncludingSuperClasses(pageObject.getClass())
+                .stream()
+                .filter(field -> !Modifier.isStatic(field.getModifiers()))
                 .filter(this::validateFieldVisibilityAnnotations)
-                .forEach(field ->
-                        invokeWaitFunctionForField(field, pageObject));
+                .forEach(field -> invokeWaitFunctionForField(field, pageObject));
     }
 
-    private List<Field> getDeclaredFieldsFromSuperClasses(Class<?> clazz) {
+    /**
+     * Extracts all fields from a class (page object) and its super classes.
+     * This then behaves as expected if a page object extends a something
+     * which itself extends HtmlElement or BasePage.
+     */
+    private List<Field> getDeclaredFieldsIncludingSuperClasses(Class<?> clazz) {
         final List<Field> fields = new ArrayList<>();
 
-        // Get any declared fields from super classes
-        // i.e. when a page object extends a custom class which itself extends HtmlElement
-        for (Class<?> c = clazz.getSuperclass();
+        for (Class<?> c = clazz;
                 ((c != null) && (c != BasePage.class) && (c != HtmlElement.class));
                 c = c.getSuperclass()) {
-            Stream.of(c.getDeclaredFields())
-                    // Filter out static fields
-                    .filter(m -> !Modifier.isStatic(m.getModifiers()))
-                    .forEach(f -> fields.add(f));
+            fields.addAll(Arrays.asList(c.getDeclaredFields()));
         }
         return fields;
     }

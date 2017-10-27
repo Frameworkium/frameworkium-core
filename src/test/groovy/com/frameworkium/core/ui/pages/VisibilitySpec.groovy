@@ -17,13 +17,19 @@ import spock.lang.Unroll
 @Unroll
 class VisibilitySpec extends Specification {
 
+    /* Mocks used in each test */
     def wait = new FluentWait<>(Mock(WebDriver), Mock(Clock), Mock(Sleeper))
     def mockDriver = Mock(JavascriptExecutor)
-
-    def visibleElement = Mock(WebElement) { isDisplayed() >> true }
-    def invisibleElement = Mock(WebElement) { isDisplayed() >> false }
-
     def sut = new Visibility(wait, mockDriver)
+
+    // methods which create new Mocks each time and assert exactly
+    // one isDisplayed() call per WebElement
+    def newVisibleElement() {
+        return Mock(WebElement) { 1 * isDisplayed() >> true }
+    }
+    def newInvisibleElement() {
+        return Mock(WebElement) { 1 * isDisplayed() >> false }
+    }
 
     def setup() {
         BaseTest.setDriver(Mock(Driver))
@@ -36,13 +42,13 @@ class VisibilitySpec extends Specification {
             def pageObject = new PageObjects.SingleVisibleElement()
 
         when: "Waiting for a visible @Visible element"
-            pageObject.visibleElement = visibleElement
+            pageObject.visibleElement = newVisibleElement()
             sut.waitForAnnotatedElementVisibility(pageObject)
         then: "Wait is successful"
             notThrown(TimeoutException)
 
         when: "Waiting for an invisible @Visible element"
-            pageObject.visibleElement = invisibleElement
+            pageObject.visibleElement = newInvisibleElement()
             sut.waitForAnnotatedElementVisibility(pageObject)
         then: "Wait times out"
             thrown(TimeoutException)
@@ -57,13 +63,13 @@ class VisibilitySpec extends Specification {
         when: "Waiting for an invisible @Invisible element"
             sut.waitForAnnotatedElementVisibility(pageObject)
         then: "Wait is successful when element is not displayed"
-            pageObject.invisibleTextInput.isDisplayed() >> false
-            notThrown(TimeoutException)
+            1 * pageObject.invisibleTextInput.isDisplayed() >> false
+            notThrown(Exception)
 
         when: "Waiting for a visible @Invisible element"
             sut.waitForAnnotatedElementVisibility(pageObject)
         then: "Wait times out if element is displayed"
-            pageObject.invisibleTextInput.isDisplayed() >> true
+            1 * pageObject.invisibleTextInput.isDisplayed() >> true
             thrown(TimeoutException)
     }
 
@@ -71,23 +77,21 @@ class VisibilitySpec extends Specification {
 
         given: "A page object with @ForceVisible element field"
             def pageObject = new PageObjects.SingleForceVisibleElement()
-            def e = Mock(WebElement)
-            pageObject.forceVisibleElement = e
 
         when:
+            pageObject.forceVisibleElement = newVisibleElement()
             sut.waitForAnnotatedElementVisibility(pageObject)
         then: "forces visible with JS"
-            1 * mockDriver.executeScript(_ as String, e)
+            1 * mockDriver.executeScript(_ as String, _ as WebElement)
         then: "wait is successful when element is displayed"
-            e.isDisplayed() >> true
-            notThrown(TimeoutException)
+            notThrown(Exception)
 
         when:
+            pageObject.forceVisibleElement = newInvisibleElement()
             sut.waitForAnnotatedElementVisibility(pageObject)
         then: "forces visible with JS"
-            1 * mockDriver.executeScript(_ as String, e)
+            1 * mockDriver.executeScript(_ as String, _ as WebElement)
         then: "wait times out when element is not displayed"
-            e.isDisplayed() >> false
             thrown(TimeoutException)
     }
 
@@ -95,52 +99,59 @@ class VisibilitySpec extends Specification {
 
         given: "A page objects with Lists of Elements"
             def pageObject = new PageObjects.ListOfElements()
-            def visibleElements = [visibleElement] * 3
-            def invisibleElements = [invisibleElement] * 4
+            pageObject.with {
+                visibles = [newVisibleElement()]
+                invisibles = [newInvisibleElement(), newInvisibleElement()]
+                emptyInvisible = []
+                forceVisibles = [newVisibleElement(), newVisibleElement(), newVisibleElement()]
+            }
 
         when: "waiting for visibility"
-            pageObject.with {
-                visibles = visibleElements
-                invisibles = invisibleElements
-                forceVisibles = visibleElements
-            }
             sut.waitForAnnotatedElementVisibility(pageObject)
-        then: "No exceptions and also a script call per @ForceVisible element"
-            notThrown(TimeoutException)
-            3 * mockDriver.executeScript(_ as String, visibleElement)
+        then: "No exceptions"
+            notThrown(Exception)
+            3 * mockDriver.executeScript(_ as String, _ as WebElement)
     }
 
     def "HtmlElement 'components' are treated as page objects"() {
 
         given: "A Page Object with a @Visible HtmlElement component"
             def pageObject = new PageObjects.VisibleComponent()
-            pageObject.visibleComponent = createVisibleComponent()
+            pageObject.visibleComponent = newVisibleComponent()
         when: "Waiting for @Visible of visible component and inner element"
             sut.waitForAnnotatedElementVisibility(pageObject)
         then: "No exceptions"
-            notThrown(TimeoutException)
+            notThrown(Exception)
+    }
+
+    def "SubClassed Page check all Visible tags in hierarchy"() {
+
+        given:
+            def subClassedComp = new PageObjects.SubClassedPage()
+            subClassedComp.visibleElement = newVisibleElement()
+            subClassedComp.subClassedVisibleWebElement = newVisibleElement()
+        when:
+            sut.waitForAnnotatedElementVisibility(subClassedComp)
+        then:
+            notThrown(Exception)
     }
 
     def "List<HtmlElement> 'components' are treated as page objects"() {
 
         given:
-            PageObjects.Component visibleComponent = createVisibleComponent()
             def pageObject = new PageObjects.VisibleComponents()
-            pageObject.visibleComponents = [visibleComponent] * 3
+            pageObject.visibleComponents = [newVisibleComponent(), newVisibleComponent()]
 
         when: "waiting for visibility"
             sut.waitForAnnotatedElementVisibility(pageObject)
         then: "no exceptions"
-            notThrown(TimeoutException)
+            notThrown(Exception)
     }
 
-    def createVisibleComponent() {
-        def visibleElement = Mock(WebElement) {
-            isDisplayed() >> true
-        }
+    def newVisibleComponent() {
         def visibleComponent = new PageObjects.Component()
-        visibleComponent.wrappedElement = visibleElement
-        visibleComponent.myVisibleWebElement = visibleElement
+        visibleComponent.wrappedElement = newVisibleElement()
+        visibleComponent.myVisibleWebElement = newVisibleElement()
         return visibleComponent
     }
 
