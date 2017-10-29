@@ -35,6 +35,10 @@ script:
   # Download geckodriver
   - wget --quiet https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VER}/geckodriver-v${GECKO_VER}-linux64.tar.gz
   - tar -xzf geckodriver-v${GECKO_VER}-linux64.tar.gz --directory /tmp
+  
+  # Run on Firefox off the grid
+  # Currently (Aug-2017) only seems to work with 1 thread on travis
+  - mvn verify -B -Dthreads=1 -Dbrowser=firefox -Dwebdriver.gecko.driver=/tmp/geckodriver 2> /dev/null
 
   # Download and setup Grid hub
   # NB this is before the "off-grid" test to ensure grid is fully up in time
@@ -75,3 +79,6 @@ script:
 
   # generate allure report
   - mvn site -B -q
+
+  # upload code coverage report
+  - bash <(curl -s https://codecov.io/bash)
