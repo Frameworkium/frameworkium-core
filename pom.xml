@@ -388,6 +388,7 @@
                       <goals>
                           <goal>selenium</goal>
                       </goals>
+		      <phase>none</phase>
                   </execution>
               </executions>
           </plugin>
