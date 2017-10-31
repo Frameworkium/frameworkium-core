@@ -397,32 +397,30 @@
 
           <!-- Used to automatically download web drivers -->
           <plugin>
-              <groupId>com.lazerycode.selenium</groupId>
-              <artifactId>driver-binary-downloader-maven-plugin</artifactId>
-              <version>1.0.14</version>
-              <configuration>
-                  <!-- root directory that downloaded driver binaries will be stored in -->
-                  <rootStandaloneServerDirectory>drivers/bin/</rootStandaloneServerDirectory>
-                  <!-- Where you want to store downloaded zip files -->
-                  <downloadedZipFileDirectory>drivers/zip/</downloadedZipFileDirectory>
+            <groupId>com.lazerycode.selenium</groupId>
+            <artifactId>driver-binary-downloader-maven-plugin</artifactId>
+            <version>1.0.14</version>
+            <configuration>
+              <rootStandaloneServerDirectory>drivers/bin/</rootStandaloneServerDirectory>
+              <downloadedZipFileDirectory>drivers/zip/</downloadedZipFileDirectory>
 
-                  <onlyGetDriversForHostOperatingSystem>true</onlyGetDriversForHostOperatingSystem>
-                  <thirtyTwoBitBinaries>false</thirtyTwoBitBinaries>
-                  <sixtyFourBitBinaries>true</sixtyFourBitBinaries>
-                  <onlyGetLatestVersions>true</onlyGetLatestVersions>
+              <onlyGetDriversForHostOperatingSystem>true</onlyGetDriversForHostOperatingSystem>
+              <thirtyTwoBitBinaries>false</thirtyTwoBitBinaries>
+              <sixtyFourBitBinaries>true</sixtyFourBitBinaries>
+              <onlyGetLatestVersions>true</onlyGetLatestVersions>
 
-                  <!-- auto detect system proxy to use when downloading files -->
-                  <!-- To specify an explicit proxy set the environment variables http.proxyHost and http.proxyPort -->
-                  <!-- <useSystemProxy>true</useSystemProxy> -->
-              </configuration>
-              <executions>
-                  <execution>
-                      <goals>
-                          <goal>selenium</goal>
-                      </goals>
-		      <phase>none</phase>
-                  </execution>
-              </executions>
+              <!-- auto detect system proxy to use when downloading files -->
+              <!-- To specify an explicit proxy set the environment variables http.proxyHost and http.proxyPort -->
+              <!-- <useSystemProxy>true</useSystemProxy> -->
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>selenium</goal>
+                </goals>
+                <phase>none</phase>
+              </execution>
+            </executions>
           </plugin>
 
           <!-- Used to attach sources to jar -->
