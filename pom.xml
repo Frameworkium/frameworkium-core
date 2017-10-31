@@ -403,6 +403,7 @@
             <configuration>
               <rootStandaloneServerDirectory>drivers/bin/</rootStandaloneServerDirectory>
               <downloadedZipFileDirectory>drivers/zip/</downloadedZipFileDirectory>
+
               <onlyGetDriversForHostOperatingSystem>true</onlyGetDriversForHostOperatingSystem>
               <thirtyTwoBitBinaries>false</thirtyTwoBitBinaries>
               <sixtyFourBitBinaries>true</sixtyFourBitBinaries>
@@ -417,6 +418,7 @@
                 <goals>
                   <goal>selenium</goal>
                 </goals>
+                <phase>none</phase>
               </execution>
             </executions>
           </plugin>
