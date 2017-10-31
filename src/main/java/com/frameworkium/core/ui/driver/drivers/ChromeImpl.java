@@ -12,6 +12,11 @@ import static java.util.Collections.singletonList;
 
 public class ChromeImpl extends AbstractDriver {
 
+    /**
+     * Get Chrome capabilities setting mobile emulation, custom chrome profiles and headless execution if the relevant
+     * properties have been set.
+     * @return DesiredCapabilities for chrome browser
+     */
     @Override
     public Capabilities getCapabilities() {
         ChromeOptions chromeOptions = new ChromeOptions();

@@ -13,6 +13,12 @@ public class FirefoxImpl extends AbstractDriver {
         return new FirefoxOptions();
     }
 
+    /**
+     * Get Firefox WebDriver instance with a custom firefox profile and headless execution if the relevant properties
+     * have been set.
+     * @param capabilities Capabilities of the browser
+     * @return WebDriver instance for firefox browser
+     */
     @Override
     public WebDriver getWebDriver(Capabilities capabilities) {
         return new FirefoxDriver(new FirefoxOptions(capabilities));
