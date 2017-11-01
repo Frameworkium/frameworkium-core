@@ -1,5 +1,6 @@
 package com.frameworkium.core.ui.capture;
 
+import io.qameta.allure.Attachment;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
@@ -7,7 +8,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.TimeoutException;
 import org.testng.ITestResult;
-import ru.yandex.qatools.allure.annotations.Attachment;
 
 import java.io.IOException;
 import java.net.*;

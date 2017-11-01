@@ -54,3 +54,4 @@ test-output/
 logs/
 /screenshots/
 capturedVideo/
+/allure-results/

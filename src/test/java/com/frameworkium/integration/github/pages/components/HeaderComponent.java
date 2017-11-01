@@ -6,11 +6,11 @@ import com.frameworkium.core.ui.pages.Visibility;
 import com.frameworkium.core.ui.tests.BaseUITest;
 import com.frameworkium.integration.github.pages.ExplorePage;
 import com.frameworkium.integration.github.pages.SearchResultsPage;
+import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Wait;
-import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.element.*;
 
@@ -63,7 +63,7 @@ public class HeaderComponent extends HtmlElement {
         return PageFactory.newInstance(ExplorePage.class);
     }
 
-    @Step("Search for the text '{0}'")
+    @Step("Search for the text '{searchText}'")
     public SearchResultsPage search(String searchText) {
         showHeaderMenuIfCollapsed();
         searchBox.sendKeys(searchText + Keys.ENTER);

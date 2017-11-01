@@ -32,7 +32,7 @@ public class MethodInterceptor implements IMethodInterceptor {
             logger.info("Filtering specified tests to run with JQL query results");
 
             List<IMethodInstance> methodsWithTestIDs = methodsToBeFiltered.stream()
-                    .filter(m -> TestIdUtils.getIssueOrTestCaseIdValue(m).isPresent())
+                    .filter(m -> TestIdUtils.getIssueOrTmsLinkValue(m).isPresent())
                     .collect(toList());
 
             List<String> testIDsFromJQL =
@@ -40,7 +40,7 @@ public class MethodInterceptor implements IMethodInterceptor {
 
             List<IMethodInstance> methodsToRun = methodsWithTestIDs.stream()
                     .filter(m -> testIDsFromJQL.contains(
-                            TestIdUtils.getIssueOrTestCaseIdValue(m).orElseThrow(IllegalStateException::new)))
+                            TestIdUtils.getIssueOrTmsLinkValue(m).orElseThrow(IllegalStateException::new)))
                     .collect(toList());
 
             logTestMethodInformation(
