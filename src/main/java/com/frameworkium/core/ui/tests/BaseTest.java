@@ -60,7 +60,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     @BeforeSuite
     public static void initialiseDriverPool() {
         if (Property.REUSE_BROWSER.isSpecified()) {
-            int threads = (Property.THREAD.isSpecified()) ? Integer.parseInt(Property.THREAD.getValue()) : 1;
+            int threads = (Property.THREADS.isSpecified()) ? Integer.parseInt(Property.THREADS.getValue()) : 1;
             driverPool = new ArrayBlockingQueue(threads);
             for (int i = 0; i < threads; i++) {
                 driverPool.add(new DriverSetup().instantiateDriver());
@@ -78,7 +78,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      */
     public static Driver getNextAvailableDriverFromPool() {
         if (driverPool.isEmpty()) {
-            driverPool.add(new DriverSetup().instantiateDriver());
+            return new DriverSetup().instantiateDriver();
         }
         return driverPool.remove();
     }
@@ -94,10 +94,10 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      */
     @BeforeMethod(alwaysRun = true)
     public static void instantiateDriverObject() {
-        if (!Property.REUSE_BROWSER.isSpecified()) {
-            driver.set(new DriverSetup().instantiateDriver());
-        } else {
+        if (Property.REUSE_BROWSER.isSpecified()) {
             driver.set(getNextAvailableDriverFromPool());
+        } else {
+            driver.set(new DriverSetup().instantiateDriver());
         }
         wait.set(newDefaultWait());
     }
@@ -141,10 +141,10 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     @AfterMethod(alwaysRun = true)
     public static void tearDownBrowser() {
         try {
-            if (!Property.REUSE_BROWSER.isSpecified()) {
-                driver.get().tearDown();
-            } else {
+            if (Property.REUSE_BROWSER.isSpecified()) {
                 driverPool.add(driver.get());
+            } else {
+                driver.get().tearDown();
             }
         } catch (Exception e) {
             baseLogger.warn("Session quit unexpectedly.", e);
@@ -155,9 +155,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     @AfterSuite(alwaysRun = true)
     public static void tearDownSuite() {
         if (Property.REUSE_BROWSER.isSpecified()) {
-            for (Driver driver : driverPool) {
-                driver.getDriver().quit();
-            }
+            driverPool.forEach(d -> d.getDriver().quit());
         }
     }
 
