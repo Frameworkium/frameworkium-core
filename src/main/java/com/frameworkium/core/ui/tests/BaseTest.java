@@ -1,7 +1,7 @@
 package com.frameworkium.core.ui.tests;
 
 import com.frameworkium.core.common.listeners.*;
-import com.frameworkium.core.common.properties.*;
+import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.TestIdUtils;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.common.reporting.allure.AllureProperties;
@@ -23,6 +23,7 @@ import org.testng.annotations.*;
 import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.concurrent.*;
+import java.util.stream.IntStream;
 
 import static java.util.Objects.isNull;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -53,33 +54,30 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     private static BlockingQueue<Driver> driverPool;
 
     /**
-     * Method which runs before the test suite to initialise a pool of thread drivers,
-     * if the REUSE_BROWSER property is defined. If it is not, the default behaviour of a driver
-     * per run will be followed.
+     * Runs before the test suite to initialise a pool of thread drivers,
+     * if the REUSE_BROWSER property is defined.
+     * If it is not, the default behaviour of a driver per run will be followed.
      */
     @BeforeSuite
     public static void initialiseDriverPool() {
         if (Property.REUSE_BROWSER.isSpecified()) {
-            int threads = (Property.THREADS.isSpecified()) ? Integer.parseInt(Property.THREADS.getValue()) : 1;
-            driverPool = new ArrayBlockingQueue(threads);
-            for (int i = 0; i < threads; i++) {
-                driverPool.add(new DriverSetup().instantiateDriver());
-            }
+            int threads = Property.getThreadCount();
+            driverPool = new ArrayBlockingQueue<>(threads);
+            IntStream.range(0, threads)
+                    .mapToObj(i -> new DriverSetup().instantiateDriver())
+                    .forEach(driverPool::add);
         }
+
     }
 
     /**
-     * Method which returns the next available driver from the pool.
-     * The pool should always have at least one, as it has been initialised with one driver
-     * per thread and each thread pushed its driver back to the pool, when it completes a test.
-     * <p>In the unlikely scenario that the previous execution didn't add the driver back to the pool
-     * for whatever reason, then create a new driver to return.</p>
-     * @return Driver the next available driver from the pool of drivers
+     * Returns the next available driver from the pool. The pool should not be
+     * empty here, as it has been initialised with one driver per thread and
+     * each driver is returned to the pool upon test completion.
+     *
+     * @return the next available driver from the pool
      */
-    public static Driver getNextAvailableDriverFromPool() {
-        if (driverPool.isEmpty()) {
-            return new DriverSetup().instantiateDriver();
-        }
+    private static Driver getNextAvailableDriverFromPool() {
         return driverPool.remove();
     }
 

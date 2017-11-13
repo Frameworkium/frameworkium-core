@@ -118,4 +118,13 @@ public enum Property {
                 && SUT_NAME.isSpecified()
                 && SUT_VERSION.isSpecified();
     }
+
+    /**
+     * @return the int value of threads System property, defaults to 1.
+     */
+    public static int getThreadCount() {
+        return THREADS.isSpecified()
+                ? Integer.parseInt(THREADS.getValue())
+                : 1;
+    }
 }
