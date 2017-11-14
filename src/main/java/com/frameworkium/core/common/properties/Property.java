@@ -39,7 +39,9 @@ public enum Property {
     FIREFOX_PROFILE("firefoxProfile"),
     VIDEO_CAPTURE_URL("videoCaptureUrl"),
     CHROME_USER_DATA_DIR("chromeUserDataDir"),
-    CUSTOM_BROWSER_IMPL("customBrowserImpl");
+    CUSTOM_BROWSER_IMPL("customBrowserImpl"),
+    REUSE_BROWSER("reuseBrowser"),
+    THREADS("threads");
 
     private static Map configMap = null;
     private String value;
@@ -115,5 +117,14 @@ public enum Property {
         return CAPTURE_URL.isSpecified()
                 && SUT_NAME.isSpecified()
                 && SUT_VERSION.isSpecified();
+    }
+
+    /**
+     * @return the int value of threads System property, defaults to 1.
+     */
+    public static int getThreadCount() {
+        return THREADS.isSpecified()
+                ? Integer.parseInt(THREADS.getValue())
+                : 1;
     }
 }

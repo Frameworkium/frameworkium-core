@@ -39,7 +39,10 @@ script:
   # Run on Firefox off the grid
   # Currently (Aug-2017) only seems to work with 1 thread on travis
   - mvn verify -B -Dthreads=1 -Dbrowser=firefox -Dwebdriver.gecko.driver=/tmp/geckodriver 2> /dev/null
-  
+
+  # Run on Firefox off the grid by reusing the same browser
+  - mvn verify -B -Dthreads=1 -Dbrowser=firefox -DreuseBrowser=true -Dwebdriver.gecko.driver=/tmp/geckodriver 2> /dev/null
+
   # Download and setup Grid
   - wget --quiet --no-check-certificate https://selenium-release.storage.googleapis.com/${SELENIUM_MAJ_VER}/${SELENIUM_JAR}
   - java -Xmx128m -jar ${SELENIUM_JAR} -role hub > /dev/null 2>&1 &
