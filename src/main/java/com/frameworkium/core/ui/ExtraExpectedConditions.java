@@ -21,6 +21,39 @@ import java.util.stream.Collectors;
 public class ExtraExpectedConditions {
 
     /**
+     * An expectation for checking that N elements (from a list) are present on the web page that match the locator
+     * are visible. Visibility means that the elements are not only displayed but also have a height
+     * and width that is greater than 0.
+     *
+     * @param elementsToCheck how many elements in a <code>List&lt;WebElement&gt;</code> to check
+     * @param elements list of WebElements
+     * @return the list of WebElements once they are located
+     */
+    public static ExpectedCondition<List<WebElement>> visibilityOfNElements(
+            final List<WebElement> elements,int elementsToCheck) {
+
+        int finalElementsToCheck = elementsToCheck == 0 ? elements.size() : elementsToCheck;
+
+        return new ExpectedCondition<List<WebElement>>() {
+            @Override
+            public List<WebElement> apply(WebDriver driver) {
+                for (int i = 0; i < finalElementsToCheck; i++) {
+                    WebElement element = elements.get(i);
+                    if (!element.isDisplayed()) {
+                        return null;
+                    }
+                }
+                return elements.size() > 0 ? elements : null;
+            }
+
+            @Override
+            public String toString() {
+                return "visibility of " + elementsToCheck + " " + elements;
+            }
+        };
+    }
+
+    /**
      * Custom wait which fills the gap left by Selenium whereby
      * <code>not({@link ExpectedConditions#visibilityOf(WebElement)})</code>
      * will fail if the element is not present, but
@@ -53,17 +86,21 @@ public class ExtraExpectedConditions {
      *         iff any element is visible, otherwise <strong>null</strong>.
      * @see ExtraExpectedConditions#notPresentOrInvisible(WebElement)
      */
-    public static ExpectedCondition<List<? extends WebElement>> notPresentOrInvisible(
-            final List<? extends WebElement> elements) {
+    public static ExpectedCondition<List<? extends WebElement>>     notPresentOrInvisible(
+            final List<? extends WebElement> elements, int atLeast) {
+
+        int limit = atLeast == 0 ? elements.size() : atLeast;
 
         return expectedCondition(driver ->
                         elements.stream()
+                                .limit(limit)
                                 .noneMatch(WebElement::isDisplayed)
                                 ? elements
                                 : null,
                 String.format(
                         "the following elements to not be present or be invisible: %s",
                         elements.stream()
+                                .limit(limit)
                                 .map(WebElement::toString)
                                 .collect(Collectors.joining(", "))));
     }

@@ -44,8 +44,8 @@ class ExtraExpectedConditionsSpec extends Specification {
         given: "The elements are not displayed"
             mockElement.isDisplayed() >> false
         when: "waiting for the items not to be present or invisible"
-            wait.until(ExtraExpectedConditions.notPresentOrInvisible(webElements))
-            wait.until(ExtraExpectedConditions.notPresentOrInvisible([]))
+            wait.until(ExtraExpectedConditions.notPresentOrInvisible(webElements,0))
+            wait.until(ExtraExpectedConditions.notPresentOrInvisible([],0))
         then: "nothing is thrown"
             noExceptionThrown()
     }
@@ -54,7 +54,7 @@ class ExtraExpectedConditionsSpec extends Specification {
         given: "The elements are displayed"
             mockElement.isDisplayed() >> true
         when: "waiting for the items not to be present or invisible"
-            wait.until(ExtraExpectedConditions.notPresentOrInvisible([mockElement] * 2))
+            wait.until(ExtraExpectedConditions.notPresentOrInvisible([mockElement] * 2,0))
         then: "a timeout exception is thrown"
             thrown(TimeoutException)
     }

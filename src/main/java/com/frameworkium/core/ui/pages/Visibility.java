@@ -15,8 +15,8 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import static com.frameworkium.core.ui.ExtraExpectedConditions.visibilityOfNElements;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
 import static ru.yandex.qatools.htmlelements.utils.HtmlElementUtils.*;
 
 /**
@@ -109,11 +109,14 @@ public final class Visibility {
                         .orElseThrow(IllegalStateException::new);
 
         if (Visible.class.equals(visibilityAnnotationClass)) {
-            waitForFieldToBeVisible(pageObject, field);
+            int visibleAtLeast = field.getAnnotation(Visible.class).atLeast();
+            waitForFieldToBeVisible(pageObject, field, visibleAtLeast);
         } else if (Invisible.class.equals(visibilityAnnotationClass)) {
-            waitForFieldToBeInvisible(pageObject, field);
+            int invisibleAtLeast = field.getAnnotation(Invisible.class).atLeast();
+            waitForFieldToBeInvisible(pageObject, field, invisibleAtLeast);
         } else if (ForceVisible.class.equals(visibilityAnnotationClass)) {
-            forceThenWaitForFieldToBeVisible(pageObject, field);
+            int forceVisibleAtLeast = field.getAnnotation(ForceVisible.class).atLeast();
+            forceThenWaitForFieldToBeVisible(pageObject, field, forceVisibleAtLeast);
         }
     }
 
@@ -125,14 +128,14 @@ public final class Visibility {
      * @param field      wait for visibility of the field
      */
     @SuppressWarnings("unchecked")
-    private void waitForFieldToBeVisible(Object pageObject, Field field) {
+    private void waitForFieldToBeVisible(Object pageObject, Field field, int atLeast) {
 
         Object objectFromField = getObjectFromField(pageObject, field);
         applyToWebElements(
                 field,
                 objectFromField,
                 we -> wait.until(visibilityOf(we)),
-                list -> wait.until(visibilityOfAllElements(list)));
+                list -> wait.until(visibilityOfNElements(list, atLeast)));
 
         // recurse inside HtmlElements
         if (isHtmlElementList(field)) {
@@ -144,28 +147,30 @@ public final class Visibility {
     }
 
     /** Same as waitForFieldToBeVisible but for Invisibility. */
-    private void waitForFieldToBeInvisible(Object pageObject, Field field) {
+    private void waitForFieldToBeInvisible(Object pageObject, Field field, int atLeast) {
 
         applyToWebElements(
                 field,
                 getObjectFromField(pageObject, field),
                 we -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(we)),
-                list -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(list)));
+                list -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(list, atLeast)));
     }
 
     /**
      * Calls {@link Visibility#forceVisible(WebElement)} for each ForceVisible
      * field then {@link Visibility#waitForFieldToBeVisible(Object, Field)}.
      */
-    private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field) {
+    private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field, int atLeast) {
 
         applyToWebElements(
                 field,
                 getObjectFromField(pageObject, field),
                 this::forceVisible,
-                list -> list.forEach(this::forceVisible));
+                list -> list.stream()
+                        .limit(atLeast == 0 ? list.size() : atLeast)
+                        .forEach(this::forceVisible));
 
-        waitForFieldToBeVisible(pageObject, field);
+        waitForFieldToBeVisible(pageObject, field, atLeast);
     }
 
     @SuppressWarnings("unchecked")
