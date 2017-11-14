@@ -22,13 +22,22 @@ class VisibilitySpec extends Specification {
     def mockDriver = Mock(JavascriptExecutor)
     def sut = new Visibility(wait, mockDriver)
 
-    // methods which create new Mocks each time and assert exactly
-    // one isDisplayed() call per WebElement
+    // methods which create new Mocks each time
+
+    // Assert exactly one isDisplayed() call per WebElement
     def newVisibleElement() {
         return Mock(WebElement) { 1 * isDisplayed() >> true }
     }
+
     def newInvisibleElement() {
         return Mock(WebElement) { 1 * isDisplayed() >> false }
+    }
+
+    def newVisibleComponent() {
+        def visibleComponent = new PageObjects.Component()
+        visibleComponent.wrappedElement = newVisibleElement()
+        visibleComponent.myVisibleWebElement = newVisibleElement()
+        return visibleComponent
     }
 
     def setup() {
@@ -105,10 +114,9 @@ class VisibilitySpec extends Specification {
                 emptyInvisible = []
                 forceVisibles = [newVisibleElement(), newVisibleElement(), newVisibleElement()]
             }
-
         when: "waiting for visibility"
             sut.waitForAnnotatedElementVisibility(pageObject)
-        then: "No exceptions"
+        then: "No exceptions and 3 forceVisible JS executions"
             notThrown(Exception)
             3 * mockDriver.executeScript(_ as String, _ as WebElement)
     }
@@ -141,24 +149,17 @@ class VisibilitySpec extends Specification {
         given:
             def pageObject = new PageObjects.VisibleComponents()
             pageObject.visibleComponents = [newVisibleComponent(), newVisibleComponent()]
-
         when: "waiting for visibility"
             sut.waitForAnnotatedElementVisibility(pageObject)
         then: "no exceptions"
             notThrown(Exception)
     }
 
-    def newVisibleComponent() {
-        def visibleComponent = new PageObjects.Component()
-        visibleComponent.wrappedElement = newVisibleElement()
-        visibleComponent.myVisibleWebElement = newVisibleElement()
-        return visibleComponent
-    }
-
     def "more than one visibility annotation throws exception"() {
+
         when:
             sut.waitForAnnotatedElementVisibility(pageObject)
-        then: "Throws exception due to too many Visibility related Annotations"
+        then: "Throws exception due to too many visibility related Annotations"
             def ex = thrown(IllegalArgumentException)
             ex.message ==~
                     /Field $element on [A-z\.$]+ has too many Visibility related Annotations/
@@ -169,6 +170,7 @@ class VisibilitySpec extends Specification {
     }
 
     def "visibility annotations on invalid field type throws exception"() {
+
         given: "A Page Object with @Visible on invalid field type"
             def pageObject = new PageObjects.UnsupportedFieldType()
         when:
