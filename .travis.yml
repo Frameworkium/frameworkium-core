@@ -35,6 +35,11 @@ before_script:
   - export DISPLAY=:99.0
   - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16
 
+  # set up code climate test reporter
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
   # Set up Selenium Grid Hub
   - wget --quiet https://selenium-release.storage.googleapis.com/${SELENIUM_MAJ_VER}/${SELENIUM_JAR}
   - java -Xmx256m -jar ${SELENIUM_JAR} -role hub > /dev/null 2>&1 &
@@ -84,3 +89,6 @@ script:
 after_script:
   # Code coverage report
   - bash <(curl -s https://codecov.io/bash)
+
+  # upload code coverage to code climate
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
