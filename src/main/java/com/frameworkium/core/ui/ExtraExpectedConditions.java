@@ -86,7 +86,7 @@ public class ExtraExpectedConditions {
      *         iff any element is visible, otherwise <strong>null</strong>.
      * @see ExtraExpectedConditions#notPresentOrInvisible(WebElement)
      */
-    public static ExpectedCondition<List<? extends WebElement>>     notPresentOrInvisible(
+    public static ExpectedCondition<List<? extends WebElement>> notPresentOrInvisible(
             final List<? extends WebElement> elements, int atLeast) {
 
         int limit = atLeast == 0 ? elements.size() : atLeast;
