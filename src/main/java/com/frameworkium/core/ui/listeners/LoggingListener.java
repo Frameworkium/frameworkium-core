@@ -9,7 +9,7 @@ import org.openqa.selenium.support.events.WebDriverEventListener;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EventListener implements WebDriverEventListener {
+public class LoggingListener implements WebDriverEventListener {
 
     private static final Logger logger = LogManager.getLogger();
 

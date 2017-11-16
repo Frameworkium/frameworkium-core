@@ -5,7 +5,7 @@ import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
 import com.frameworkium.core.ui.listeners.CaptureListener;
-import com.frameworkium.core.ui.listeners.EventListener;
+import com.frameworkium.core.ui.listeners.LoggingListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Proxy;
@@ -68,7 +68,7 @@ public abstract class AbstractDriver implements Driver {
 
     private WebDriverWrapper setupEventFiringWebDriver(DesiredCapabilities caps) {
         WebDriverWrapper eventFiringWD = new WebDriverWrapper(getWebDriver(caps));
-        eventFiringWD.register(new EventListener());
+        eventFiringWD.register(new LoggingListener());
         if (ScreenshotCapture.isRequired()) {
             eventFiringWD.register(new CaptureListener());
         }

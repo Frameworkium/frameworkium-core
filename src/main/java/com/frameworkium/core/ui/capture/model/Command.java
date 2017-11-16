@@ -26,7 +26,7 @@ public class Command {
     public Command(String action, WebElement element) {
         this.action = action;
 
-        // TODO: Improve this. Use hacky solution in EventListener?
+        // TODO: Improve this. Use hacky solution in LoggingListener?
         if (Driver.isNative()) {
             this.using = "n/a";
             this.value = "n/a";
