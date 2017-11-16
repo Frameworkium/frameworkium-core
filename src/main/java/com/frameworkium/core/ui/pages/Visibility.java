@@ -64,7 +64,7 @@ public final class Visibility {
         getDeclaredFieldsIncludingSuperClasses(pageObject.getClass())
                 .stream()
                 .filter(field -> !Modifier.isStatic(field.getModifiers()))
-                .filter(this::isOnlyOneVisibilityAnnotation)
+                .filter(this::hasOnlyOneVisibilityAnnotation)
                 .forEach(field -> invokeWaitFunctionForField(field, pageObject));
     }
 
@@ -84,7 +84,7 @@ public final class Visibility {
         return fields;
     }
 
-    private boolean isOnlyOneVisibilityAnnotation(Field field) {
+    private boolean hasOnlyOneVisibilityAnnotation(Field field) {
         long annotationCount = visibilityAnnotationsOf(field).count();
 
         if (annotationCount > 1) {
