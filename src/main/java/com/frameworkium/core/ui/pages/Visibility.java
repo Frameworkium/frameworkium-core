@@ -13,10 +13,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.frameworkium.core.ui.ExtraExpectedConditions.visibilityOfNElements;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
 import static ru.yandex.qatools.htmlelements.utils.HtmlElementUtils.*;
 
 /**
@@ -135,7 +136,9 @@ public final class Visibility {
                 field,
                 objectFromField,
                 we -> wait.until(visibilityOf(we)),
-                list -> wait.until(visibilityOfNElements(list, atLeast)));
+                list -> wait.until(visibilityOfAllElements(list.stream()
+                                                                .limit(atLeast == -1 ? list.size() : atLeast)
+                                                                .collect(Collectors.toList()))));
 
         // recurse inside HtmlElements
         if (isHtmlElementList(field)) {
@@ -153,7 +156,10 @@ public final class Visibility {
                 field,
                 getObjectFromField(pageObject, field),
                 we -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(we)),
-                list -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(list, atLeast)));
+                list -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(
+                        list.stream()
+                                .limit(atLeast == -1 ? list.size() : atLeast)
+                                .collect(Collectors.toList()))));
     }
 
     /**
@@ -162,12 +168,14 @@ public final class Visibility {
      */
     private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field, int atLeast) {
 
+
+
         applyToWebElements(
                 field,
                 getObjectFromField(pageObject, field),
                 this::forceVisible,
                 list -> list.stream()
-                        .limit(atLeast == 0 ? list.size() : atLeast)
+                        .limit(atLeast == -1 ? list.size() : atLeast)
                         .forEach(this::forceVisible));
 
         waitForFieldToBeVisible(pageObject, field, atLeast);

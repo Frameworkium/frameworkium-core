@@ -10,9 +10,9 @@ public @interface Invisible {
     String value() default "";
 
     /**
-     * If checking for invisibility of a list of elements, setting a value will only check for invisibility of the
-     * first n elements of the list.
+     * If checking for invisibility of a list of elements, setting a value
+     * will only check for invisibility of the first n elements of the list.
      */
-    public int atLeast() default 0;
+    public int atLeast() default -1;
 }
 

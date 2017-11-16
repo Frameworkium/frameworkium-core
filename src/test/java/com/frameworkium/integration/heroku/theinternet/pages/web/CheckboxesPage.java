@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class CheckboxesPage extends BasePage<CheckboxesPage> {
 
-    @Visible
+    @Visible(atLeast = 2)
     @Name("All checkboxes")
     @FindBy(css = "form input[type='checkbox']")
     private List<CheckBox> allCheckboxes;

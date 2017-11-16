@@ -48,6 +48,18 @@ class PageObjects {
         List<WebElement> forceVisibles
     }
 
+    class ListOfElementsWithAtLeast extends BasePage<ListOfElements> {
+
+        @Visible(atLeast = 2)
+        List<WebElement> visibles
+
+        @Invisible(atLeast = 2)
+        List<WebElement> invisibles
+
+        @ForceVisible(atLeast = 2)
+        List<WebElement> forceVisibles
+    }
+
     class VisibleComponent extends BasePage<VisibleComponent> {
 
         @Visible

@@ -10,9 +10,9 @@ public @interface ForceVisible {
     String value() default "";
 
     /**
-     * If checking for visibility of a list of elements, setting a value will only check for visibility of the first n
-     * elements of the list.
+     * If checking for visibility of a list of elements, setting a value
+     * will only check for visibility of the first n elements of the list.
      */
-    public int atLeast() default 0;
+    public int atLeast() default -1;
 }
 
