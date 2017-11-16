@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
  */
 public class ExtraExpectedConditions {
 
-
-
     /**
      * Custom wait which fills the gap left by Selenium whereby
      * <code>not({@link ExpectedConditions#visibilityOf(WebElement)})</code>
