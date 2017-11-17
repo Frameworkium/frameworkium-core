@@ -17,7 +17,7 @@ env:
     - CAPTURE_URL="https://capture.unity.perimeterusa.com:5000"
     - SUT_NAME="frameworkium-core"
     - SUT_VERSION=${TRAVIS_BRANCH}
-    - THREAD_COUNT=2
+    - THREAD_COUNT=3
     - SELENIUM_MAJ_VER=3.5
     - SELENIUM_VER=${SELENIUM_MAJ_VER}.3
     - SELENIUM_JAR=selenium-server-standalone-${SELENIUM_VER}.jar
@@ -39,8 +39,8 @@ script:
   # Run on Firefox off the grid
   - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -Dwebdriver.gecko.driver=/tmp/geckodriver 2> /dev/null
 
-  # Run on Firefox off the grid and reusing the same browsers
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -Dwebdriver.gecko.driver=/tmp/geckodriver -DreuseBrowser=true 2> /dev/null
+  # Run TheInternetExampleTests on Firefox off the grid and reusing the same browsers
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -Dwebdriver.gecko.driver=/tmp/geckodriver -DreuseBrowser=true -Dit.test=TheInternetExampleTests 2> /dev/null
 
   # Download and setup Grid
   - wget --quiet --no-check-certificate https://selenium-release.storage.googleapis.com/${SELENIUM_MAJ_VER}/${SELENIUM_JAR}
