@@ -4,7 +4,7 @@ jdk: oraclejdk8
 dist: xenial
 
 addons:
-  firefox: "56.0"
+  firefox: "57.0"
 
 # disable default mvn install
 install: true
@@ -21,8 +21,8 @@ env:
     - SELENIUM_MAJ_VER=3.5
     - SELENIUM_VER=${SELENIUM_MAJ_VER}.3
     - SELENIUM_JAR=selenium-server-standalone-${SELENIUM_VER}.jar
-    - GECKO_VER=0.19.0
-    - CHROME_DRIVER_VER=2.31
+    - GECKO_VER=0.19.1
+    - CHROME_DRIVER_VER=2.33
 
 # setup X to allow non-headless browsers to run
 before_script:
@@ -37,11 +37,10 @@ script:
   - tar -xzf geckodriver-v${GECKO_VER}-linux64.tar.gz --directory /tmp
   
   # Run on Firefox off the grid
-  # Currently (Aug-2017) only seems to work with 1 thread on travis
-  - mvn verify -B -Dthreads=1 -Dbrowser=firefox -Dwebdriver.gecko.driver=/tmp/geckodriver 2> /dev/null
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -Dwebdriver.gecko.driver=/tmp/geckodriver 2> /dev/null
 
-  # Run on Firefox off the grid by reusing the same browser
-  - mvn verify -B -Dthreads=1 -Dbrowser=firefox -DreuseBrowser=true -Dwebdriver.gecko.driver=/tmp/geckodriver 2> /dev/null
+  # Run TheInternetExampleTests on Firefox off the grid and reusing the same browsers
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -Dwebdriver.gecko.driver=/tmp/geckodriver -DreuseBrowser=true -Dit.test=TheInternetExampleTests 2> /dev/null
 
   # Download and setup Grid
   - wget --quiet --no-check-certificate https://selenium-release.storage.googleapis.com/${SELENIUM_MAJ_VER}/${SELENIUM_JAR}
