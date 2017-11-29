@@ -110,14 +110,14 @@ public final class Visibility {
                         .orElseThrow(IllegalStateException::new);
 
         if (Visible.class.equals(visibilityAnnotationClass)) {
-            int visibleAtLeast = field.getAnnotation(Visible.class).checkAtMost();
-            waitForFieldToBeVisible(pageObject, field, visibleAtLeast);
+            int toCheckCount = field.getAnnotation(Visible.class).checkAtMost();
+            waitForFieldToBeVisible(pageObject, field, toCheckCount);
         } else if (Invisible.class.equals(visibilityAnnotationClass)) {
-            int invisibleAtLeast = field.getAnnotation(Invisible.class).checkAtMost();
-            waitForFieldToBeInvisible(pageObject, field, invisibleAtLeast);
+            int toCheckCount = field.getAnnotation(Invisible.class).checkAtMost();
+            waitForFieldToBeInvisible(pageObject, field, toCheckCount);
         } else if (ForceVisible.class.equals(visibilityAnnotationClass)) {
-            int forceVisibleAtLeast = field.getAnnotation(ForceVisible.class).checkAtMost();
-            forceThenWaitForFieldToBeVisible(pageObject, field, forceVisibleAtLeast);
+            int toCheckCount = field.getAnnotation(ForceVisible.class).checkAtMost();
+            forceThenWaitForFieldToBeVisible(pageObject, field, toCheckCount);
         }
     }
 
@@ -125,11 +125,12 @@ public final class Visibility {
      * Checks for visibility of Fields with the {@link Visible} annotation.
      * Will recurse inside {@link HtmlElement}s
      *
-     * @param pageObject the pageObject
-     * @param field      wait for visibility of the field
+     * @param pageObject  the pageObject
+     * @param field       wait for visibility of the field
+     * @param checkAtMost maximum number of elements to check in a List
      */
     @SuppressWarnings("unchecked")
-    private void waitForFieldToBeVisible(Object pageObject, Field field, int atLeast) {
+    private void waitForFieldToBeVisible(Object pageObject, Field field, int checkAtMost) {
 
         Object objectFromField = getObjectFromField(pageObject, field);
         applyToWebElements(
@@ -138,7 +139,7 @@ public final class Visibility {
                 we -> wait.until(visibilityOf(we)),
                 list -> wait.until(visibilityOfAllElements(
                         list.stream()
-                                .limit(atLeast == -1 ? list.size() : atLeast)
+                                .limit(checkAtMost == -1 ? list.size() : checkAtMost)
                                 .collect(Collectors.toList()))));
 
         // recurse inside HtmlElements
@@ -151,7 +152,7 @@ public final class Visibility {
     }
 
     /** Same as waitForFieldToBeVisible but for Invisibility. */
-    private void waitForFieldToBeInvisible(Object pageObject, Field field, int atLeast) {
+    private void waitForFieldToBeInvisible(Object pageObject, Field field, int checkAtMost) {
 
         applyToWebElements(
                 field,
@@ -159,25 +160,25 @@ public final class Visibility {
                 we -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(we)),
                 list -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(
                         list.stream()
-                                .limit(atLeast == -1 ? list.size() : atLeast)
+                                .limit(checkAtMost == -1 ? list.size() : checkAtMost)
                                 .collect(Collectors.toList()))));
     }
 
     /**
      * Calls {@link Visibility#forceVisible(WebElement)} for each ForceVisible
-     * field then {@link Visibility#waitForFieldToBeVisible(Object, Field)}.
+     * field then {@link Visibility#waitForFieldToBeVisible(Object, Field, int)}.
      */
-    private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field, int atLeast) {
+    private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field, int checkAtMost) {
 
         applyToWebElements(
                 field,
                 getObjectFromField(pageObject, field),
                 this::forceVisible,
                 list -> list.stream()
-                        .limit(atLeast == -1 ? list.size() : atLeast)
+                        .limit(checkAtMost == -1 ? list.size() : checkAtMost)
                         .forEach(this::forceVisible));
 
-        waitForFieldToBeVisible(pageObject, field, atLeast);
+        waitForFieldToBeVisible(pageObject, field, checkAtMost);
     }
 
     @SuppressWarnings("unchecked")

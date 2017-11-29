@@ -125,10 +125,10 @@ class VisibilitySpec extends Specification {
             3 * mockDriver.executeScript(_ as String, _ as WebElement)
     }
 
-    def "Waiting for Lists of Elements passes as expected where atLeast=2"() {
+    def "Waiting for Lists of Elements passes as expected where checkAtMost=2"() {
 
         given: "A page objects with Lists of Elements"
-        def pageObject = new PageObjects.ListOfElementsWithAtLeast()
+        def pageObject = new PageObjects.ListOfElementsCheckAtMost()
             pageObject.with {
                 visibles = [newVisibleElement(), newVisibleElement(), newNoInteractionElement()]
                 invisibles = [newInvisibleElement(), newInvisibleElement(), newNoInteractionElement()]
