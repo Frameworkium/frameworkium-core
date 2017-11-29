@@ -13,5 +13,5 @@ public @interface Visible {
      * If checking for visibility of a list of elements, setting a value
      * will only check for visibility of the first n elements of the list.
      */
-    public int atLeast() default -1;
+    public int checkAtMost() default -1;
 }

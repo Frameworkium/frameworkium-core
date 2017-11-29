@@ -13,6 +13,6 @@ public @interface Invisible {
      * If checking for invisibility of a list of elements, setting a value
      * will only check for invisibility of the first n elements of the list.
      */
-    public int atLeast() default -1;
+    public int checkAtMost() default -1;
 }
 

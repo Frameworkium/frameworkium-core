@@ -110,13 +110,13 @@ public final class Visibility {
                         .orElseThrow(IllegalStateException::new);
 
         if (Visible.class.equals(visibilityAnnotationClass)) {
-            int visibleAtLeast = field.getAnnotation(Visible.class).atLeast();
+            int visibleAtLeast = field.getAnnotation(Visible.class).checkAtMost();
             waitForFieldToBeVisible(pageObject, field, visibleAtLeast);
         } else if (Invisible.class.equals(visibilityAnnotationClass)) {
-            int invisibleAtLeast = field.getAnnotation(Invisible.class).atLeast();
+            int invisibleAtLeast = field.getAnnotation(Invisible.class).checkAtMost();
             waitForFieldToBeInvisible(pageObject, field, invisibleAtLeast);
         } else if (ForceVisible.class.equals(visibilityAnnotationClass)) {
-            int forceVisibleAtLeast = field.getAnnotation(ForceVisible.class).atLeast();
+            int forceVisibleAtLeast = field.getAnnotation(ForceVisible.class).checkAtMost();
             forceThenWaitForFieldToBeVisible(pageObject, field, forceVisibleAtLeast);
         }
     }

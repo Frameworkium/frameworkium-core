@@ -50,13 +50,13 @@ class PageObjects {
 
     class ListOfElementsWithAtLeast extends BasePage<ListOfElements> {
 
-        @Visible(atLeast = 2)
+        @Visible(checkAtMost = 2)
         List<WebElement> visibles
 
-        @Invisible(atLeast = 2)
+        @Invisible(checkAtMost = 2)
         List<WebElement> invisibles
 
-        @ForceVisible(atLeast = 2)
+        @ForceVisible(checkAtMost = 2)
         List<WebElement> forceVisibles
     }
 
