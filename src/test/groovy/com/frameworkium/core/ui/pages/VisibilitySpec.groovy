@@ -26,15 +26,15 @@ class VisibilitySpec extends Specification {
 
     // Assert exactly one isDisplayed() call per WebElement
     def newVisibleElement() {
-        return Mock(WebElement) { 1 * isDisplayed() >> true }
+        Mock(WebElement) { 1 * isDisplayed() >> true }
     }
 
     def newInvisibleElement() {
-        return Mock(WebElement) { 1 * isDisplayed() >> false }
+        Mock(WebElement) { 1 * isDisplayed() >> false }
     }
 
-    def newNoInteractionElement(){
-        return Mock(WebElement) { 0 * isDisplayed()}
+    def newNoInteractionElement() {
+        Mock(WebElement) { 0 * isDisplayed() }
     }
 
     def newVisibleComponent() {
