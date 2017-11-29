@@ -13,6 +13,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
@@ -63,7 +64,7 @@ public final class Visibility {
         getDeclaredFieldsIncludingSuperClasses(pageObject.getClass())
                 .stream()
                 .filter(field -> !Modifier.isStatic(field.getModifiers()))
-                .filter(this::validateFieldVisibilityAnnotations)
+                .filter(this::hasOnlyOneVisibilityAnnotation)
                 .forEach(field -> invokeWaitFunctionForField(field, pageObject));
     }
 
@@ -83,8 +84,8 @@ public final class Visibility {
         return fields;
     }
 
-    private boolean validateFieldVisibilityAnnotations(Field field) {
-        long annotationCount = visibilityAnnotationsFrom(field).count();
+    private boolean hasOnlyOneVisibilityAnnotation(Field field) {
+        long annotationCount = visibilityAnnotationsOf(field).count();
 
         if (annotationCount > 1) {
             throw new IllegalArgumentException(String.format(
@@ -96,7 +97,7 @@ public final class Visibility {
         }
     }
 
-    private Stream<Class<? extends Annotation>> visibilityAnnotationsFrom(Field field) {
+    private Stream<Class<? extends Annotation>> visibilityAnnotationsOf(Field field) {
         return VISIBILITY_ANNOTATION_CLASSES.stream()
                 .filter(field::isAnnotationPresent);
     }
@@ -104,16 +105,19 @@ public final class Visibility {
     private void invokeWaitFunctionForField(Field field, Object pageObject) {
 
         Class<? extends Annotation> visibilityAnnotationClass =
-                visibilityAnnotationsFrom(field)
+                visibilityAnnotationsOf(field)
                         .findAny()
                         .orElseThrow(IllegalStateException::new);
 
         if (Visible.class.equals(visibilityAnnotationClass)) {
-            waitForFieldToBeVisible(pageObject, field);
+            int toCheckCount = field.getAnnotation(Visible.class).checkAtMost();
+            waitForFieldToBeVisible(pageObject, field, toCheckCount);
         } else if (Invisible.class.equals(visibilityAnnotationClass)) {
-            waitForFieldToBeInvisible(pageObject, field);
+            int toCheckCount = field.getAnnotation(Invisible.class).checkAtMost();
+            waitForFieldToBeInvisible(pageObject, field, toCheckCount);
         } else if (ForceVisible.class.equals(visibilityAnnotationClass)) {
-            forceThenWaitForFieldToBeVisible(pageObject, field);
+            int toCheckCount = field.getAnnotation(ForceVisible.class).checkAtMost();
+            forceThenWaitForFieldToBeVisible(pageObject, field, toCheckCount);
         }
     }
 
@@ -121,18 +125,22 @@ public final class Visibility {
      * Checks for visibility of Fields with the {@link Visible} annotation.
      * Will recurse inside {@link HtmlElement}s
      *
-     * @param pageObject the pageObject
-     * @param field      wait for visibility of the field
+     * @param pageObject  the pageObject
+     * @param field       wait for visibility of the field
+     * @param checkAtMost maximum number of elements to check in a List
      */
     @SuppressWarnings("unchecked")
-    private void waitForFieldToBeVisible(Object pageObject, Field field) {
+    private void waitForFieldToBeVisible(Object pageObject, Field field, int checkAtMost) {
 
         Object objectFromField = getObjectFromField(pageObject, field);
         applyToWebElements(
                 field,
                 objectFromField,
                 we -> wait.until(visibilityOf(we)),
-                list -> wait.until(visibilityOfAllElements(list)));
+                list -> wait.until(visibilityOfAllElements(
+                        list.stream()
+                                .limit(checkAtMost == -1 ? list.size() : checkAtMost)
+                                .collect(Collectors.toList()))));
 
         // recurse inside HtmlElements
         if (isHtmlElementList(field)) {
@@ -144,28 +152,33 @@ public final class Visibility {
     }
 
     /** Same as waitForFieldToBeVisible but for Invisibility. */
-    private void waitForFieldToBeInvisible(Object pageObject, Field field) {
+    private void waitForFieldToBeInvisible(Object pageObject, Field field, int checkAtMost) {
 
         applyToWebElements(
                 field,
                 getObjectFromField(pageObject, field),
                 we -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(we)),
-                list -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(list)));
+                list -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(
+                        list.stream()
+                                .limit(checkAtMost == -1 ? list.size() : checkAtMost)
+                                .collect(Collectors.toList()))));
     }
 
     /**
      * Calls {@link Visibility#forceVisible(WebElement)} for each ForceVisible
-     * field then {@link Visibility#waitForFieldToBeVisible(Object, Field)}.
+     * field then {@link Visibility#waitForFieldToBeVisible(Object, Field, int)}.
      */
-    private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field) {
+    private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field, int checkAtMost) {
 
         applyToWebElements(
                 field,
                 getObjectFromField(pageObject, field),
                 this::forceVisible,
-                list -> list.forEach(this::forceVisible));
+                list -> list.stream()
+                        .limit(checkAtMost == -1 ? list.size() : checkAtMost)
+                        .forEach(this::forceVisible));
 
-        waitForFieldToBeVisible(pageObject, field);
+        waitForFieldToBeVisible(pageObject, field, checkAtMost);
     }
 
     @SuppressWarnings("unchecked")

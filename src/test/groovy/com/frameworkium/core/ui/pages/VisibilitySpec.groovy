@@ -26,11 +26,15 @@ class VisibilitySpec extends Specification {
 
     // Assert exactly one isDisplayed() call per WebElement
     def newVisibleElement() {
-        return Mock(WebElement) { 1 * isDisplayed() >> true }
+        Mock(WebElement) { 1 * isDisplayed() >> true }
     }
 
     def newInvisibleElement() {
-        return Mock(WebElement) { 1 * isDisplayed() >> false }
+        Mock(WebElement) { 1 * isDisplayed() >> false }
+    }
+
+    def newNoInteractionElement() {
+        Mock(WebElement) { 0 * isDisplayed() }
     }
 
     def newVisibleComponent() {
@@ -119,6 +123,22 @@ class VisibilitySpec extends Specification {
         then: "No exceptions and 3 forceVisible JS executions"
             notThrown(Exception)
             3 * mockDriver.executeScript(_ as String, _ as WebElement)
+    }
+
+    def "Waiting for Lists of Elements passes as expected where checkAtMost=2"() {
+
+        given: "A page objects with Lists of Elements"
+        def pageObject = new PageObjects.ListOfElementsCheckAtMost()
+            pageObject.with {
+                visibles = [newVisibleElement(), newVisibleElement(), newNoInteractionElement()]
+                invisibles = [newInvisibleElement(), newInvisibleElement(), newNoInteractionElement()]
+                forceVisibles = [newVisibleElement(), newVisibleElement(), newNoInteractionElement()]
+            }
+        when: "waiting for visibility"
+            sut.waitForAnnotatedElementVisibility(pageObject)
+        then: "No exceptions and 2 forceVisible JS executions"
+            notThrown(Exception)
+            2 * mockDriver.executeScript(_ as String, _ as WebElement)
     }
 
     def "HtmlElement 'components' are treated as page objects"() {
