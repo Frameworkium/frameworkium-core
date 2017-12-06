@@ -1,6 +1,7 @@
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.frameworkium</groupId>
@@ -9,11 +10,13 @@
   <name>frameworkium-core</name>
   <description>
     Frameworkium core code.
-    Referenced by the com.frameworkium project, with example tests.
+    Referenced by the frameworkium-examples project, with more example tests.
   </description>
   <url/>
-  <inceptionYear/>
-  <organization/>
+  <inceptionYear>2015</inceptionYear>
+  <organization>
+    <name>Frameworkium</name>
+  </organization>
   <licenses/>
 
   <developers/>
@@ -25,8 +28,15 @@
 
   <modules/>
 
-  <scm/>
-  <issueManagement/>
+  <scm>
+    <connection>scm:git:git@github.com:frameworkium/frameworkium-core</connection>
+    <url>scm:git:git@github.com:frameworkium/frameworkium-core</url>
+    <developerConnection>scm:git:git@github.com:frameworkium/frameworkium-core</developerConnection>
+  </scm>
+  <issueManagement>
+    <system>github issues</system>
+    <url>https://github.com/Frameworkium/frameworkium-core/issues</url>
+  </issueManagement>
   <ciManagement/>
   <distributionManagement/>
 
@@ -240,6 +250,14 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.5.3</version>
+        <configuration>
+          <useReleaseProfile>false</useReleaseProfile>
+          <tagNameFormat>@{version}</tagNameFormat>
+        </configuration>
       </plugin>
     </plugins>
   </build>
