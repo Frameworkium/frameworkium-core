@@ -55,18 +55,6 @@ public class TheInternetExampleTests extends BaseTest {
 
         // Navigate to the dynamic loading hidden element page
         DynamicLoadingExamplePage dynamicLoadingExamplePage =
-                WelcomePage.open().then().clickDynamicLoading().then().clickExample1();
-
-        // Click start and wait for element to be displayed
-        dynamicLoadingExamplePage.clickStart().then().waitForElementToBeDisplayed();
-
-        // Assert that the element is indeed displayed
-        assertThat(dynamicLoadingExamplePage.isElementDisplayed())
-                .named("element visibility")
-                .isTrue();
-
-        // Navigate to the dynamic loading hidden element page
-        dynamicLoadingExamplePage =
                 WelcomePage.open().then().clickDynamicLoading().then().clickExample2();
 
         // Click start and wait for element to be displayed
