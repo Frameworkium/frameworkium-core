@@ -6,6 +6,10 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+/**
+ * @deprecated will be removed once headless firefox and chrome are available
+ */
+@Deprecated
 public class PhantomJSImpl extends AbstractDriver {
 
     @Override
