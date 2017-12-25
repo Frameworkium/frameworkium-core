@@ -93,4 +93,4 @@ after_script:
   # upload code coverage to code climate
   - cp target/site/jacoco/jacoco.xml src/main/java/jacoco.xml
   - cd src/main/java/
-  - ../../../../cc-test-reporter after-build -d -t jacoco --exit-code $TRAVIS_TEST_RESULT
+  - ../../../cc-test-reporter after-build -d -t jacoco --exit-code $TRAVIS_TEST_RESULT
