@@ -1,22 +1,22 @@
 language: java
 jdk: oraclejdk8
 
-dist: xenial
+sudo: false
+dist: trusty
 
 addons:
-  firefox: "57.0"
+  firefox: "57.0.2"
 
-# disable default mvn install
-install: true
+install: true # disable default mvn install
 
 notifications:
   slack: qaengineering:eTRqy0JhQOUtKHNO8mKLc8NC
 
 env:
   global:
-    - CAPTURE_URL="https://capture.unity.perimeterusa.com:5000"
-    - SUT_NAME="frameworkium-core"
-    - SUT_VERSION=${TRAVIS_BRANCH}
+    # - CAPTURE_URL="https://localhost:5000" # disabled until new instance is available
+    # - SUT_NAME="frameworkium-core"
+    # - SUT_VERSION=${TRAVIS_BRANCH}
     - THREAD_COUNT=2
     - SELENIUM_MAJ_VER=3.5
     - SELENIUM_VER=${SELENIUM_MAJ_VER}.3
@@ -33,34 +33,35 @@ script:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -U -q
   
   # Download geckodriver
-  - wget --quiet --no-check-certificate https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VER}/geckodriver-v${GECKO_VER}-linux64.tar.gz
+  - wget --quiet https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VER}/geckodriver-v${GECKO_VER}-linux64.tar.gz
   - tar -xzf geckodriver-v${GECKO_VER}-linux64.tar.gz --directory /tmp
-  
+
+  # Download and setup Grid hub
+  # NB this is before the "off-grid" test to ensure grid is fully up in time
+  - wget --quiet https://selenium-release.storage.googleapis.com/${SELENIUM_MAJ_VER}/${SELENIUM_JAR}
+  - java -Xmx128m -jar ${SELENIUM_JAR} -role hub > /dev/null 2>&1 &
+  # Setup geckodriver grid node
+  - java -Xmx128m -Dwebdriver.gecko.driver=/tmp/geckodriver -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > /dev/null 2>&1 &
+
+
   # Run on Firefox off the grid
   - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -Dwebdriver.gecko.driver=/tmp/geckodriver 2> /dev/null
 
   # Run TheInternetExampleTests on Firefox off the grid and reusing the same browsers
   - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -Dwebdriver.gecko.driver=/tmp/geckodriver -DreuseBrowser=true -Dit.test=TheInternetExampleTests 2> /dev/null
 
-  # Download and setup Grid
-  - wget --quiet --no-check-certificate https://selenium-release.storage.googleapis.com/${SELENIUM_MAJ_VER}/${SELENIUM_JAR}
-  - java -Xmx128m -jar ${SELENIUM_JAR} -role hub > /dev/null 2>&1 &
 
-  # Download and setup Marionette/geckodriver grid node
-  - java -Xmx128m -Dwebdriver.gecko.driver=/tmp/geckodriver -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > /dev/null 2>&1 &
+  # Run on Firefox on the grid via gecko
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dconfig=FirefoxGrid.yaml # -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # set up chrome
   #- ln -s /usr/bin/chromium-browser /tmp/google-chrome
-  #- wget http://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VER}/chromedriver_linux64.zip --quiet
+  #- wget --quiet http://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VER}/chromedriver_linux64.zip
   #- unzip chromedriver_linux64.zip
   #- java -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=${THREAD_COUNT} -port 5556 > /dev/null 2>&1 &
 
-
-  # Run on Firefox on the grid via gecko
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dconfig=FirefoxGrid.yaml -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
-
   # Run on chrome on the grid
-  # chromium crashes and google chrome doesn't work on travis
+  # chromium crashes and google chrome doesn't (yet) work on travis
   # - mvn verify -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DgridURL=http://localhost:4444/wd/hub -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Run and log to Jira
@@ -69,7 +70,7 @@ script:
   # Run using custom browserImpl (and subset of tests)
   - mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=CustomFirefoxImpl -Dwebdriver.gecko.driver=/tmp/geckodriver -Dit.test=DocumentationTest 2> /dev/null
 
-  # Run on sauce
+  # Run on sauce - disabled until we have a sauce account to use
   # - mvn verify -Dsauce=true -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.0 -Ddevice=iPad -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # generate allure report
