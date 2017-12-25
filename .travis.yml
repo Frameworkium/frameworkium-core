@@ -91,4 +91,6 @@ after_script:
   - bash <(curl -s https://codecov.io/bash)
 
   # upload code coverage to code climate
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+  - cp target/site/jacoco/jacoco.xml src/main/java/jacoco.xml
+  - cd src/main/java/
+  - ../../../../cc-test-reporter after-build -d -t jacoco --exit-code $TRAVIS_TEST_RESULT
