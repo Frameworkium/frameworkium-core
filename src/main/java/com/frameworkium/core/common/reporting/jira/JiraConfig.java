@@ -10,6 +10,10 @@ public class JiraConfig {
     public static final String JIRA_REST_PATH = "/rest/api/latest/";
     public static final String REST_ZAPI_PATH = "/rest/zapi/latest/";
 
+    private JiraConfig() {
+        // hide default constructor for this util class
+    }
+
     /**
      * Basic request to send to JIRA and authenticate successfully.
      */
