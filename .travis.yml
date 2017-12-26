@@ -51,10 +51,10 @@ script:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true --batch-mode --show-version --update-snapshots
 
   # Run on Firefox off the grid
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -Dwebdriver.gecko.driver=/tmp/geckodriver 2> /dev/null
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -Dwebdriver.gecko.driver=geckodriver 2> /dev/null
 
   # Run TheInternetExampleTests on Firefox off the grid and reusing the same browsers
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -Dwebdriver.gecko.driver=/tmp/geckodriver -DreuseBrowser=true -Dit.test=TheInternetExampleTests 2> /dev/null
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -Dwebdriver.gecko.driver=geckodriver -DreuseBrowser=true -Dit.test=TheInternetExampleTests 2> /dev/null
 
   # Run on Firefox on the grid via gecko
   - mvn verify -B -Dthreads=${THREAD_COUNT} -Dconfig=FirefoxGrid.yaml # -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
@@ -67,7 +67,7 @@ script:
   - mvn verify -B -Dthreads=${THREAD_COUNT} -Dconfig=FirefoxGrid.yaml -DjiraURL="http://52.29.130.45:8080" -DjqlQuery="issueKey=TEST-1" -DresultVersion="BUILD TEST VERSION" -DzapiCycleRegex="Test Cycle" -DjiraUsername=frameworkium -DjiraPassword=frameworkium
 
   # Run using custom browserImpl (and subset of tests)
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=CustomFirefoxImpl -Dwebdriver.gecko.driver=/tmp/geckodriver -Dit.test=DocumentationTest 2> /dev/null
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=CustomFirefoxImpl -Dwebdriver.gecko.driver=geckodriver -Dit.test=DocumentationTest 2> /dev/null
 
   # Run on sauce - disabled until we have a sauce account to use
   # - mvn verify -Dsauce=true -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.0 -Ddevice=iPad -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
