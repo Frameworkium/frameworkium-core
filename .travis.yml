@@ -13,11 +13,10 @@ install: true # disable default mvn install
 # cache maven deps to speed up first install step
 cache:
   directories:
-  - $HOME/.m2
+    - $HOME/.m2
 
-# disabled while I mess around with travis
 #notifications:
-  #slack: qaengineering:eTRqy0JhQOUtKHNO8mKLc8NC
+#  slack: qaengineering:eTRqy0JhQOUtKHNO8mKLc8NC
 
 env:
   global:
@@ -29,7 +28,9 @@ env:
     - SELENIUM_VER=${SELENIUM_MAJ_VER}.3
     - SELENIUM_JAR=selenium-server-standalone-${SELENIUM_VER}.jar
     - GECKO_VER=0.19.1
-    - CHROME_DRIVER_VER=2.33
+    - CHROME_DRIVER_VER=2.34
+    # Speed up maven JVM start
+    - MAVEN_OPTS=-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none
 
 before_script:
   # setup X to allow non-headless browsers to run
@@ -44,18 +45,17 @@ before_script:
   - wget --quiet https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VER}/geckodriver-v${GECKO_VER}-linux64.tar.gz
   - tar -xzf geckodriver-v${GECKO_VER}-linux64.tar.gz
 
+  # Download chromedriver
+  - wget --quiet http://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VER}/chromedriver_linux64.zip
+  - unzip chromedriver_linux64.zip
+
   # Setup Firefox Selenium Grid Node
   - java -Xmx256m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > /dev/null 2>&1 &
 
-  # Set up chrome Selenium Grid Node
-  - wget --quiet http://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VER}/chromedriver_linux64.zip
-  - unzip chromedriver_linux64.zip
+  # Set up Chrome Selenium Grid Node
   - java -Xmx256m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5556 > /dev/null 2>&1 &
 
 script:
-
-  # Speed up JVM start
-  - export MAVEN_OPTS="${MAVEN_OPTS} -client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none"
 
   # Download deps (should use cache), compile and run checkstyle
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B --show-version --update-snapshots --threads ${THREAD_COUNT}
