@@ -10,6 +10,11 @@ addons:
 
 install: true # disable default mvn install
 
+# cache maven deps to speed up first install step
+cache:
+  directories:
+  - $HOME/.m2
+
 # disabled while I mess around with travis
 #notifications:
   #slack: qaengineering:eTRqy0JhQOUtKHNO8mKLc8NC
