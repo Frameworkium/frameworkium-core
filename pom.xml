@@ -41,6 +41,7 @@
     <threads>1</threads>
     <groups />
     <aspectj.version>1.8.13</aspectj.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <dependencies>
