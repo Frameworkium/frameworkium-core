@@ -22,10 +22,6 @@
   <developers />
   <contributors />
 
-  <prerequisites>
-    <maven>3.1.1</maven>
-  </prerequisites>
-
   <modules />
 
   <scm>
