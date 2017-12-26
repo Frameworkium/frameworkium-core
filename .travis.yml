@@ -30,7 +30,8 @@ env:
     - GECKO_VER=0.19.1
     - CHROME_DRIVER_VER=2.34
     # Speed up maven JVM start
-    - MAVEN_OPTS=-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none
+    # snakeoil/not worth it?
+    #- MAVEN_OPTS=-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none
 
 before_script:
   # setup X to allow non-headless browsers to run
