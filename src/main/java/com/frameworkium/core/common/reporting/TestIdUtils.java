@@ -11,6 +11,10 @@ import static java.util.Objects.isNull;
 
 public class TestIdUtils {
 
+    private TestIdUtils() {
+        // hide default constructor for this util class
+    }
+
     /**
      * Get issue or test case ID.
      *

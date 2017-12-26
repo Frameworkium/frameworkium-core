@@ -20,6 +20,10 @@ import java.util.stream.Collectors;
  */
 public class ExtraExpectedConditions {
 
+    private ExtraExpectedConditions() {
+        // hide default constructor for this util class
+    }
+
     /**
      * Custom wait which fills the gap left by Selenium whereby
      * <code>not({@link ExpectedConditions#visibilityOf(WebElement)})</code>

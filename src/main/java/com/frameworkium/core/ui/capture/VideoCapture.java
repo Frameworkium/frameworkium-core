@@ -24,6 +24,10 @@ public class VideoCapture {
 
     private static HashMap<String, String> testMap = new HashMap<>();
 
+    private VideoCapture() {
+        // hide default constructor for this util class
+    }
+
     public static boolean isRequired() {
         return VIDEO_CAPTURE_URL.isSpecified();
     }

@@ -7,6 +7,10 @@ import static com.frameworkium.core.common.properties.Property.BROWSER_STACK;
 
 public class BrowserStack {
 
+    private BrowserStack() {
+        // hide default constructor for this util class
+    }
+
     /**
      * Get the URL for the BrowserStack instance as configured by the parameters.
      */

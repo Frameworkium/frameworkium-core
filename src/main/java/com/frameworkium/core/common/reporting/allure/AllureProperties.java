@@ -15,6 +15,10 @@ public class AllureProperties {
 
     private static final Logger logger = LogManager.getLogger();
 
+    private AllureProperties() {
+        // hide default constructor for this util class
+    }
+
     /**
      * Creates the Allure environment.properties file based on properties used.
      */
