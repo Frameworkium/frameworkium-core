@@ -6,11 +6,13 @@ dist: trusty
 
 addons:
   firefox: "57.0.2"
+  chrome: stable
 
 install: true # disable default mvn install
 
-notifications:
-  slack: qaengineering:eTRqy0JhQOUtKHNO8mKLc8NC
+# disabled while I mess around with travis
+#notifications:
+  #slack: qaengineering:eTRqy0JhQOUtKHNO8mKLc8NC
 
 env:
   global:
@@ -29,51 +31,47 @@ before_script:
   - export DISPLAY=:99.0
   - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16
 
+  # Set up Selenium Grid Hub
+  - wget --quiet https://selenium-release.storage.googleapis.com/${SELENIUM_MAJ_VER}/${SELENIUM_JAR}
+  - java -Xmx256m -jar ${SELENIUM_JAR} -role hub > /dev/null 2>&1 &
   # Download geckodriver
   - wget --quiet https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VER}/geckodriver-v${GECKO_VER}-linux64.tar.gz
   - tar -xzf geckodriver-v${GECKO_VER}-linux64.tar.gz
+  # Setup geckodriver Selenium Grid Node
+  - java -Xmx256m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > /dev/null 2>&1 &
 
-  # Download and setup Grid hub
-  # NB this is before the "off-grid" test to ensure grid is fully up in time for the on grid test
-  - wget --quiet https://selenium-release.storage.googleapis.com/${SELENIUM_MAJ_VER}/${SELENIUM_JAR}
-  - java -Xmx256m -jar ${SELENIUM_JAR} -role hub > /dev/null 2>&1 &
-  # Setup geckodriver grid node
-  - java -Xmx256m -Dwebdriver.gecko.driver=geckodriver -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > /dev/null 2>&1 &
-
-  # set up chrome
-  #- ln -s /usr/bin/chromium-browser /tmp/google-chrome
-  #- wget --quiet http://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VER}/chromedriver_linux64.zip
-  #- unzip chromedriver_linux64.zip
-  #- java -Xmx256m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=${THREAD_COUNT} -port 5556 > /dev/null 2>&1 &
+  # Set up chrome
+  - wget --quiet http://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VER}/chromedriver_linux64.zip
+  - unzip chromedriver_linux64.zip
+  - java -Xmx256m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=${THREAD_COUNT} -port 5556 > /dev/null 2>&1 &
 
 script:
   # compile and run checkstyle
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true --batch-mode --show-version --update-snapshots
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true --batch-mode --show-version --update-snapshots --quiet --threads 1C
 
-  # Run on Firefox off the grid
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -Dwebdriver.gecko.driver=geckodriver 2> /dev/null
+  # Firefox off the grid
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox 2> /dev/null
 
-  # Run TheInternetExampleTests on Firefox off the grid and reusing the same browsers
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -Dwebdriver.gecko.driver=geckodriver -DreuseBrowser=true -Dit.test=TheInternetExampleTests 2> /dev/null
+  # Chrome on the grid
+  - mvn verify -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DgridURL=http://localhost:4444/wd/hub -Dit.test=TheInternetExampleTests #-DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
-  # Run on Firefox on the grid via gecko
+  # Firefox off the grid and reusing same browser(s) with TheInternetExampleTests
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dit.test=TheInternetExampleTests 2> /dev/null
+
+  # Firefox on the grid via gecko
   - mvn verify -B -Dthreads=${THREAD_COUNT} -Dconfig=FirefoxGrid.yaml # -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
-  # Run on chrome on the grid
-  # chromium crashes and google chrome doesn't (yet 2016) work on travis
-  # - mvn verify -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DgridURL=http://localhost:4444/wd/hub -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
-
-  # Run and log to Jira
+  # Query Jira for which test to run and then log results to Jira
   - mvn verify -B -Dthreads=${THREAD_COUNT} -Dconfig=FirefoxGrid.yaml -DjiraURL="http://52.29.130.45:8080" -DjqlQuery="issueKey=TEST-1" -DresultVersion="BUILD TEST VERSION" -DzapiCycleRegex="Test Cycle" -DjiraUsername=frameworkium -DjiraPassword=frameworkium
 
-  # Run using custom browserImpl (and subset of tests)
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=CustomFirefoxImpl -Dwebdriver.gecko.driver=geckodriver -Dit.test=DocumentationTest 2> /dev/null
+  # Custom browserImpl (and subset of tests)
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=CustomFirefoxImpl -Dit.test=DocumentationTest 2> /dev/null
 
-  # Run on sauce - disabled until we have a sauce account to use
+  # SauceLabs- disabled until we have a sauce account to use
   # - mvn verify -Dsauce=true -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.0 -Ddevice=iPad -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
-  # generate allure report
+  # Allure report
   - mvn site -B -q
 
-  # upload code coverage report
+  # Code coverage report
   - bash <(curl -s https://codecov.io/bash)
