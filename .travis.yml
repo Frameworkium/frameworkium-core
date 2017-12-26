@@ -59,21 +59,21 @@ script:
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B --show-version --update-snapshots --threads ${THREAD_COUNT}
 
   # Firefox on the grid
-  - mvn verify -B --offline -Dthreads=${THREAD_COUNT} -Dconfig=FirefoxGrid.yaml
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dconfig=FirefoxGrid.yaml
 
   ## The following use a subset of tests and/or reuse the browser to speed things up
 
   # Firefox off the grid
-  - mvn verify -B --offline -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dit.test=TheInternetExampleTests 2> /dev/null
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dit.test=TheInternetExampleTests 2> /dev/null
 
   # Chrome on the grid
-  - mvn verify -B --offline -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -DgridURL=http://localhost:4444/wd/hub #-DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -DgridURL=http://localhost:4444/wd/hub #-DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Custom Browser Impl
-  - mvn verify -B --offline -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=CustomFirefoxImpl -Dit.test=DocumentationTest 2> /dev/null
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=CustomFirefoxImpl -Dit.test=DocumentationTest 2> /dev/null
 
   # Query Jira for which test to run and then log results to Jira
-  - mvn verify -B --offline -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DgridURL=http://localhost:4444/wd/hub -DjiraURL="http://52.29.130.45:8080" -DjqlQuery="issueKey=TEST-1" -DresultVersion="BUILD TEST VERSION" -DzapiCycleRegex="Test Cycle" -DjiraUsername=frameworkium -DjiraPassword=frameworkium
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DgridURL=http://localhost:4444/wd/hub -DjiraURL="http://52.29.130.45:8080" -DjqlQuery="issueKey=TEST-1" -DresultVersion="BUILD TEST VERSION" -DzapiCycleRegex="Test Cycle" -DjiraUsername=frameworkium -DjiraPassword=frameworkium
 
   # SauceLabs- disabled until we have a sauce account to use
   # - mvn verify -Dsauce=true -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.0 -Ddevice=iPad -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
