@@ -56,6 +56,9 @@ script:
 
   ## The following use a subset of tests to speed things up
 
+  # Speed up JVM start
+  - export MAVEN_OPTS="${MAVEN_OPTS} -client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none"
+
   # Firefox off the grid and reusing same browser(s)
   - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dit.test=TheInternetExampleTests 2> /dev/null
 
