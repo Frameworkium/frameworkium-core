@@ -15,8 +15,8 @@ cache:
   directories:
     - $HOME/.m2
 
-#notifications:
-#  slack: qaengineering:eTRqy0JhQOUtKHNO8mKLc8NC
+notifications:
+  slack: qaengineering:eTRqy0JhQOUtKHNO8mKLc8NC
 
 env:
   global:
@@ -29,9 +29,6 @@ env:
     - SELENIUM_JAR=selenium-server-standalone-${SELENIUM_VER}.jar
     - GECKO_VER=0.19.1
     - CHROME_DRIVER_VER=2.34
-    # Speed up maven JVM start
-    # snakeoil/not worth it?
-    #- MAVEN_OPTS=-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none
 
 before_script:
   # setup X to allow non-headless browsers to run
