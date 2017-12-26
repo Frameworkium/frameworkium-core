@@ -61,19 +61,19 @@ script:
   ## The following use a subset of tests and reuse the browser(s) to speed things up
 
   # Firefox off the grid
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true --ofline -Dit.test=TheInternetExampleTests 2> /dev/null
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true --offline -Dit.test=TheInternetExampleTests 2> /dev/null
 
   # Chrome on the grid
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true --ofline -Dit.test=DocumentationTest,ComponentExampleTest -DgridURL=http://localhost:4444/wd/hub #-DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true --offline -Dit.test=DocumentationTest,ComponentExampleTest -DgridURL=http://localhost:4444/wd/hub #-DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Firefox on the grid
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dconfig=FirefoxGrid.yaml -DreuseBrowser=true --ofline -Dit.test=DocumentationTest,ComponentExampleTest # -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dconfig=FirefoxGrid.yaml -DreuseBrowser=true --offline -Dit.test=DocumentationTest,ComponentExampleTest # -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Custom Browser Impl
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=CustomFirefoxImpl --ofline -Dit.test=DocumentationTest 2> /dev/null
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=CustomFirefoxImpl --offline -Dit.test=DocumentationTest 2> /dev/null
 
   # Query Jira for which test to run and then log results to Jira
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome --ofline -DgridURL=http://localhost:4444/wd/hub -DjiraURL="http://52.29.130.45:8080" -DjqlQuery="issueKey=TEST-1" -DresultVersion="BUILD TEST VERSION" -DzapiCycleRegex="Test Cycle" -DjiraUsername=frameworkium -DjiraPassword=frameworkium
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome --offline -DgridURL=http://localhost:4444/wd/hub -DjiraURL="http://52.29.130.45:8080" -DjqlQuery="issueKey=TEST-1" -DresultVersion="BUILD TEST VERSION" -DzapiCycleRegex="Test Cycle" -DjiraUsername=frameworkium -DjiraPassword=frameworkium
 
   # SauceLabs- disabled until we have a sauce account to use
   # - mvn verify -Dsauce=true -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.0 -Ddevice=iPad -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
