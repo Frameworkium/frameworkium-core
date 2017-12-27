@@ -90,7 +90,7 @@ after_script:
   # Code coverage report
   - bash <(curl -s https://codecov.io/bash)
 
-  # upload code coverage to code climate
+  # Upload code coverage to code climate with hack for jacoco (Dec 2017)
   - cp target/site/jacoco/jacoco.xml src/main/java/jacoco.xml
   - cd src/main/java/
   - ../../../cc-test-reporter after-build -d -t jacoco --exit-code $TRAVIS_TEST_RESULT
