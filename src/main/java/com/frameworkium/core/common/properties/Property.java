@@ -36,7 +36,6 @@ public enum Property {
     BROWSER_STACK("browserStack"),
     MAXIMISE("maximise"),
     RESOLUTION("resolution"),
-    FIREFOX_PROFILE("firefoxProfile"),
     VIDEO_CAPTURE_URL("videoCaptureUrl"),
     CHROME_USER_DATA_DIR("chromeUserDataDir"),
     CUSTOM_BROWSER_IMPL("customBrowserImpl"),
