@@ -29,8 +29,6 @@ env:
     - SELENIUM_JAR=selenium-server-standalone-${SELENIUM_VER}.jar
     - GECKO_VER=0.19.1
     - CHROME_DRIVER_VER=2.34
-    # override Travis default to give browsers more room
-    - _JAVA_OPTIONS="-Xmx1024m -Xms128m"
 
 before_script:
   # setup X to allow non-headless browsers to run
