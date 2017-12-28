@@ -30,7 +30,7 @@ env:
     - GECKO_VER=0.19.1
     - CHROME_DRIVER_VER=2.34
     # override Travis default to give browsers more room
-    - _JAVA_OPTIONS="-Xmx1024m -Xms128m"
+    - _JAVA_OPTIONS="-Xmx512m -Xms128m"
 
 before_script:
   # setup X to allow non-headless browsers to run
@@ -61,9 +61,8 @@ before_script:
   - java -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5556 > /dev/null 2>&1 &
 
 script:
-
   # Download deps (should use cache), compile and run checkstyle
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B --show-version --update-snapshots --threads ${THREAD_COUNT}
+  - mvn install B --quiet -DskipTests=true -Dmaven.javadoc.skip=true --show-version
 
   # Firefox on the grid
   - mvn verify -B -Dthreads=${THREAD_COUNT} -Dconfig=FirefoxGrid.yaml
