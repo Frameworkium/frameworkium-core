@@ -24,8 +24,8 @@ env:
     # - SUT_NAME="frameworkium-core"
     # - SUT_VERSION=${TRAVIS_BRANCH}
     - THREAD_COUNT=2
-    - SELENIUM_MAJ_VER=3.5
-    - SELENIUM_VER=${SELENIUM_MAJ_VER}.3
+    - SELENIUM_MAJ_VER=3.8
+    - SELENIUM_VER=${SELENIUM_MAJ_VER}.1
     - SELENIUM_JAR=selenium-server-standalone-${SELENIUM_VER}.jar
     - GECKO_VER=0.19.1
     - CHROME_DRIVER_VER=2.34
