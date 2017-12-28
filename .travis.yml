@@ -62,7 +62,7 @@ before_script:
 
 script:
   # Download deps (should use cache), compile and run checkstyle
-  - mvn install B --quiet -DskipTests=true -Dmaven.javadoc.skip=true --show-version
+  - mvn install -B --quiet -DskipTests=true -Dmaven.javadoc.skip=true --show-version
 
   # Firefox on the grid
   - mvn verify -B -Dthreads=${THREAD_COUNT} -Dconfig=FirefoxGrid.yaml
