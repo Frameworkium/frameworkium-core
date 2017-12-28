@@ -33,6 +33,7 @@ public class SauceImpl extends AbstractDriver {
         }
     }
 
+    /** {@inheritDoc} */
     public Capabilities getCapabilities() {
         MutableCapabilities mutableCapabilities;
         if (Driver.isNative()) {

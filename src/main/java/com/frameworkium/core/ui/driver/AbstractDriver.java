@@ -116,8 +116,8 @@ public abstract class AbstractDriver implements Driver {
                             .setSslProxy(proxyString);
                     logger.debug("Set all protocols to use proxy address: {}", proxyString);
                 } catch (URISyntaxException e) {
-                    String message = "Invalid proxy specified, acceptable values are: " +
-                            "system, autodetect, direct or http://{hostname}:{port}.";
+                    String message = "Invalid proxy specified, acceptable values are: "
+                            + "system, autodetect, direct or http://{hostname}:{port}.";
                     logger.error(message);
                     throw new IllegalArgumentException(message);
                 }

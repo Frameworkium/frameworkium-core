@@ -27,6 +27,7 @@ public class GridImpl extends AbstractDriver {
         }
     }
 
+    /** {@inheritDoc} */
     public Capabilities getCapabilities() {
         MutableCapabilities mutableCapabilities = new MutableCapabilities(capabilities);
         if (BROWSER_VERSION.isSpecified()) {

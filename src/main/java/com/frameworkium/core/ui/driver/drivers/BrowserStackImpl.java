@@ -31,6 +31,7 @@ public class BrowserStackImpl extends AbstractDriver {
         }
     }
 
+    /** {@inheritDoc} */
     public Capabilities getCapabilities() {
         MutableCapabilities capabilities = getCapabilitiesBasedOnPlatform();
         capabilities.setCapability("browserstack.debug", true);
