@@ -2,8 +2,7 @@ package com.frameworkium.core.ui.driver.drivers;
 
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.driver.AbstractDriver;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.MalformedURLException;
@@ -14,13 +13,13 @@ import static com.frameworkium.core.common.properties.Property.*;
 public class GridImpl extends AbstractDriver {
 
     private URL remoteURL;
-    private DesiredCapabilities desiredCapabilities;
+    private Capabilities capabilities;
 
     /**
      * Implementation of driver for the Selenium Grid .
      */
-    public GridImpl(DesiredCapabilities desiredCapabilities) {
-        this.desiredCapabilities = desiredCapabilities;
+    public GridImpl(Capabilities capabilities) {
+        this.capabilities = capabilities;
         try {
             this.remoteURL = new URL(Property.GRID_URL.getValue());
         } catch (MalformedURLException e) {
@@ -28,23 +27,21 @@ public class GridImpl extends AbstractDriver {
         }
     }
 
-    /**
-     * Get desired capabilities.
-     */
-    public DesiredCapabilities getDesiredCapabilities() {
+    public Capabilities getCapabilities() {
+        MutableCapabilities mutableCapabilities = new MutableCapabilities(capabilities);
         if (BROWSER_VERSION.isSpecified()) {
-            desiredCapabilities.setCapability("version", BROWSER_VERSION.getValue());
+            mutableCapabilities.setCapability("version", BROWSER_VERSION.getValue());
         }
         if (PLATFORM.isSpecified()) {
-            desiredCapabilities.setCapability("platform", PLATFORM_VERSION.getValue());
+            mutableCapabilities.setCapability("platform", PLATFORM_VERSION.getValue());
         }
         if (APPLICATION_NAME.isSpecified()) {
-            desiredCapabilities.setCapability("applicationName", APPLICATION_NAME.getValue());
+            mutableCapabilities.setCapability("applicationName", APPLICATION_NAME.getValue());
         }
-        return desiredCapabilities;
+        return mutableCapabilities;
     }
 
-    public WebDriver getWebDriver(DesiredCapabilities capabilities) {
+    public WebDriver getWebDriver(Capabilities capabilities) {
         return new RemoteWebDriver(remoteURL, capabilities);
     }
 }

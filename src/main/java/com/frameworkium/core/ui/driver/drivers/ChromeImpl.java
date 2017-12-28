@@ -3,10 +3,10 @@ package com.frameworkium.core.ui.driver.drivers;
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.driver.AbstractDriver;
 import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.Map;
 
@@ -15,8 +15,8 @@ import static java.util.Collections.singletonList;
 public class ChromeImpl extends AbstractDriver {
 
     @Override
-    public DesiredCapabilities getDesiredCapabilities() {
-        DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+    public Capabilities getCapabilities() {
+        ChromeOptions capabilities = new ChromeOptions();
         capabilities.setCapability(
                 "chrome.switches",
                 singletonList("--no-default-browser-check"));
@@ -47,8 +47,8 @@ public class ChromeImpl extends AbstractDriver {
     }
 
     @Override
-    public WebDriver getWebDriver(DesiredCapabilities capabilities) {
-        return new ChromeDriver(capabilities);
+    public WebDriver getWebDriver(Capabilities capabilities) {
+        return new ChromeDriver(new ChromeOptions().merge(capabilities));
     }
 
 }

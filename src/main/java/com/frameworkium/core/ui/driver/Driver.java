@@ -1,7 +1,7 @@
 package com.frameworkium.core.ui.driver;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static com.frameworkium.core.common.properties.Property.APP_PATH;
 
@@ -26,17 +26,17 @@ public interface Driver {
     /**
      * Implemented in each Driver Type to specify the capabilities of that browser.
      *
-     * @return Desired Capabilities of each browser
+     * @return Capabilities of each browser
      */
-    DesiredCapabilities getDesiredCapabilities();
+    Capabilities getCapabilities();
 
     /**
-     * Returns the correct WebDriver object for the driver type.
+     * Returns the correct WebDriver object for the Driver Type.
      *
      * @param capabilities Capabilities of the browser
      * @return {@link WebDriver} object for the browser
      */
-    WebDriver getWebDriver(DesiredCapabilities capabilities);
+    WebDriver getWebDriver(Capabilities capabilities);
 
     /**
      * Getter for the driver that wraps the initialised driver.
