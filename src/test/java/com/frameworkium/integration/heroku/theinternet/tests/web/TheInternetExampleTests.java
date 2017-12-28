@@ -3,7 +3,6 @@ package com.frameworkium.integration.heroku.theinternet.tests.web;
 import com.frameworkium.core.ui.tests.BaseTest;
 import com.frameworkium.integration.heroku.theinternet.pages.web.*;
 import org.openqa.selenium.Keys;
-import org.testng.SkipException;
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.*;
 
@@ -70,8 +69,6 @@ public class TheInternetExampleTests extends BaseTest {
     @Test(description = "Hovers")
     public void hovers() {
 
-        skipTestIfFirefox();
-
         // Navigate to the hovers page
         HoversPage hoversPage = WelcomePage.open().then().clickHoversLink();
 
@@ -98,7 +95,6 @@ public class TheInternetExampleTests extends BaseTest {
     @Test(description = "Key Presses")
     public void keypresses() {
 
-        skipTestIfFirefox();
         // Navigate to the key presses page
         KeyPressesPage keyPressesPage = WelcomePage
                 .open()
@@ -134,11 +130,4 @@ public class TheInternetExampleTests extends BaseTest {
         assertThat(lastNameColumn.get(0)).isEqualTo("Bach");
     }
 
-    private void skipTestIfFirefox() {
-        String browserName = getDriver().getWrappedRemoteWebDriver()
-                .getCapabilities().getBrowserName();
-        if (browserName.contains("firefox")) {
-            throw new SkipException("Doesn't work with Marionette/Gecko v0.18.0");
-        }
-    }
 }
