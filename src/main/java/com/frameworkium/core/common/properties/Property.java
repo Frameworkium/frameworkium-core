@@ -40,7 +40,8 @@ public enum Property {
     CHROME_USER_DATA_DIR("chromeUserDataDir"),
     CUSTOM_BROWSER_IMPL("customBrowserImpl"),
     REUSE_BROWSER("reuseBrowser"),
-    THREADS("threads");
+    THREADS("threads"),
+    HEADLESS("headless");
 
     private static Map configMap = null;
     private String value;
@@ -85,16 +86,6 @@ public enum Property {
     }
 
     /**
-     * Check if a browser needs to be maximised.
-     *
-     * @return true if the maximise property is equal, ignoring case, to "true"
-     */
-    public static boolean wantToMaximise() {
-        return MAXIMISE.isSpecified()
-                && Boolean.parseBoolean(MAXIMISE.getValue());
-    }
-
-    /**
      * Check if a property is specified.
      *
      * @return true if the property is not empty ("") and not null
@@ -105,6 +96,16 @@ public enum Property {
 
     public String getValue() {
         return value;
+    }
+
+    /**
+     * Check if a browser needs to be maximised.
+     *
+     * @return true if the maximise property is equal, ignoring case, to "true"
+     */
+    public static boolean wantToMaximise() {
+        return MAXIMISE.isSpecified()
+                && Boolean.parseBoolean(MAXIMISE.getValue());
     }
 
     /**
@@ -125,5 +126,10 @@ public enum Property {
         return THREADS.isSpecified()
                 ? Integer.parseInt(THREADS.getValue())
                 : 1;
+    }
+
+    public static boolean isHeadlessRun() {
+        return HEADLESS.isSpecified()
+                && "true".equalsIgnoreCase(HEADLESS.getValue());
     }
 }

@@ -69,10 +69,10 @@ script:
   - mvn verify -B -Dthreads=1 -Dconfig=FirefoxGrid.yaml
 
   # Firefox off the grid
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dit.test=TheInternetExampleTests 2> /dev/null
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dheadless=true -Dit.test=TheInternetExampleTests 2> /dev/null
 
   # Chrome on the grid
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -DgridURL=http://localhost:4444/wd/hub #-DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub #-DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Custom Browser Impl
   - mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=CustomFirefoxImpl -Dit.test=DocumentationTest 2> /dev/null

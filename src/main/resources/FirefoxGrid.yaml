@@ -1,26 +1,30 @@
-browser: Firefox
-browserVersion:
-platform:
-platformVersion:
-device:
-captureURL:
-gridURL: http://localhost:4444/wd/hub
-build:
+applicationName:
 appPath:
-sauce:
+browser: Firefox
 browserStack:
-jiraURL:
-spiraURL:
-resultVersion:
-zapiCycleRegEx:
-jqlQuery:
-sutName:
-sutVersion:
+browserVersion:
+build:
+captureURL:
+device:
+firefoxProfile:
+gridURL: http://localhost:4444/wd/hub
+headless:
+jiraPassword:
 jiraResultFieldName:
 jiraResultTransition:
+jiraURL:
 jiraUsername:
-jiraPassword:
+jqlQuery:
 maximise:
-resolution:
-proxy:
 maxRetryCount:
+platform:
+platformVersion:
+proxy:
+resolution:
+resultVersion:
+reuseBrowser:
+sauce:
+spiraURL:
+sutName:
+sutVersion:
+zapiCycleRegEx:

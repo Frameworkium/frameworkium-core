@@ -10,7 +10,7 @@ import org.openqa.selenium.remote.CapabilityType;
 public class InternetExplorerImpl extends AbstractDriver {
 
     @Override
-    public Capabilities getCapabilities() {
+    public InternetExplorerOptions getCapabilities() {
         InternetExplorerOptions ieOptions = new InternetExplorerOptions();
         ieOptions.setCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, true);
         ieOptions.setCapability(InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING, true);
