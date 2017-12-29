@@ -3,6 +3,7 @@ package com.frameworkium.core.api.services;
 import com.frameworkium.core.common.properties.Property;
 import com.google.common.collect.ImmutableMap;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.http.Method;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.specification.RequestSpecification;
@@ -103,6 +104,45 @@ public abstract class BaseService {
                 .request(method, url)
                 .then()
                 .spec(getResponseSpec())
+                .extract();
+    }
+
+    /**
+     * Performs specified HTTP verb request of the URL with the given content
+     * type and body.
+     *
+     * @param method      the HTTP method to request
+     * @param contentType the content type of the request
+     * @param body        the body of the request
+     * @param url         the URL to request
+     * @return The response from the request
+     */
+    protected ExtractableResponse request(Method method, ContentType contentType, Object body, String url) {
+        return getRequestSpec()
+                .when()
+                .contentType(contentType)
+                .body(body)
+                .request(method, url)
+                .then()
+                .spec(getResponseSpec())
+                .extract();
+    }
+
+    /**
+     * Performs specified HTTP verb request of the URL expecting the given
+     * status code.
+     *
+     * @param method     the HTTP method to request
+     * @param statusCode the response status code expected from the request
+     * @param url        the URL to request
+     * @return The response from the request
+     */
+    protected ExtractableResponse request(Method method, int statusCode, String url) {
+        return getRequestSpec()
+                .when()
+                .request(method, url)
+                .then()
+                .spec(getResponseSpec().statusCode(statusCode))
                 .extract();
     }
 
