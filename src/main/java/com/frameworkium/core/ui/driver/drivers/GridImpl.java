@@ -27,7 +27,7 @@ public class GridImpl extends AbstractDriver {
         }
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Capabilities getCapabilities() {
         MutableCapabilities mutableCapabilities = new MutableCapabilities(capabilities);
         if (BROWSER_VERSION.isSpecified()) {
@@ -42,6 +42,7 @@ public class GridImpl extends AbstractDriver {
         return mutableCapabilities;
     }
 
+    @Override
     public WebDriver getWebDriver(Capabilities capabilities) {
         return new RemoteWebDriver(remoteURL, capabilities);
     }

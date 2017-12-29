@@ -31,7 +31,7 @@ public class BrowserStackImpl extends AbstractDriver {
         }
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Capabilities getCapabilities() {
         MutableCapabilities capabilities = getCapabilitiesBasedOnPlatform();
         capabilities.setCapability("browserstack.debug", true);
@@ -89,6 +89,7 @@ public class BrowserStackImpl extends AbstractDriver {
         return mutableCapabilities;
     }
 
+    @Override
     public WebDriver getWebDriver(Capabilities capabilities) {
         return new RemoteWebDriver(remoteURL, capabilities);
     }

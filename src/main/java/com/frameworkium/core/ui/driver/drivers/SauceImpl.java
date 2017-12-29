@@ -33,7 +33,7 @@ public class SauceImpl extends AbstractDriver {
         }
     }
 
-    /** {@inheritDoc} */
+    @Override
     public Capabilities getCapabilities() {
         MutableCapabilities mutableCapabilities;
         if (Driver.isNative()) {
@@ -47,6 +47,7 @@ public class SauceImpl extends AbstractDriver {
         return mutableCapabilities;
     }
 
+    @Override
     public WebDriver getWebDriver(Capabilities capabilities) {
         return new RemoteWebDriver(remoteURL, capabilities);
     }

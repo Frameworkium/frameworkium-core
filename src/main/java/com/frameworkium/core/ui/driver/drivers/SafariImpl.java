@@ -10,7 +10,7 @@ import org.openqa.selenium.safari.SafariOptions;
 public class SafariImpl extends AbstractDriver {
 
     @Override
-    public Capabilities getCapabilities() {
+    public SafariOptions getCapabilities() {
         if (Driver.isMobile()) {
             return new SafariOptions();
         } else {

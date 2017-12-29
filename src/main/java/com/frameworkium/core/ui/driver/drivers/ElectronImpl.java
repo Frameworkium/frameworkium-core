@@ -24,7 +24,7 @@ public class ElectronImpl extends AbstractDriver {
     }
 
     @Override
-    public Capabilities getCapabilities() {
+    public ChromeOptions getCapabilities() {
         if (!APP_PATH.isSpecified()) {
             throw new IllegalStateException(
                     "App path must be specified when using Electron!");

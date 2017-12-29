@@ -12,13 +12,8 @@ import static java.util.Collections.singletonList;
 
 public class ChromeImpl extends AbstractDriver {
 
-    /**
-     * Get Chrome capabilities setting mobile emulation, custom chrome profiles and headless execution if the relevant
-     * properties have been set.
-     * @return DesiredCapabilities for chrome browser
-     */
     @Override
-    public Capabilities getCapabilities() {
+    public ChromeOptions getCapabilities() {
         ChromeOptions chromeOptions = new ChromeOptions();
         // useful defaults
         chromeOptions.setCapability(
@@ -40,15 +35,19 @@ public class ChromeImpl extends AbstractDriver {
             chromeOptions.addArguments(
                     "user-data-dir=" + Property.CHROME_USER_DATA_DIR.getValue());
         }
-
-        chromeOptions.setHeadless(isHeadlessRun());
-
+        chromeOptions.setHeadless(Property.isHeadlessRun());
         return chromeOptions;
     }
 
     @Override
     public WebDriver getWebDriver(Capabilities capabilities) {
-        return new ChromeDriver(new ChromeOptions().merge(capabilities));
+        final ChromeOptions chromeOptions;
+        if (capabilities instanceof ChromeOptions) {
+            chromeOptions = (ChromeOptions) capabilities;
+        } else {
+            chromeOptions = new ChromeOptions().merge(capabilities);
+        }
+        return new ChromeDriver(chromeOptions);
     }
 
 }

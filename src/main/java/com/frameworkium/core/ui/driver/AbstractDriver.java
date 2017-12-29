@@ -126,11 +126,4 @@ public abstract class AbstractDriver implements Driver {
         return proxy;
     }
 
-    /**
-     * Check for headless run property.
-     */
-    protected Boolean isHeadlessRun() {
-        return Property.HEADLESS.isSpecified() && Property.HEADLESS.getValue().equals("true");
-    }
-
 }
