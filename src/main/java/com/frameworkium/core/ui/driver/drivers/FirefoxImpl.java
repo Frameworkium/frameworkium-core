@@ -4,8 +4,7 @@ import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.driver.AbstractDriver;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.*;
 
 public class FirefoxImpl extends AbstractDriver {
 
@@ -13,6 +12,7 @@ public class FirefoxImpl extends AbstractDriver {
     public FirefoxOptions getCapabilities() {
         FirefoxOptions firefoxOptions = new FirefoxOptions();
         firefoxOptions.setHeadless(Property.isHeadlessRun());
+        firefoxOptions.setLogLevel(FirefoxDriverLogLevel.INFO);
         return firefoxOptions;
     }
 
