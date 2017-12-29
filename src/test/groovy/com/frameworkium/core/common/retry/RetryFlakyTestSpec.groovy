@@ -5,15 +5,12 @@ import spock.lang.Specification
 
 class RetryFlakyTestSpec extends Specification {
 
-    def "Retry will return true if called when the number of retires left is greater than times called"() {
+    def "Retry will return true if there are retries remaining"() {
         given:
             def mockResult = Mock(ITestResult)
             def sut = new RetryFlakyTest() // assume default of 1
-        when:
-            def first = sut.retry(mockResult)
-            def second = sut.retry(mockResult)
-        then:
-            first
-            !second
+        expect:
+            RetryFlakyTest.MAX_RETRY_COUNT.times { assert sut.retry(mockResult) }
+            !sut.retry(mockResult)
     }
 }
