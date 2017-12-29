@@ -1,12 +1,13 @@
 applicationName:
 appPath:
-browser: Firefox
+browser:
 browserStack:
 browserVersion:
 build:
 captureURL:
+chromeUserDataDir:
+customBrowserImpl:
 device:
-firefoxProfile:
 gridURL:
 headless:
 jiraPassword:
@@ -27,4 +28,6 @@ sauce:
 spiraURL:
 sutName:
 sutVersion:
+threads:
+videoCaptureUrl:
 zapiCycleRegEx:
