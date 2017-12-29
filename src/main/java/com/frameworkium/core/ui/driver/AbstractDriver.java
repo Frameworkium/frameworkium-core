@@ -8,10 +8,9 @@ import com.frameworkium.core.ui.listeners.CaptureListener;
 import com.frameworkium.core.ui.listeners.LoggingListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.Proxy;
+import org.openqa.selenium.*;
 import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -25,10 +24,6 @@ public abstract class AbstractDriver implements Driver {
 
     private WebDriverWrapper webDriverWrapper;
 
-    /**
-     * Clean up code - quit the driver.
-     * {@inheritDoc}
-     */
     @Override
     public void tearDown() {
         if (Property.REUSE_BROWSER.isSpecified()) {
@@ -38,35 +33,32 @@ public abstract class AbstractDriver implements Driver {
         }
     }
 
-    /**
-     * Getter.
-     * {@inheritDoc}
-     **/
     @Override
     public WebDriverWrapper getDriver() {
         return this.webDriverWrapper;
     }
 
-    /** Creates the Wrapped Driver object and maximises if required. */
+    /**
+     * Creates the Wrapped Driver object and maximises if required.
+     */
     public void initialise() {
-        DesiredCapabilities capsFromImpl = getDesiredCapabilities();
-        DesiredCapabilities caps = addProxyIfRequired(capsFromImpl);
-        logger.debug("Browser Capabilities: " + caps);
-
-        this.webDriverWrapper = setupEventFiringWebDriver(caps);
-
+        this.webDriverWrapper = setupEventFiringWebDriver(getCapabilities());
         maximiseBrowserIfRequired();
     }
 
-    private DesiredCapabilities addProxyIfRequired(DesiredCapabilities caps) {
-        Proxy currentProxy = getProxy();
-        if (currentProxy != null) {
-            caps.setCapability(CapabilityType.PROXY, currentProxy);
+    private Capabilities addProxyIfRequired(Capabilities caps) {
+        if (Property.PROXY.isSpecified()) {
+            MutableCapabilities mutableCapabilities = new MutableCapabilities();
+            mutableCapabilities.setCapability(CapabilityType.PROXY, getProxy());
+            return caps.merge(mutableCapabilities);
+        } else {
+            return caps;
         }
-        return caps;
     }
 
-    private WebDriverWrapper setupEventFiringWebDriver(DesiredCapabilities caps) {
+    private WebDriverWrapper setupEventFiringWebDriver(Capabilities capabilities) {
+        Capabilities caps = addProxyIfRequired(capabilities);
+        logger.debug("Browser Capabilities: " + caps);
         WebDriverWrapper eventFiringWD = new WebDriverWrapper(getWebDriver(caps));
         eventFiringWD.register(new LoggingListener());
         if (ScreenshotCapture.isRequired()) {
@@ -78,9 +70,6 @@ public abstract class AbstractDriver implements Driver {
         return eventFiringWD;
     }
 
-    /**
-     * Maximises the browser window based on maximise property.
-     **/
     private void maximiseBrowserIfRequired() {
         if (isMaximiseRequired()) {
             this.webDriverWrapper.manage().window().maximize();
@@ -97,16 +86,11 @@ public abstract class AbstractDriver implements Driver {
 
     /**
      * Get proxy object with settings set by the system properties.
-     * If no valid proxy argument is set then it returns null.
+     * Requires Property.PROXY.isSpecified()
      *
      * @return A Selenium proxy object for the current system properties
-     *         or null if no valid proxy settings.
      */
     private Proxy getProxy() {
-        if (!Property.PROXY.isSpecified()) {
-            return null;
-        }
-
         Proxy proxy = new Proxy();
         String proxyString = Property.PROXY.getValue().toLowerCase();
         switch (proxyString) {
@@ -130,9 +114,12 @@ public abstract class AbstractDriver implements Driver {
                             .setHttpProxy(proxyString)
                             .setFtpProxy(proxyString)
                             .setSslProxy(proxyString);
-                    logger.debug("Set all protocols to use proxy address: " + proxyString);
+                    logger.debug("Set all protocols to use proxy address: {}", proxyString);
                 } catch (URISyntaxException e) {
-                    logger.error("Invalid proxy specified, acceptable values are: system, autodetect, direct or http://{hostname}:{port}.");
+                    String message = "Invalid proxy specified, acceptable values are: "
+                            + "system, autodetect, direct or http://{hostname}:{port}.";
+                    logger.error(message);
+                    throw new IllegalArgumentException(message);
                 }
                 break;
         }

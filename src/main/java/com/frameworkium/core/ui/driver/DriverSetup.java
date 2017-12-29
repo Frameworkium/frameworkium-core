@@ -6,7 +6,7 @@ import com.frameworkium.core.ui.driver.remotes.BrowserStack;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.Capabilities;
 import org.reflections.Reflections;
 
 public class DriverSetup {
@@ -52,15 +52,15 @@ public class DriverSetup {
      */
     private Driver instantiateDesiredRemote(Driver driver) {
 
-        DesiredCapabilities desiredCapabilities = driver.getDesiredCapabilities();
+        Capabilities capabilities = driver.getCapabilities();
         Platform platform = getPlatformType();
         switch (returnRemoteType()) {
             case SAUCE:
-                return new SauceImpl(platform, desiredCapabilities);
+                return new SauceImpl(platform, capabilities);
             case BROWSERSTACK:
-                return new BrowserStackImpl(platform, desiredCapabilities);
+                return new BrowserStackImpl(platform, capabilities);
             case GRID:
-                return new GridImpl(desiredCapabilities);
+                return new GridImpl(capabilities);
             default:
                 return driver;
         }

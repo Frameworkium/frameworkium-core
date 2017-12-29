@@ -1,6 +1,7 @@
 package com.frameworkium.core.ui.driver.drivers;
 
 import com.frameworkium.core.ui.driver.AbstractDriver;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -13,7 +14,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 public class PhantomJSImpl extends AbstractDriver {
 
     @Override
-    public DesiredCapabilities getDesiredCapabilities() {
+    public Capabilities getCapabilities() {
         DesiredCapabilities capabilities = DesiredCapabilities.phantomjs();
         capabilities.setCapability("takesScreenshot", true);
         capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS,
@@ -22,7 +23,7 @@ public class PhantomJSImpl extends AbstractDriver {
     }
 
     @Override
-    public WebDriver getWebDriver(DesiredCapabilities capabilities) {
+    public WebDriver getWebDriver(Capabilities capabilities) {
         return new PhantomJSDriver(capabilities);
     }
 

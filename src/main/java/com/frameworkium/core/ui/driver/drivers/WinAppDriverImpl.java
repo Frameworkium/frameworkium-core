@@ -5,8 +5,7 @@ import io.appium.java_client.windows.WindowsDriver;
 import io.appium.java_client.windows.WindowsElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.*;
 
 import static com.frameworkium.core.common.properties.Property.*;
 
@@ -15,34 +14,36 @@ public class WinAppDriverImpl extends AbstractDriver {
     protected static final Logger logger = LogManager.getLogger();
 
     @Override
-    public DesiredCapabilities getDesiredCapabilities() {
-        logger.info("Creating desired capabilities for WinAppDriverImpl");
-        final DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
-        desiredCapabilities.setCapability("platformName", "Windows");
+    public Capabilities getCapabilities() {
+        logger.info("Creating capabilities for WinAppDriverImpl");
+        MutableCapabilities mutableCapabilities = new MutableCapabilities();
+        mutableCapabilities.setCapability("platformName", "Windows");
         if (PLATFORM_VERSION.isSpecified()) {
-            desiredCapabilities.setCapability(
+            mutableCapabilities.setCapability(
                     "platform", "Windows " + PLATFORM_VERSION.getValue());
-            desiredCapabilities.setCapability(
+            mutableCapabilities.setCapability(
                     "platformVersion", PLATFORM_VERSION.getValue());
         } else {
-            logger.error("Platform version needs to be specified when using Windows!");
+            String message = "Platform version needs to be specified when using Windows";
+            logger.error(message);
+            throw new IllegalArgumentException(message);
         }
         if (DEVICE.isSpecified()) {
-            desiredCapabilities.setCapability("deviceName", DEVICE.getValue());
+            mutableCapabilities.setCapability("deviceName", DEVICE.getValue());
         } else {
-            desiredCapabilities.setCapability("deviceName", "WindowsPC");
+            mutableCapabilities.setCapability("deviceName", "WindowsPC");
         }
         if (APP_PATH.isSpecified()) {
-            desiredCapabilities.setCapability("app", APP_PATH.getValue());
+            mutableCapabilities.setCapability("app", APP_PATH.getValue());
         } else {
-            desiredCapabilities.setCapability("app", "Root");
+            mutableCapabilities.setCapability("app", "Root");
         }
 
-        return desiredCapabilities;
+        return mutableCapabilities;
     }
 
     @Override
-    public WebDriver getWebDriver(DesiredCapabilities capabilities) {
+    public WebDriver getWebDriver(Capabilities capabilities) {
         return new WindowsDriver<WindowsElement>(capabilities);
     }
 

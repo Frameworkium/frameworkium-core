@@ -2,30 +2,31 @@ package com.frameworkium.core.ui.driver.drivers;
 
 import com.frameworkium.core.ui.driver.AbstractDriver;
 import com.frameworkium.core.ui.driver.Driver;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.safari.SafariOptions;
 
 public class SafariImpl extends AbstractDriver {
 
     @Override
-    public DesiredCapabilities getDesiredCapabilities() {
+    public Capabilities getCapabilities() {
         if (Driver.isMobile()) {
-            return new DesiredCapabilities();
+            return new SafariOptions();
         } else {
-            DesiredCapabilities capabilities = DesiredCapabilities.safari();
-            capabilities.setCapability("safari.cleanSession", true);
-            return capabilities;
+            SafariOptions safariOptions = new SafariOptions();
+            safariOptions.setCapability("safari.cleanSession", true);
+            return safariOptions;
         }
     }
 
     @Override
-    public WebDriver getWebDriver(DesiredCapabilities capabilities) {
+    public WebDriver getWebDriver(Capabilities capabilities) {
         if (Driver.isMobile()) {
             throw new IllegalArgumentException(
                     "seleniumGridURL or sauceUser and sauceKey must be specified when running on iOS");
         } else {
-            return new SafariDriver(capabilities);
+            return new SafariDriver(new SafariOptions(capabilities));
         }
     }
 
