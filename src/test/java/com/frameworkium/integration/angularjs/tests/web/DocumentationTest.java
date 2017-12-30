@@ -13,6 +13,7 @@ public class DocumentationTest extends BaseTest {
 
     @BeforeMethod
     public void test_configure_browser_before_use() {
+        // TODO: figure out why this is here and if still needed with reuseBrowser
         configureBrowserBeforeUse();
         DeveloperGuidePage.open();
     }

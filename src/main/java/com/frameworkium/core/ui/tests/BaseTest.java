@@ -3,7 +3,6 @@ package com.frameworkium.core.ui.tests;
 import com.frameworkium.core.common.listeners.*;
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.TestIdUtils;
-import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.common.reporting.allure.AllureProperties;
 import com.frameworkium.core.ui.browsers.UserAgent;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
@@ -50,7 +49,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      * Runs before the test suite to initialise a pool of drivers if requested.
      */
     @BeforeSuite
-    public static void initialiseDriverPool() {
+    protected static void initialiseDriverPool() {
         if (Property.REUSE_BROWSER.getBoolean()) {
             int threads = Property.THREADS.getIntWithDefault(1);
             driverPool = new ArrayBlockingQueue<>(threads);
@@ -70,7 +69,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      * </ul>
      */
     @BeforeMethod(alwaysRun = true)
-    public static void instantiateDriverObject() {
+    protected static void instantiateDriverObject() {
         if (Property.REUSE_BROWSER.getBoolean()) {
             driver.set(getNextAvailableDriverFromPool());
         } else {
@@ -92,7 +91,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      * @see #configureBrowserBeforeTest(String)
      */
     @BeforeMethod(alwaysRun = true, dependsOnMethods = "instantiateDriverObject")
-    public static void configureBrowserBeforeTest(Method testMethod) {
+    protected static void configureBrowserBeforeTest(Method testMethod) {
         configureBrowserBeforeTest(getTestNameForCapture(testMethod));
     }
 
@@ -107,7 +106,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      *
      * @param testName The test name about to be executed
      */
-    public static void configureBrowserBeforeTest(String testName) {
+    private static void configureBrowserBeforeTest(String testName) {
         try {
             wait.set(newDefaultWait());
             if (ScreenshotCapture.isRequired()) {
@@ -121,7 +120,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     /** Tears down the browser after the test method. */
     @AfterMethod(alwaysRun = true)
-    public static void tearDownBrowser() {
+    protected static void tearDownBrowser() {
         try {
             if (Property.REUSE_BROWSER.getBoolean()) {
                 driverPool.add(driver.get());
@@ -135,7 +134,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     /** Shuts down the {@link ExecutorService}. */
     @AfterSuite(alwaysRun = true)
-    public static void tearDownSuite() {
+    protected static void tearDownSuite() {
         if (Property.REUSE_BROWSER.getBoolean()) {
             driverPool.forEach(d -> d.getDriver().quit());
         }
@@ -143,7 +142,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     /** Shuts down the {@link ExecutorService}. */
     @AfterSuite(alwaysRun = true)
-    public static void shutdownScreenshotExecutor() {
+    protected static void shutdownScreenshotExecutor() {
         baseLogger.debug("Async screenshot capture: processing remaining backlog...");
         try {
             boolean timeout = !ScreenshotCapture.processRemainingBacklog();
@@ -161,7 +160,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     /** Creates the allure properties for the report. */
     @AfterSuite(alwaysRun = true)
-    public static void createAllureProperties() {
+    protected static void createAllureProperties() {
         AllureProperties.create();
     }
 
