@@ -36,22 +36,19 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     public static final ExecutorService screenshotExecutor =
             Executors.newSingleThreadExecutor();
 
-    /** Driver related constant. */
     public static final long DEFAULT_TIMEOUT_SECONDS = 10L;
 
-    /** Logger for this class. */
     private static final Logger baseLogger = LogManager.getLogger();
 
     private static final ThreadLocal<ScreenshotCapture> capture = ThreadLocal.withInitial(() -> null);
     private static final ThreadLocal<Driver> driver = ThreadLocal.withInitial(() -> null);
     private static final ThreadLocal<Wait<WebDriver>> wait = ThreadLocal.withInitial(() -> null);
+
     private static String userAgent;
+    private static BlockingQueue<Driver> driverPool;
 
     /** Logger for subclasses (logs with correct class i.e. not BaseTest). */
     protected final Logger logger = LogManager.getLogger(this);
-
-    /** Pool of drivers to be reused. **/
-    private static BlockingQueue<Driver> driverPool;
 
     /**
      * Runs before the test suite to initialise a pool of thread drivers,
@@ -70,11 +67,8 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     /**
-     * Returns the next available driver from the pool. The pool should not be
-     * empty here, as it has been initialised with one driver per thread and
-     * each driver is returned to the pool upon test completion.
-     *
-     * @return the next available driver from the pool
+     * The pool should not be empty here. It has been initialised with one driver
+     * per thread and each driver is returned to the pool upon test completion.
      */
     private static Driver getNextAvailableDriverFromPool() {
         return driverPool.remove();
@@ -100,8 +94,6 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     /**
-     * Configure browser before test.
-     *
      * @param testMethod The test method about to be executed
      * @see #configureBrowserBeforeTest(String)
      */
@@ -257,8 +249,6 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     /**
      * Get {@link WebDriverWrapper} instance for the requesting thread.
-     *
-     * @return the {@link WebDriverWrapper}
      */
     public static WebDriverWrapper getDriver() {
         return driver.get().getDriver();
@@ -266,8 +256,6 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     /**
      * Get {@link ScreenshotCapture} object for the current test.
-     *
-     * @return the {@link ScreenshotCapture} object
      */
     public static ScreenshotCapture getCapture() {
         return capture.get();
@@ -278,19 +266,12 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         return wait.get();
     }
 
-    /**
-     * Get current browser user agent.
-     *
-     * @return Optional of the current browser user agent
-     */
     public static Optional<String> getUserAgent() {
         return Optional.ofNullable(userAgent);
     }
 
     /**
      * Get session id for the current thread.
-     *
-     * @return Session id
      */
     public static String getThreadSessionId() {
         SessionId sessionId = getDriver().getWrappedRemoteWebDriver().getSessionId();
@@ -299,8 +280,6 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     /**
      * Get the Job id for the current thread.
-     *
-     * @return Job id
      */
     @Override
     public String getSessionId() {
