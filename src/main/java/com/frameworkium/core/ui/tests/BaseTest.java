@@ -316,26 +316,4 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     public SauceOnDemandAuthentication getAuthentication() {
         return new SauceOnDemandAuthentication();
     }
-
-    /**
-     * Logs the start of a step to your allure report
-     * Other steps will be sub-steps until you call stepFinish.
-     *
-     * @param stepName the name of the step
-     * @deprecated use <code>AllureLogger.stepStart(stepName)</code>
-     */
-    @Deprecated
-    public void __stepStart(String stepName) {
-        AllureLogger.stepStart(stepName);
-    }
-
-    /**
-     * Logs the end of a step.
-     *
-     * @deprecated use <code>AllureLogger.stepFinish()</code>
-     */
-    @Deprecated
-    public void __stepFinish() {
-        AllureLogger.stepFinish();
-    }
 }

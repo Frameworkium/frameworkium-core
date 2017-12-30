@@ -188,7 +188,7 @@
         </module>
         <module name="MethodName">
             <property name="format"
-                      value="^([IosUIAutomation]||[AndroidUIAutomator]||[AccessibilityId])||([a-z][a-z0-9][a-zA-Z0-9])*$"/>
+                      value="^[a-z][a-zA-Z0-9]+$"/>
             <message key="name.invalidPattern"
                      value="Method name ''{0}'' must match pattern ''{1}''."/>
         </module>
