@@ -28,11 +28,13 @@ public class WinAppDriverImpl extends AbstractDriver {
             logger.error(message);
             throw new IllegalArgumentException(message);
         }
+
         if (DEVICE.isSpecified()) {
             mutableCapabilities.setCapability("deviceName", DEVICE.getValue());
         } else {
             mutableCapabilities.setCapability("deviceName", "WindowsPC");
         }
+
         if (APP_PATH.isSpecified()) {
             mutableCapabilities.setCapability("app", APP_PATH.getValue());
         } else {

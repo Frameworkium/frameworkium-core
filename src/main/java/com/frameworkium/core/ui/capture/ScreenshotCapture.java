@@ -18,7 +18,7 @@ import org.openqa.selenium.*;
 
 import java.net.*;
 
-import static com.frameworkium.core.common.properties.Property.CAPTURE_URL;
+import static com.frameworkium.core.common.properties.Property.*;
 import static org.apache.http.HttpStatus.SC_CREATED;
 
 public class ScreenshotCapture {
@@ -47,8 +47,8 @@ public class ScreenshotCapture {
                     .post(CAPTURE_URL.getValue() + "/executions")
                     .then().statusCode(SC_CREATED)
                     .extract().path("executionID").toString();
-        } catch (Throwable t) {
-            logger.error("Unable to create Capture execution.", t);
+        } catch (Exception e) {
+            logger.error("Unable to create Capture execution.", e);
             return null;
         }
     }
@@ -105,7 +105,10 @@ public class ScreenshotCapture {
     }
 
     public static boolean isRequired() {
-        return Property.allCapturePropertiesSpecified() && !Driver.isNative();
+        boolean allCapturePropertiesSpecified = CAPTURE_URL.isSpecified()
+                && SUT_NAME.isSpecified()
+                && SUT_VERSION.isSpecified();
+        return  allCapturePropertiesSpecified && !Driver.isNative();
     }
 
     public void takeAndSendScreenshot(Command command, WebDriver driver) {

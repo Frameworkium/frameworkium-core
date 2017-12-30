@@ -60,14 +60,13 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      */
     @BeforeSuite
     public static void initialiseDriverPool() {
-        if (Property.REUSE_BROWSER.isSpecified()) {
-            int threads = Property.getThreadCount();
+        if (Property.REUSE_BROWSER.getBoolean()) {
+            int threads = Property.THREADS.getIntWithDefault(1);
             driverPool = new ArrayBlockingQueue<>(threads);
             IntStream.range(0, threads)
                     .mapToObj(i -> new DriverSetup().instantiateDriver())
                     .forEach(driverPool::add);
         }
-
     }
 
     /**
@@ -92,7 +91,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      */
     @BeforeMethod(alwaysRun = true)
     public static void instantiateDriverObject() {
-        if (Property.REUSE_BROWSER.isSpecified()) {
+        if (Property.REUSE_BROWSER.getBoolean()) {
             driver.set(getNextAvailableDriverFromPool());
         } else {
             driver.set(new DriverSetup().instantiateDriver());
@@ -139,7 +138,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     @AfterMethod(alwaysRun = true)
     public static void tearDownBrowser() {
         try {
-            if (Property.REUSE_BROWSER.isSpecified()) {
+            if (Property.REUSE_BROWSER.getBoolean()) {
                 driverPool.add(driver.get());
             } else {
                 driver.get().tearDown();
@@ -152,7 +151,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     /** Shuts down the {@link ExecutorService}. */
     @AfterSuite(alwaysRun = true)
     public static void tearDownSuite() {
-        if (Property.REUSE_BROWSER.isSpecified()) {
+        if (Property.REUSE_BROWSER.getBoolean()) {
             driverPool.forEach(d -> d.getDriver().quit());
         }
     }

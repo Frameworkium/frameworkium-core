@@ -11,9 +11,6 @@ public class BrowserStack {
         // hide default constructor for this util class
     }
 
-    /**
-     * Get the URL for the BrowserStack instance as configured by the parameters.
-     */
     public static URL getURL() throws MalformedURLException {
         return new URL(String.format("http://%s:%s@hub.browserstack.com:80/wd/hub",
                 System.getenv("BROWSER_STACK_USERNAME"),
@@ -21,7 +18,6 @@ public class BrowserStack {
     }
 
     public static boolean isDesired() {
-        return BROWSER_STACK.isSpecified()
-                && Boolean.parseBoolean(BROWSER_STACK.getValue());
+        return BROWSER_STACK.getBoolean();
     }
 }

@@ -26,7 +26,7 @@ public abstract class AbstractDriver implements Driver {
 
     @Override
     public void tearDown() {
-        if (Property.REUSE_BROWSER.isSpecified()) {
+        if (Property.REUSE_BROWSER.getBoolean()) {
             webDriverWrapper.manage().deleteAllCookies();
         } else {
             webDriverWrapper.quit();
@@ -81,7 +81,7 @@ public abstract class AbstractDriver implements Driver {
                 && !BrowserStack.isDesired()
                 && !Driver.isNative();
 
-        return Property.wantToMaximise() && ableToMaximise;
+        return Property.MAXIMISE.getBoolean() && ableToMaximise;
     }
 
     /**

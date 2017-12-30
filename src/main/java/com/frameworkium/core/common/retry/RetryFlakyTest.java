@@ -8,9 +8,7 @@ public class RetryFlakyTest implements IRetryAnalyzer {
 
     /** Maximum retry count of failed tests, defaults to 1. */
     static final int MAX_RETRY_COUNT =
-            Property.MAX_RETRY_COUNT.isSpecified()
-                    ? Integer.valueOf(Property.MAX_RETRY_COUNT.getValue())
-                    : 1;
+            Property.MAX_RETRY_COUNT.getIntWithDefault(1);
 
     private int retryCount = 0;
 

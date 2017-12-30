@@ -31,8 +31,6 @@ public class DriverSetup {
     protected static final Logger logger = LogManager.getLogger();
 
     /**
-     * Instantiate driver.
-     *
      * @return An uninitialised desired {@link Driver} Implementation.
      */
     public Driver instantiateDriver() {
@@ -54,7 +52,7 @@ public class DriverSetup {
 
         Capabilities capabilities = driver.getCapabilities();
         Platform platform = getPlatformType();
-        switch (returnRemoteType()) {
+        switch (getRemoteType()) {
             case SAUCE:
                 return new SauceImpl(platform, capabilities);
             case BROWSERSTACK:
@@ -95,22 +93,12 @@ public class DriverSetup {
         }
     }
 
-    /**
-     * Checks whether a remote driver is wanting to be used.
-     *
-     * @return True/False to whether to use a remote driver
-     */
     public static boolean useRemoteDriver() {
         return Property.GRID_URL.isSpecified()
                 || Sauce.isDesired()
                 || BrowserStack.isDesired();
     }
 
-    /**
-     * Returns the platform type, if it's been given.
-     *
-     * @return Platform type
-     */
     private static Platform getPlatformType() {
         if (Property.PLATFORM.isSpecified()) {
             return Platform.valueOf(Property.PLATFORM.getValue().toUpperCase());
@@ -119,11 +107,6 @@ public class DriverSetup {
         }
     }
 
-    /**
-     * Returns the browser type and returns default if not specified.
-     *
-     * @return Browser Type
-     */
     private static Browser getBrowserTypeFromProperty() {
         if (Property.CUSTOM_BROWSER_IMPL.isSpecified()) {
             return Browser.CUSTOM;
@@ -134,12 +117,7 @@ public class DriverSetup {
         }
     }
 
-    /**
-     * Returns what type of remote driver has been specified to be used.
-     *
-     * @return Remote Driver Type
-     */
-    private static RemoteGrid returnRemoteType() {
+    private static RemoteGrid getRemoteType() {
         if (Sauce.isDesired()) {
             return RemoteGrid.SAUCE;
         } else if (BrowserStack.isDesired()) {

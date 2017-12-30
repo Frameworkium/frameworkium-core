@@ -4,6 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
 import java.util.Map;
 
 public enum Property {
@@ -43,7 +46,7 @@ public enum Property {
     THREADS("threads"),
     HEADLESS("headless");
 
-    private static Map configMap = null;
+    private static Map<String, String> configMap = null;
     private String value;
 
     Property(String key) {
@@ -60,28 +63,24 @@ public enum Property {
 
     private String getValueFromConfigFile(String key) {
         if (configMap == null) {
-            loadConfigFile();
+            configMap = loadConfigFile();
         }
-
-        if (configMap != null) {
-            Object configValue = configMap.get(key);
-            if (configValue != null) {
-                return configValue.toString();
-            }
-        }
-        return null;
+        return configMap.get(key);
     }
 
-    private void loadConfigFile() {
+    private Map<String, String> loadConfigFile() {
         String configFileName = System.getProperty("config");
         if (StringUtils.isNotEmpty(configFileName)) {
-            try {
-                configMap = (Map) new Yaml().load(
-                        ClassLoader.getSystemResourceAsStream(configFileName));
-            } catch (YAMLException e) {
-                throw new RuntimeException(
-                        "Config file '" + configFileName + "' not found.", e);
+            try (InputStream configFileStream =
+                         ClassLoader.getSystemClassLoader()
+                                 .getResourceAsStream(configFileName)) {
+                return new Yaml().load(configFileStream);
+            } catch (IOException | YAMLException e) {
+                throw new IllegalArgumentException(
+                        "Properties file '" + configFileName + "' not found.", e);
             }
+        } else {
+            return Collections.emptyMap();
         }
     }
 
@@ -98,38 +97,13 @@ public enum Property {
         return value;
     }
 
-    /**
-     * Check if a browser needs to be maximised.
-     *
-     * @return true if the maximise property is equal, ignoring case, to "true"
-     */
-    public static boolean wantToMaximise() {
-        return MAXIMISE.isSpecified()
-                && Boolean.parseBoolean(MAXIMISE.getValue());
+    public boolean getBoolean() {
+        return isSpecified() && Boolean.parseBoolean(value);
     }
 
-    /**
-     * Check if all properties required for integration with Capture are defined.
-     *
-     * @return true if all the require properties for Capture are specified
-     */
-    public static boolean allCapturePropertiesSpecified() {
-        return CAPTURE_URL.isSpecified()
-                && SUT_NAME.isSpecified()
-                && SUT_VERSION.isSpecified();
-    }
-
-    /**
-     * @return the int value of threads System property, defaults to 1.
-     */
-    public static int getThreadCount() {
-        return THREADS.isSpecified()
-                ? Integer.parseInt(THREADS.getValue())
-                : 1;
-    }
-
-    public static boolean isHeadlessRun() {
-        return HEADLESS.isSpecified()
-                && "true".equalsIgnoreCase(HEADLESS.getValue());
+    public int getIntWithDefault(int defaultValue) {
+        return isSpecified()
+                ? Integer.parseInt(value)
+                : defaultValue;
     }
 }
