@@ -5,6 +5,7 @@ import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.TestIdUtils;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.common.reporting.allure.AllureProperties;
+import com.frameworkium.core.ui.browsers.UserAgent;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.driver.*;
 import com.frameworkium.core.ui.listeners.*;
@@ -40,7 +41,6 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     private static final ThreadLocal<Driver> driver = ThreadLocal.withInitial(() -> null);
     private static final ThreadLocal<Wait<WebDriver>> wait = ThreadLocal.withInitial(() -> null);
 
-    private static String userAgent;
     private static BlockingQueue<Driver> driverPool;
 
     /** Logger for subclasses (logs with correct class i.e. not BaseTest). */
@@ -110,7 +110,6 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     public static void configureBrowserBeforeTest(String testName) {
         try {
             wait.set(newDefaultWait());
-            userAgent = determineUserAgent();
             if (ScreenshotCapture.isRequired()) {
                 initialiseNewScreenshotCapture(testName);
             }
@@ -204,14 +203,6 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         return testID.orElse("n/a");
     }
 
-    private static String determineUserAgent() {
-        try {
-            return Driver.isNative() ? "" : (String) getDriver().executeScript("return navigator.userAgent;");
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     /**
      * Initialise the screenshot capture and link to issue/test case id.
      *
@@ -253,7 +244,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     public static Optional<String> getUserAgent() {
-        return Optional.ofNullable(userAgent);
+        return UserAgent.determineUserAgent(getDriver());
     }
 
     public static String getThreadSessionId() {
