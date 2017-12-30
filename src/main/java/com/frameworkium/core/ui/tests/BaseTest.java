@@ -246,7 +246,11 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     public static Optional<String> getUserAgent() {
-        return userAgent.getUserAgent();
+        if (userAgent != null) {
+            return userAgent.getUserAgent();
+        } else {
+            return Optional.empty();
+        }
     }
 
     public static String getThreadSessionId() {
