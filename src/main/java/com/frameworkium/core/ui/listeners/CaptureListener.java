@@ -1,8 +1,12 @@
 package com.frameworkium.core.ui.listeners;
 
+import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.capture.ElementHighlighter;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.capture.model.Command;
+import com.frameworkium.core.ui.js.framework.Angular;
+import com.frameworkium.core.ui.js.framework.AngularTwo;
+import com.frameworkium.core.ui.pages.Visibility;
 import com.frameworkium.core.ui.tests.BaseTest;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.openqa.selenium.*;
@@ -100,13 +104,12 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private boolean isFrameworkiumScript(String script) {
         String browserAgentScript = "return navigator.userAgent;";
-        String angularCheckRegex = "return typeof (ng|angular) == 'object';";
-        String forceVisiblePrefix = "arguments[0].style.zindex='10000';";
         String angularFrameworkContains = "angular.getTestability(el).whenStable(callback);";
 
         return script.equals(browserAgentScript)
-                || script.matches(angularCheckRegex)
-                || script.startsWith(forceVisiblePrefix)
+                || script.equals(Angular.IS_PRESENT_JS)
+                || script.equals(AngularTwo.IS_PRESENT_JS)
+                || script.equals(Visibility.FORCE_VISIBLE_SCRIPT)
                 || script.contains(angularFrameworkContains);
     }
 

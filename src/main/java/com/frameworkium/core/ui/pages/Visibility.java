@@ -25,6 +25,11 @@ import static ru.yandex.qatools.htmlelements.utils.HtmlElementUtils.*;
  */
 public final class Visibility {
 
+    public static final String FORCE_VISIBLE_SCRIPT =
+            "arguments[0].style.zindex='10000';"
+                    + "arguments[0].style.visibility='visible';"
+                    + "arguments[0].style.opacity='100';";
+
     private static final List<Class<? extends Annotation>> VISIBILITY_ANNOTATION_CLASSES =
             Arrays.asList(Visible.class, Invisible.class, ForceVisible.class);
 
@@ -201,23 +206,19 @@ public final class Visibility {
         try {
             return field.get(pageObject);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
     /**
      * Executes JavaScript in an attempt to make the element visible
      * e.g. for elements which are occluded but are required for interaction.
-     * To apply this to a list of WebElements, try the following:
-     * <code>elements.forEach(Visibility::forceVisible)</code>
+     * To apply this to a list of WebElements, try the following code:
+     * {@code elements.forEach(visibility::forceVisible)}
      *
      * @param element the {@link WebElement} to make visible
      */
     public void forceVisible(WebElement element) {
-        driver.executeScript(
-                "arguments[0].style.zindex='10000';"
-                        + "arguments[0].style.visibility='visible';"
-                        + "arguments[0].style.opacity='100';",
-                element);
+        driver.executeScript(FORCE_VISIBLE_SCRIPT, element);
     }
 }

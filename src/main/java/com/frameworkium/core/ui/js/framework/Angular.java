@@ -6,20 +6,13 @@ import org.openqa.selenium.JavascriptExecutor;
 
 public class Angular implements AbstractFramework {
 
-    /**
-     * Check if Angular is used.
-     * {@inheritDoc}
-     */
+    public static final String IS_PRESENT_JS = "return typeof angular == 'object';";
+
     @Override
     public boolean isPresent(JavascriptExecutor javascriptExecutor) {
-        return (Boolean) javascriptExecutor.executeScript(
-                "return typeof angular == 'object';");
+        return (Boolean) javascriptExecutor.executeScript(IS_PRESENT_JS);
     }
 
-    /**
-     * Wait for Angular to be ready.
-     * {@inheritDoc}
-     */
     @Override
     public void waitToBeReady(JavascriptExecutor javascriptExecutor) {
         new NgWebDriver(javascriptExecutor).waitForAngularRequestsToFinish();
