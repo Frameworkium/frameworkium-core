@@ -42,6 +42,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     private static final ThreadLocal<ScreenshotCapture> capture = ThreadLocal.withInitial(() -> null);
     private static final ThreadLocal<Driver> driver = ThreadLocal.withInitial(() -> null);
     private static final ThreadLocal<Wait<WebDriver>> wait = ThreadLocal.withInitial(() -> null);
+    private static UserAgent userAgent;
 
     private static BlockingQueue<Driver> driverPool;
 
@@ -109,12 +110,13 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     private static void configureBrowserBeforeTest(String testName) {
         try {
             wait.set(newDefaultWait());
+            userAgent = new UserAgent(getDriver());
             if (ScreenshotCapture.isRequired()) {
                 initialiseNewScreenshotCapture(testName);
             }
         } catch (Exception e) {
             baseLogger.error("Failed to configure browser.", e);
-            throw new RuntimeException("Failed to configure browser.", e);
+            throw new IllegalStateException("Failed to configure browser.", e);
         }
     }
 
@@ -220,8 +222,9 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
      * Create a new {@link Wait} with timeout.
      *
      * @param timeout timeout in seconds for the {@link Wait}
-     * @return a new {@link Wait} for the thread local driver and given timeout which also ignores {@link
-     *         NoSuchElementException} and {@link StaleElementReferenceException}
+     * @return a new {@link Wait} for the thread local driver and given timeout
+     *         which also ignores {@link NoSuchElementException} and
+     *         {@link StaleElementReferenceException}
      */
     public static Wait<WebDriver> newWaitWithTimeout(long timeout) {
         return new FluentWait<>(getDriver().getWrappedDriver())
@@ -243,7 +246,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     public static Optional<String> getUserAgent() {
-        return UserAgent.determineUserAgent(getDriver());
+        return userAgent.getUserAgent();
     }
 
     public static String getThreadSessionId() {

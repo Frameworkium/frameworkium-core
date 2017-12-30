@@ -9,15 +9,23 @@ public class UserAgent {
 
     private static final String SCRIPT = "return navigator.userAgent;";
 
-    private UserAgent() {
-        // hide constructor for util class
+    private String userAgent;
+
+    public UserAgent(JavascriptExecutor driver) {
+        userAgent = determineUserAgent(driver);
     }
 
-    public static Optional<String> determineUserAgent(JavascriptExecutor driver) {
-        try {
-            return Optional.ofNullable(Driver.isNative() ? "" : (String) driver.executeScript(SCRIPT));
-        } catch (Exception e) {
-            return Optional.empty();
+    private String determineUserAgent(JavascriptExecutor driver) {
+        if (!Driver.isNative()) {
+            try {
+                return (String) driver.executeScript(SCRIPT);
+            } catch (Exception ignored) {
+            }
         }
+        return null;
+    }
+
+    public Optional<String> getUserAgent() {
+        return Optional.ofNullable(userAgent);
     }
 }
