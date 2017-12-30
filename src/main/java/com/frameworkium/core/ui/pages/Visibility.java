@@ -40,9 +40,6 @@ public final class Visibility {
 
     /**
      * Constructor with a specific wait and JavaScript executor to use.
-     *
-     * @param wait   a specific wait to use.
-     * @param driver a specific {@link JavascriptExecutor} to use.
      */
     public Visibility(Wait<WebDriver> wait, JavascriptExecutor driver) {
         this.wait = wait;
@@ -70,8 +67,8 @@ public final class Visibility {
 
     /**
      * Extracts all fields from a class (page object) and its super classes.
-     * This then behaves as expected if a page object extends a something
-     * which itself extends HtmlElement or BasePage.
+     * This then behaves as expected if a page object extends something which
+     * itself extends HtmlElement or BasePage.
      */
     private List<Field> getDeclaredFieldsIncludingSuperClasses(Class<?> clazz) {
         final List<Field> fields = new ArrayList<>();

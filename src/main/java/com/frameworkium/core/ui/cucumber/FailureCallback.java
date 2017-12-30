@@ -7,14 +7,14 @@ import ru.yandex.qatools.allure.cucumberjvm.callback.OnFailureCallback;
 
 public class FailureCallback implements OnFailureCallback {
 
-    @Attachment(type = "image/png")
-    public byte[] failureScreenshot() {
-        return BaseTest.getDriver().getScreenshotAs(OutputType.BYTES);
-    }
-
     @Override
     public Object call() {
         failureScreenshot();
         return null;
+    }
+
+    @Attachment(type = "image/png")
+    public byte[] failureScreenshot() {
+        return BaseTest.getDriver().getScreenshotAs(OutputType.BYTES);
     }
 }

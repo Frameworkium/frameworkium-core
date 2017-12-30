@@ -23,7 +23,6 @@ public abstract class BasePage<T extends BasePage<T>> {
     protected Visibility visibility;
     protected JavascriptWait javascriptWait;
 
-    /** Constructor, initialises all things useful. */
     public BasePage() {
         driver = BaseTest.getDriver();
         wait = BaseTest.getWait();
@@ -67,7 +66,7 @@ public abstract class BasePage<T extends BasePage<T>> {
 
     /**
      * Get new instance of a PageObject of type T,
-     * see {@link BasePage#get()} for updating the timeout.
+     * see {@link BasePage#get(long)} for updating the timeout.
      *
      * @param url     the url to open before initialising
      * @param timeout the timeout, in seconds, for the new {@link Wait} for this page
@@ -80,8 +79,7 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
-     * Get new instance of a PageObject of type T,
-     * see {@link BasePage#get()} for updating the timeout.
+     * Get new instance of a PageObject of type T.
      *
      * @param timeout the timeout, in seconds, for the new {@link Wait} for this page
      * @return new instance of a PageObject of type T, see {@link BasePage#get()}
@@ -107,7 +105,6 @@ public abstract class BasePage<T extends BasePage<T>> {
     @SuppressWarnings("unchecked")
     public T get() {
 
-        //Populate Page Object
         HtmlElementLoader.populatePageObject(this, driver);
 
         //Wait for Elements & JS
@@ -165,8 +162,6 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     /**
-     * Execute JavaScript.
-     *
      * @param javascript the Javascript to execute on the current page
      * @return One of Boolean, Long, String, List or WebElement. Or null.
      * @see JavascriptExecutor#executeScript(String, Object...)
@@ -203,7 +198,7 @@ public abstract class BasePage<T extends BasePage<T>> {
             returnObj = jsExecutor.executeAsyncScript(javascript);
         } catch (Exception e) {
             logger.error("Async Javascript execution failed!");
-            logger.debug("Failed Javascript:" + javascript, e);
+            logger.debug("Failed Javascript:\n" + javascript, e);
         }
         return returnObj;
     }

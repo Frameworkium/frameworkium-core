@@ -47,9 +47,7 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     protected final Logger logger = LogManager.getLogger(this);
 
     /**
-     * Runs before the test suite to initialise a pool of thread drivers,
-     * if the REUSE_BROWSER property is defined.
-     * If it is not, the default behaviour of a driver per run will be followed.
+     * Runs before the test suite to initialise a pool of drivers if requested.
      */
     @BeforeSuite
     public static void initialiseDriverPool() {
@@ -242,21 +240,14 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
                 .ignoring(StaleElementReferenceException.class);
     }
 
-    /**
-     * Get {@link WebDriverWrapper} instance for the requesting thread.
-     */
     public static WebDriverWrapper getDriver() {
         return driver.get().getDriver();
     }
 
-    /**
-     * Get {@link ScreenshotCapture} object for the current test.
-     */
     public static ScreenshotCapture getCapture() {
         return capture.get();
     }
 
-    /** Get the default {@link Wait}. */
     public static Wait<WebDriver> getWait() {
         return wait.get();
     }
@@ -265,17 +256,11 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         return Optional.ofNullable(userAgent);
     }
 
-    /**
-     * Get session id for the current thread.
-     */
     public static String getThreadSessionId() {
         SessionId sessionId = getDriver().getWrappedRemoteWebDriver().getSessionId();
         return isNull(sessionId) ? null : sessionId.toString();
     }
 
-    /**
-     * Get the Job id for the current thread.
-     */
     @Override
     public String getSessionId() {
         return getThreadSessionId();
@@ -283,8 +268,6 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     /**
      * Get {@link SauceOnDemandAuthentication} instance containing the Sauce username/access key.
-     *
-     * @return {@link SauceOnDemandAuthentication} instance
      */
     @Override
     public SauceOnDemandAuthentication getAuthentication() {
