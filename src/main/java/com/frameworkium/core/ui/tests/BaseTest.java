@@ -174,12 +174,12 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     }
 
     /** Required for unit testing. */
-    public static void setDriver(Driver newDriver) {
+    static void setDriver(Driver newDriver) {
         driver.set(newDriver);
     }
 
     /** Required for unit testing. */
-    public static void setWait(Wait<WebDriver> newWait) {
+    static void setWait(Wait<WebDriver> newWait) {
         wait.set(newWait);
     }
 
