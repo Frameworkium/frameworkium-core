@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 
 import java.net.*;
+import java.util.concurrent.*;
 
 import static com.frameworkium.core.common.properties.Property.*;
 import static org.apache.http.HttpStatus.SC_CREATED;
@@ -24,6 +25,10 @@ import static org.apache.http.HttpStatus.SC_CREATED;
 public class ScreenshotCapture {
 
     private static final Logger logger = LogManager.getLogger();
+
+    /** Executor for async sending of screenshot messages to capture. */
+    public static final ExecutorService screenshotExecutor =
+            Executors.newSingleThreadExecutor();
 
     private String executionID;
     private String testID;
@@ -127,12 +132,12 @@ public class ScreenshotCapture {
                         command,
                         driver.getCurrentUrl(),
                         errorMessage,
-                        getBase64Screenshot(driver));
+                        getBase64Screenshot((TakesScreenshot) driver));
         sendScreenshot(createScreenshotMessage);
     }
 
-    private String getBase64Screenshot(WebDriver driver) {
-        return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
+    private String getBase64Screenshot(TakesScreenshot driver) {
+        return driver.getScreenshotAs(OutputType.BASE64);
     }
 
     private void sendScreenshot(CreateScreenshot createScreenshotMessage) {
@@ -142,7 +147,7 @@ public class ScreenshotCapture {
             return;
         }
 
-        BaseTest.screenshotExecutor.execute(() -> {
+        screenshotExecutor.execute(() -> {
             logger.debug("About to send screenshot to Capture for " + testID);
             try {
                 getRequestSpec()
@@ -157,5 +162,10 @@ public class ScreenshotCapture {
                 logger.debug(t);
             }
         });
+    }
+
+    public static boolean processRemainingBacklog() throws InterruptedException {
+        screenshotExecutor.shutdown();
+        return screenshotExecutor.awaitTermination(60, TimeUnit.SECONDS);
     }
 }

@@ -32,10 +32,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
         TestListener.class, ResultLoggerListener.class, VideoListener.class})
 public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
-    /** Executor for async sending of screenshot messages to capture. */
-    public static final ExecutorService screenshotExecutor =
-            Executors.newSingleThreadExecutor();
-
     public static final long DEFAULT_TIMEOUT_SECONDS = 10L;
 
     private static final Logger baseLogger = LogManager.getLogger();
@@ -152,9 +148,8 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     @AfterSuite(alwaysRun = true)
     public static void shutdownScreenshotExecutor() {
         baseLogger.debug("Async screenshot capture: processing remaining backlog...");
-        screenshotExecutor.shutdown();
         try {
-            boolean timeout = !screenshotExecutor.awaitTermination(60, SECONDS);
+            boolean timeout = !ScreenshotCapture.processRemainingBacklog();
             if (timeout) {
                 baseLogger.error("Async screenshot capture: shutdown timed out. "
                         + "Some screenshots might not have been sent.");
