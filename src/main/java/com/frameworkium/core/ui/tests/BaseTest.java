@@ -35,6 +35,9 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     public static final long DEFAULT_TIMEOUT_SECONDS = 10L;
 
+    /** Logger for subclasses (logs with correct class i.e. not BaseTest). */
+    protected final Logger logger = LogManager.getLogger(this);
+
     private static final Logger baseLogger = LogManager.getLogger();
 
     private static final ThreadLocal<ScreenshotCapture> capture = ThreadLocal.withInitial(() -> null);
@@ -42,9 +45,6 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
     private static final ThreadLocal<Wait<WebDriver>> wait = ThreadLocal.withInitial(() -> null);
 
     private static BlockingQueue<Driver> driverPool;
-
-    /** Logger for subclasses (logs with correct class i.e. not BaseTest). */
-    protected final Logger logger = LogManager.getLogger(this);
 
     /**
      * Runs before the test suite to initialise a pool of drivers if requested.
@@ -58,14 +58,6 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
                     .mapToObj(i -> new DriverSetup().instantiateDriver())
                     .forEach(driverPool::add);
         }
-    }
-
-    /**
-     * The pool should not be empty here. It has been initialised with one driver
-     * per thread and each driver is returned to the pool upon test completion.
-     */
-    private static Driver getNextAvailableDriverFromPool() {
-        return driverPool.remove();
     }
 
     /**
@@ -85,6 +77,14 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
             driver.set(new DriverSetup().instantiateDriver());
         }
         wait.set(newDefaultWait());
+    }
+
+    /**
+     * The pool should not be empty here. It has been initialised with one driver
+     * per thread and each driver is returned to the pool upon test completion.
+     */
+    private static Driver getNextAvailableDriverFromPool() {
+        return driverPool.remove();
     }
 
     /**
