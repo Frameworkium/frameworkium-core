@@ -21,7 +21,7 @@ public abstract class AbstractBookerService extends BaseService {
         return RestAssured.given()
                 .baseUri(BookerEndpoint.BASE_URI.getUrl())
                 .relaxedHTTPSValidation() // trusts even invalid certs
-                .log().all() // uncomment to log each request
+                // .log().all() // uncomment to log each request
                 .contentType("application/json")
                 .accept("application/json");
     }
