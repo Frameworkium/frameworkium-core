@@ -4,6 +4,7 @@ import com.frameworkium.integration.heroku.restfulbooker.api.constant.BookerEndp
 import com.frameworkium.integration.heroku.restfulbooker.api.dto.booking.*;
 import com.frameworkium.integration.heroku.restfulbooker.api.service.AbstractBookerService;
 import com.google.common.collect.ImmutableMap;
+import io.restassured.http.Method;
 
 import java.util.List;
 import java.util.Map;
@@ -26,12 +27,7 @@ public class BookingService extends AbstractBookerService {
     }
 
     public List<BookingID> search(Map<String, String> searchParams) {
-        return getRequestSpec()
-                .queryParams(searchParams)
-                .get(BookerEndpoint.BOOKING.getUrl())
-                .then()
-                .spec(getResponseSpec())
-                .extract()
+        return request(Method.GET, searchParams, BookerEndpoint.BOOKING.getUrl())
                 .jsonPath().getList(".", BookingID.class);
     }
 
