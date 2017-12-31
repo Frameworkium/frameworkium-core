@@ -1,10 +1,11 @@
 package com.frameworkium.integration.ai.capture.api.dto.executions;
 
+import com.frameworkium.core.api.dto.AbstractDTO;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-/** Execution message. */
-public class Execution {
+public class Execution extends AbstractDTO {
 
     // used in the create
     public String testID;
@@ -19,7 +20,7 @@ public class Execution {
     public String executionID;
 
     /**
-     * Using the static factory method pattern instead of using the constructor
+     * Using the static factory method pattern instead of using a constructor
      * to ensure this class can be used for both input and output. Also allows
      * for multiple different creation methods in one place.
      *
