@@ -29,8 +29,7 @@ public class SearchBookerTest extends BaseTest {
         List<BookingID> bookingIDs = service.search(
                 SearchParamsMapper.namesOfBooking(booking));
 
-        assertThat(bookingIDs.size()).isEqualTo(1);
-        assertThat(bookingIDs.get(0)).isEqualTo(existingID);
+        assertThat(bookingIDs).contains(existingID);
     }
 
     @Test
