@@ -5,7 +5,7 @@ import com.frameworkium.core.api.dto.AbstractDTO;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class Execution extends AbstractDTO {
+public class Execution extends AbstractDTO<Execution> {
 
     // used in the create
     public String testID;
