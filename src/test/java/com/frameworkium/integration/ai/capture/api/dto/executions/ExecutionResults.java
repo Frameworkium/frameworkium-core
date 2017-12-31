@@ -1,9 +1,10 @@
 package com.frameworkium.integration.ai.capture.api.dto.executions;
 
+import com.frameworkium.core.api.dto.AbstractDTO;
+
 import java.util.List;
 
-/** Executions message */
-public class ExecutionResults {
+public class ExecutionResults extends AbstractDTO<ExecutionResults> {
 
     public List<Execution> results;
     public int total;
