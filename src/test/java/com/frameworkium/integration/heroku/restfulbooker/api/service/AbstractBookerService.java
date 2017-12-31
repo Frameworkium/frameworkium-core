@@ -3,8 +3,8 @@ package com.frameworkium.integration.heroku.restfulbooker.api.service;
 import com.frameworkium.core.api.services.BaseService;
 import com.frameworkium.integration.heroku.restfulbooker.api.constant.BookerEndpoint;
 import io.restassured.RestAssured;
+import io.restassured.http.Method;
 import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.apache.http.HttpStatus;
@@ -36,23 +36,12 @@ public abstract class AbstractBookerService extends BaseService {
                 .statusCode(HttpStatus.SC_OK);
     }
 
-    protected ExtractableResponse<Response> get(String url) {
-        return getRequestSpec()
-                .when()
-                .get(url)
-                .then()
-                .spec(getResponseSpec())
-                .extract();
+    protected ExtractableResponse get(String url) {
+        return request(url);
     }
 
-    protected ExtractableResponse<Response> post(Object body, String url) {
-        return getRequestSpec()
-                .when()
-                .body(body)
-                .post(url)
-                .then()
-                .spec(getResponseSpec())
-                .extract();
+    protected ExtractableResponse post(Object body, String url) {
+        return request(Method.POST, body, url);
     }
 
 }
