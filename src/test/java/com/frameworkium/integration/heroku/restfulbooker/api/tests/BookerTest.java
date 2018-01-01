@@ -19,11 +19,16 @@ public class BookerTest extends BaseTest {
 
     @Test
     public void create_new_booking() {
+        // given some booking data
         BookingService service = new BookingService();
         Booking booking = Booking.newInstance();
 
+        // when creating the booking
         CreateBookingResponse bookingResponse = service.createBooking(booking);
-        assertThat(bookingResponse.booking).isEqualTo(booking);
+
+        // the booking returned matches the input and is persisted
+        assertThat(bookingResponse.booking)
+                .isEqualTo(booking);
         assertThat(service.getBooking(bookingResponse.bookingid))
                 .isEqualTo(booking);
     }
@@ -37,14 +42,16 @@ public class BookerTest extends BaseTest {
 
     @Test
     public void delete_newly_created_booking() {
-        // create booking
+        // given an existing booking
         BookingService service = new BookingService();
-        Booking booking = Booking.newInstance();
-        int bookingID = service.createBooking(booking).bookingid;
-
-        String token = new BookingService().createAuthToken(
+        int bookingID = service.createBooking(Booking.newInstance()).bookingid;
+        // and an auth token
+        String authToken = new BookingService().createAuthToken(
                 "admin", "password123");
-        service.delete(bookingID, token);
+        // when deleting
+        service.delete(bookingID, authToken);
+
+        // then the booking no longer exists
         assertThat(service.doesBookingExist(bookingID)).isFalse();
         assertThat(service.listBookings())
                 .doesNotContain(BookingID.of(bookingID));
