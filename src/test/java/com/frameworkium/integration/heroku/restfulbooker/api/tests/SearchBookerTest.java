@@ -1,7 +1,9 @@
 package com.frameworkium.integration.heroku.restfulbooker.api.tests;
 
 import com.frameworkium.core.api.tests.BaseTest;
-import com.frameworkium.integration.heroku.restfulbooker.api.dto.booking.*;
+import com.frameworkium.integration.heroku.restfulbooker.api.dto.booking.Booking;
+import com.frameworkium.integration.heroku.restfulbooker.api.dto.booking.BookingID;
+import com.frameworkium.integration.heroku.restfulbooker.api.dto.booking.search.SearchParamsMapper;
 import com.frameworkium.integration.heroku.restfulbooker.api.service.booking.BookingService;
 import com.frameworkium.integration.heroku.restfulbooker.api.service.ping.PingService;
 import org.testng.SkipException;
