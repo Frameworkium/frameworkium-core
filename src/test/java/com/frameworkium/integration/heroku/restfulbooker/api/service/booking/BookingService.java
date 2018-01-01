@@ -21,9 +21,9 @@ public class BookingService extends AbstractBookerService {
                 .as(Booking.class);
     }
 
-    public BookingResponse createBooking(Booking booking) {
+    public CreateBookingResponse createBooking(Booking booking) {
         return post(booking, BookerEndpoint.BOOKING.getUrl())
-                .as(BookingResponse.class);
+                .as(CreateBookingResponse.class);
     }
 
     public List<BookingID> search(Map<String, String> searchParams) {

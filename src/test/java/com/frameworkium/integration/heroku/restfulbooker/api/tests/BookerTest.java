@@ -7,9 +7,6 @@ import com.frameworkium.integration.heroku.restfulbooker.api.service.ping.PingSe
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.List;
-import java.util.Map;
-
 import static com.google.common.truth.Truth.assertThat;
 
 public class BookerTest extends BaseTest {
@@ -25,19 +22,10 @@ public class BookerTest extends BaseTest {
         BookingService service = new BookingService();
         Booking booking = Booking.newInstance();
 
-        BookingResponse bookingResponse = service.createBooking(booking);
+        CreateBookingResponse bookingResponse = service.createBooking(booking);
         assertThat(bookingResponse.booking).isEqualTo(booking);
-        // also check it persisted, but need to search for booking ID
-        assertThat(service.getBooking(searchBookingIDByName(booking)))
+        assertThat(service.getBooking(bookingResponse.bookingid))
                 .isEqualTo(booking);
-    }
-
-    private int searchBookingIDByName(Booking booking) {
-        Map<String, String> searchParams = SearchParamsMapper.namesOfBooking(booking);
-        List<BookingID> bookingIDs =
-                new BookingService().search(searchParams);
-        assertThat(bookingIDs.size()).isEqualTo(1);
-        return bookingIDs.get(0).bookingid;
     }
 
     @Test
@@ -52,9 +40,8 @@ public class BookerTest extends BaseTest {
         // create booking
         BookingService service = new BookingService();
         Booking booking = Booking.newInstance();
+        int bookingID = service.createBooking(booking).bookingid;
 
-        service.createBooking(booking);
-        int bookingID = searchBookingIDByName(booking);
         String token = new BookingService().createAuthToken(
                 "admin", "password123");
         service.delete(bookingID, token);
