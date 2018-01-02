@@ -126,6 +126,11 @@ public class ScreenshotCapture {
     public void takeAndSendScreenshotWithError(
             Command command, WebDriver driver, String errorMessage) {
 
+        if (executionID == null) {
+            logger.debug("No Screenshot sent. Capture didn't initialise for " + testID);
+            return;
+        }
+
         CreateScreenshot createScreenshotMessage =
                 new CreateScreenshot(
                         executionID,
@@ -141,12 +146,6 @@ public class ScreenshotCapture {
     }
 
     private void sendScreenshot(CreateScreenshot createScreenshotMessage) {
-
-        if (executionID == null) {
-            logger.debug("No Screenshot sent. Capture didn't initialise for " + testID);
-            return;
-        }
-
         screenshotExecutor.execute(() -> {
             logger.debug("About to send screenshot to Capture for " + testID);
             try {
