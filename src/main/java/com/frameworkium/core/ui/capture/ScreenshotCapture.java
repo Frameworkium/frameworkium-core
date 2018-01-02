@@ -30,8 +30,7 @@ public class ScreenshotCapture {
     private static final Logger logger = LogManager.getLogger();
 
     /** Executor for async sending of screenshot messages to capture. */
-    private static final ExecutorService screenshotExecutor =
-            Executors.newSingleThreadExecutor();
+    private static ExecutorService screenshotExecutor;
 
     private String executionID;
     private String testID;
@@ -146,7 +145,7 @@ public class ScreenshotCapture {
     }
 
     private void sendScreenshot(CreateScreenshot createScreenshotMessage) {
-        screenshotExecutor.execute(() -> {
+        getScreenshotExecutor().execute(() -> {
             logger.debug("About to send screenshot to Capture for " + testID);
             try {
                 getRequestSpec()
@@ -163,7 +162,17 @@ public class ScreenshotCapture {
         });
     }
 
+    private ExecutorService getScreenshotExecutor() {
+        if (screenshotExecutor == null) {
+            screenshotExecutor = Executors.newSingleThreadExecutor();
+        }
+        return screenshotExecutor;
+    }
+
     public static boolean processRemainingBacklog() throws InterruptedException {
+        if (screenshotExecutor == null) {
+            return true;
+        }
         screenshotExecutor.shutdown();
         return screenshotExecutor.awaitTermination(60, TimeUnit.SECONDS);
     }
