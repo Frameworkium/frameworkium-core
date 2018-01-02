@@ -1,6 +1,7 @@
 package com.frameworkium.integration.heroku.restfulbooker.api.tests;
 
 import com.frameworkium.core.api.tests.BaseAPITest;
+import com.frameworkium.core.common.retry.RetryFlakyTest;
 import com.frameworkium.integration.heroku.restfulbooker.api.dto.booking.*;
 import com.frameworkium.integration.heroku.restfulbooker.api.service.booking.BookingService;
 import com.frameworkium.integration.heroku.restfulbooker.api.service.ping.PingService;
@@ -17,7 +18,8 @@ public class BookerTest extends BaseAPITest {
                 .isEqualTo("Created");
     }
 
-    @Test
+    // app reset every 10m, so could happen in the middle of this test
+    @Test(retryAnalyzer = RetryFlakyTest.class)
     public void create_new_booking() {
         // given some booking data
         BookingService service = new BookingService();
