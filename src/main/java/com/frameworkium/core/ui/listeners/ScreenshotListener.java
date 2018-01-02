@@ -24,14 +24,14 @@ public class ScreenshotListener extends TestListenerAdapter {
 
     @Override
     public void onTestFailure(ITestResult failingTest) {
-        if (!captureEnabled && isScreenshotSupported()) {
+        if (!captureEnabled && isScreenshotSupported(failingTest)) {
             takeScreenshotAndSaveLocally(failingTest.getName());
         }
     }
 
     @Override
     public void onTestSkipped(ITestResult skippedTest) {
-        if (!captureEnabled && isScreenshotSupported()) {
+        if (!captureEnabled && isScreenshotSupported(skippedTest)) {
             takeScreenshotAndSaveLocally(skippedTest.getName());
         }
     }
@@ -78,15 +78,15 @@ public class ScreenshotListener extends TestListenerAdapter {
         } catch (IOException e) {
             logger.error("Unable to write " + screenshot, e);
         } catch (WebDriverException e) {
-            logger.error("Unable to take screenshot." + e);
+            logger.error("Unable to take screenshot.", e);
         }
         return null;
     }
 
-    private boolean isScreenshotSupported() {
+    private boolean isScreenshotSupported(ITestResult testResult) {
         boolean isElectron = BROWSER.isSpecified()
                 && ELECTRON.equals(Browser.valueOf(BROWSER.getValue().toUpperCase()));
-
-        return !isElectron;
+        boolean isUITest = testResult.getInstance() instanceof BaseUITest;
+        return isUITest && !isElectron;
     }
 }
