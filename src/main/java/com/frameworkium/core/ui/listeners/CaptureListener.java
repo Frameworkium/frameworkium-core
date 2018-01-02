@@ -55,12 +55,14 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
                 instanceof com.frameworkium.core.api.tests.BaseTest;
     }
 
-    private void highlightElementAndSendScreenshot(
-            String action, WebDriver driver, WebElement element) {
-
+    private void highlightElementOnClickAndSendScreenshot(
+            WebDriver driver, WebElement element) {
+        if (!ScreenshotCapture.isRequired()) {
+            return;
+        }
         ElementHighlighter highlighter = new ElementHighlighter(driver);
         highlighter.highlightElement(element);
-        Command command = new Command(action, element);
+        Command command = new Command("click", element);
         takeScreenshotAndSend(command, driver);
         highlighter.unhighlightPrevious();
     }
@@ -68,7 +70,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     /* WebDriver events */
     @Override
     public void beforeClickOn(WebElement element, WebDriver driver) {
-        highlightElementAndSendScreenshot("click", driver, element);
+        highlightElementOnClickAndSendScreenshot(driver, element);
     }
 
     @Override
