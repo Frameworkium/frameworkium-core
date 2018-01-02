@@ -1,6 +1,6 @@
 package com.frameworkium.integration.github.tests.web;
 
-import com.frameworkium.core.ui.tests.BaseTest;
+import com.frameworkium.core.ui.tests.BaseUITest;
 import com.frameworkium.integration.github.pages.web.ExplorePage;
 import com.frameworkium.integration.github.pages.web.HomePage;
 import org.testng.annotations.Test;
@@ -11,7 +11,7 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class ComponentExampleTest extends BaseTest {
+public class ComponentExampleTest extends BaseUITest {
 
     @Issue("CET-1")
     @Test(description = "Simple test showing the use of components")
@@ -41,7 +41,7 @@ public class ComponentExampleTest extends BaseTest {
 
     @TestCaseId("Wait update")
     @Test(dependsOnMethods = {"force_visible_makes_hidden_element_visible"})
-    public void ensure_BaseTest_wait_is_updated_after_browser_reset() {
+    public void ensure_BaseUITest_wait_is_updated_after_browser_reset() {
         // tests bug whereby BasePage.wait wasn't updated after browser reset
         HomePage.open().waitForSomething();
     }

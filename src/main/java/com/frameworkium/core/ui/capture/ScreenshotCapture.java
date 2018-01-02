@@ -8,7 +8,7 @@ import com.frameworkium.core.ui.driver.Driver;
 import com.frameworkium.core.ui.driver.DriverSetup;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
-import com.frameworkium.core.ui.tests.BaseTest;
+import com.frameworkium.core.ui.tests.BaseUITest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
@@ -105,7 +105,7 @@ public class ScreenshotCapture {
                 gridURL.getProtocol(),
                 gridURL.getHost(),
                 gridURL.getPort(),
-                BaseTest.getDriver().getWrappedRemoteWebDriver().getSessionId());
+                BaseUITest.getDriver().getWrappedRemoteWebDriver().getSessionId());
     }
 
     public static boolean isRequired() {

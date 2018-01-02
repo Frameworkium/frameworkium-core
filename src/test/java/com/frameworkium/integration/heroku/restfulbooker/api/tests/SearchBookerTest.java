@@ -1,6 +1,6 @@
 package com.frameworkium.integration.heroku.restfulbooker.api.tests;
 
-import com.frameworkium.core.api.tests.BaseTest;
+import com.frameworkium.core.api.tests.BaseAPITest;
 import com.frameworkium.integration.heroku.restfulbooker.api.dto.booking.Booking;
 import com.frameworkium.integration.heroku.restfulbooker.api.dto.booking.BookingID;
 import com.frameworkium.integration.heroku.restfulbooker.api.dto.booking.search.SearchParamsMapper;
@@ -14,7 +14,7 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class SearchBookerTest extends BaseTest {
+public class SearchBookerTest extends BaseAPITest {
 
     @BeforeClass
     public void ensure_site_is_up_by_using_ping_service() {

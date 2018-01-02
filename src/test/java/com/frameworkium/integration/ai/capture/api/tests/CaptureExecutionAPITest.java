@@ -1,6 +1,6 @@
 package com.frameworkium.integration.ai.capture.api.tests;
 
-import com.frameworkium.core.api.tests.BaseTest;
+import com.frameworkium.core.api.tests.BaseAPITest;
 import com.frameworkium.integration.ai.capture.api.dto.executions.*;
 import com.frameworkium.integration.ai.capture.api.service.executions.ExecutionService;
 import org.testng.annotations.Test;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import static com.google.common.truth.Truth.assertThat;
 
 /** Tests for the Capture execution API. */
-public class CaptureExecutionAPITest extends BaseTest {
+public class CaptureExecutionAPITest extends BaseAPITest {
 
     @Test(enabled = false) // disabled until a new capture instance is available
     public void create_execution_returns_id() {

@@ -6,7 +6,7 @@ import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.driver.Driver;
 import com.frameworkium.core.ui.js.JavascriptWait;
-import com.frameworkium.core.ui.tests.BaseTest;
+import com.frameworkium.core.ui.tests.BaseUITest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
@@ -24,9 +24,9 @@ public abstract class BasePage<T extends BasePage<T>> {
     protected JavascriptWait javascriptWait;
 
     public BasePage() {
-        driver = BaseTest.getDriver();
-        wait = BaseTest.getWait();
-        visibility = new Visibility(wait, BaseTest.getDriver());
+        driver = BaseUITest.getDriver();
+        wait = BaseUITest.getWait();
+        visibility = new Visibility(wait, BaseUITest.getDriver());
         javascriptWait = new JavascriptWait(driver, wait);
     }
 
@@ -121,8 +121,8 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     private void updatePageTimeout(long timeout) {
-        wait = BaseTest.newWaitWithTimeout(timeout);
-        visibility = new Visibility(wait, BaseTest.getDriver());
+        wait = BaseUITest.newWaitWithTimeout(timeout);
+        visibility = new Visibility(wait, BaseUITest.getDriver());
         javascriptWait = new JavascriptWait(driver, wait);
     }
 
@@ -137,7 +137,7 @@ public abstract class BasePage<T extends BasePage<T>> {
     private void takePageLoadedScreenshotAndSendToCapture() {
         if (Property.CAPTURE_URL.isSpecified()) {
             try {
-                BaseTest.getCapture().takeAndSendScreenshot(
+                BaseUITest.getCapture().takeAndSendScreenshot(
                         new Command("load", "page", getSimplePageObjectName()),
                         driver);
             } catch (Exception e) {

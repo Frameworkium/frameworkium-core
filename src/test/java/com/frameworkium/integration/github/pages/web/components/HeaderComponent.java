@@ -3,7 +3,7 @@ package com.frameworkium.integration.github.pages.web.components;
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.PageFactory;
 import com.frameworkium.core.ui.pages.Visibility;
-import com.frameworkium.core.ui.tests.BaseTest;
+import com.frameworkium.core.ui.tests.BaseUITest;
 import com.frameworkium.integration.github.pages.web.ExplorePage;
 import com.frameworkium.integration.github.pages.web.SearchResultsPage;
 import org.openqa.selenium.*;
@@ -38,7 +38,7 @@ public class HeaderComponent extends HtmlElement {
     private Link exploreLink;
 
     private void showHeaderMenuIfCollapsed() {
-        Wait<WebDriver> wait = BaseTest.newDefaultWait();
+        Wait<WebDriver> wait = BaseUITest.newDefaultWait();
 
         // If browser is opened with width of 960 pixels or less
         // then the Header Menu is not displayed and a 'Hamburger' button is displayed instead. 
@@ -72,11 +72,11 @@ public class HeaderComponent extends HtmlElement {
 
     @Step("Testing Visibility.forceVisible()")
     public void testForceVisible() {
-        Wait<WebDriver> wait = BaseTest.newDefaultWait();
+        Wait<WebDriver> wait = BaseUITest.newDefaultWait();
 
         WebElement link = homeLink.getWrappedElement();
         // hide the home link
-        BaseTest.getDriver().executeScript(
+        BaseUITest.getDriver().executeScript(
                 "arguments[0].style.visibility='hidden';", link);
         wait.until(ExpectedConditions.not(visibilityOf(link)));
         // test force visible works

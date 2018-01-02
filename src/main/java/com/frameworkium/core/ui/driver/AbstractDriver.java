@@ -16,7 +16,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 
-import static com.frameworkium.core.ui.tests.BaseTest.DEFAULT_TIMEOUT_SECONDS;
+import static com.frameworkium.core.ui.tests.BaseUITest.DEFAULT_TIMEOUT_SECONDS;
 
 public abstract class AbstractDriver implements Driver {
 

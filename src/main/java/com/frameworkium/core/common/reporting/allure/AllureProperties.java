@@ -1,6 +1,6 @@
 package com.frameworkium.core.common.reporting.allure;
 
-import com.frameworkium.core.ui.tests.BaseTest;
+import com.frameworkium.core.ui.tests.BaseUITest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -84,8 +84,8 @@ public class AllureProperties {
         if (PLATFORM_VERSION.isSpecified()) {
             props.setProperty("Platform Version", PLATFORM_VERSION.getValue());
         }
-        if (BaseTest.getUserAgent().isPresent()) {
-            props.setProperty("UserAgent", BaseTest.getUserAgent().orElse(""));
+        if (BaseUITest.getUserAgent().isPresent()) {
+            props.setProperty("UserAgent", BaseUITest.getUserAgent().get());
         }
 
         return props;

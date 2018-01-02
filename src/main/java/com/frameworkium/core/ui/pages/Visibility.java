@@ -3,7 +3,7 @@ package com.frameworkium.core.ui.pages;
 import com.frameworkium.core.ui.ExtraExpectedConditions;
 import com.frameworkium.core.ui.annotations.*;
 import com.frameworkium.core.ui.driver.WebDriverWrapper;
-import com.frameworkium.core.ui.tests.BaseTest;
+import com.frameworkium.core.ui.tests.BaseUITest;
 import javassist.Modifier;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.Wait;
@@ -37,10 +37,10 @@ public final class Visibility {
     private final JavascriptExecutor driver;
 
     /**
-     * Uses the {@link Wait} and {@link WebDriverWrapper} from {@link BaseTest}.
+     * Uses the {@link Wait} and {@link WebDriverWrapper} from {@link BaseUITest}.
      */
     public Visibility() {
-        this(BaseTest.getWait(), BaseTest.getDriver());
+        this(BaseUITest.getWait(), BaseUITest.getDriver());
     }
 
     /**

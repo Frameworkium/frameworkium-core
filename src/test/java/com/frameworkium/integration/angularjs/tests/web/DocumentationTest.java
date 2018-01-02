@@ -1,7 +1,7 @@
 package com.frameworkium.integration.angularjs.tests.web;
 
 import com.frameworkium.core.common.retry.RetryFlakyTest;
-import com.frameworkium.core.ui.tests.BaseTest;
+import com.frameworkium.core.ui.tests.BaseUITest;
 import com.frameworkium.integration.angularjs.pages.web.DeveloperGuidePage;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -9,7 +9,7 @@ import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class DocumentationTest extends BaseTest {
+public class DocumentationTest extends BaseUITest {
 
     @BeforeMethod
     public void test_configure_browser_before_use() {

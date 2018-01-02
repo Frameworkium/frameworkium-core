@@ -1,6 +1,6 @@
 package com.frameworkium.integration.heroku.theinternet.tests.web;
 
-import com.frameworkium.core.ui.tests.BaseTest;
+import com.frameworkium.core.ui.tests.BaseUITest;
 import com.frameworkium.integration.heroku.theinternet.pages.web.*;
 import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
@@ -11,7 +11,7 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 
 @Features("The Internet Example Feature")
-public class TheInternetExampleTests extends BaseTest {
+public class TheInternetExampleTests extends BaseUITest {
 
     @Issue("HEROKU-2")
     @Stories("Check boxes story")

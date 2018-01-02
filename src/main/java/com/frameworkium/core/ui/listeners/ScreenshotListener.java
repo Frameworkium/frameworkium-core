@@ -2,7 +2,7 @@ package com.frameworkium.core.ui.listeners;
 
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.driver.DriverSetup.Browser;
-import com.frameworkium.core.ui.tests.BaseTest;
+import com.frameworkium.core.ui.tests.BaseUITest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
@@ -37,7 +37,7 @@ public class ScreenshotListener extends TestListenerAdapter {
     }
 
     private void takeScreenshotAndSaveLocally(String testName) {
-        takeScreenshotAndSaveLocally(testName, BaseTest.getDriver());
+        takeScreenshotAndSaveLocally(testName, BaseUITest.getDriver());
     }
 
     private void takeScreenshotAndSaveLocally(String testName, TakesScreenshot driver) {
