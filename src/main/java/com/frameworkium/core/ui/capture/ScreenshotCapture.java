@@ -22,20 +22,20 @@ import java.util.concurrent.*;
 import static com.frameworkium.core.common.properties.Property.*;
 import static org.apache.http.HttpStatus.SC_CREATED;
 
+/**
+ * Takes and sends screenshots to "Capture"
+ */
 public class ScreenshotCapture {
 
     private static final Logger logger = LogManager.getLogger();
 
     /** Executor for async sending of screenshot messages to capture. */
-    public static final ExecutorService screenshotExecutor =
+    private static final ExecutorService screenshotExecutor =
             Executors.newSingleThreadExecutor();
 
     private String executionID;
     private String testID;
 
-    /**
-     * Initialise Screenshot capture object for a test.
-     */
     public ScreenshotCapture(String testID) {
         this.testID = testID;
         logger.debug("About to initialise Capture execution for " + testID);

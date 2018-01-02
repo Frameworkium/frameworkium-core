@@ -142,9 +142,11 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
         }
     }
 
-    /** Shuts down the {@link ExecutorService}. */
     @AfterSuite(alwaysRun = true)
     protected static void shutdownScreenshotExecutor() {
+        if (!ScreenshotCapture.isRequired()) {
+            return;
+        }
         baseLogger.debug("Async screenshot capture: processing remaining backlog...");
         try {
             boolean timeout = !ScreenshotCapture.processRemainingBacklog();
@@ -206,8 +208,6 @@ public abstract class BaseTest implements SauceOnDemandSessionIdProvider, SauceO
 
     /**
      * Initialise the screenshot capture and link to issue/test case id.
-     *
-     * @param testName Test method passed from the test script
      */
     private static void initialiseNewScreenshotCapture(String testName) {
         capture.set(new ScreenshotCapture(testName));
