@@ -43,9 +43,6 @@ public final class Visibility {
         this(BaseUITest.getWait(), BaseUITest.getDriver());
     }
 
-    /**
-     * Constructor with a specific wait and JavaScript executor to use.
-     */
     public Visibility(Wait<WebDriver> wait, JavascriptExecutor driver) {
         this.wait = wait;
         this.driver = driver;
@@ -153,7 +150,10 @@ public final class Visibility {
         }
     }
 
-    /** Same as waitForFieldToBeVisible but for Invisibility. */
+    /**
+     * Same as {@link Visibility#waitForFieldToBeVisible(Object, Field, int)}
+     * but for Invisibility.
+     */
     private void waitForFieldToBeInvisible(Object pageObject, Field field, int checkAtMost) {
 
         applyToWebElements(
@@ -167,8 +167,9 @@ public final class Visibility {
     }
 
     /**
-     * Calls {@link Visibility#forceVisible(WebElement)} for each ForceVisible
-     * field then {@link Visibility#waitForFieldToBeVisible(Object, Field, int)}.
+     * Calls {@link Visibility#forceVisible(WebElement)} for each field
+     * annotated ith {@code @ForceVisible}, then calls
+     * {@link Visibility#waitForFieldToBeVisible(Object, Field, int)}.
      */
     private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field, int checkAtMost) {
 

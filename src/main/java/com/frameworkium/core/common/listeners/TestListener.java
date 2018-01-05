@@ -3,7 +3,6 @@ package com.frameworkium.core.common.listeners;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.*;
-import ru.yandex.qatools.allure.annotations.Step;
 
 public class TestListener implements ITestListener {
 
@@ -51,10 +50,4 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onFinish(ITestContext context) {}
-
-    @Step("{0}")
-    private void stepLogger(String toLog) {
-        logger.info(toLog);
-    }
-
 }

@@ -107,13 +107,13 @@ public abstract class BasePage<T extends BasePage<T>> {
 
         HtmlElementLoader.populatePageObject(this, driver);
 
-        //Wait for Elements & JS
+        // Wait for Elements & JS
         visibility.waitForAnnotatedElementVisibility(this);
         if (!Driver.isNative()) {
             javascriptWait.waitForJavascriptEventsOnLoad();
         }
 
-        //Log
+        // Log
         takePageLoadedScreenshotAndSendToCapture();
         logPageLoadToAllure();
 

@@ -64,7 +64,8 @@ public class JavascriptWait {
     }
 
     /**
-     * Supported JS Frameworks within Frameworkium and their class which implement {@link AbstractFramework}.
+     * Supported JS Frameworks within Frameworkium and their class which
+     * implement {@link AbstractFramework}.
      */
     private enum SupportedFramework {
         ANGULAR(Angular.class),
@@ -80,7 +81,7 @@ public class JavascriptWait {
             }
         }
 
-        public AbstractFramework getInstance() {
+        AbstractFramework getInstance() {
             return frameworkInstance;
         }
     }
