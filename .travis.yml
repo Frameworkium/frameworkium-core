@@ -75,7 +75,7 @@ script:
   - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub #-DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Custom Browser Impl
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=CustomFirefoxImpl -Dit.test=DocumentationTest 2> /dev/null
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=CustomFirefoxImpl -Dmaximise=true -Dit.test=DocumentationTest 2> /dev/null
 
   # Query Jira for which test to run and then log results to Jira
   - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DgridURL=http://localhost:4444/wd/hub -DjiraURL="http://52.29.130.45:8080" -DjqlQuery="issueKey=TEST-1" -DresultVersion="BUILD TEST VERSION" -DzapiCycleRegex="Test Cycle" -DjiraUsername=frameworkium -DjiraPassword=frameworkium
