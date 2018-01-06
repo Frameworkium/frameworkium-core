@@ -75,20 +75,21 @@ public class Execution {
      * Update issue with a comment and attachments.
      */
     public void update(int status, String comment, String... attachments) {
-        if (null != idList) {
-            for (Integer executionId : idList) {
-                updateStatusAndComment(executionId, status, comment);
-                replaceExistingAttachments(executionId, attachments);
+        if (idList == null) {
+            return;
+        }
+        for (Integer executionId : idList) {
+            updateStatusAndComment(executionId, status, comment);
+            replaceExistingAttachments(executionId, attachments);
 
-                logger.debug("ZAPI Updater - Updated {} to status {}", issue, status);
-            }
+            logger.debug("ZAPI Updater - Updated {} to status {}", issue, status);
         }
     }
 
     private void updateStatusAndComment(Integer executionId, int status, String comment) {
 
-        JSONObject obj = new JSONObject();
         try {
+            JSONObject obj = new JSONObject();
             obj.put("status", String.valueOf(status));
             int commentMaxLen = 750;
             obj.put("comment", StringUtils.abbreviate(comment, commentMaxLen));
