@@ -1,17 +1,17 @@
 package com.frameworkium.core.ui.pages
 
+import com.frameworkium.core.ui.capture.ScreenshotCapture
 import com.frameworkium.core.ui.driver.Driver
 import com.frameworkium.core.ui.driver.WebDriverWrapper
 import com.frameworkium.core.ui.pages.pageobjects.TestPage
 import com.frameworkium.core.ui.tests.BaseUITest
+import org.junit.Assume
 import org.openqa.selenium.remote.RemoteWebDriver
 import org.openqa.selenium.support.ui.Clock
 import org.openqa.selenium.support.ui.FluentWait
 import org.openqa.selenium.support.ui.Sleeper
 import spock.lang.Specification
-import spock.lang.Unroll
 
-@Unroll
 class PageFactorySpec extends Specification {
 
     def mockDriver = Mock(Driver)
@@ -19,6 +19,8 @@ class PageFactorySpec extends Specification {
     def mockWait = Mock(FluentWait, constructorArgs: [webDriverWrapperSpy, Mock(Clock), Mock(Sleeper)])
 
     def "Instantiate a simple page object"() {
+        // skip test if capture is enabled otherwise things break!
+        Assume.assumeFalse(ScreenshotCapture.isRequired())
 
         given: "A driver which will load a simple page"
             BaseUITest.setDriver(mockDriver)
