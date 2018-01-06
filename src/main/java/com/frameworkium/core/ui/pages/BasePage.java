@@ -1,8 +1,8 @@
 package com.frameworkium.core.ui.pages;
 
-import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.ui.annotations.Visible;
+import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.driver.Driver;
 import com.frameworkium.core.ui.js.JavascriptWait;
@@ -135,15 +135,11 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     private void takePageLoadedScreenshotAndSendToCapture() {
-        if (Property.CAPTURE_URL.isSpecified()) {
-            try {
-                BaseUITest.getCapture().takeAndSendScreenshot(
-                        new Command("load", "page", getSimplePageObjectName()),
-                        driver);
-            } catch (Exception e) {
-                logger.warn("Failed to send loading screenshot to Capture.");
-                logger.debug(e);
-            }
+        if (ScreenshotCapture.isRequired()) {
+            Command pageLoadCommand = new Command(
+                    "load", "page", getSimplePageObjectName());
+            BaseUITest.getCapture().takeAndSendScreenshot(
+                    pageLoadCommand, driver);
         }
     }
 

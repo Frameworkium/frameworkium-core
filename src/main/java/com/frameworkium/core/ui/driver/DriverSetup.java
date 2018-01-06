@@ -110,10 +110,10 @@ public class DriverSetup {
     private static Browser getBrowserTypeFromProperty() {
         if (Property.CUSTOM_BROWSER_IMPL.isSpecified()) {
             return Browser.CUSTOM;
-        } else if (!Property.BROWSER.isSpecified()) {
-            return DEFAULT_BROWSER;
-        } else {
+        } else if (Property.BROWSER.isSpecified()) {
             return Browser.valueOf(Property.BROWSER.getValue().toUpperCase());
+        } else {
+            return DEFAULT_BROWSER;
         }
     }
 

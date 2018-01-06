@@ -107,21 +107,28 @@ public abstract class AbstractDriver implements Driver {
                 logger.debug("Using direct i.e. (no) proxy");
                 break;
             default:
-                try {
-                    URI proxyURI = new URI(Property.PROXY.getValue());
-                    proxyString = String.format("%s:%d", proxyURI.getHost(), proxyURI.getPort());
-                    proxy.setProxyType(ProxyType.MANUAL)
-                            .setHttpProxy(proxyString)
-                            .setFtpProxy(proxyString)
-                            .setSslProxy(proxyString);
-                    logger.debug("Set all protocols to use proxy address: {}", proxyString);
-                } catch (URISyntaxException e) {
-                    String message = "Invalid proxy specified, acceptable values are: "
-                            + "system, autodetect, direct or http://{hostname}:{port}.";
-                    logger.error(message);
-                    throw new IllegalArgumentException(message);
-                }
+                proxy = parseProxyProperty();
                 break;
+        }
+        return proxy;
+    }
+
+    private Proxy parseProxyProperty() {
+        Proxy proxy = new Proxy();
+        String proxyString;
+        try {
+            URI proxyURI = new URI(Property.PROXY.getValue());
+            proxyString = String.format("%s:%d", proxyURI.getHost(), proxyURI.getPort());
+            proxy.setProxyType(ProxyType.MANUAL)
+                    .setHttpProxy(proxyString)
+                    .setFtpProxy(proxyString)
+                    .setSslProxy(proxyString);
+            logger.debug("Set all protocols to use proxy address: {}", proxyString);
+        } catch (URISyntaxException e) {
+            String message = "Invalid proxy specified, acceptable values are: "
+                    + "system, autodetect, direct or http://{hostname}:{port}.";
+            logger.error(message);
+            throw new IllegalArgumentException(message);
         }
         return proxy;
     }
