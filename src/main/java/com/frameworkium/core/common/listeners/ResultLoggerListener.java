@@ -26,7 +26,8 @@ public class ResultLoggerListener implements ITestListener {
     @Override
     public void onTestStart(ITestResult result) {
 
-        if (getIssueOrTestCaseIdAnnotation(result).isEmpty()) {
+        String issueOrTestCaseId = getIssueOrTestCaseIdAnnotation(result);
+        if (issueOrTestCaseId.isEmpty()) {
             return;
         }
 
@@ -37,23 +38,23 @@ public class ResultLoggerListener implements ITestListener {
 
         if (zapiLoggingParamsProvided(result)) {
             logger.info("Logging WIP to zapi");
-            new Execution(getIssueOrTestCaseIdAnnotation(result))
+            new Execution(issueOrTestCaseId)
                     .update(JiraConfig.ZapiStatus.ZAPI_STATUS_WIP, comment);
         }
         if (jiraTransitionLoggingParamsProvided(result)) {
             logger.info("Logging WIP to Jira using issue transitions");
-            moveThroughTransitions(getIssueOrTestCaseIdAnnotation(result),
+            moveThroughTransitions(issueOrTestCaseId,
                     JiraConfig.JiraTransition.JIRA_TRANSITION_WIP);
-            JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+            JiraTest.addComment(issueOrTestCaseId, comment);
         }
         if (jiraFieldLoggingParamsProvided(result)) {
             logger.info("Logging WIP to jira by updating the specified field - "
                     + Property.JIRA_RESULT_FIELD_NAME.getValue());
             JiraTest.changeIssueFieldValue(
-                    getIssueOrTestCaseIdAnnotation(result),
+                    issueOrTestCaseId,
                     Property.JIRA_RESULT_FIELD_NAME.getValue(),
                     JiraConfig.JiraFieldStatus.JIRA_STATUS_WIP);
-            JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+            JiraTest.addComment(issueOrTestCaseId, comment);
         }
     }
 
@@ -77,8 +78,7 @@ public class ResultLoggerListener implements ITestListener {
     @Override
     public void onTestSuccess(ITestResult result) {
 
-        final String issueOrTestCaseId = getIssueOrTestCaseIdAnnotation(result);
-
+        String issueOrTestCaseId = getIssueOrTestCaseIdAnnotation(result);
         if (issueOrTestCaseId.isEmpty()) {
             return;
         }
@@ -117,39 +117,45 @@ public class ResultLoggerListener implements ITestListener {
     @Override
     public void onTestFailure(ITestResult result) {
 
-        if (!(result.getThrowable() instanceof AssertionError)) {
-            markAsBlocked(result);
-        } else if (!getIssueOrTestCaseIdAnnotation(result).isEmpty()) {
+        if (result.getThrowable() instanceof AssertionError) {
             markAsFailed(result);
+        } else {
+            markAsBlocked(result);
         }
     }
 
     private void markAsFailed(ITestResult result) {
+
+        String issueOrTestCaseId = getIssueOrTestCaseIdAnnotation(result);
+        if (issueOrTestCaseId.isEmpty()) {
+            return;
+        }
+
         String comment = "FAIL" + System.lineSeparator() + this.baseComment(result);
 
         if (zapiLoggingParamsProvided(result)) {
             logger.info("Logging FAIL to zapi");
-            new Execution(getIssueOrTestCaseIdAnnotation(result))
+            new Execution(issueOrTestCaseId)
                     .update(JiraConfig.ZapiStatus.ZAPI_STATUS_FAIL, comment);
         }
         if (jiraTransitionLoggingParamsProvided(result)) {
             logger.info("Logging FAIL to Jira using issue transitions");
-            moveThroughTransitions(getIssueOrTestCaseIdAnnotation(result),
+            moveThroughTransitions(issueOrTestCaseId,
                     JiraConfig.JiraTransition.JIRA_TRANSITION_FAIL);
-            JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+            JiraTest.addComment(issueOrTestCaseId, comment);
         }
         if (jiraFieldLoggingParamsProvided(result)) {
             logger.info("Logging FAIL to jira by updating the specified field - "
                     + Property.JIRA_RESULT_FIELD_NAME.getValue());
             JiraTest.changeIssueFieldValue(
-                    getIssueOrTestCaseIdAnnotation(result),
+                    issueOrTestCaseId,
                     Property.JIRA_RESULT_FIELD_NAME.getValue(),
                     JiraConfig.JiraFieldStatus.JIRA_STATUS_FAIL);
-            JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+            JiraTest.addComment(issueOrTestCaseId, comment);
         }
         if (spiraLoggingParamsProvided(result)) {
             new SpiraExecution().recordTestResult(
-                    getIssueOrTestCaseIdAnnotation(result),
+                    issueOrTestCaseId,
                     JiraConfig.SpiraStatus.SPIRA_STATUS_FAIL,
                     comment,
                     result);
@@ -164,7 +170,6 @@ public class ResultLoggerListener implements ITestListener {
     private void markAsBlocked(ITestResult result) {
 
         String issueOrTestCaseId = getIssueOrTestCaseIdAnnotation(result);
-
         if (issueOrTestCaseId.isEmpty()) {
             return;
         }
@@ -233,12 +238,9 @@ public class ResultLoggerListener implements ITestListener {
     }
 
     /**
-     * This method gets the value of either the @Issue or @TestCaseId annotation for the provided test result.
-     * If both are specified but if their values are not equal an
-     * {@link java.lang.IllegalStateException} will be thrown, otherwise, their value will
-     * be returned. If neither are specified then the empty string will be returned.
+     * If neither are specified then the empty string will be returned.
+     * {@see TestIdUtils#getIssueOrTestCaseIdValue(Method)}
      *
-     * @param result The test result
      * @return the value of either the @Issue or @TestCaseId annotation for the provided test result.
      */
     private String getIssueOrTestCaseIdAnnotation(ITestResult result) {
