@@ -3,7 +3,7 @@ package com.frameworkium.core.ui.pages
 import com.frameworkium.core.ui.driver.Driver
 import com.frameworkium.core.ui.driver.WebDriverWrapper
 import com.frameworkium.core.ui.pages.pageobjects.TestPage
-import com.frameworkium.core.ui.tests.BaseTest
+import com.frameworkium.core.ui.tests.BaseUITest
 import org.openqa.selenium.remote.RemoteWebDriver
 import org.openqa.selenium.support.ui.Clock
 import org.openqa.selenium.support.ui.FluentWait
@@ -21,8 +21,8 @@ class PageFactorySpec extends Specification {
     def "Instantiate a simple page object"() {
 
         given: "A driver which will load a simple page"
-            BaseTest.setDriver(mockDriver)
-            BaseTest.setWait(mockWait)
+            BaseUITest.setDriver(mockDriver)
+            BaseUITest.setWait(mockWait)
 
         when: "Asking for a new instance of a simple page"
             def pageObject = PageFactory.newInstance(TestPage.class)
