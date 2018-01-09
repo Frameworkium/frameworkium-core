@@ -6,7 +6,7 @@ sudo: false
 dist: trusty
 
 addons:
-  firefox: "57.0.3"
+  firefox: latest
   chrome: stable
 
 install: true # disable default mvn install
@@ -16,9 +16,9 @@ notifications:
 
 env:
   global:
-    # - CAPTURE_URL="https://localhost:5000" # disabled until new instance is available
-    # - SUT_NAME="frameworkium-core"
-    # - SUT_VERSION=${TRAVIS_BRANCH}
+    - CAPTURE_URL="http://ec2-35-176-47-3.eu-west-2.compute.amazonaws.com"
+    - SUT_NAME="frameworkium-core"
+    - SUT_VERSION=${TRAVIS_BRANCH}
     - THREAD_COUNT=2
     - SELENIUM_MAJ_VER=3.8
     - SELENIUM_VER=${SELENIUM_MAJ_VER}.1
@@ -69,10 +69,10 @@ script:
   - mvn verify -B -Dthreads=1 -Dconfig=FirefoxGrid.yaml
 
   # Firefox off the grid
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dheadless=true -Dit.test=TheInternetExampleTests 2> /dev/null
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dheadless=true -Dit.test=TheInternetExampleTests -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}" 2> /dev/null
 
   # Chrome on the grid
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub #-DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Custom Browser Impl
   - mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=CustomFirefoxImpl -Dmaximise=true -Dit.test=DocumentationTest 2> /dev/null
