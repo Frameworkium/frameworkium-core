@@ -2,7 +2,10 @@ package com.frameworkium.integration.ai.capture.api.tests;
 
 import com.frameworkium.core.api.tests.BaseAPITest;
 import com.frameworkium.integration.ai.capture.api.dto.executions.*;
+import com.frameworkium.integration.ai.capture.api.dto.screenshots.CreateScreenshot;
+import com.frameworkium.integration.ai.capture.api.dto.screenshots.Screenshot;
 import com.frameworkium.integration.ai.capture.api.service.executions.ExecutionService;
+import com.frameworkium.integration.ai.capture.api.service.screenshots.ScreenshotService;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -13,42 +16,48 @@ import static com.google.common.truth.Truth.assertThat;
 /** Tests for the Capture execution API. */
 public class CaptureExecutionAPITest extends BaseAPITest {
 
-    @Test(enabled = false) // disabled until a new capture instance is available
-    public void create_execution_returns_id() {
-        Execution execution = Execution.newCreateInstance();
-        ExecutionID id = new ExecutionService().createExecution(execution);
-        assertThat(id.executionID).isNotEmpty();
-    }
-
-    @Test(enabled = false) // disabled until a new capture instance is available
+    @Test
     public void create_execution_appears_in_results() {
-        final ExecutionService executionService = new ExecutionService();
-        // create execution
-        final Execution createMessage = Execution.newCreateInstance();
+        ExecutionService executionService = new ExecutionService();
+        CreateExecution createExMessage = CreateExecution.newCreateInstance();
         String id = executionService
-                .createExecution(createMessage)
+                .createExecution(createExMessage)
                 .executionID;
-        // get latest executions
+
         ExecutionResults latestExecutions = executionService.getExecutions(1, 10);
 
-        List<Execution> filteredExecutions = latestExecutions.results.stream()
+        List<ExecutionResponse> filteredExecutions = latestExecutions.results.stream()
                 .filter(ex -> id.equals(ex.executionID))
                 .collect(Collectors.toList());
 
         // ensure only one with our expected ID
         assertThat(filteredExecutions).hasSize(1);
 
-        // check it matches input
-        Execution ex = filteredExecutions.get(0);
-        assertThat(ex.browser).isEqualTo(createMessage.browser);
-        assertThat(ex.softwareUnderTest).isEqualTo(createMessage.softwareUnderTest);
-        assertThat(ex.testID).isEqualTo(createMessage.testID);
-        assertThat(ex.nodeAddress).isEqualTo(createMessage.nodeAddress);
-        // check is has the default status of new
-        assertThat(ex.currentStatus).isEqualTo("new");
+        ExecutionResponse response = filteredExecutions.get(0);
+        assertThat(response.createdFrom(createExMessage)).isTrue();
+        assertThat(response.currentStatus).isEqualTo("new");
 
         // check total is at least the number of results returns
         assertThat(latestExecutions.total)
                 .isAtLeast(latestExecutions.results.size());
+    }
+
+    @Test
+    public void can_add_then_view_screenshot() {
+        ExecutionService executionService = new ExecutionService();
+        CreateExecution createExMessage = CreateExecution.newCreateInstance();
+        String executionID = executionService
+                .createExecution(createExMessage)
+                .executionID;
+
+        ScreenshotService screenshotService = new ScreenshotService();
+        CreateScreenshot createScreenshot = CreateScreenshot.newInstance(executionID);
+        screenshotService.createScreenshot(createScreenshot);
+
+        List<Screenshot> screenshots = executionService.getExecution(executionID).screenshots;
+        assertThat(screenshots).isNotEmpty();
+        Screenshot returnedScreenshot = screenshots.get(0);
+        assertThat(returnedScreenshot.command).isEqualTo(createScreenshot.command);
+        assertThat(returnedScreenshot.imageURL).endsWith(".png");
     }
 }
