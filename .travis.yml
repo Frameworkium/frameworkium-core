@@ -40,7 +40,7 @@ before_script:
 
   # Set up Selenium Grid Hub
   - wget --quiet https://selenium-release.storage.googleapis.com/${SELENIUM_MAJ_VER}/${SELENIUM_JAR}
-  - java -Xmx128m -jar ${SELENIUM_JAR} -role hub > /dev/null 2>&1 &
+  - java -Xmx128m -jar ${SELENIUM_JAR} -role hub > hub.log 2>&1 &
 
   # Download geckodriver
 #  - wget --quiet https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VER}/geckodriver-v${GECKO_VER}-linux64.tar.gz
@@ -54,10 +54,10 @@ before_script:
   - until $(curl --output /dev/null --silent --fail http://localhost:4444/grid/console); do printf '.'; sleep 1; done
 
   # Setup Firefox Selenium Grid Node
-#  - java -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > logs/ff-node.log  2>&1 &
+#  - java -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > ff-node.log  2>&1 &
 
   # Set up Chrome Selenium Grid Node
-  - java -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5556 > logs/chrome-node.log 2>&1 &
+  - java -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5556 > chrome-node.log 2>&1 &
 
 script:
   # Download deps, compile and run checkstyle
@@ -73,7 +73,8 @@ script:
 
   # Chrome on the grid - chrome 63 seems to be broken doesn't work on grid on travis (Jan 2018)
   - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub #-DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
-  - cat logs/chrome-node.log
+  - cat hub.log
+  - cat chrome-node.log
 
   # Custom Browser Impl
   #- mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=CustomFirefoxImpl -Dmaximise=true -Dit.test=DocumentationTest 2> /dev/null
