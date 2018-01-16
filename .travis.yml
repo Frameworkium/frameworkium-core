@@ -6,7 +6,7 @@ sudo: false
 dist: trusty
 
 addons:
-  firefox: "57.0.3"
+  firefox: latest
   chrome: stable
 
 install: true # disable default mvn install
@@ -16,9 +16,9 @@ notifications:
 
 env:
   global:
-    # - CAPTURE_URL="https://localhost:5000" # disabled until new instance is available
-    # - SUT_NAME="frameworkium-core"
-    # - SUT_VERSION=${TRAVIS_BRANCH}
+    - CAPTURE_URL="http://ec2-35-176-47-3.eu-west-2.compute.amazonaws.com"
+    - SUT_NAME="frameworkium-core"
+    - SUT_VERSION=${TRAVIS_BRANCH}
     - THREAD_COUNT=2
     - SELENIUM_MAJ_VER=3.8
     - SELENIUM_VER=${SELENIUM_MAJ_VER}.1
@@ -40,7 +40,7 @@ before_script:
 
   # Set up Selenium Grid Hub
   - wget --quiet https://selenium-release.storage.googleapis.com/${SELENIUM_MAJ_VER}/${SELENIUM_JAR}
-  - java -Xmx128m -jar ${SELENIUM_JAR} -role hub > /dev/null 2>&1 &
+  - java -Xmx128m -jar ${SELENIUM_JAR} -role hub > hub.log 2>&1 &
 
   # Download geckodriver
   - wget --quiet https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VER}/geckodriver-v${GECKO_VER}-linux64.tar.gz
@@ -54,10 +54,10 @@ before_script:
   - until $(curl --output /dev/null --silent --fail http://localhost:4444/grid/console); do printf '.'; sleep 1; done
 
   # Setup Firefox Selenium Grid Node
-  - java -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > /dev/null 2>&1 &
+  - java -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > ff-node.log  2>&1 &
 
   # Set up Chrome Selenium Grid Node
-  - java -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5556 > /dev/null 2>&1 &
+  - java -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5556 > chrome-node.log 2>&1 &
 
 script:
   # Download deps, compile and run checkstyle
@@ -69,19 +69,19 @@ script:
   - mvn verify -B -Dthreads=1 -Dconfig=FirefoxGrid.yaml
 
   # Firefox off the grid
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dheadless=true -Dit.test=TheInternetExampleTests 2> /dev/null
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dheadless=true -Dit.test=TheInternetExampleTests -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}" 2> /dev/null
 
   # Chrome on the grid
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub #-DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Custom Browser Impl
   - mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=CustomFirefoxImpl -Dmaximise=true -Dit.test=DocumentationTest 2> /dev/null
 
   # Query Jira for which test to run and then log results to Jira
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DgridURL=http://localhost:4444/wd/hub -DjiraURL="http://52.29.130.45:8080" -DjqlQuery="issueKey=TEST-1" -DresultVersion="BUILD TEST VERSION" -DzapiCycleRegex="Test Cycle" -DjiraUsername=frameworkium -DjiraPassword=frameworkium
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DjiraURL="http://52.29.130.45:8080" -DjqlQuery="issueKey=TEST-1" -DresultVersion="BUILD TEST VERSION" -DzapiCycleRegex="Test Cycle" -DjiraUsername=frameworkium -DjiraPassword=frameworkium -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
-  # SauceLabs- disabled until we have a sauce account to use
-  # - mvn verify -Dsauce=true -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.0 -Ddevice=iPad -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
+  # SauceLabs - disabled until we have a sauce account to use
+#  - mvn verify -Dsauce=true -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.0 -Ddevice=iPad -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Allure report
   - mvn site -B --quiet
@@ -90,7 +90,7 @@ after_script:
   # Code coverage report
   - bash <(curl -s https://codecov.io/bash)
 
-  # Upload code coverage to code climate with hack for jacoco (Dec 2017)
+  # Upload code coverage to code climate - with workaround for jacoco (Dec 2017)
   - cp target/site/jacoco/jacoco.xml src/main/java/jacoco.xml
   - cd src/main/java/
   - ../../../cc-test-reporter after-build -t jacoco --exit-code $TRAVIS_TEST_RESULT

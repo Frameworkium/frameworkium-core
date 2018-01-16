@@ -146,7 +146,7 @@ public class ScreenshotCapture {
 
     private void sendScreenshot(CreateScreenshot createScreenshotMessage) {
         getScreenshotExecutor().execute(() -> {
-            logger.debug("About to send screenshot to Capture for " + testID);
+            logger.debug("About to send screenshot to Capture for {}", testID);
             try {
                 getRequestSpec()
                         .body(createScreenshotMessage)
@@ -174,6 +174,6 @@ public class ScreenshotCapture {
             return true;
         }
         screenshotExecutor.shutdown();
-        return screenshotExecutor.awaitTermination(60, TimeUnit.SECONDS);
+        return screenshotExecutor.awaitTermination(2, TimeUnit.MINUTES);
     }
 }

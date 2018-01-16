@@ -18,13 +18,13 @@ public abstract class BaseService {
 
     protected static final Logger logger = LogManager.getLogger();
 
-    /* Set the proxy upon use */
     static {
         if (Property.PROXY.isSpecified()) {
             try {
                 RestAssured.proxy(new URI(Property.PROXY.getValue()));
             } catch (URISyntaxException e) {
-                logger.error("Proxy URI given is in an invalid format. Ensure it's in the format of: http://{hostname}:{port}", e);
+                logger.error("Proxy URI given is in an invalid format."
+                        + " Ensure it's in the format of: http://{hostname}:{port}", e);
             }
         }
     }

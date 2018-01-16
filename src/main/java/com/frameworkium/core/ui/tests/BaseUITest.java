@@ -148,8 +148,8 @@ public abstract class BaseUITest implements SauceOnDemandSessionIdProvider, Sauc
         if (!ScreenshotCapture.isRequired()) {
             return;
         }
-        String prefix = "Async screenshot capture: ";
-        baseLogger.info(prefix + "processing remaining backlog...");
+        String prefix = "Screenshot Capture: ";
+        baseLogger.info(prefix + "processing remaining async backlog...");
         try {
             boolean timeout = !ScreenshotCapture.processRemainingBacklog();
             if (timeout) {
