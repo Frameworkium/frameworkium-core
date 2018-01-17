@@ -104,13 +104,13 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private boolean isFrameworkiumScript(String script) {
         String browserAgentScript = "return navigator.userAgent;";
-        String angularFrameworkContains = "angular.getTestability(el).whenStable(callback);";
 
         return script.equals(browserAgentScript)
                 || script.equals(Angular.IS_PRESENT_JS)
                 || script.equals(AngularTwo.IS_PRESENT_JS)
                 || script.equals(Visibility.FORCE_VISIBLE_SCRIPT)
-                || script.contains(angularFrameworkContains);
+                || script.contains("angular.getTestability(el)")
+                || script.contains("definitelyNg2OrNewer");
     }
 
     /* Test end methods */
