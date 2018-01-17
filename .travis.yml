@@ -3,7 +3,8 @@ jdk: oraclejdk8
 
 # docker, see: https://docs.travis-ci.com/user/reference/overview/
 #sudo: false
-# vm where chrome might work again (Jan 2018)
+# Chrome no longer starts on the docker travis instance (Jan 2018)
+# https://github.com/travis-ci/travis-ci/issues/8836
 sudo: required
 dist: trusty
 
@@ -13,8 +14,8 @@ addons:
 
 install: true # disable default mvn install
 
-#notifications:
-#  slack: qaengineering:eTRqy0JhQOUtKHNO8mKLc8NC
+notifications:
+  slack: qaengineering:eTRqy0JhQOUtKHNO8mKLc8NC
 
 env:
   global:
