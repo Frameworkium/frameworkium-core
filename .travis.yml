@@ -2,7 +2,10 @@ language: java
 jdk: oraclejdk8
 
 # docker, see: https://docs.travis-ci.com/user/reference/overview/
-sudo: false
+#sudo: false
+# Chrome no longer starts on the docker travis instance (Jan 2018)
+# https://github.com/travis-ci/travis-ci/issues/8836
+sudo: required
 dist: trusty
 
 addons:
