@@ -2,7 +2,9 @@ language: java
 jdk: oraclejdk8
 
 # docker, see: https://docs.travis-ci.com/user/reference/overview/
-sudo: false
+#sudo: false
+# vm where chrome might work again (Jan 2018)
+sudo: required
 dist: trusty
 
 addons:
