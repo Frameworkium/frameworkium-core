@@ -6,6 +6,7 @@ import com.frameworkium.integration.ai.capture.api.dto.screenshots.CreateScreens
 import com.frameworkium.integration.ai.capture.api.dto.screenshots.Screenshot;
 import com.frameworkium.integration.ai.capture.api.service.executions.ExecutionService;
 import com.frameworkium.integration.ai.capture.api.service.screenshots.ScreenshotService;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -16,18 +17,30 @@ import static com.google.common.truth.Truth.assertThat;
 /** Tests for the Capture execution API. */
 public class CaptureExecutionAPITest extends BaseAPITest {
 
-    @Test
-    public void create_execution_appears_in_results() {
-        ExecutionService executionService = new ExecutionService();
-        CreateExecution createExMessage = CreateExecution.newCreateInstance();
-        String id = executionService
+    private CreateExecution createExMessage;
+    private String executionID;
+
+    /**
+     * Using {@link BeforeClass} to ensure anything like:
+     * https://github.com/cbeust/testng/issues/1660
+     * gets caught before we release.
+     * This, with threads, is a common pattern.
+     */
+    @BeforeClass
+    public void create_execution() {
+        createExMessage = CreateExecution.newCreateInstance();
+        executionID = new ExecutionService()
                 .createExecution(createExMessage)
                 .executionID;
+    }
 
-        ExecutionResults latestExecutions = executionService.getExecutions(1, 10);
+    @Test
+    public void execution_appears_in_results() {
+
+        ExecutionResults latestExecutions = new ExecutionService().getExecutions(1, 10);
 
         List<ExecutionResponse> filteredExecutions = latestExecutions.results.stream()
-                .filter(ex -> id.equals(ex.executionID))
+                .filter(ex -> executionID.equals(ex.executionID))
                 .collect(Collectors.toList());
 
         // ensure only one with our expected ID
@@ -44,19 +57,11 @@ public class CaptureExecutionAPITest extends BaseAPITest {
 
     @Test
     public void can_add_then_view_screenshot() {
-        ExecutionService executionService = new ExecutionService();
-        CreateExecution createExMessage = CreateExecution.newCreateInstance();
-        String executionID = executionService
-                .createExecution(createExMessage)
-                .executionID;
-
-        ScreenshotService screenshotService = new ScreenshotService();
         CreateScreenshot createScreenshot = CreateScreenshot.newInstance(executionID);
-        screenshotService.createScreenshot(createScreenshot);
+        new ScreenshotService().createScreenshot(createScreenshot);
 
-        List<Screenshot> screenshots = executionService.getExecution(executionID).screenshots;
-        assertThat(screenshots).isNotEmpty();
-        Screenshot returnedScreenshot = screenshots.get(0);
+        Screenshot returnedScreenshot =
+                new ExecutionService().getExecution(executionID).screenshots.get(0);
         assertThat(returnedScreenshot.command).isEqualTo(createScreenshot.command);
         assertThat(returnedScreenshot.imageURL).endsWith(".png");
     }
