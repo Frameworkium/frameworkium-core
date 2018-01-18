@@ -6,6 +6,7 @@ import com.frameworkium.integration.ai.capture.api.dto.screenshots.CreateScreens
 import com.frameworkium.integration.ai.capture.api.dto.screenshots.Screenshot;
 import com.frameworkium.integration.ai.capture.api.service.executions.ExecutionService;
 import com.frameworkium.integration.ai.capture.api.service.screenshots.ScreenshotService;
+import org.openqa.selenium.NotFoundException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -37,7 +38,11 @@ public class CaptureExecutionAPITest extends BaseAPITest {
     @Test
     public void execution_appears_in_results() {
 
-        ExecutionResults latestExecutions = new ExecutionService().getExecutions(1, 10);
+        ExecutionResults latestExecutions =
+                new ExecutionService().getExecutions(1, 10);
+        // check total is at least the number of results returns
+        assertThat(latestExecutions.total)
+                .isAtLeast(latestExecutions.results.size());
 
         List<ExecutionResponse> filteredExecutions = latestExecutions.results.stream()
                 .filter(ex -> executionID.equals(ex.executionID))
@@ -48,11 +53,20 @@ public class CaptureExecutionAPITest extends BaseAPITest {
 
         ExecutionResponse response = filteredExecutions.get(0);
         assertThat(response.createdFrom(createExMessage)).isTrue();
-        assertThat(response.currentStatus).isEqualTo("new");
+    }
 
-        // check total is at least the number of results returns
-        assertThat(latestExecutions.total)
-                .isAtLeast(latestExecutions.results.size());
+    @Test
+    public void new_execution_has_status_new_and_last_updated_equals_created() {
+        String id = new ExecutionService()
+                .createExecution(createExMessage)
+                .executionID;
+        ExecutionResponse execution = new ExecutionService()
+                .getExecutions(1, 20)
+                .results.stream()
+                .filter(ex -> id.equals(ex.executionID))
+                .findFirst().orElseThrow(NotFoundException::new);
+        assertThat(execution.currentStatus).isEqualTo("new");
+        assertThat(execution.lastUpdated).isEqualTo(execution.created);
     }
 
     @Test
