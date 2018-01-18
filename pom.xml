@@ -403,7 +403,7 @@
           <plugin>
             <groupId>com.lazerycode.selenium</groupId>
             <artifactId>driver-binary-downloader-maven-plugin</artifactId>
-            <version>1.0.14</version>
+            <version>1.0.16</version>
             <configuration>
               <rootStandaloneServerDirectory>drivers/bin/</rootStandaloneServerDirectory>
               <downloadedZipFileDirectory>drivers/zip/</downloadedZipFileDirectory>
