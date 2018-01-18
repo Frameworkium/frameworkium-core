@@ -3,7 +3,7 @@
 
   <groupId>com.github.frameworkium</groupId>
   <artifactId>frameworkium-core</artifactId>
-  <version>2.6.1-SNAPSHOT</version>
+  <version>2.7-SNAPSHOT</version>
   <name>frameworkium-core</name>
   <description>
     Frameworkium core code.
@@ -41,6 +41,11 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
+
+  <!-- using to make mvn versions:display-plugin-updates faster -->
+  <prerequisites>
+    <maven>3.1.1</maven>
+  </prerequisites>
 
   <dependencies>
     <dependency>
