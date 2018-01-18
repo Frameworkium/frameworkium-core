@@ -20,7 +20,7 @@ public class CreateExecution extends AbstractDTO<CreateExecution> {
      */
     public static CreateExecution newCreateInstance() {
         CreateExecution execution = new CreateExecution();
-        execution.testID = "Default";
+        execution.testID = "DEFAULT-1";
         execution.browser = Browser.newInstance();
         execution.softwareUnderTest = SoftwareUnderTest.newInstance();
         try {

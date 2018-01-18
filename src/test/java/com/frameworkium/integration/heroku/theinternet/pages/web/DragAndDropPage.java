@@ -1,5 +1,6 @@
 package com.frameworkium.integration.heroku.theinternet.pages.web;
 
+import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
 import io.restassured.RestAssured;
@@ -58,7 +59,7 @@ public class DragAndDropPage extends BasePage<DragAndDropPage> {
      * @return a String containing the Javascript for JQuery (if not already present on the page)
      *         and code for simulating drag and drop.
      */
-    private String javascriptToSimulateDragDrop() {
+    private String scriptToSimulateDragDrop() {
         if (jQueryJS.isEmpty()) {
             Boolean isJQueryAvailable = (Boolean) executeJS("return !!window.jQuery;");
             if (!isJQueryAvailable) {
@@ -74,8 +75,10 @@ public class DragAndDropPage extends BasePage<DragAndDropPage> {
      * @param to   the jQuery selector for the target element where the from element will be dropped
      */
     private void simulateDragAndDrop(String from, String to) {
-        executeJS(javascriptToSimulateDragDrop());
+        executeJS(scriptToSimulateDragDrop());
+        AllureLogger.stepStart("testing step start");
         executeJS("$('" + from + "').simulateDragDrop({ dropTarget: '" + to + "'});");
+        AllureLogger.stepFinish();
     }
 
     @Step("Drag A onto B")
