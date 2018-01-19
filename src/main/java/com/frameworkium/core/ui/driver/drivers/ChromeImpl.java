@@ -8,7 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import static java.util.Collections.singletonList;
+import java.util.Collections;
 
 public class ChromeImpl extends AbstractDriver {
 
@@ -18,7 +18,9 @@ public class ChromeImpl extends AbstractDriver {
         // useful defaults
         chromeOptions.setCapability(
                 "chrome.switches",
-                singletonList("--no-default-browser-check"));
+                Collections.singletonList("--no-default-browser-check"));
+        // Workaround Travis/Docker issue
+        chromeOptions.addArguments("--no-sandbox");
         chromeOptions.setCapability(
                 "chrome.prefs",
                 ImmutableMap.of("profile.password_manager_enabled", "false"));
