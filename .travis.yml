@@ -11,8 +11,8 @@ addons:
 
 install: true # disable default mvn install
 
-#notifications:
-#  slack: qaengineering:eTRqy0JhQOUtKHNO8mKLc8NC
+notifications:
+  slack: qaengineering:eTRqy0JhQOUtKHNO8mKLc8NC
 
 env:
   global:
@@ -27,6 +27,7 @@ env:
     - CHROME_DRIVER_VER=2.35
     # override Travis default to give browsers more room
     - _JAVA_OPTIONS="-Xmx1024m -Xms128m"
+    # Required to turn on workaround for the following issue:
     # https://github.com/travis-ci/travis-ci/issues/8836
     - CHROME_NO_SANDBOX=true
 
@@ -68,10 +69,10 @@ script:
   # Firefox on the grid
   # No longer works with 2 threads on Travis, since 29-Dec-2017:
   # frameworkium 2.5.0, ff 57.0.2, geckodriver 0.19.1
-#  - mvn verify -B -Dthreads=1 -Dconfig=FirefoxGrid.yaml
+  - mvn verify -B -Dthreads=1 -Dconfig=FirefoxGrid.yaml
 
   # Firefox off the grid
-#  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dheadless=true -Dit.test=TheInternetExampleTests -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}" 2> /dev/null
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dheadless=true -Dit.test=TheInternetExampleTests -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}" 2> /dev/null
 
   # Chrome on the grid
   - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
