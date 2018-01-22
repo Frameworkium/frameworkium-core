@@ -22,7 +22,7 @@ public class TestListener implements ITestListener {
     public void onTestFailure(ITestResult result) {
         logger.error("FAIL  {}", getTestIdentifier(result));
         Throwable cause = result.getThrowable();
-        if (null != cause) {
+        if (cause != null) {
             logger.error(cause.getMessage(), cause);
         }
     }

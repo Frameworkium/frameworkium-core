@@ -8,7 +8,6 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import static com.frameworkium.core.common.properties.Property.*;
@@ -26,11 +25,7 @@ public class SauceImpl extends AbstractDriver {
     public SauceImpl(Platform platform, Capabilities capabilities) {
         this.platform = platform;
         this.capabilities = capabilities;
-        try {
-            this.remoteURL = Sauce.getURL();
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+        this.remoteURL = Sauce.getURL();
     }
 
     @Override
@@ -80,7 +75,7 @@ public class SauceImpl extends AbstractDriver {
                 }
                 break;
             case ANDROID:
-                mutableCapabilities = DesiredCapabilities.android();
+                mutableCapabilities = mutableCapabilities.merge(DesiredCapabilities.android());
                 mutableCapabilities.setCapability("platform", "Linux");
                 if (PLATFORM_VERSION.isSpecified()) {
                     mutableCapabilities.setCapability(
@@ -90,7 +85,7 @@ public class SauceImpl extends AbstractDriver {
                 mutableCapabilities.setCapability("deviceOrientation", "portrait");
                 break;
             case IOS:
-                mutableCapabilities = DesiredCapabilities.iphone();
+                mutableCapabilities = mutableCapabilities.merge(DesiredCapabilities.iphone());
                 mutableCapabilities.setCapability("platform", "OS X 10.10");
                 if (PLATFORM_VERSION.isSpecified()) {
                     mutableCapabilities.setCapability(

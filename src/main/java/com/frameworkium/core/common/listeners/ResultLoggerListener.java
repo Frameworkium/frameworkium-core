@@ -48,7 +48,7 @@ public class ResultLoggerListener implements ITestListener {
             JiraTest.addComment(issueOrTestCaseId, comment);
         }
         if (jiraFieldLoggingParamsProvided(result)) {
-            logger.info("Logging WIP to jira by updating the specified field - "
+            logger.info("Logging WIP to Jira by updating the specified field - "
                     + Property.JIRA_RESULT_FIELD_NAME.getValue());
             JiraTest.changeIssueFieldValue(
                     issueOrTestCaseId,
@@ -67,8 +67,8 @@ public class ResultLoggerListener implements ITestListener {
                         jiraTransition,
                         issueAnnotation);
             } catch (Exception e) {
-                logger.warn(
-                        "Failed to perform transition '{}' on '{}'- maybe not possible given the state?",
+                logger.error(
+                        "Failed to perform transition '{}' on '{}' - maybe not possible given the state?",
                         jiraTransition,
                         issueAnnotation);
             }
@@ -83,7 +83,7 @@ public class ResultLoggerListener implements ITestListener {
             return;
         }
 
-        String comment = "PASS" + System.lineSeparator() + baseComment(result);
+        String comment = "PASS\n" + baseComment(result);
 
         if (zapiLoggingParamsProvided(result)) {
             logger.info("Logging PASS to zapi");
@@ -97,7 +97,7 @@ public class ResultLoggerListener implements ITestListener {
             JiraTest.addComment(issueOrTestCaseId, comment);
         }
         if (jiraFieldLoggingParamsProvided(result)) {
-            logger.info("Logging PASS to jira by updating the specified field - "
+            logger.info("Logging PASS to Jira by updating the specified field - "
                     + Property.JIRA_RESULT_FIELD_NAME.getValue());
             JiraTest.changeIssueFieldValue(
                     issueOrTestCaseId,
@@ -131,7 +131,7 @@ public class ResultLoggerListener implements ITestListener {
             return;
         }
 
-        String comment = "FAIL" + System.lineSeparator() + this.baseComment(result);
+        String comment = "FAIL\n" + this.baseComment(result);
 
         if (zapiLoggingParamsProvided(result)) {
             logger.info("Logging FAIL to zapi");
@@ -145,7 +145,7 @@ public class ResultLoggerListener implements ITestListener {
             JiraTest.addComment(issueOrTestCaseId, comment);
         }
         if (jiraFieldLoggingParamsProvided(result)) {
-            logger.info("Logging FAIL to jira by updating the specified field - "
+            logger.info("Logging FAIL to Jira by updating the specified field - "
                     + Property.JIRA_RESULT_FIELD_NAME.getValue());
             JiraTest.changeIssueFieldValue(
                     issueOrTestCaseId,
@@ -174,7 +174,7 @@ public class ResultLoggerListener implements ITestListener {
             return;
         }
 
-        String comment = "BLOCKED" + System.lineSeparator() + this.baseComment(result);
+        String comment = "BLOCKED\n" + this.baseComment(result);
 
         if (zapiLoggingParamsProvided(result)) {
             logger.info("Logging BLOCKED to zapi");
@@ -188,7 +188,7 @@ public class ResultLoggerListener implements ITestListener {
             JiraTest.addComment(issueOrTestCaseId, comment);
         }
         if (jiraFieldLoggingParamsProvided(result)) {
-            logger.info("Logging BLOCKED to jira by updating the specified field - "
+            logger.info("Logging BLOCKED to Jira by updating the specified field - "
                     + Property.JIRA_RESULT_FIELD_NAME.getValue());
             JiraTest.changeIssueFieldValue(
                     issueOrTestCaseId,
@@ -264,31 +264,25 @@ public class ResultLoggerListener implements ITestListener {
                 .append(result.getTestClass().getName())
                 .append(".")
                 .append(result.getMethod().getMethodName())
-                .append(System.lineSeparator())
-                .append("Duration: ")
+                .append("\nDuration: ")
                 .append(((result.getEndMillis() - result.getStartMillis()) / MILLIS_PER_SECOND))
-                .append("seconds")
-                .append(System.lineSeparator());
+                .append("seconds");
 
         if (!isNull(System.getenv("BUILD_URL"))) {
             commentBuilder.append("Jenkins build: ")
-                    .append(System.getenv("BUILD_URL"))
-                    .append(System.lineSeparator());
+                    .append(System.getenv("BUILD_URL"));
         }
         if (ScreenshotCapture.isRequired()) {
             commentBuilder.append("Capture API: ")
-                    .append(CAPTURE_URL.getValue())
-                    .append(System.lineSeparator());
+                    .append(CAPTURE_URL.getValue());
         }
-        commentBuilder.append("OS: ")
+        commentBuilder.append("\nOS: ")
                 .append(getOSInfo())
-                .append(System.lineSeparator())
-                .append("UserAgent: ")
+                .append("\nUserAgent: ")
                 .append(BaseUITest.getUserAgent());
 
         if (!isNull(result.getThrowable())) {
-            commentBuilder.append(System.lineSeparator())
-                    .append("Stacktrace: ")
+            commentBuilder.append("\nStacktrace: ")
                     .append(Throwables.getStackTraceAsString(result.getThrowable()));
         }
 

@@ -97,6 +97,9 @@ public enum Property {
         return value;
     }
 
+    /**
+     * @return true if the property is set and is equal, ignoring case, to "true".
+     */
     public boolean getBoolean() {
         return isSpecified() && Boolean.parseBoolean(value);
     }
