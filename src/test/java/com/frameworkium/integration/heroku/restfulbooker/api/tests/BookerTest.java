@@ -10,6 +10,8 @@ import org.testng.annotations.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
+// app resets every 10m, so could happen in the middle of this test
+@Test(retryAnalyzer = RetryFlakyTest.class)
 public class BookerTest extends BaseAPITest {
 
     @BeforeClass
@@ -18,8 +20,6 @@ public class BookerTest extends BaseAPITest {
                 .isEqualTo("Created");
     }
 
-    // app reset every 10m, so could happen in the middle of this test
-    @Test(retryAnalyzer = RetryFlakyTest.class)
     public void create_new_booking() {
         // given some booking data
         BookingService service = new BookingService();
@@ -35,14 +35,12 @@ public class BookerTest extends BaseAPITest {
                 .isEqualTo(booking);
     }
 
-    @Test
     public void auth_token_matches_expected_pattern() {
         String token = new BookingService().createAuthToken(
                 "admin", "password123");
         assertThat(token).matches("[a-z0-9]{15}");
     }
 
-    @Test
     public void delete_newly_created_booking() {
         // given an existing booking
         BookingService service = new BookingService();

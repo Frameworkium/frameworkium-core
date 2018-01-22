@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 public class BookingDates extends AbstractDTO {
 
     public static final DateTimeFormatter FORMAT =
-            DateTimeFormatter.ofPattern("YYYY-MM-DD");
+            DateTimeFormatter.ISO_LOCAL_DATE;
 
     public String checkin;
     public String checkout;
