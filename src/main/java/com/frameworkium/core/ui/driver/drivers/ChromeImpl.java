@@ -19,8 +19,10 @@ public class ChromeImpl extends AbstractDriver {
         chromeOptions.setCapability(
                 "chrome.switches",
                 Collections.singletonList("--no-default-browser-check"));
-        // Workaround Travis/Docker issue
-        chromeOptions.addArguments("--no-sandbox");
+        if (Boolean.parseBoolean(System.getenv("CHROME_NO_SANDBOX"))) {
+            // Workaround Docker/Travis issue
+            chromeOptions.addArguments("--no-sandbox");
+        }
         chromeOptions.setCapability(
                 "chrome.prefs",
                 ImmutableMap.of("profile.password_manager_enabled", "false"));

@@ -3,9 +3,6 @@ jdk: oraclejdk8
 
 # docker, see: https://docs.travis-ci.com/user/reference/overview/
 sudo: false
-# Chrome no longer starts on the docker travis instance (Jan 2018)
-# https://github.com/travis-ci/travis-ci/issues/8836
-#sudo: required
 dist: trusty
 
 addons:
@@ -30,6 +27,8 @@ env:
     - CHROME_DRIVER_VER=2.35
     # override Travis default to give browsers more room
     - _JAVA_OPTIONS="-Xmx1024m -Xms128m"
+    # https://github.com/travis-ci/travis-ci/issues/8836
+    - CHROME_NO_SANDBOX=true
 
 before_script:
   # setup X to allow non-headless browsers to run
