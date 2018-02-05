@@ -39,19 +39,6 @@ public class AllureProperties {
         if (BUILD.isSpecified()) {
             props.setProperty("Build", BUILD.getValue());
         }
-        if (RESULT_VERSION.isSpecified()) {
-            props.setProperty("Jira Result Version", RESULT_VERSION.getValue());
-        }
-        if (JIRA_URL.isSpecified()) {
-            props.setProperty("allure.issues.tracker.pattern", JIRA_URL.getValue() + "/browse/%s");
-            props.setProperty("allure.tests.management.pattern", JIRA_URL.getValue() + "/browse/%s");
-        }
-        if (JIRA_RESULT_FIELD_NAME.isSpecified()) {
-            props.setProperty("Jira Result Field Name", JIRA_RESULT_FIELD_NAME.getValue());
-        }
-        if (JIRA_RESULT_TRANSITION.isSpecified()) {
-            props.setProperty("Jira Result Field Name", JIRA_RESULT_TRANSITION.getValue());
-        }
         if (!isNull(System.getenv("BUILD_URL"))) {
             props.setProperty("Jenkins build URL", System.getenv("BUILD_URL"));
         }
@@ -62,21 +49,35 @@ public class AllureProperties {
             props.setProperty("Config file", System.getProperty("config"));
         }
 
-        // Now get all UI-specific properties
+        setJiraProperties(props);
+        setUIProperties(props);
+
+        return props;
+    }
+
+    private static void setJiraProperties(Properties props) {
+        if (RESULT_VERSION.isSpecified()) {
+            props.setProperty("Jira Result Version", RESULT_VERSION.getValue());
+        }
+        if (JIRA_URL.isSpecified()) {
+            final String jiraPattern = JIRA_URL.getValue() + "/browse/%s";
+            props.setProperty("allure.issues.tracker.pattern", jiraPattern);
+            props.setProperty("allure.tests.management.pattern", jiraPattern);
+        }
+        if (JIRA_RESULT_FIELD_NAME.isSpecified()) {
+            props.setProperty("Jira Result Field Name", JIRA_RESULT_FIELD_NAME.getValue());
+        }
+        if (JIRA_RESULT_TRANSITION.isSpecified()) {
+            props.setProperty("Jira Result Field Name", JIRA_RESULT_TRANSITION.getValue());
+        }
+    }
+
+    private static void setUIProperties(Properties props) {
         if (APP_PATH.isSpecified()) {
             props.setProperty("App Path", APP_PATH.getValue());
         }
-        if (BROWSER.isSpecified()) {
-            props.setProperty("Browser", BROWSER.getValue());
-        }
-        if (BROWSER_VERSION.isSpecified()) {
-            props.setProperty("Browser Version", BROWSER_VERSION.getValue());
-        }
         if (DEVICE.isSpecified()) {
             props.setProperty("Device Name", DEVICE.getValue());
-        }
-        if (GRID_URL.isSpecified()) {
-            props.setProperty("Grid URL", GRID_URL.getValue());
         }
         if (PLATFORM.isSpecified()) {
             props.setProperty("Platform", PLATFORM.getValue());
@@ -84,10 +85,21 @@ public class AllureProperties {
         if (PLATFORM_VERSION.isSpecified()) {
             props.setProperty("Platform Version", PLATFORM_VERSION.getValue());
         }
+        setBrowserProperties(props);
+    }
+
+    private static void setBrowserProperties(Properties props) {
+        if (BROWSER.isSpecified()) {
+            props.setProperty("Browser", BROWSER.getValue());
+        }
+        if (BROWSER_VERSION.isSpecified()) {
+            props.setProperty("Browser Version", BROWSER_VERSION.getValue());
+        }
+        if (GRID_URL.isSpecified()) {
+            props.setProperty("Grid URL", GRID_URL.getValue());
+        }
         if (BaseUITest.getUserAgent().isPresent()) {
             props.setProperty("UserAgent", BaseUITest.getUserAgent().get());
         }
-
-        return props;
     }
 }
