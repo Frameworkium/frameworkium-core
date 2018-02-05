@@ -13,4 +13,6 @@ public class SpiraConfig {
         public static final int SPIRA_STATUS_BLOCKED = 5;
     }
 
+    private SpiraConfig() {}
+
 }

@@ -13,6 +13,8 @@ public class JiraTest {
 
     private static final String ISSUE_PATH = "issue/";
 
+    private JiraTest() {}
+
     /** Create and send a PUT request to JIRA to change the value of a field. */
     public static void changeIssueFieldValue(
             String issueKey, String fieldToUpdate, String resultValue) {
