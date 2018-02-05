@@ -19,7 +19,7 @@ import static com.frameworkium.core.common.properties.Property.VIDEO_CAPTURE_URL
 
 public class VideoCapture {
 
-    private static final String videoFolder = "capturedVideo";
+    private static final String VIDEO_FOLDER = "capturedVideo";
     private static final Logger logger = LogManager.getLogger();
 
     private static HashMap<String, String> testMap = new HashMap<>();
@@ -57,14 +57,14 @@ public class VideoCapture {
             return;
         }
 
-        Path path = Paths.get(videoFolder);
+        Path path = Paths.get(VIDEO_FOLDER);
         try {
             if (!Files.exists(path)) {
                 Files.createDirectory(path);
             }
             String fileName = String.format(
                     "%s/%s-%s.%s",
-                    videoFolder,
+                    VIDEO_FOLDER,
                     iTestResult.getName(),
                     iTestResult.getEndMillis(),
                     videoCaptureURL.getFile().substring(videoCaptureURL.getFile().lastIndexOf(".") + 1)
