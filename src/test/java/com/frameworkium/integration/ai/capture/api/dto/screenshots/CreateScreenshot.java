@@ -1,5 +1,6 @@
 package com.frameworkium.integration.ai.capture.api.dto.screenshots;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.frameworkium.core.api.dto.AbstractDTO;
 import org.apache.commons.io.IOUtils;
 
@@ -7,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CreateScreenshot extends AbstractDTO<CreateScreenshot> {
 
     public Command command;
