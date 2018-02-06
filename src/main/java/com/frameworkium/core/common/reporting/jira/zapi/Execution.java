@@ -14,7 +14,7 @@ import java.util.*;
 
 import static com.frameworkium.core.common.reporting.jira.JiraConfig.REST_ZAPI_PATH;
 import static com.frameworkium.core.common.reporting.jira.JiraConfig.getJIRARequestSpec;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class Execution {
 
@@ -35,17 +35,18 @@ public class Execution {
     }
 
     private void initExecutionIdsAndCurrentStatus() {
-        if (isNotEmpty(version) && isNotEmpty(issue)) {
-            String query = String.format(
-                    "issue='%s' and fixVersion='%s'", issue, version);
+        if (isBlank(version) || isBlank(issue)) {
+            return;
+        }
+        String query = String.format(
+                "issue='%s' and fixVersion='%s'", issue, version);
 
-            SearchExecutions search = new SearchExecutions(query);
-            idList = search.getExecutionIds();
+        SearchExecutions search = new SearchExecutions(query);
+        idList = search.getExecutionIds();
 
-            List<Integer> statusList = search.getExecutionStatuses();
-            if (!statusList.isEmpty()) {
-                currentStatus = statusList.get(0);
-            }
+        List<Integer> statusList = search.getExecutionStatuses();
+        if (!statusList.isEmpty()) {
+            currentStatus = statusList.get(0);
         }
     }
 

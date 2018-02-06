@@ -21,11 +21,11 @@ public class SearchIssues {
                     .when()
                     .get(JiraConfig.JIRA_REST_PATH + "search")
                     .thenReturn().jsonPath();
-        } catch (RuntimeException re) {
-            throw new RuntimeException("Problem with JIRA or JQL.", re);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Problem with JIRA or JQL.", e);
         }
         if (jsonPath == null || jsonPath.getList("issues") == null) {
-            throw new RuntimeException(
+            throw new IllegalStateException(
                     String.format("No JIRA issues returned by specified JQL '%s'", query));
         }
     }

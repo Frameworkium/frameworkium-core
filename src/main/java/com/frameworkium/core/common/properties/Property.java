@@ -68,7 +68,7 @@ public enum Property {
         return configMap.get(key);
     }
 
-    private Map<String, String> loadConfigFile() {
+    private static Map<String, String> loadConfigFile() {
         String configFileName = System.getProperty("config");
         if (StringUtils.isNotEmpty(configFileName)) {
             try (InputStream configFileStream =

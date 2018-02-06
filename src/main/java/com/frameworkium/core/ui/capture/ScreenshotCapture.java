@@ -68,9 +68,9 @@ public class ScreenshotCapture {
             } else {
                 try {
                     node = getRemoteNodeAddress();
-                } catch (Throwable t) {
+                } catch (Exception e) {
                     logger.warn("Failed to get node address of remote web driver");
-                    logger.debug(t);
+                    logger.debug(e);
                 }
             }
         } else {
@@ -112,7 +112,7 @@ public class ScreenshotCapture {
         boolean allCapturePropertiesSpecified = CAPTURE_URL.isSpecified()
                 && SUT_NAME.isSpecified()
                 && SUT_VERSION.isSpecified();
-        return  allCapturePropertiesSpecified && !Driver.isNative();
+        return allCapturePropertiesSpecified && !Driver.isNative();
     }
 
     public void takeAndSendScreenshot(Command command, WebDriver driver) {
