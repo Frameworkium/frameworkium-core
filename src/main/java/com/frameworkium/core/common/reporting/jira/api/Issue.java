@@ -61,13 +61,13 @@ public class Issue {
 
     /** Adds the file attachment to the JIRA issue. */
     public void addAttachment(File attachment) {
-        String url = String.format("issue/%s/attachments", issueKey);
+        String attachmentPath = String.format("issue/%s/attachments", issueKey);
 
         JiraConfig.getJIRARequestSpec()
                 .header("X-Atlassian-Token", "nocheck")
                 .multiPart(attachment).and()
                 .when()
-                .post(JiraConfig.JIRA_REST_PATH + url)
+                .post(JiraConfig.JIRA_REST_PATH + attachmentPath)
                 .thenReturn().statusLine();
     }
 }
