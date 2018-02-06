@@ -63,7 +63,7 @@ public class SauceImpl extends AbstractDriver {
     private MutableCapabilities getDesktopCapabilities(String platformName) {
         if (!PLATFORM_VERSION.isSpecified()) {
             throw new IllegalArgumentException(
-                    "Platform version required when using " + platformName + " & SauceLabs!");
+                    "Platform version required for " + platformName + "  SauceLabs!");
         }
         MutableCapabilities caps = new MutableCapabilities(capabilities);
         caps.setCapability(
@@ -82,7 +82,7 @@ public class SauceImpl extends AbstractDriver {
             caps.setCapability("version", PLATFORM_VERSION.getValue());
         }
         caps.setCapability("deviceName", "Android Emulator");
-        caps.setCapability("deviceOrientation", "portrait");
+        setPortraitOrientation(caps);
         return caps;
     }
 
@@ -96,7 +96,7 @@ public class SauceImpl extends AbstractDriver {
         if (DEVICE.isSpecified()) {
             caps.setCapability("deviceName", DEVICE.getValue() + " Simulator");
         }
-        caps.setCapability("deviceOrientation", "portrait");
+        setPortraitOrientation(caps);
         return caps;
     }
 
@@ -105,7 +105,7 @@ public class SauceImpl extends AbstractDriver {
         caps.setCapability(
                 "app", "sauce-storage:" + new File(APP_PATH.getValue()).getName());
         caps.setCapability("appiumVersion", "1.4.10");
-        caps.setCapability("deviceOrientation", "portrait");
+        setPortraitOrientation(caps);
         caps.setCapability("browserName", "");
         switch (platform) {
             case IOS:
@@ -120,8 +120,8 @@ public class SauceImpl extends AbstractDriver {
     }
 
     private MutableCapabilities getAppiumCapabilities(
-            Capabilities appiumCapabilities, String platformName, String emulatorOrSimulator) {
-        MutableCapabilities caps = new MutableCapabilities(appiumCapabilities);
+            Capabilities commonCaps, String platformName, String emulatorOrSimulator) {
+        MutableCapabilities caps = new MutableCapabilities(commonCaps);
         if (DEVICE.isSpecified()) {
             caps.setCapability(
                     "deviceName", DEVICE.getValue() + " " + emulatorOrSimulator);
@@ -131,5 +131,9 @@ public class SauceImpl extends AbstractDriver {
             caps.setCapability("platformVersion", PLATFORM_VERSION.getValue());
         }
         return caps;
+    }
+
+    private void setPortraitOrientation(MutableCapabilities caps) {
+        caps.setCapability("deviceOrientation", "portrait");
     }
 }
