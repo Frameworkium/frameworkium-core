@@ -1,11 +1,11 @@
-package com.frameworkium.integration.github.pages.web.components;
+package com.frameworkium.integration.github.pages.components;
 
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.PageFactory;
 import com.frameworkium.core.ui.pages.Visibility;
 import com.frameworkium.core.ui.tests.BaseUITest;
-import com.frameworkium.integration.github.pages.web.ExplorePage;
-import com.frameworkium.integration.github.pages.web.SearchResultsPage;
+import com.frameworkium.integration.github.pages.ExplorePage;
+import com.frameworkium.integration.github.pages.SearchResultsPage;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;

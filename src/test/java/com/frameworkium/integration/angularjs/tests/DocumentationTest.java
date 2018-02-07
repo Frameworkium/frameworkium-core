@@ -1,8 +1,8 @@
-package com.frameworkium.integration.angularjs.tests.web;
+package com.frameworkium.integration.angularjs.tests;
 
 import com.frameworkium.core.common.retry.RetryFlakyTest;
 import com.frameworkium.core.ui.tests.BaseUITest;
-import com.frameworkium.integration.angularjs.pages.web.DeveloperGuidePage;
+import com.frameworkium.integration.angularjs.pages.DeveloperGuidePage;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.TestCaseId;

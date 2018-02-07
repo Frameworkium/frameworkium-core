@@ -1,4 +1,4 @@
-package com.frameworkium.integration.heroku.theinternet.pages.web;
+package com.frameworkium.integration.heroku.theinternet.pages;
 
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.ui.annotations.Visible;
@@ -23,15 +23,6 @@ public class DragAndDropPage extends BasePage<DragAndDropPage> {
     private static final String JQUERY_JS_URI = "https://code.jquery.com/jquery-3.2.1.min.js";
 
     @Visible
-    @Name("Box A")
-    @FindBy(id = "column-a")
-    private WebElement boxA;
-
-    @Visible
-    @Name("Box B")
-    @FindBy(id = "column-b")
-    private WebElement boxB;
-
     @Name("List of headers")
     @FindBy(css = "header")
     private List<WebElement> boxes;
@@ -76,6 +67,7 @@ public class DragAndDropPage extends BasePage<DragAndDropPage> {
      */
     private void simulateDragAndDrop(String from, String to) {
         executeJS(scriptToSimulateDragDrop());
+        // TODO: move AllureLogger steps to dedicated test
         AllureLogger.stepStart("testing step start");
         executeJS("$('" + from + "').simulateDragDrop({ dropTarget: '" + to + "'});");
         AllureLogger.stepFinish();

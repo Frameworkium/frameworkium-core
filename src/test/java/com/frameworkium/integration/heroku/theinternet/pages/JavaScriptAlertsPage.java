@@ -1,4 +1,4 @@
-package com.frameworkium.integration.heroku.theinternet.pages.web;
+package com.frameworkium.integration.heroku.theinternet.pages;
 
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
@@ -24,11 +24,8 @@ public class JavaScriptAlertsPage extends BasePage<JavaScriptAlertsPage> {
     @Step("Click alert")
     public JavaScriptAlertsPage clickAlertButtonAndAccept() {
         jsAlertButton.click();
-
         driver.switchTo().alert().accept();
-
         wait.until(visibilityOf(resultArea));
-
         return this;
     }
 

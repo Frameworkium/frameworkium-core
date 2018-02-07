@@ -1,4 +1,4 @@
-package com.frameworkium.integration.github.pages.web;
+package com.frameworkium.integration.github.pages;
 
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;

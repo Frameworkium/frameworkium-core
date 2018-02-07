@@ -1,4 +1,4 @@
-package com.frameworkium.integration.heroku.theinternet.pages.web;
+package com.frameworkium.integration.heroku.theinternet.pages;
 
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
@@ -23,7 +23,6 @@ public class KeyPressesPage extends BasePage<KeyPressesPage> {
     @Step("Enter a key press {0}")
     public KeyPressesPage enterKeyPress(Keys key) {
 
-        // Press a key
         (new Actions(driver)).sendKeys(key).perform();
 
         // We're still on this page, so return this

@@ -1,4 +1,4 @@
-package com.frameworkium.integration.heroku.theinternet.pages.web;
+package com.frameworkium.integration.heroku.theinternet.pages;
 
 import com.frameworkium.core.ui.ExtraExpectedConditions;
 import com.frameworkium.core.ui.annotations.Visible;
@@ -23,6 +23,7 @@ public class CheckboxesPage extends BasePage<CheckboxesPage> {
 
         allCheckboxes.forEach(CheckBox::select);
 
+        // TODO: move to dedicated test
         // not required for this test, just testing it doesn't fail
         wait.until(ExtraExpectedConditions.jQueryAjaxDone());
 

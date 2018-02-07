@@ -37,16 +37,17 @@ public class CaptureExecutionAPITest extends BaseAPITest {
 
     @Test
     public void execution_appears_in_results() {
-
         ExecutionResults latestExecutions =
                 new ExecutionService().getExecutions(1, 10);
-        // check total is at least the number of results returns
+
         assertThat(latestExecutions.total)
                 .isAtLeast(latestExecutions.results.size());
 
-        List<ExecutionResponse> filteredExecutions = latestExecutions.results.stream()
-                .filter(ex -> executionID.equals(ex.executionID))
-                .collect(Collectors.toList());
+        List<ExecutionResponse> filteredExecutions =
+                latestExecutions
+                        .results.stream()
+                        .filter(ex -> executionID.equals(ex.executionID))
+                        .collect(Collectors.toList());
 
         // ensure only one with our expected ID
         assertThat(filteredExecutions).hasSize(1);

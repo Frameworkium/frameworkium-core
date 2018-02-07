@@ -45,6 +45,7 @@ public class SearchBookerTest extends BaseAPITest {
         List<BookingID> bookingIDs = service.search(
                 SearchParamsMapper.datesOfBooking(booking));
 
+        // TODO: move to dedicated test
         throw new SkipException("Known bug in service, dates not inclusive");
         // assertThat(bookingIDs).contains(existingID);
     }

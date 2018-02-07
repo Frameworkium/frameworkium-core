@@ -1,7 +1,7 @@
-package com.frameworkium.integration.heroku.theinternet.tests.web;
+package com.frameworkium.integration.heroku.theinternet.tests;
 
 import com.frameworkium.core.ui.tests.BaseUITest;
-import com.frameworkium.integration.heroku.theinternet.pages.web.*;
+import com.frameworkium.integration.heroku.theinternet.pages.*;
 import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.*;
@@ -19,10 +19,8 @@ public class TheInternetExampleTests extends BaseUITest {
     public void checkBoxes() {
 
         final int timeout = 15;
-        CheckboxesPage checkboxesPage = WelcomePage.open(timeout).then()
-                // Navigate to the checkboxes page
+        CheckboxesPage checkboxesPage = WelcomePage.open(timeout)
                 .clickCheckboxesLink()
-                // Set all checkboxes to checked via alternative method
                 .checkAllCheckboxes();
 
         // Assert that all checkboxes are checked
@@ -35,14 +33,11 @@ public class TheInternetExampleTests extends BaseUITest {
     @Test(description = "Drag and Drop")
     public void dragAndDrop() {
 
-        // Navigate to the checkboxes page
-        List<String> headings = WelcomePage.open().then()
+        List<String> headings = WelcomePage.open()
                 .clickDragAndDropLink()
-                // Drag A onto B
                 .dragAontoB()
                 .getListOfHeadings();
 
-        // Assert on the order of the headings
         assertThat(headings)
                 .named("Order of headings")
                 .containsExactly("B", "A");
@@ -52,15 +47,15 @@ public class TheInternetExampleTests extends BaseUITest {
     @Test(description = "Dynamic loading")
     public void dynamicLoading() {
 
-        // Navigate to the dynamic loading hidden element page
-        DynamicLoadingExamplePage dynamicLoadingExamplePage =
-                WelcomePage.open().then().clickDynamicLoading().then().clickExample2();
-
-        // Click start and wait for element to be displayed
-        dynamicLoadingExamplePage.clickStart().then().waitForElementToBeDisplayed();
+        DynamicLoadingExamplePage dynamicLoadingPage =
+                WelcomePage.open()
+                        .clickDynamicLoading()
+                        .clickExample2()
+                        .clickStart().
+                        waitForElementToBeDisplayed();
 
         // Assert that the element is indeed displayed
-        assertThat(dynamicLoadingExamplePage.isElementDisplayed())
+        assertThat(dynamicLoadingPage.isElementDisplayed())
                 .named("element visibility")
                 .isTrue();
     }
@@ -70,7 +65,7 @@ public class TheInternetExampleTests extends BaseUITest {
     public void hovers() {
 
         // Navigate to the hovers page
-        HoversPage hoversPage = WelcomePage.open().then().clickHoversLink();
+        HoversPage hoversPage = WelcomePage.open().clickHoversLink();
 
         // Confirm that the caption under the first figure contains expected text
         assertThat(hoversPage.getFirstFigureCaption()).contains("name: user1");
@@ -83,7 +78,7 @@ public class TheInternetExampleTests extends BaseUITest {
 
         // Navigate to the javascript alerts page
         JavaScriptAlertsPage javascriptAlerts =
-                WelcomePage.open().then()
+                WelcomePage.open()
                         .clickJavascriptAlertsLink()
                         .clickAlertButtonAndAccept();
 
@@ -111,7 +106,7 @@ public class TheInternetExampleTests extends BaseUITest {
 
         // Navigate to the sortable data tables page
         SortableDataTablesPage sortableDataTablesPage =
-                WelcomePage.open().then().clickSortableDataTablesLink();
+                WelcomePage.open().clickSortableDataTablesLink();
 
         // Assert that Table 1 contains "http://www.jdoe.com" in the web site column
         assertThat(sortableDataTablesPage.getTable1ColumnContents("Web Site"))

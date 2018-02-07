@@ -1,8 +1,8 @@
-package com.frameworkium.integration.github.tests.web;
+package com.frameworkium.integration.github.tests;
 
 import com.frameworkium.core.ui.tests.BaseUITest;
-import com.frameworkium.integration.github.pages.web.ExplorePage;
-import com.frameworkium.integration.github.pages.web.HomePage;
+import com.frameworkium.integration.github.pages.ExplorePage;
+import com.frameworkium.integration.github.pages.HomePage;
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.Issue;
 import ru.yandex.qatools.allure.annotations.TestCaseId;

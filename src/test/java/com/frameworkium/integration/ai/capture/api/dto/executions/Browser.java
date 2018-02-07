@@ -10,7 +10,7 @@ public class Browser extends AbstractDTO<Browser> {
     public static Browser newInstance() {
         Browser browser = new Browser();
         browser.name = "Firefox";
-        browser.version = "49.0";
+        browser.version = "58.0";
         return browser;
     }
 }

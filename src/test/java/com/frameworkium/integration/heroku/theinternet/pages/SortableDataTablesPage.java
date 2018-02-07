@@ -1,8 +1,7 @@
-package com.frameworkium.integration.heroku.theinternet.pages.web;
+package com.frameworkium.integration.heroku.theinternet.pages;
 
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
@@ -11,11 +10,6 @@ import ru.yandex.qatools.htmlelements.element.Table;
 import java.util.List;
 
 public class SortableDataTablesPage extends BasePage<SortableDataTablesPage> {
-
-    @Visible
-    @Name("Heading")
-    @FindBy(css = "div.example h3")
-    private WebElement heading;
 
     @Visible
     @Name("Table 1")
@@ -53,7 +47,6 @@ public class SortableDataTablesPage extends BasePage<SortableDataTablesPage> {
 
     @Step("Get column contents of column {1} in table {0}")
     private List<String> getColumnContents(Table table, String colHeader) {
-
         int colIndex = table.getHeadingsAsString().indexOf(colHeader);
         return table.getColumnsAsString().get(colIndex);
     }
