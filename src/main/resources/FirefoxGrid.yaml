@@ -16,7 +16,7 @@ jiraURL:
 jiraUsername:
 jqlQuery:
 maximise:
-maxRetryCount:
+maxRetryCount: 2
 platform:
 platformVersion:
 proxy:

@@ -6,8 +6,7 @@ import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 public enum Property {
 
@@ -46,7 +45,7 @@ public enum Property {
     THREADS("threads"),
     HEADLESS("headless");
 
-    private static Map<String, String> configMap = null;
+    private static Map<String, Object> configMap = null;
     private String value;
 
     Property(String key) {
@@ -65,10 +64,16 @@ public enum Property {
         if (configMap == null) {
             configMap = loadConfigFile();
         }
-        return configMap.get(key);
+
+        Object objFromFile = configMap.get(key);
+        if (objFromFile != null) {
+            return Objects.toString(objFromFile);
+        } else {
+            return null;
+        }
     }
 
-    private static Map<String, String> loadConfigFile() {
+    private static Map<String, Object> loadConfigFile() {
         String configFileName = System.getProperty("config");
         if (StringUtils.isNotEmpty(configFileName)) {
             try (InputStream configFileStream =
