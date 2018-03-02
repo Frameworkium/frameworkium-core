@@ -9,6 +9,8 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Capabilities;
 import org.reflections.Reflections;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class DriverSetup {
 
     public static final Browser DEFAULT_BROWSER = Browser.FIREFOX;
@@ -83,8 +85,11 @@ public class DriverSetup {
             case CUSTOM:
                 String customBrowserImpl = Property.CUSTOM_BROWSER_IMPL.getValue();
                 try {
-                    return getCustomBrowserImpl(customBrowserImpl).newInstance();
-                } catch (InstantiationException | IllegalAccessException e) {
+                    return getCustomBrowserImpl(customBrowserImpl)
+                            .getDeclaredConstructor()
+                            .newInstance();
+                } catch (InstantiationException | IllegalAccessException
+                        | NoSuchMethodException | InvocationTargetException e) {
                     throw new RuntimeException(
                             "Unable to use custom browser implementation - " + customBrowserImpl, e);
                 }

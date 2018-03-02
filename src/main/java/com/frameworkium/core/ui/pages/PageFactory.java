@@ -1,5 +1,7 @@
 package com.frameworkium.core.ui.pages;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class PageFactory {
 
     private PageFactory() {}
@@ -25,8 +27,9 @@ public class PageFactory {
 
     private static <T extends BasePage<T>> T instantiatePageObject(Class<T> clazz) {
         try {
-            return clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            return clazz.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException
+                | NoSuchMethodException | InvocationTargetException e) {
             throw new IllegalStateException("Unable to instantiate PageObject", e);
         }
     }

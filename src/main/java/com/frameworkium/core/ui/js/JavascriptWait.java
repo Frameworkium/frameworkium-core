@@ -7,6 +7,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.Wait;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 /**
@@ -75,9 +76,12 @@ public class JavascriptWait {
 
         SupportedFramework(Class<? extends AbstractFramework> frameworkClass) {
             try {
-                this.frameworkInstance = frameworkClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new RuntimeException(e);
+                this.frameworkInstance = frameworkClass
+                        .getDeclaredConstructor()
+                        .newInstance();
+            } catch (InstantiationException | IllegalAccessException
+                    | NoSuchMethodException | InvocationTargetException e) {
+                throw new IllegalStateException(e);
             }
         }
 
