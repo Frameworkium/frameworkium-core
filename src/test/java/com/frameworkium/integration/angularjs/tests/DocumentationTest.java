@@ -20,7 +20,8 @@ public class DocumentationTest extends BaseUITest {
 
     @Test(description =
             "Tests the AngularJS developer documentation and search function",
-            retryAnalyzer = RetryFlakyTest.class)
+            retryAnalyzer = RetryFlakyTest.class
+    )
     @TestCaseId("TEST-1")
     public void angular_documentation_test() {
         String guideTitle = DeveloperGuidePage.open()
@@ -29,7 +30,7 @@ public class DocumentationTest extends BaseUITest {
                 .getGuideTitle();
 
         assertThat(guideTitle)
-                .contains("Bootstrap");
+                .endsWith("Bootstrap");
     }
 
 }
