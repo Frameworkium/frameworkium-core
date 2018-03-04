@@ -93,6 +93,12 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     @Override
+    public void afterSwitchToWindow(String windowName, WebDriver driver) {
+        Command command = new Command("nav", "window", windowName);
+        takeScreenshotAndSend(command, driver);
+    }
+
+    @Override
     public void beforeScript(String script, WebDriver driver) {
         // ignore scripts which are part of Frameworkium
         if (!isFrameworkiumScript(script)) {
@@ -161,6 +167,9 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     @Override
     public void afterScript(String script, WebDriver driver) {}
+
+    @Override
+    public void beforeSwitchToWindow(String windowName, WebDriver driver) {}
 
     @Override
     public void beforeFindBy(By by, WebElement element, WebDriver arg2) {}

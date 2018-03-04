@@ -61,6 +61,16 @@ public class LoggingListener implements WebDriverEventListener {
     }
 
     @Override
+    public void beforeSwitchToWindow(String windowName, WebDriver driver) {
+        logger.debug("before switch to window " + windowName);
+    }
+
+    @Override
+    public void afterSwitchToWindow(String windowName, WebDriver driver) {
+        logger.debug("after switch to window " + windowName);
+    }
+
+    @Override
     public void beforeChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend) {
         logger.debug("change value of element with " + getLocatorFromElement(element));
     }
