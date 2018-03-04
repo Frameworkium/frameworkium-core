@@ -21,12 +21,13 @@ import org.openqa.selenium.support.ui.Wait;
 import org.testng.annotations.*;
 
 import java.lang.reflect.Method;
+import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.stream.IntStream;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Objects.isNull;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Listeners({CaptureListener.class, ScreenshotListener.class, MethodInterceptor.class,
         SauceLabsListener.class, TestListener.class, ResultLoggerListener.class,
@@ -230,7 +231,7 @@ public abstract class BaseUITest implements SauceOnDemandSessionIdProvider, Sauc
      */
     public static Wait<WebDriver> newWaitWithTimeout(long timeout) {
         return new FluentWait<>(getDriver().getWrappedDriver())
-                .withTimeout(timeout, SECONDS)
+                .withTimeout(Duration.of(timeout, SECONDS))
                 .ignoring(NoSuchElementException.class)
                 .ignoring(StaleElementReferenceException.class);
     }
