@@ -14,9 +14,8 @@ import org.openqa.selenium.remote.CapabilityType;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.concurrent.TimeUnit;
 
-import static com.frameworkium.core.ui.tests.BaseUITest.DEFAULT_TIMEOUT_SECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 public abstract class AbstractDriver implements Driver {
 
@@ -66,7 +65,7 @@ public abstract class AbstractDriver implements Driver {
             eventFiringWD.register(new CaptureListener());
         }
         if (!Driver.isNative()) {
-            eventFiringWD.manage().timeouts().setScriptTimeout(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            eventFiringWD.manage().timeouts().setScriptTimeout(10, SECONDS);
         }
         return eventFiringWD;
     }

@@ -34,7 +34,7 @@ import static java.util.Objects.isNull;
         VideoListener.class})
 public abstract class BaseUITest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
-    public static final long DEFAULT_TIMEOUT_SECONDS = 10L;
+    private static final Duration DEFAULT_TIMEOUT = Duration.of(10, SECONDS);
 
     /** Logger for subclasses (logs with correct class i.e. not BaseUITest). */
     protected final Logger logger = LogManager.getLogger(this);
@@ -218,7 +218,7 @@ public abstract class BaseUITest implements SauceOnDemandSessionIdProvider, Sauc
 
     /** Create a new {@link Wait} for the thread local driver and default timeout. */
     public static Wait<WebDriver> newDefaultWait() {
-        return newWaitWithTimeout(DEFAULT_TIMEOUT_SECONDS);
+        return newWaitWithTimeout(DEFAULT_TIMEOUT);
     }
 
     /**
@@ -229,9 +229,22 @@ public abstract class BaseUITest implements SauceOnDemandSessionIdProvider, Sauc
      *         which also ignores {@link NoSuchElementException} and
      *         {@link StaleElementReferenceException}
      */
+    @Deprecated
     public static Wait<WebDriver> newWaitWithTimeout(long timeout) {
+        return newWaitWithTimeout(Duration.of(timeout, SECONDS));
+    }
+
+    /**
+     * Create a new {@link Wait} with timeout.
+     *
+     * @param timeout timeout {@link Duration} for the {@link Wait}
+     * @return a new {@link Wait} for the thread local driver and given timeout
+     *         which also ignores {@link NoSuchElementException} and
+     *         {@link StaleElementReferenceException}
+     */
+    public static Wait<WebDriver> newWaitWithTimeout(Duration timeout) {
         return new FluentWait<>(getDriver().getWrappedDriver())
-                .withTimeout(Duration.of(timeout, SECONDS))
+                .withTimeout(timeout)
                 .ignoring(NoSuchElementException.class)
                 .ignoring(StaleElementReferenceException.class);
     }

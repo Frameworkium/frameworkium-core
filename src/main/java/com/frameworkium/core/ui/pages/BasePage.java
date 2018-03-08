@@ -14,6 +14,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.Wait;
 import ru.yandex.qatools.htmlelements.loader.HtmlElementLoader;
 
+import java.time.Duration;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
+
 public abstract class BasePage<T extends BasePage<T>> {
 
     protected final Logger logger = LogManager.getLogger(this);
@@ -71,9 +75,24 @@ public abstract class BasePage<T extends BasePage<T>> {
      * @param url     the url to open before initialising
      * @param timeout the timeout, in seconds, for the new {@link Wait} for this page
      * @return new instance of a PageObject of type T, see {@link BasePage#get()}
+     * @deprecated use {@link #get(String, Duration)}
+     */
+    @Deprecated
+    public T get(String url, long timeout) {
+        updatePageTimeout(Duration.of(timeout, SECONDS));
+        return get(url);
+    }
+
+    /**
+     * Get new instance of a PageObject of type T,
+     * see {@link BasePage#get(long)} for updating the timeout.
+     *
+     * @param url     the url to open before initialising
+     * @param timeout the timeout for the new {@link Wait} for this page
+     * @return new instance of a PageObject of type T, see {@link BasePage#get()}
      * @see BasePage#get()
      */
-    public T get(String url, long timeout) {
+    public T get(String url, Duration timeout) {
         updatePageTimeout(timeout);
         return get(url);
     }
@@ -83,9 +102,22 @@ public abstract class BasePage<T extends BasePage<T>> {
      *
      * @param timeout the timeout, in seconds, for the new {@link Wait} for this page
      * @return new instance of a PageObject of type T, see {@link BasePage#get()}
+     * @deprecated use {@link #get(Duration)}
+     */
+    @Deprecated
+    public T get(long timeout) {
+        updatePageTimeout(Duration.of(timeout, SECONDS));
+        return get();
+    }
+
+    /**
+     * Get new instance of a PageObject of type T.
+     *
+     * @param timeout the timeout, in seconds, for the new {@link Wait} for this page
+     * @return new instance of a PageObject of type T, see {@link BasePage#get()}
      * @see BasePage#get()
      */
-    public T get(long timeout) {
+    public T get(Duration timeout) {
         updatePageTimeout(timeout);
         return get();
     }
@@ -120,7 +152,7 @@ public abstract class BasePage<T extends BasePage<T>> {
         return (T) this;
     }
 
-    private void updatePageTimeout(long timeout) {
+    private void updatePageTimeout(Duration timeout) {
         wait = BaseUITest.newWaitWithTimeout(timeout);
         visibility = new Visibility(wait, BaseUITest.getDriver());
         javascriptWait = new JavascriptWait(driver, wait);

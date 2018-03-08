@@ -9,6 +9,10 @@ import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.element.Link;
 
+import java.time.Duration;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
+
 public class WelcomePage extends BasePage<WelcomePage> {
 
     @Visible
@@ -54,10 +58,12 @@ public class WelcomePage extends BasePage<WelcomePage> {
      * @param timeout timeout in seconds
      * @return An instance of this page object with specified wait timeout
      */
-    @Step("Navigate to http://the-internet.herokuapp.com")
+    @Step("Navigate to 'The Internet'")
     public static WelcomePage open(long timeout) {
         return PageFactory.newInstance(
-                WelcomePage.class, "http://the-internet.herokuapp.com", timeout);
+                WelcomePage.class,
+                "http://the-internet.herokuapp.com",
+                Duration.of(timeout, SECONDS));
     }
 
     @Step("Click the Checkboxes link")
@@ -68,7 +74,8 @@ public class WelcomePage extends BasePage<WelcomePage> {
         visibility.forceVisible(checkboxesLink);
 
         checkboxesLink.click();
-        return PageFactory.newInstance(CheckboxesPage.class, 15);
+        return PageFactory.newInstance(
+                CheckboxesPage.class, Duration.of(15, SECONDS));
     }
 
     @Step("Click the Drag And Drop link")
