@@ -20,23 +20,23 @@ env:
     - SUT_NAME="frameworkium-core"
     - SUT_VERSION=${TRAVIS_BRANCH}
     - THREAD_COUNT=2
-    - SELENIUM_MAJ_VER=3.10
+    - SELENIUM_MAJ_VER=3.11
     - SELENIUM_VER=${SELENIUM_MAJ_VER}.0
     - SELENIUM_JAR=selenium-server-standalone-${SELENIUM_VER}.jar
-    - GECKO_VER=0.19.1
-    - CHROME_DRIVER_VER=2.35
-    # override Travis default to give browsers more room
+    - GECKO_VER=0.20.0
+    - CHROME_DRIVER_VER=2.37
+    # Override Travis default to give browsers more room
     - _JAVA_OPTIONS="-Xmx1024m -Xms128m"
     # Required to turn on workaround for the following issue:
     # https://github.com/travis-ci/travis-ci/issues/8836
     - CHROME_NO_SANDBOX=true
 
 before_script:
-  # setup X to allow non-headless browsers to run
+  # Setup X to allow non-headless browsers to run
   - export DISPLAY=:99.0
   - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16
 
-  # set up code climate test reporter
+  # Set up code climate test reporter
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
