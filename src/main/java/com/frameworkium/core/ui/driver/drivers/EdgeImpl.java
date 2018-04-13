@@ -26,9 +26,7 @@ public class EdgeImpl extends AbstractDriver
         if (capabilities instanceof EdgeOptions)
         {
             edgeOptions = (EdgeOptions) capabilities;
-        }
-        else
-        {
+        } else {
             edgeOptions = new EdgeOptions().merge(capabilities);
         }
         return new EdgeDriver(edgeOptions);

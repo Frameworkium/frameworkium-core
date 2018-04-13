@@ -9,22 +9,32 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Capabilities;
 import org.reflections.Reflections;
 
-public class DriverSetup {
+public class DriverSetup
+{
 
     public static final Browser DEFAULT_BROWSER = Browser.FIREFOX;
 
-    /** Supported drivers. */
-    public enum Browser {
+    /**
+     * Supported drivers.
+     */
+    public enum Browser
+    {
         FIREFOX, LEGACYFIREFOX, CHROME, OPERA, IE, SAFARI, ELECTRON, CUSTOM, EDGE
     }
 
-    /** Supported remote grids. */
-    private enum RemoteGrid {
+    /**
+     * Supported remote grids.
+     */
+    private enum RemoteGrid
+    {
         SAUCE, BROWSERSTACK, GRID
     }
 
-    /** Supported platforms for remote grids. */
-    public enum Platform {
+    /**
+     * Supported platforms for remote grids.
+     */
+    public enum Platform
+    {
         WINDOWS, OSX, IOS, ANDROID, NONE
     }
 
@@ -33,9 +43,11 @@ public class DriverSetup {
     /**
      * @return An uninitialised desired {@link Driver} Implementation.
      */
-    public Driver instantiateDriver() {
+    public Driver instantiateDriver()
+    {
         Driver driver = createDriverImpl(getBrowserTypeFromProperty());
-        if (useRemoteDriver()) {
+        if (useRemoteDriver())
+        {
             driver = instantiateDesiredRemote(driver);
         }
         driver.initialise();
@@ -48,11 +60,13 @@ public class DriverSetup {
      * @param driver the desired (non-remote) driver implementation
      * @return The (potentially) remote driver implementation based on parameters
      */
-    private Driver instantiateDesiredRemote(Driver driver) {
+    private Driver instantiateDesiredRemote(Driver driver)
+    {
 
         Capabilities capabilities = driver.getCapabilities();
         Platform platform = getPlatformType();
-        switch (getRemoteType()) {
+        switch (getRemoteType())
+        {
             case SAUCE:
                 return new SauceImpl(platform, capabilities);
             case BROWSERSTACK:
@@ -64,8 +78,10 @@ public class DriverSetup {
         }
     }
 
-    private Driver createDriverImpl(Browser browser) {
-        switch (browser) {
+    private Driver createDriverImpl(Browser browser)
+    {
+        switch (browser)
+        {
             case FIREFOX:
                 return new FirefoxImpl();
             case LEGACYFIREFOX:
@@ -84,9 +100,12 @@ public class DriverSetup {
                 return new ElectronImpl();
             case CUSTOM:
                 String customBrowserImpl = Property.CUSTOM_BROWSER_IMPL.getValue();
-                try {
+                try
+                {
                     return getCustomBrowserImpl(customBrowserImpl).newInstance();
-                } catch (InstantiationException | IllegalAccessException e) {
+                }
+                catch (InstantiationException | IllegalAccessException e)
+                {
                     throw new RuntimeException(
                             "Unable to use custom browser implementation - " + customBrowserImpl, e);
                 }
@@ -95,36 +114,53 @@ public class DriverSetup {
         }
     }
 
-    public static boolean useRemoteDriver() {
+    public static boolean useRemoteDriver()
+    {
         return Property.GRID_URL.isSpecified()
                 || Sauce.isDesired()
                 || BrowserStack.isDesired();
     }
 
-    private static Platform getPlatformType() {
-        if (Property.PLATFORM.isSpecified()) {
+    private static Platform getPlatformType()
+    {
+        if (Property.PLATFORM.isSpecified())
+        {
             return Platform.valueOf(Property.PLATFORM.getValue().toUpperCase());
-        } else {
+        }
+        else
+        {
             return Platform.NONE;
         }
     }
 
-    private static Browser getBrowserTypeFromProperty() {
-        if (Property.CUSTOM_BROWSER_IMPL.isSpecified()) {
+    private static Browser getBrowserTypeFromProperty()
+    {
+        if (Property.CUSTOM_BROWSER_IMPL.isSpecified())
+        {
             return Browser.CUSTOM;
-        } else if (!Property.BROWSER.isSpecified()) {
+        }
+        else if (!Property.BROWSER.isSpecified())
+        {
             return DEFAULT_BROWSER;
-        } else {
+        }
+        else
+        {
             return Browser.valueOf(Property.BROWSER.getValue().toUpperCase());
         }
     }
 
-    private static RemoteGrid getRemoteType() {
-        if (Sauce.isDesired()) {
+    private static RemoteGrid getRemoteType()
+    {
+        if (Sauce.isDesired())
+        {
             return RemoteGrid.SAUCE;
-        } else if (BrowserStack.isDesired()) {
+        }
+        else if (BrowserStack.isDesired())
+        {
             return RemoteGrid.BROWSERSTACK;
-        } else {
+        }
+        else
+        {
             return RemoteGrid.GRID;
         }
     }
@@ -136,7 +172,8 @@ public class DriverSetup {
      * @param implClassName the name of custom browser impl class (SimpleName, not full path)
      * @return Class implementing AbstractDriver interface
      */
-    private static Class<? extends AbstractDriver> getCustomBrowserImpl(String implClassName) {
+    private static Class<? extends AbstractDriver> getCustomBrowserImpl(String implClassName)
+    {
         return new Reflections("")
                 .getSubTypesOf(AbstractDriver.class)
                 .stream()
