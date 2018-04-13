@@ -15,7 +15,7 @@ public class DriverSetup {
 
     /** Supported drivers. */
     public enum Browser {
-        FIREFOX, LEGACYFIREFOX, CHROME, OPERA, IE, SAFARI, ELECTRON, CUSTOM
+        FIREFOX, LEGACYFIREFOX, CHROME, OPERA, IE, SAFARI, ELECTRON, CUSTOM, EDGE
     }
 
     /** Supported remote grids. */
@@ -70,6 +70,8 @@ public class DriverSetup {
                 return new FirefoxImpl();
             case LEGACYFIREFOX:
                 return new LegacyFirefoxImpl();
+            case EDGE:
+                return new EdgeImpl();
             case CHROME:
                 return new ChromeImpl();
             case OPERA:
