@@ -3,12 +3,12 @@ package com.frameworkium.core.ui.listeners;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.driver.DriverSetup.Browser;
 import com.frameworkium.core.ui.tests.BaseUITest;
+import io.qameta.allure.Attachment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
-import ru.yandex.qatools.allure.annotations.Attachment;
 
 import java.io.IOException;
 import java.io.OutputStream;

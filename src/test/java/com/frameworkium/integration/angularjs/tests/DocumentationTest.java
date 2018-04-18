@@ -3,9 +3,9 @@ package com.frameworkium.integration.angularjs.tests;
 import com.frameworkium.core.common.retry.RetryFlakyTest;
 import com.frameworkium.core.ui.tests.BaseUITest;
 import com.frameworkium.integration.angularjs.pages.DeveloperGuidePage;
+import io.qameta.allure.TmsLink;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -20,9 +20,8 @@ public class DocumentationTest extends BaseUITest {
 
     @Test(description =
             "Tests the AngularJS developer documentation and search function",
-            retryAnalyzer = RetryFlakyTest.class
-    )
-    @TestCaseId("TEST-1")
+            retryAnalyzer = RetryFlakyTest.class)
+    @TmsLink("TEST-1")
     public void angular_documentation_test() {
         String guideTitle = DeveloperGuidePage.open()
                 .searchDeveloperGuide("Bootstrap")

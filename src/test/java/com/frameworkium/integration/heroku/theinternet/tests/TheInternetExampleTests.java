@@ -2,19 +2,19 @@ package com.frameworkium.integration.heroku.theinternet.tests;
 
 import com.frameworkium.core.ui.tests.BaseUITest;
 import com.frameworkium.integration.heroku.theinternet.pages.*;
+import io.qameta.allure.*;
 import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
-import ru.yandex.qatools.allure.annotations.*;
 
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@Features("The Internet Example Feature")
+@Feature("The Internet Example Feature")
 public class TheInternetExampleTests extends BaseUITest {
 
     @Issue("HEROKU-2")
-    @Stories("Check boxes story")
+    @Story("Check boxes story")
     @Test(description = "Checkboxes")
     public void checkBoxes() {
 

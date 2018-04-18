@@ -201,7 +201,7 @@ public abstract class BaseUITest implements SauceOnDemandSessionIdProvider, Sauc
     }
 
     private static String getTestNameForCapture(Method testMethod) {
-        Optional<String> testID = TestIdUtils.getIssueOrTestCaseIdValue(testMethod);
+        Optional<String> testID = TestIdUtils.getIssueOrTmsLinkValue(testMethod);
         if (!testID.isPresent() || testID.get().isEmpty()) {
             baseLogger.warn("{} doesn't have a TestID annotation.", testMethod.getName());
             testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));

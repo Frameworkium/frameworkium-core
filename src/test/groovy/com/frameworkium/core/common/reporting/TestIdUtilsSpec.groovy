@@ -1,30 +1,30 @@
 package com.frameworkium.core.common.reporting
 
-import ru.yandex.qatools.allure.annotations.Issue
-import ru.yandex.qatools.allure.annotations.TestCaseId
+import io.qameta.allure.Issue
+import io.qameta.allure.TmsLink
 import spock.lang.Specification
 import spock.lang.Unroll
 
 @Unroll
 class TestIdUtilsSpec extends Specification {
 
-    def "GetIssueOrTestCaseIdValue gets TestCaseId or Issue value for method #methodName"() {
+    def "GetIssueOrTmsLinkValue gets TmsLink or Issue value for method #methodName"() {
         when:
-            def value = TestIdUtils.getIssueOrTestCaseIdValue(
+            def value = TestIdUtils.getIssueOrTmsLinkValue(
                     TestIdData.getMethod(methodName))
         then:
             value == expectedValue
         where:
-            methodName   | expectedValue
-            "none"       | Optional.empty()
-            "testCaseID" | Optional.of("TC-ID")
-            "issue"      | Optional.of("ISSUE")
-            "bothSame"   | Optional.of("SAME")
+            methodName | expectedValue
+            "none"     | Optional.empty()
+            "tmsLink"  | Optional.of("TC-ID")
+            "issue"    | Optional.of("ISSUE")
+            "bothSame" | Optional.of("SAME")
     }
 
-    def "GetIssueOrTestCaseIdValue errors if the TestCaseId and Issue are specified with different values"() {
+    def "GetIssueOrTmsLinkValue errors if the TmsLink and Issue are specified with different values"() {
         when:
-            TestIdUtils.getIssueOrTestCaseIdValue(TestIdData.getMethod("bothDifferent"))
+            TestIdUtils.getIssueOrTmsLinkValue(TestIdData.getMethod("bothDifferent"))
         then:
             thrown(IllegalStateException)
     }
@@ -33,17 +33,17 @@ class TestIdUtilsSpec extends Specification {
 
         public void none() {}
 
-        @TestCaseId("TC-ID")
-        public void testCaseID() {}
+        @TmsLink("TC-ID")
+        public void tmsLink() {}
 
         @Issue("ISSUE")
         public void issue() {}
 
-        @TestCaseId("SAME")
+        @TmsLink("SAME")
         @Issue("SAME")
         public void bothSame() {}
 
-        @TestCaseId("SAME-SAME")
+        @TmsLink("SAME-SAME")
         @Issue("BUT DIFFERENT")
         public void bothDifferent() {}
 

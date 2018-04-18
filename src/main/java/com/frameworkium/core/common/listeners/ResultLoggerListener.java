@@ -245,7 +245,7 @@ public class ResultLoggerListener implements ITestListener {
      */
     private String getIssueOrTestCaseIdAnnotation(ITestResult result) {
         Method method = result.getMethod().getConstructorOrMethod().getMethod();
-        return TestIdUtils.getIssueOrTestCaseIdValue(method).orElse("");
+        return TestIdUtils.getIssueOrTmsLinkValue(method).orElse("");
     }
 
     private String getOSInfo() {

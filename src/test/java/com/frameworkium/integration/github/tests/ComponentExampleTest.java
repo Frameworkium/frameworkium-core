@@ -3,9 +3,9 @@ package com.frameworkium.integration.github.tests;
 import com.frameworkium.core.ui.tests.BaseUITest;
 import com.frameworkium.integration.github.pages.ExplorePage;
 import com.frameworkium.integration.github.pages.HomePage;
+import io.qameta.allure.Issue;
+import io.qameta.allure.TmsLink;
 import org.testng.annotations.Test;
-import ru.yandex.qatools.allure.annotations.Issue;
-import ru.yandex.qatools.allure.annotations.TestCaseId;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class ComponentExampleTest extends BaseUITest {
         assertThat(searchResults).contains("SeleniumHQ/selenium");
     }
 
-    @TestCaseId("Force Visible")
+    @TmsLink("Force Visible")
     @Test(description = "force visible makes hidden element visible")
     public void force_visible_makes_hidden_element_visible() {
         HomePage.open()
@@ -39,7 +39,7 @@ public class ComponentExampleTest extends BaseUITest {
                 .testForceVisible();
     }
 
-    @TestCaseId("Wait update")
+    @TmsLink("Wait update")
     @Test(dependsOnMethods = {"force_visible_makes_hidden_element_visible"})
     public void ensure_BaseUITest_wait_is_updated_after_browser_reset() {
         // tests bug whereby BasePage.wait wasn't updated after browser reset

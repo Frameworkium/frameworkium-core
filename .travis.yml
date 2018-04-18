@@ -87,7 +87,7 @@ script:
 #  - mvn verify -Dsauce=true -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.0 -Ddevice=iPad -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Allure report
-  - mvn site -B --quiet
+  - mvn allure:report -B --quiet
 
 after_script:
   # Code coverage report

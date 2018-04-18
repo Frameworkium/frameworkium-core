@@ -4,10 +4,10 @@ import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
 import com.frameworkium.core.ui.pages.PageFactory;
 import com.frameworkium.integration.github.pages.components.HeaderComponent;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import ru.yandex.qatools.allure.annotations.Step;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
