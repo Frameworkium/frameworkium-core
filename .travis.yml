@@ -12,7 +12,7 @@ addons:
 install: true # disable default mvn install
 
 notifications:
-  slack: qaengineering:eTRqy0JhQOUtKHNO8mKLc8NC
+  slack: qaengineering:${SLACK_KEY}
 
 env:
   global:
