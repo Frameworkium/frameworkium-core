@@ -12,8 +12,8 @@ addons:
 install: true # disable default mvn install
 
 notifications:
-  slack: qaengineering:${SLACK_KEY}
-
+  slack:
+    secure: IqgM1pS7ViQnEv9Fv+/jUA2wJ9Tt8NGd7JhJOENV+S1rTpXgaQw+uG7Fo1srfiUe3Hs2DAP+bv6AmEsEJvkO44al+lh0TMcDaSW3tqKa2mG9RtVdL3ZvhzCGARg0sdofTV/hko37iESRFjQyeXkXilNhtG7/IeNaU/7Ac9Mn55IZLSL76t3P7XRk7uaJtrQ098IZfVr57IsyTKpy8WMS2eZbqIsM8/MNynzyEj3o6X6bIRL1ovO9GHQ+ImbJitDnVzVYKlcn4R6/tDBTzkiJyWL8Uw6wFEglq0g5GrtnLwtZMGtqROo2y5rezpANe62NdYYWzR79laqSwDAeGkGqGYJVp8wZAmVAuA7axzqiSe0C+SDQxXR8euXAjQUzVhpnmMB7ABHEHHVMHNEqFp+Ps0V2egoPEZP6nTVvi/k8uOjN4n67UKAEZJroOZ3nuPFX9LFvGeKs4OCmjWx9RJWeX4DDcKudZu7AGkvUCHTJfnOPX7jTZmocFXUjsq42SeCJrA2I1UW7okNqaAV2PwAmhwCbfwP5p1JXL8j2Bvn4iBHYC/Gefm6F80INrMCE7XdpDCNeAUOke+jnAihQ0/h7Z6EyZu5nvoYkDiNUs9iwiPHIMpMcGZPhQ6e26Ij0DqipQp6RJYwa7hek1TCJMqdQil3rh1o9gMYPDusN3Ovkf/Y=
 env:
   global:
     - CAPTURE_URL="http://ec2-35-176-47-3.eu-west-2.compute.amazonaws.com"
