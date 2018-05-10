@@ -47,8 +47,10 @@ public enum Property {
 
     private static Map<String, Object> configMap = null;
     private String value;
+    private String systemPropertyKey;
 
     Property(String key) {
+        this.systemPropertyKey = key;
         this.value = retrieveValue(key);
     }
 
@@ -99,7 +101,7 @@ public enum Property {
     }
 
     public String getValue() {
-        return value;
+        return retrieveValue(this.systemPropertyKey);
     }
 
     /**
