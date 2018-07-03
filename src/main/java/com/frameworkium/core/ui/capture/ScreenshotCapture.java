@@ -8,7 +8,7 @@ import com.frameworkium.core.ui.driver.Driver;
 import com.frameworkium.core.ui.driver.DriverSetup;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
-import com.frameworkium.core.ui.tests.BaseTest;
+import com.frameworkium.core.ui.tests.BaseUITest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
@@ -22,20 +22,19 @@ import java.util.concurrent.*;
 import static com.frameworkium.core.common.properties.Property.*;
 import static org.apache.http.HttpStatus.SC_CREATED;
 
+/**
+ * Takes and sends screenshots to "Capture"
+ */
 public class ScreenshotCapture {
 
     private static final Logger logger = LogManager.getLogger();
 
     /** Executor for async sending of screenshot messages to capture. */
-    public static final ExecutorService screenshotExecutor =
-            Executors.newSingleThreadExecutor();
+    private static ExecutorService screenshotExecutor;
 
     private String executionID;
     private String testID;
 
-    /**
-     * Initialise Screenshot capture object for a test.
-     */
     public ScreenshotCapture(String testID) {
         this.testID = testID;
         logger.debug("About to initialise Capture execution for " + testID);
@@ -69,9 +68,9 @@ public class ScreenshotCapture {
             } else {
                 try {
                     node = getRemoteNodeAddress();
-                } catch (Throwable t) {
+                } catch (Exception e) {
                     logger.warn("Failed to get node address of remote web driver");
-                    logger.debug(t);
+                    logger.debug(e);
                 }
             }
         } else {
@@ -106,14 +105,14 @@ public class ScreenshotCapture {
                 gridURL.getProtocol(),
                 gridURL.getHost(),
                 gridURL.getPort(),
-                BaseTest.getDriver().getWrappedRemoteWebDriver().getSessionId());
+                BaseUITest.getDriver().getWrappedRemoteWebDriver().getSessionId());
     }
 
     public static boolean isRequired() {
         boolean allCapturePropertiesSpecified = CAPTURE_URL.isSpecified()
                 && SUT_NAME.isSpecified()
                 && SUT_VERSION.isSpecified();
-        return  allCapturePropertiesSpecified && !Driver.isNative();
+        return allCapturePropertiesSpecified && !Driver.isNative();
     }
 
     public void takeAndSendScreenshot(Command command, WebDriver driver) {
@@ -125,6 +124,11 @@ public class ScreenshotCapture {
      */
     public void takeAndSendScreenshotWithError(
             Command command, WebDriver driver, String errorMessage) {
+
+        if (executionID == null) {
+            logger.debug("No Screenshot sent. Capture didn't initialise for " + testID);
+            return;
+        }
 
         CreateScreenshot createScreenshotMessage =
                 new CreateScreenshot(
@@ -141,14 +145,8 @@ public class ScreenshotCapture {
     }
 
     private void sendScreenshot(CreateScreenshot createScreenshotMessage) {
-
-        if (executionID == null) {
-            logger.debug("No Screenshot sent. Capture didn't initialise for " + testID);
-            return;
-        }
-
-        screenshotExecutor.execute(() -> {
-            logger.debug("About to send screenshot to Capture for " + testID);
+        getScreenshotExecutor().execute(() -> {
+            logger.debug("About to send screenshot to Capture for {}", testID);
             try {
                 getRequestSpec()
                         .body(createScreenshotMessage)
@@ -164,8 +162,18 @@ public class ScreenshotCapture {
         });
     }
 
+    private ExecutorService getScreenshotExecutor() {
+        if (screenshotExecutor == null) {
+            screenshotExecutor = Executors.newSingleThreadExecutor();
+        }
+        return screenshotExecutor;
+    }
+
     public static boolean processRemainingBacklog() throws InterruptedException {
+        if (screenshotExecutor == null) {
+            return true;
+        }
         screenshotExecutor.shutdown();
-        return screenshotExecutor.awaitTermination(60, TimeUnit.SECONDS);
+        return screenshotExecutor.awaitTermination(2, TimeUnit.MINUTES);
     }
 }

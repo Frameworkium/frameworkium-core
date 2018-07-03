@@ -100,25 +100,23 @@ public class CucumberZephyrListener implements Formatter, Reporter {
 
     @Override
     public void result(Result result) {
-        if (resultIsNotSkipped(result)) {
-            if (resultIsBroken(result)) {
-                scnStepBrokenCount++;
-                latestError = result.getError();
-                if (latestError instanceof CucumberException) {
-                    latestError = latestError.getCause();
-                }
+        String status = result.getStatus();
+        if (isNotSkipped(status) && resultIsBroken(status)) {
+            scnStepBrokenCount++;
+            latestError = result.getError();
+            if (latestError instanceof CucumberException) {
+                latestError = latestError.getCause();
             }
         }
     }
 
-    private boolean resultIsNotSkipped(Result result) {
-        final String status = result.getStatus();
-        return !"skipped".equals(status);
+    private boolean isNotSkipped(String status) {
+        return "skipped".equals(status);
     }
 
-    private boolean resultIsBroken(Result result) {
-        final String status = result.getStatus();
-        return !"undefined".equals(status) && !"passed".equals(status);
+    private boolean resultIsBroken(String status) {
+        return "undefined".equals(status)
+                || "passed".equals(status);
     }
 
     @Override

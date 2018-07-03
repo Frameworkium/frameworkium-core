@@ -2,7 +2,7 @@ package com.frameworkium.core.ui.pages
 
 import com.frameworkium.core.ui.driver.Driver
 import com.frameworkium.core.ui.pages.pageobjects.PageObjects
-import com.frameworkium.core.ui.tests.BaseTest
+import com.frameworkium.core.ui.tests.BaseUITest
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.TimeoutException
 import org.openqa.selenium.WebDriver
@@ -45,8 +45,8 @@ class VisibilitySpec extends Specification {
     }
 
     def setup() {
-        BaseTest.setDriver(Mock(Driver))
-        BaseTest.setWait(wait)
+        BaseUITest.setDriver(Mock(Driver))
+        BaseUITest.setWait(wait)
     }
 
     def "Wait for Single @Visible Element to be displayed"() {

@@ -5,30 +5,22 @@ import com.frameworkium.core.api.dto.AbstractDTO;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class Execution extends AbstractDTO<Execution> {
+public class CreateExecution extends AbstractDTO<CreateExecution> {
 
-    // used in the create
     public String testID;
     public Browser browser;
     public SoftwareUnderTest softwareUnderTest;
     public String nodeAddress;
 
-    // fields in the response
-    public String created;
-    public String lastUpdated;
-    public String currentStatus;
-    public String executionID;
-
     /**
      * Using the static factory method pattern instead of using a constructor
-     * to ensure this class can be used for both input and output. Also allows
-     * for multiple different creation methods in one place.
+     * which allows for multiple different, well named, creation methods.
      *
-     * @return a populated {@link Execution} with sensible defaults.
+     * @return a populated {@link CreateExecution} with sensible defaults.
      */
-    public static Execution newCreateInstance() {
-        Execution execution = new Execution();
-        execution.testID = "Default";
+    public static CreateExecution newCreateInstance() {
+        CreateExecution execution = new CreateExecution();
+        execution.testID = "DEFAULT-1";
         execution.browser = Browser.newInstance();
         execution.softwareUnderTest = SoftwareUnderTest.newInstance();
         try {

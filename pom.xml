@@ -3,7 +3,7 @@
 
   <groupId>com.github.frameworkium</groupId>
   <artifactId>frameworkium-core</artifactId>
-  <version>2.6.1-SNAPSHOT</version>
+  <version>2.7.3-SNAPSHOT</version>
   <name>frameworkium-core</name>
   <description>
     Frameworkium core code.
@@ -42,7 +42,13 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
+  <!-- makes mvn versions:display-plugin-updates faster -->
+  <prerequisites>
+    <maven>3.1.1</maven>
+  </prerequisites>
+
   <dependencies>
+    <!-- Check for updates with mvn versions:display-dependency-updates -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
@@ -51,22 +57,22 @@
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>3.8.1</version>
+      <version>3.11.0</version>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>6.13.1</version>
+      <version>6.14.2</version>
     </dependency>
     <dependency>
-      <groupId>ru.yandex.qatools.allure</groupId>
-      <artifactId>allure-testng-adaptor</artifactId>
-      <version>1.5.4</version>
+      <groupId>io.qameta.allure</groupId>
+      <artifactId>allure-testng</artifactId>
+      <version>2.0-BETA21</version>
     </dependency>
     <dependency>
-      <groupId>ru.yandex.qatools.allure</groupId>
-      <artifactId>allure-cucumber-jvm-adaptor</artifactId>
-      <version>1.6.4</version>
+      <groupId>io.qameta.allure</groupId>
+      <artifactId>allure-cucumber-jvm</artifactId>
+      <version>2.0-BETA21</version>
     </dependency>
     <dependency>
       <groupId>ru.yandex.qatools.htmlelements</groupId>
@@ -86,7 +92,7 @@
     <dependency>
       <groupId>com.saucelabs</groupId>
       <artifactId>saucerest</artifactId>
-      <version>1.0.35</version>
+      <version>1.0.36</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -101,12 +107,12 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.22</version>
+      <version>1.7.25</version>
     </dependency>
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
-      <version>3.0.6</version>
+      <version>3.0.7</version>
       <exclusions>
         <exclusion>
           <groupId>org.codehaus.groovy</groupId>
@@ -117,7 +123,7 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.36</version>
+      <version>0.39</version>
     </dependency>
     <dependency>
       <groupId>org.aspectj</groupId>
@@ -127,7 +133,7 @@
     <dependency>
       <groupId>com.paulhammant</groupId>
       <artifactId>ngwebdriver</artifactId>
-      <version>1.0</version>
+      <version>1.1.1</version>
     </dependency>
     <dependency>
       <groupId>net.sf.uadetector</groupId>
@@ -137,7 +143,7 @@
     <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
-      <version>1.19</version>
+      <version>1.20</version>
     </dependency>
 
     <!-- Explicitly adding utilities -->
@@ -147,19 +153,24 @@
       <version>3.7</version>
     </dependency>
     <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.6</version>
+    </dependency>
+    <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20171018</version>
+      <version>20180130</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-      <version>2.9.2</version>
+      <version>2.9.4</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
-      <version>2.4.12</version>
+      <version>2.4.13</version>
     </dependency>
 
     <!-- Unit Testing -->
@@ -194,7 +205,6 @@
       <artifactId>reflections</artifactId>
       <version>0.9.11</version>
     </dependency>
-
   </dependencies>
 
   <repositories />
@@ -211,7 +221,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>8.5</version>
+            <version>8.8</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -242,17 +252,6 @@
       </plugin>
     </plugins>
   </build>
-
-  <reporting>
-    <excludeDefaults>true</excludeDefaults>
-    <plugins>
-      <plugin>
-        <groupId>ru.yandex.qatools.allure</groupId>
-        <artifactId>allure-maven-plugin</artifactId>
-        <version>2.5</version>
-      </plugin>
-    </plugins>
-  </reporting>
 
   <profiles>
     <profile>
@@ -359,7 +358,7 @@
             </dependencies>
           </plugin>
 
-          <!-- Integration tests (using failsafe-plugin) -->
+          <!-- Integration tests (failsafe-plugin) -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
@@ -367,23 +366,42 @@
             <configuration>
               <parallel>methods</parallel>
               <threadCount>${threads}</threadCount>
-              <systemProperties>
-                <screenshotDirectory>${project.build.directory}/screenshots
+              <systemPropertyVariables>
+                <screenshotDirectory>
+                  ${project.build.directory}/screenshots
                 </screenshotDirectory>
-                <allure.issues.tracker.pattern>/browse/%s
-                </allure.issues.tracker.pattern>
-              </systemProperties>
+                <allure.results.directory>
+                  ${project.build.directory}/allure-results
+                </allure.results.directory>
+              </systemPropertyVariables>
+              <testSourceDirectory>
+                ${basedir}/src/test/java
+              </testSourceDirectory>
+              <testClassesDirectory>
+                ${project.build.directory}/test-classes
+              </testClassesDirectory>
+              <reportsDirectory>
+                ${project.build.directory}/report
+              </reportsDirectory>
               <includes>
                 <include>**/*Test.java</include>
                 <include>**/*Tests.java</include>
               </includes>
               <groups>${groups}</groups>
               <testFailureIgnore>false</testFailureIgnore>
+              <!-- required for Allure annotations and Jacoco code coverage -->
               <argLine>
                 -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                 ${failsafeArgLine}
               </argLine>
             </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectj.version}</version>
+              </dependency>
+            </dependencies>
             <executions>
               <execution>
                 <goals>
@@ -394,11 +412,38 @@
             </executions>
           </plugin>
 
+          <!-- Allure2 -->
+          <plugin>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-maven</artifactId>
+            <version>2.9</version>
+            <configuration>
+              <reportVersion>2.4.1</reportVersion>
+              <resultsDirectory>
+                ${project.build.directory}/allure-results
+              </resultsDirectory>
+              <reportDirectory>
+                ${project.build.directory}/allure-report
+              </reportDirectory>
+              <installDirectory>
+                ${project.build.directory}/.allure
+              </installDirectory>
+              <properties>
+                <allure.issues.tracker.pattern>
+                  /browse/%s
+                </allure.issues.tracker.pattern>
+                <allure.tests.management.pattern>
+                  /browse/%s
+                </allure.tests.management.pattern>
+              </properties>
+            </configuration>
+          </plugin>
+
           <!-- Used to automatically download web drivers -->
           <plugin>
             <groupId>com.lazerycode.selenium</groupId>
             <artifactId>driver-binary-downloader-maven-plugin</artifactId>
-            <version>1.0.14</version>
+            <version>1.0.16</version>
             <configuration>
               <rootStandaloneServerDirectory>drivers/bin/</rootStandaloneServerDirectory>
               <downloadedZipFileDirectory>drivers/zip/</downloadedZipFileDirectory>

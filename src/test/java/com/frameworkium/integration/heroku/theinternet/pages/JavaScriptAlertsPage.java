@@ -1,10 +1,10 @@
-package com.frameworkium.integration.heroku.theinternet.pages.web;
+package com.frameworkium.integration.heroku.theinternet.pages;
 
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.element.Button;
 
@@ -24,11 +24,8 @@ public class JavaScriptAlertsPage extends BasePage<JavaScriptAlertsPage> {
     @Step("Click alert")
     public JavaScriptAlertsPage clickAlertButtonAndAccept() {
         jsAlertButton.click();
-
         driver.switchTo().alert().accept();
-
         wait.until(visibilityOf(resultArea));
-
         return this;
     }
 

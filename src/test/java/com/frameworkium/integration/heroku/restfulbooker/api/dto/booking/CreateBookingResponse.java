@@ -1,5 +1,8 @@
 package com.frameworkium.integration.heroku.restfulbooker.api.dto.booking;
 
-public class CreateBookingResponse extends BookingResponse {
+import com.frameworkium.core.api.dto.AbstractDTO;
+
+public class CreateBookingResponse extends AbstractDTO<CreateBookingResponse> {
+    public Booking booking;
     public int bookingid;
 }

@@ -1,16 +1,14 @@
-package com.frameworkium.integration.angularjs.pages.web;
+package com.frameworkium.integration.angularjs.pages;
 
+import com.frameworkium.core.ui.ExtraExpectedConditions;
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
 import com.frameworkium.core.ui.pages.PageFactory;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.element.Link;
 import ru.yandex.qatools.htmlelements.element.TextInput;
-
-import java.util.Arrays;
 
 public class DeveloperGuidePage extends BasePage<DeveloperGuidePage> {
 
@@ -44,7 +42,7 @@ public class DeveloperGuidePage extends BasePage<DeveloperGuidePage> {
     public DeveloperGuidePage clickBootstrapSearchItem() {
         bootstrapSearchItem.click();
         waitForJavascriptFrameworkToFinish();
-        wait.until(ExpectedConditions.invisibilityOfAllElements(Arrays.asList(loading)));
+        wait.until(ExtraExpectedConditions.notPresentOrInvisible(loading));
         return this;
     }
 

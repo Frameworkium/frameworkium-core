@@ -1,16 +1,16 @@
-package com.frameworkium.integration.github.pages.web.components;
+package com.frameworkium.integration.github.pages.components;
 
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.PageFactory;
 import com.frameworkium.core.ui.pages.Visibility;
-import com.frameworkium.core.ui.tests.BaseTest;
-import com.frameworkium.integration.github.pages.web.ExplorePage;
-import com.frameworkium.integration.github.pages.web.SearchResultsPage;
+import com.frameworkium.core.ui.tests.BaseUITest;
+import com.frameworkium.integration.github.pages.ExplorePage;
+import com.frameworkium.integration.github.pages.SearchResultsPage;
+import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Wait;
-import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.element.*;
 
@@ -38,7 +38,7 @@ public class HeaderComponent extends HtmlElement {
     private Link exploreLink;
 
     private void showHeaderMenuIfCollapsed() {
-        Wait<WebDriver> wait = BaseTest.newDefaultWait();
+        Wait<WebDriver> wait = BaseUITest.newDefaultWait();
 
         // If browser is opened with width of 960 pixels or less
         // then the Header Menu is not displayed and a 'Hamburger' button is displayed instead. 
@@ -63,7 +63,7 @@ public class HeaderComponent extends HtmlElement {
         return PageFactory.newInstance(ExplorePage.class);
     }
 
-    @Step("Search for the text '{0}'")
+    @Step("Search for the text '{searchText}'")
     public SearchResultsPage search(String searchText) {
         showHeaderMenuIfCollapsed();
         searchBox.sendKeys(searchText + Keys.ENTER);
@@ -72,11 +72,11 @@ public class HeaderComponent extends HtmlElement {
 
     @Step("Testing Visibility.forceVisible()")
     public void testForceVisible() {
-        Wait<WebDriver> wait = BaseTest.newDefaultWait();
+        Wait<WebDriver> wait = BaseUITest.newDefaultWait();
 
         WebElement link = homeLink.getWrappedElement();
         // hide the home link
-        BaseTest.getDriver().executeScript(
+        BaseUITest.getDriver().executeScript(
                 "arguments[0].style.visibility='hidden';", link);
         wait.until(ExpectedConditions.not(visibilityOf(link)));
         // test force visible works

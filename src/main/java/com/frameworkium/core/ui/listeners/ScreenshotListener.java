@@ -2,13 +2,13 @@ package com.frameworkium.core.ui.listeners;
 
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.driver.DriverSetup.Browser;
-import com.frameworkium.core.ui.tests.BaseTest;
+import com.frameworkium.core.ui.tests.BaseUITest;
+import io.qameta.allure.Attachment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 import org.testng.ITestResult;
 import org.testng.TestListenerAdapter;
-import ru.yandex.qatools.allure.annotations.Attachment;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -24,20 +24,20 @@ public class ScreenshotListener extends TestListenerAdapter {
 
     @Override
     public void onTestFailure(ITestResult failingTest) {
-        if (!captureEnabled && isScreenshotSupported()) {
+        if (!captureEnabled && isScreenshotSupported(failingTest)) {
             takeScreenshotAndSaveLocally(failingTest.getName());
         }
     }
 
     @Override
     public void onTestSkipped(ITestResult skippedTest) {
-        if (!captureEnabled && isScreenshotSupported()) {
+        if (!captureEnabled && isScreenshotSupported(skippedTest)) {
             takeScreenshotAndSaveLocally(skippedTest.getName());
         }
     }
 
     private void takeScreenshotAndSaveLocally(String testName) {
-        takeScreenshotAndSaveLocally(testName, BaseTest.getDriver());
+        takeScreenshotAndSaveLocally(testName, BaseUITest.getDriver());
     }
 
     private void takeScreenshotAndSaveLocally(String testName, TakesScreenshot driver) {
@@ -78,15 +78,15 @@ public class ScreenshotListener extends TestListenerAdapter {
         } catch (IOException e) {
             logger.error("Unable to write " + screenshot, e);
         } catch (WebDriverException e) {
-            logger.error("Unable to take screenshot." + e);
+            logger.error("Unable to take screenshot.", e);
         }
         return null;
     }
 
-    private boolean isScreenshotSupported() {
+    private boolean isScreenshotSupported(ITestResult testResult) {
         boolean isElectron = BROWSER.isSpecified()
                 && ELECTRON.equals(Browser.valueOf(BROWSER.getValue().toUpperCase()));
-
-        return !isElectron;
+        boolean isUITest = testResult.getInstance() instanceof BaseUITest;
+        return isUITest && !isElectron;
     }
 }

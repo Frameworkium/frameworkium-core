@@ -14,9 +14,8 @@ import org.openqa.selenium.remote.CapabilityType;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.concurrent.TimeUnit;
 
-import static com.frameworkium.core.ui.tests.BaseTest.DEFAULT_TIMEOUT_SECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 public abstract class AbstractDriver implements Driver {
 
@@ -49,7 +48,8 @@ public abstract class AbstractDriver implements Driver {
     private Capabilities addProxyIfRequired(Capabilities caps) {
         if (Property.PROXY.isSpecified()) {
             MutableCapabilities mutableCapabilities = new MutableCapabilities();
-            mutableCapabilities.setCapability(CapabilityType.PROXY, getProxy());
+            mutableCapabilities.setCapability(
+                    CapabilityType.PROXY, createProxy(Property.PROXY.getValue()));
             return caps.merge(mutableCapabilities);
         } else {
             return caps;
@@ -65,7 +65,7 @@ public abstract class AbstractDriver implements Driver {
             eventFiringWD.register(new CaptureListener());
         }
         if (!Driver.isNative()) {
-            eventFiringWD.manage().timeouts().setScriptTimeout(DEFAULT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            eventFiringWD.manage().timeouts().setScriptTimeout(10, SECONDS);
         }
         return eventFiringWD;
     }
@@ -81,49 +81,57 @@ public abstract class AbstractDriver implements Driver {
                 && !BrowserStack.isDesired()
                 && !Driver.isNative();
 
-        return Property.MAXIMISE.getBoolean() && ableToMaximise;
+        return ableToMaximise && Property.MAXIMISE.getBoolean();
     }
 
-    /**
-     * Get proxy object with settings set by the system properties.
-     * Requires Property.PROXY.isSpecified()
-     *
-     * @return A Selenium proxy object for the current system properties
-     */
-    private Proxy getProxy() {
+    private static Proxy createProxy(String proxyProperty) {
         Proxy proxy = new Proxy();
-        String proxyString = Property.PROXY.getValue().toLowerCase();
-        switch (proxyString) {
+        switch (proxyProperty.toLowerCase()) {
             case "system":
-                proxy.setProxyType(ProxyType.SYSTEM);
                 logger.debug("Using system proxy");
+                proxy.setProxyType(ProxyType.SYSTEM);
                 break;
             case "autodetect":
-                proxy.setProxyType(ProxyType.AUTODETECT);
                 logger.debug("Using autodetect proxy");
+                proxy.setProxyType(ProxyType.AUTODETECT);
                 break;
             case "direct":
-                proxy.setProxyType(ProxyType.DIRECT);
                 logger.debug("Using direct i.e. (no) proxy");
+                proxy.setProxyType(ProxyType.DIRECT);
                 break;
             default:
-                try {
-                    URI proxyURI = new URI(Property.PROXY.getValue());
-                    proxyString = String.format("%s:%d", proxyURI.getHost(), proxyURI.getPort());
-                    proxy.setProxyType(ProxyType.MANUAL)
-                            .setHttpProxy(proxyString)
-                            .setFtpProxy(proxyString)
-                            .setSslProxy(proxyString);
-                    logger.debug("Set all protocols to use proxy address: {}", proxyString);
-                } catch (URISyntaxException e) {
-                    String message = "Invalid proxy specified, acceptable values are: "
-                            + "system, autodetect, direct or http://{hostname}:{port}.";
-                    logger.error(message);
-                    throw new IllegalArgumentException(message);
-                }
-                break;
+                return createManualProxy(proxyProperty);
         }
         return proxy;
+    }
+
+    private static Proxy createManualProxy(String proxyProperty) {
+        String proxyString = getProxyURL(proxyProperty);
+        Proxy proxy = new Proxy();
+        proxy.setProxyType(ProxyType.MANUAL)
+                .setHttpProxy(proxyString)
+                .setFtpProxy(proxyString)
+                .setSslProxy(proxyString);
+        logger.debug("All protocols to use proxy address: {}", proxyString);
+        return proxy;
+    }
+
+    private static String getProxyURL(String proxyProperty) {
+        try {
+            URI proxyURI = new URI(proxyProperty);
+            String host = proxyURI.getHost();
+            int port = proxyURI.getPort();
+            if (host == null || port == -1) {
+                throw new URISyntaxException(
+                        proxyProperty, "invalid host or port");
+            }
+            return String.format("%s:%d", host, port);
+        } catch (NullPointerException | URISyntaxException e) {
+            String message = "Invalid proxy specified, acceptable values are: "
+                    + "system, autodetect, direct or http://{hostname}:{port}.";
+            logger.error(message);
+            throw new IllegalArgumentException(message, e);
+        }
     }
 
 }

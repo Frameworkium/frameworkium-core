@@ -2,7 +2,6 @@ package com.frameworkium.core.common.listeners;
 
 import com.frameworkium.core.common.reporting.TestIdUtils;
 import com.frameworkium.core.common.reporting.jira.api.SearchIssues;
-import com.frameworkium.core.ui.driver.Driver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.*;
@@ -18,19 +17,12 @@ import static java.util.stream.Collectors.toList;
 public class MethodInterceptor implements IMethodInterceptor {
 
     private static final Logger logger = LogManager.getLogger();
-    private static boolean interceptMethodsBasedOnName = false;
 
     @Override
     public List<IMethodInstance> intercept(
             List<IMethodInstance> methods, ITestContext context) {
 
-        List<IMethodInstance> methodsToRun = filterTestsToRunByJQL(methods);
-        if (interceptMethodsBasedOnName) {
-            logger.info("Filtering tests based on their name.");
-            return filterTestsToRunByDriverAndTestClassName(methodsToRun);
-        } else {
-            return methodsToRun;
-        }
+        return filterTestsToRunByJQL(methods);
     }
 
     private List<IMethodInstance> filterTestsToRunByJQL(
@@ -40,7 +32,7 @@ public class MethodInterceptor implements IMethodInterceptor {
             logger.info("Filtering specified tests to run with JQL query results");
 
             List<IMethodInstance> methodsWithTestIDs = methodsToBeFiltered.stream()
-                    .filter(m -> TestIdUtils.getIssueOrTestCaseIdValue(m).isPresent())
+                    .filter(m -> TestIdUtils.getIssueOrTmsLinkValue(m).isPresent())
                     .collect(toList());
 
             List<String> testIDsFromJQL =
@@ -48,7 +40,7 @@ public class MethodInterceptor implements IMethodInterceptor {
 
             List<IMethodInstance> methodsToRun = methodsWithTestIDs.stream()
                     .filter(m -> testIDsFromJQL.contains(
-                            TestIdUtils.getIssueOrTestCaseIdValue(m).orElseThrow(IllegalStateException::new)))
+                            TestIdUtils.getIssueOrTmsLinkValue(m).orElseThrow(IllegalStateException::new)))
                     .collect(toList());
 
             logTestMethodInformation(
@@ -59,25 +51,6 @@ public class MethodInterceptor implements IMethodInterceptor {
             // Can't run the JQL without both JIRA_URL and JQL_QUERY
             return methodsToBeFiltered;
         }
-    }
-
-    // TODO - make this non-UI specific!
-    private List<IMethodInstance> filterTestsToRunByDriverAndTestClassName(
-            List<IMethodInstance> methods) {
-
-        return methods.stream()
-                .filter(instance -> {
-                    String clazz = instance.getMethod().getRealClass().getName();
-
-                    boolean appTest = clazz.endsWith("AppTest");
-                    boolean mobiTest = clazz.endsWith("MobiTest");
-                    boolean nonMobileNotAppMobiTest = !Driver.isMobile() && !appTest && !mobiTest;
-                    boolean nativeAppTest = Driver.isNative() && appTest;
-                    boolean nonNativeMobiTest = !Driver.isNative() && mobiTest;
-
-                    return nonMobileNotAppMobiTest || nativeAppTest || nonNativeMobiTest;
-                })
-                .collect(toList());
     }
 
     private void logTestMethodInformation(

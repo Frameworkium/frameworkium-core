@@ -1,13 +1,17 @@
-package com.frameworkium.integration.heroku.theinternet.pages.web;
+package com.frameworkium.integration.heroku.theinternet.pages;
 
 import com.frameworkium.core.ui.annotations.ForceVisible;
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
 import com.frameworkium.core.ui.pages.PageFactory;
+import io.qameta.allure.Step;
 import org.openqa.selenium.support.FindBy;
-import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.element.Link;
+
+import java.time.Duration;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class WelcomePage extends BasePage<WelcomePage> {
 
@@ -54,16 +58,24 @@ public class WelcomePage extends BasePage<WelcomePage> {
      * @param timeout timeout in seconds
      * @return An instance of this page object with specified wait timeout
      */
-    @Step("Navigate to http://the-internet.herokuapp.com")
+    @Step("Navigate to 'The Internet'")
     public static WelcomePage open(long timeout) {
         return PageFactory.newInstance(
-                WelcomePage.class, "http://the-internet.herokuapp.com", timeout);
+                WelcomePage.class,
+                "http://the-internet.herokuapp.com",
+                Duration.of(timeout, SECONDS));
     }
 
     @Step("Click the Checkboxes link")
     public CheckboxesPage clickCheckboxesLink() {
+        // TODO: move both of these to a dedicated test
+        logger.trace("Showing example use of the logger in BasePage");
+        // example use of BasePage visibility (not actually required here)
+        visibility.forceVisible(checkboxesLink);
+
         checkboxesLink.click();
-        return PageFactory.newInstance(CheckboxesPage.class, 15);
+        return PageFactory.newInstance(
+                CheckboxesPage.class, Duration.of(15, SECONDS));
     }
 
     @Step("Click the Drag And Drop link")

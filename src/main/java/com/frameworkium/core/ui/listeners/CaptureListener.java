@@ -1,13 +1,12 @@
 package com.frameworkium.core.ui.listeners;
 
-import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.capture.ElementHighlighter;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.js.framework.Angular;
 import com.frameworkium.core.ui.js.framework.AngularTwo;
 import com.frameworkium.core.ui.pages.Visibility;
-import com.frameworkium.core.ui.tests.BaseTest;
+import com.frameworkium.core.ui.tests.BaseUITest;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.events.WebDriverEventListener;
@@ -21,7 +20,7 @@ import static org.apache.commons.lang3.StringUtils.abbreviate;
 public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private void takeScreenshotAndSend(Command command, WebDriver driver) {
-        BaseTest.getCapture().takeAndSendScreenshot(command, driver);
+        BaseUITest.getCapture().takeAndSendScreenshot(command, driver);
     }
 
     private void takeScreenshotAndSend(String action, WebDriver driver) {
@@ -31,7 +30,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private void takeScreenshotAndSend(String action, WebDriver driver, Throwable thrw) {
 
-        BaseTest.getCapture().takeAndSendScreenshotWithError(
+        BaseUITest.getCapture().takeAndSendScreenshotWithError(
                 new Command(action, "n/a", "n/a"),
                 driver,
                 thrw.getMessage() + "\n" + ExceptionUtils.getStackTrace(thrw));
@@ -39,28 +38,29 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private void sendFinalScreenshot(ITestResult result, String action) {
         // As this can be called from any test type, ensure this is not an API test
-        if (ScreenshotCapture.isRequired() && !isFromApiTest(result)) {
+        if (ScreenshotCapture.isRequired() && isUITest(result)) {
             Throwable thrw = result.getThrowable();
             if (null != thrw) {
-                takeScreenshotAndSend(action, BaseTest.getDriver(), thrw);
+                takeScreenshotAndSend(action, BaseUITest.getDriver(), thrw);
             } else {
                 Command command = new Command(action, "n/a", "n/a");
-                takeScreenshotAndSend(command, BaseTest.getDriver());
+                takeScreenshotAndSend(command, BaseUITest.getDriver());
             }
         }
     }
 
-    private boolean isFromApiTest(ITestResult result) {
-        return result.getInstance()
-                instanceof com.frameworkium.core.api.tests.BaseTest;
+    private boolean isUITest(ITestResult result) {
+        return result.getInstance() instanceof BaseUITest;
     }
 
-    private void highlightElementAndSendScreenshot(
-            String action, WebDriver driver, WebElement element) {
-
+    private void highlightElementOnClickAndSendScreenshot(
+            WebDriver driver, WebElement element) {
+        if (!ScreenshotCapture.isRequired()) {
+            return;
+        }
         ElementHighlighter highlighter = new ElementHighlighter(driver);
         highlighter.highlightElement(element);
-        Command command = new Command(action, element);
+        Command command = new Command("click", element);
         takeScreenshotAndSend(command, driver);
         highlighter.unhighlightPrevious();
     }
@@ -68,7 +68,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     /* WebDriver events */
     @Override
     public void beforeClickOn(WebElement element, WebDriver driver) {
-        highlightElementAndSendScreenshot("click", driver, element);
+        highlightElementOnClickAndSendScreenshot(driver, element);
     }
 
     @Override
@@ -93,6 +93,12 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     @Override
+    public void afterSwitchToWindow(String windowName, WebDriver driver) {
+        Command command = new Command("nav", "window", windowName);
+        takeScreenshotAndSend(command, driver);
+    }
+
+    @Override
     public void beforeScript(String script, WebDriver driver) {
         // ignore scripts which are part of Frameworkium
         if (!isFrameworkiumScript(script)) {
@@ -104,13 +110,13 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private boolean isFrameworkiumScript(String script) {
         String browserAgentScript = "return navigator.userAgent;";
-        String angularFrameworkContains = "angular.getTestability(el).whenStable(callback);";
 
         return script.equals(browserAgentScript)
                 || script.equals(Angular.IS_PRESENT_JS)
                 || script.equals(AngularTwo.IS_PRESENT_JS)
                 || script.equals(Visibility.FORCE_VISIBLE_SCRIPT)
-                || script.contains(angularFrameworkContains);
+                || script.contains("angular.getTestability(el)")
+                || script.contains("definitelyNg2OrNewer");
     }
 
     /* Test end methods */
@@ -161,6 +167,9 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     @Override
     public void afterScript(String script, WebDriver driver) {}
+
+    @Override
+    public void beforeSwitchToWindow(String windowName, WebDriver driver) {}
 
     @Override
     public void beforeFindBy(By by, WebElement element, WebDriver arg2) {}

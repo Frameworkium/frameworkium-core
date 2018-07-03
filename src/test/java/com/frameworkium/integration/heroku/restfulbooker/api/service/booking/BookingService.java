@@ -42,7 +42,7 @@ public class BookingService extends AbstractBookerService {
         getRequestSpec()
                 .cookie("token", token)
                 .delete(BookerEndpoint.BOOKING_ID.getUrl(bookingID))
-                // Bug, API is different to documentation
+                // API does not match documentation
                 // .then()
                 // .statusCode(HttpStatus.SC_NO_CONTENT)
                 ;

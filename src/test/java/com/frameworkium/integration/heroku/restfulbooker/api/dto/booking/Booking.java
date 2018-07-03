@@ -4,7 +4,7 @@ import com.frameworkium.core.api.dto.AbstractDTO;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Booking extends AbstractDTO {
+public class Booking extends AbstractDTO<Booking> {
     public String firstname;
     public String lastname;
     public long totalprice;

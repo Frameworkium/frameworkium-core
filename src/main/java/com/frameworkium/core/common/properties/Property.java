@@ -6,8 +6,7 @@ import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 public enum Property {
 
@@ -46,10 +45,12 @@ public enum Property {
     THREADS("threads"),
     HEADLESS("headless");
 
-    private static Map<String, String> configMap = null;
+    private static Map<String, Object> configMap = null;
     private String value;
+    private String systemPropertyKey;
 
     Property(String key) {
+        this.systemPropertyKey = key;
         this.value = retrieveValue(key);
     }
 
@@ -65,10 +66,16 @@ public enum Property {
         if (configMap == null) {
             configMap = loadConfigFile();
         }
-        return configMap.get(key);
+
+        Object objFromFile = configMap.get(key);
+        if (objFromFile != null) {
+            return Objects.toString(objFromFile);
+        } else {
+            return null;
+        }
     }
 
-    private Map<String, String> loadConfigFile() {
+    private static Map<String, Object> loadConfigFile() {
         String configFileName = System.getProperty("config");
         if (StringUtils.isNotEmpty(configFileName)) {
             try (InputStream configFileStream =
@@ -94,9 +101,12 @@ public enum Property {
     }
 
     public String getValue() {
-        return value;
+        return retrieveValue(this.systemPropertyKey);
     }
 
+    /**
+     * @return true if the property is set and is equal, ignoring case, to "true".
+     */
     public boolean getBoolean() {
         return isSpecified() && Boolean.parseBoolean(value);
     }

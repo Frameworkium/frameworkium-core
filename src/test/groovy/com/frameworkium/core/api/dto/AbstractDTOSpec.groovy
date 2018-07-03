@@ -8,21 +8,39 @@ class AbstractDTOSpec extends Specification {
 
     def "two different DTOs with the same data are equal but not =="() {
         given:
-            def sut2 = new TopLevelDTO()
+            def other = new TopLevelDTO()
         expect:
-            sut.equals(sut2)
-            !sut.is(sut2) // == in Java
-            sut.hashCode() == sut2.hashCode()
+            sut.equals(other)
+            !sut.is(other) // == in Java
+            sut.hashCode() == other.hashCode()
     }
 
     def "two different DTOs with different data are not equal"() {
         given:
-            def sut2 = new TopLevelDTO()
-            sut2.lowLevelDTO.data = "foo"
+            def other = new TopLevelDTO()
+            other.lowLevelDTO.data = "foo"
         expect:
-            sut != sut2
-            !sut.is(sut2) // == in Java
-            sut.hashCode() != sut2.hashCode()
+            sut != other
+            !sut.is(other) // == in Java
+            sut.hashCode() != other.hashCode()
+    }
+
+    def "DTOs of different types are not equal"() {
+        given:
+            def other = new LowLevelDTO()
+        expect:
+            sut != other
+            !sut.is(other) // == in Java
+            sut.hashCode() != other.hashCode()
+    }
+
+    def "a DTO is not equal to a non-DTO"() {
+        given:
+            def other = new Object()
+        expect:
+            sut != other
+            !sut.is(other) // == in Java
+            sut.hashCode() != other.hashCode()
     }
 
     def "Cloning a DTOs makes a deep not shallow clone"() {
@@ -36,7 +54,7 @@ class AbstractDTOSpec extends Specification {
 
     def "toString() creates readable output"() {
         expect:
-            sut.toString() == 'TopLevelDTO[lowLevelDTO=LowLevelDTO[data=initial]]'
+            sut.toString() == 'TopLevelDTO[lowLevelDTO=LowLevelDTO[data=initial],stringList=[1, a]]'
     }
 
 }

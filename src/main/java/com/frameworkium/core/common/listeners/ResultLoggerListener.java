@@ -7,7 +7,7 @@ import com.frameworkium.core.common.reporting.jira.api.JiraTest;
 import com.frameworkium.core.common.reporting.jira.zapi.Execution;
 import com.frameworkium.core.common.reporting.spira.SpiraExecution;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
-import com.frameworkium.core.ui.tests.BaseTest;
+import com.frameworkium.core.ui.tests.BaseUITest;
 import com.google.common.base.Throwables;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,7 +26,8 @@ public class ResultLoggerListener implements ITestListener {
     @Override
     public void onTestStart(ITestResult result) {
 
-        if (getIssueOrTestCaseIdAnnotation(result).isEmpty()) {
+        String issueOrTestCaseId = getIssueOrTestCaseIdAnnotation(result);
+        if (issueOrTestCaseId.isEmpty()) {
             return;
         }
 
@@ -37,23 +38,23 @@ public class ResultLoggerListener implements ITestListener {
 
         if (zapiLoggingParamsProvided(result)) {
             logger.info("Logging WIP to zapi");
-            new Execution(getIssueOrTestCaseIdAnnotation(result))
+            new Execution(issueOrTestCaseId)
                     .update(JiraConfig.ZapiStatus.ZAPI_STATUS_WIP, comment);
         }
         if (jiraTransitionLoggingParamsProvided(result)) {
             logger.info("Logging WIP to Jira using issue transitions");
-            moveThroughTransitions(getIssueOrTestCaseIdAnnotation(result),
+            moveThroughTransitions(issueOrTestCaseId,
                     JiraConfig.JiraTransition.JIRA_TRANSITION_WIP);
-            JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+            JiraTest.addComment(issueOrTestCaseId, comment);
         }
         if (jiraFieldLoggingParamsProvided(result)) {
-            logger.info("Logging WIP to jira by updating the specified field - "
+            logger.info("Logging WIP to Jira by updating the specified field - "
                     + Property.JIRA_RESULT_FIELD_NAME.getValue());
             JiraTest.changeIssueFieldValue(
-                    getIssueOrTestCaseIdAnnotation(result),
+                    issueOrTestCaseId,
                     Property.JIRA_RESULT_FIELD_NAME.getValue(),
                     JiraConfig.JiraFieldStatus.JIRA_STATUS_WIP);
-            JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+            JiraTest.addComment(issueOrTestCaseId, comment);
         }
     }
 
@@ -66,8 +67,8 @@ public class ResultLoggerListener implements ITestListener {
                         jiraTransition,
                         issueAnnotation);
             } catch (Exception e) {
-                logger.warn(
-                        "Failed to perform transition '{}' on '{}'- maybe not possible given the state?",
+                logger.error(
+                        "Failed to perform transition '{}' on '{}' - maybe not possible given the state?",
                         jiraTransition,
                         issueAnnotation);
             }
@@ -77,13 +78,12 @@ public class ResultLoggerListener implements ITestListener {
     @Override
     public void onTestSuccess(ITestResult result) {
 
-        final String issueOrTestCaseId = getIssueOrTestCaseIdAnnotation(result);
-
+        String issueOrTestCaseId = getIssueOrTestCaseIdAnnotation(result);
         if (issueOrTestCaseId.isEmpty()) {
             return;
         }
 
-        String comment = "PASS" + System.lineSeparator() + baseComment(result);
+        String comment = "PASS\n" + baseComment(result);
 
         if (zapiLoggingParamsProvided(result)) {
             logger.info("Logging PASS to zapi");
@@ -97,7 +97,7 @@ public class ResultLoggerListener implements ITestListener {
             JiraTest.addComment(issueOrTestCaseId, comment);
         }
         if (jiraFieldLoggingParamsProvided(result)) {
-            logger.info("Logging PASS to jira by updating the specified field - "
+            logger.info("Logging PASS to Jira by updating the specified field - "
                     + Property.JIRA_RESULT_FIELD_NAME.getValue());
             JiraTest.changeIssueFieldValue(
                     issueOrTestCaseId,
@@ -117,39 +117,45 @@ public class ResultLoggerListener implements ITestListener {
     @Override
     public void onTestFailure(ITestResult result) {
 
-        if (!(result.getThrowable() instanceof AssertionError)) {
-            markAsBlocked(result);
-        } else if (!getIssueOrTestCaseIdAnnotation(result).isEmpty()) {
+        if (result.getThrowable() instanceof AssertionError) {
             markAsFailed(result);
+        } else {
+            markAsBlocked(result);
         }
     }
 
     private void markAsFailed(ITestResult result) {
-        String comment = "FAIL" + System.lineSeparator() + this.baseComment(result);
+
+        String issueOrTestCaseId = getIssueOrTestCaseIdAnnotation(result);
+        if (issueOrTestCaseId.isEmpty()) {
+            return;
+        }
+
+        String comment = "FAIL\n" + this.baseComment(result);
 
         if (zapiLoggingParamsProvided(result)) {
             logger.info("Logging FAIL to zapi");
-            new Execution(getIssueOrTestCaseIdAnnotation(result))
+            new Execution(issueOrTestCaseId)
                     .update(JiraConfig.ZapiStatus.ZAPI_STATUS_FAIL, comment);
         }
         if (jiraTransitionLoggingParamsProvided(result)) {
             logger.info("Logging FAIL to Jira using issue transitions");
-            moveThroughTransitions(getIssueOrTestCaseIdAnnotation(result),
+            moveThroughTransitions(issueOrTestCaseId,
                     JiraConfig.JiraTransition.JIRA_TRANSITION_FAIL);
-            JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+            JiraTest.addComment(issueOrTestCaseId, comment);
         }
         if (jiraFieldLoggingParamsProvided(result)) {
-            logger.info("Logging FAIL to jira by updating the specified field - "
+            logger.info("Logging FAIL to Jira by updating the specified field - "
                     + Property.JIRA_RESULT_FIELD_NAME.getValue());
             JiraTest.changeIssueFieldValue(
-                    getIssueOrTestCaseIdAnnotation(result),
+                    issueOrTestCaseId,
                     Property.JIRA_RESULT_FIELD_NAME.getValue(),
                     JiraConfig.JiraFieldStatus.JIRA_STATUS_FAIL);
-            JiraTest.addComment(getIssueOrTestCaseIdAnnotation(result), comment);
+            JiraTest.addComment(issueOrTestCaseId, comment);
         }
         if (spiraLoggingParamsProvided(result)) {
             new SpiraExecution().recordTestResult(
-                    getIssueOrTestCaseIdAnnotation(result),
+                    issueOrTestCaseId,
                     JiraConfig.SpiraStatus.SPIRA_STATUS_FAIL,
                     comment,
                     result);
@@ -164,12 +170,11 @@ public class ResultLoggerListener implements ITestListener {
     private void markAsBlocked(ITestResult result) {
 
         String issueOrTestCaseId = getIssueOrTestCaseIdAnnotation(result);
-
         if (issueOrTestCaseId.isEmpty()) {
             return;
         }
 
-        String comment = "BLOCKED" + System.lineSeparator() + this.baseComment(result);
+        String comment = "BLOCKED\n" + this.baseComment(result);
 
         if (zapiLoggingParamsProvided(result)) {
             logger.info("Logging BLOCKED to zapi");
@@ -183,7 +188,7 @@ public class ResultLoggerListener implements ITestListener {
             JiraTest.addComment(issueOrTestCaseId, comment);
         }
         if (jiraFieldLoggingParamsProvided(result)) {
-            logger.info("Logging BLOCKED to jira by updating the specified field - "
+            logger.info("Logging BLOCKED to Jira by updating the specified field - "
                     + Property.JIRA_RESULT_FIELD_NAME.getValue());
             JiraTest.changeIssueFieldValue(
                     issueOrTestCaseId,
@@ -233,17 +238,14 @@ public class ResultLoggerListener implements ITestListener {
     }
 
     /**
-     * This method gets the value of either the @Issue or @TestCaseId annotation for the provided test result.
-     * If both are specified but if their values are not equal an
-     * {@link java.lang.IllegalStateException} will be thrown, otherwise, their value will
-     * be returned. If neither are specified then the empty string will be returned.
+     * If neither are specified then the empty string will be returned.
+     * {@see TestIdUtils#getIssueOrTestCaseIdValue(Method)}
      *
-     * @param result The test result
      * @return the value of either the @Issue or @TestCaseId annotation for the provided test result.
      */
     private String getIssueOrTestCaseIdAnnotation(ITestResult result) {
         Method method = result.getMethod().getConstructorOrMethod().getMethod();
-        return TestIdUtils.getIssueOrTestCaseIdValue(method).orElse("");
+        return TestIdUtils.getIssueOrTmsLinkValue(method).orElse("");
     }
 
     private String getOSInfo() {
@@ -262,31 +264,25 @@ public class ResultLoggerListener implements ITestListener {
                 .append(result.getTestClass().getName())
                 .append(".")
                 .append(result.getMethod().getMethodName())
-                .append(System.lineSeparator())
-                .append("Duration: ")
+                .append("\nDuration: ")
                 .append(((result.getEndMillis() - result.getStartMillis()) / MILLIS_PER_SECOND))
-                .append("seconds")
-                .append(System.lineSeparator());
+                .append("seconds");
 
         if (!isNull(System.getenv("BUILD_URL"))) {
             commentBuilder.append("Jenkins build: ")
-                    .append(System.getenv("BUILD_URL"))
-                    .append(System.lineSeparator());
+                    .append(System.getenv("BUILD_URL"));
         }
         if (ScreenshotCapture.isRequired()) {
             commentBuilder.append("Capture API: ")
-                    .append(CAPTURE_URL.getValue())
-                    .append(System.lineSeparator());
+                    .append(CAPTURE_URL.getValue());
         }
-        commentBuilder.append("OS: ")
+        commentBuilder.append("\nOS: ")
                 .append(getOSInfo())
-                .append(System.lineSeparator())
-                .append("UserAgent: ")
-                .append(BaseTest.getUserAgent());
+                .append("\nUserAgent: ")
+                .append(BaseUITest.getUserAgent());
 
         if (!isNull(result.getThrowable())) {
-            commentBuilder.append(System.lineSeparator())
-                    .append("Stacktrace: ")
+            commentBuilder.append("\nStacktrace: ")
                     .append(Throwables.getStackTraceAsString(result.getThrowable()));
         }
 

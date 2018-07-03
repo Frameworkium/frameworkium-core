@@ -1,11 +1,12 @@
-package com.frameworkium.integration.heroku.theinternet.pages.web;
+package com.frameworkium.integration.heroku.theinternet.pages;
 
+import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
+import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 
 import java.util.List;
@@ -22,15 +23,6 @@ public class DragAndDropPage extends BasePage<DragAndDropPage> {
     private static final String JQUERY_JS_URI = "https://code.jquery.com/jquery-3.2.1.min.js";
 
     @Visible
-    @Name("Box A")
-    @FindBy(id = "column-a")
-    private WebElement boxA;
-
-    @Visible
-    @Name("Box B")
-    @FindBy(id = "column-b")
-    private WebElement boxB;
-
     @Name("List of headers")
     @FindBy(css = "header")
     private List<WebElement> boxes;
@@ -58,7 +50,7 @@ public class DragAndDropPage extends BasePage<DragAndDropPage> {
      * @return a String containing the Javascript for JQuery (if not already present on the page)
      *         and code for simulating drag and drop.
      */
-    private String javascriptToSimulateDragDrop() {
+    private String scriptToSimulateDragDrop() {
         if (jQueryJS.isEmpty()) {
             Boolean isJQueryAvailable = (Boolean) executeJS("return !!window.jQuery;");
             if (!isJQueryAvailable) {
@@ -74,8 +66,11 @@ public class DragAndDropPage extends BasePage<DragAndDropPage> {
      * @param to   the jQuery selector for the target element where the from element will be dropped
      */
     private void simulateDragAndDrop(String from, String to) {
-        executeJS(javascriptToSimulateDragDrop());
+        executeJS(scriptToSimulateDragDrop());
+        // TODO: move AllureLogger steps to dedicated test
+        AllureLogger.stepStart("testing step start");
         executeJS("$('" + from + "').simulateDragDrop({ dropTarget: '" + to + "'});");
+        AllureLogger.stepFinish();
     }
 
     @Step("Drag A onto B")

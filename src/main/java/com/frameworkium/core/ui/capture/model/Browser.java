@@ -2,7 +2,7 @@ package com.frameworkium.core.ui.capture.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.frameworkium.core.ui.driver.DriverSetup;
-import com.frameworkium.core.ui.tests.BaseTest;
+import com.frameworkium.core.ui.tests.BaseUITest;
 import net.sf.uadetector.ReadableUserAgent;
 import net.sf.uadetector.UserAgentStringParser;
 import net.sf.uadetector.service.UADetectorServiceFactory;
@@ -25,7 +25,7 @@ public class Browser {
      */
     public Browser() {
 
-        Optional<String> userAgent = BaseTest.getUserAgent();
+        Optional<String> userAgent = BaseUITest.getUserAgent();
         if (userAgent.isPresent() && !userAgent.get().isEmpty()) {
             // Try to parse the UA
             UserAgentStringParser uaParser = UADetectorServiceFactory.getResourceModuleParser();

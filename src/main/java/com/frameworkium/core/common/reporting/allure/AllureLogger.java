@@ -1,15 +1,19 @@
 package com.frameworkium.core.common.reporting.allure;
 
+import io.qameta.allure.Step;
+import io.qameta.allure.model.StepResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.yandex.qatools.allure.Allure;
-import ru.yandex.qatools.allure.annotations.Step;
-import ru.yandex.qatools.allure.events.StepFinishedEvent;
-import ru.yandex.qatools.allure.events.StepStartedEvent;
+
+import java.util.*;
+
+import static io.qameta.allure.Allure.getLifecycle;
 
 public class AllureLogger {
 
     private static final Logger logger = LogManager.getLogger();
+    private static final ThreadLocal<Deque<String>> STEP_UUID_STACK =
+            ThreadLocal.withInitial(ArrayDeque::new);
 
     private AllureLogger() {
         // hide default constructor for this util class
@@ -20,26 +24,19 @@ public class AllureLogger {
      *
      * @param message the message to log to the allure report
      */
-    @Step("{0}")
+    @Step("{message}")
     public static void logToAllure(String message) {
         logger.debug("Logged to allure: " + message);
     }
 
-    /**
-     * Logs the start of a step to your allure report.
-     * Other steps will be sub-steps until you call stepFinish.
-     *
-     * @param stepName the name of the step
-     */
     public static void stepStart(String stepName) {
-        Allure.LIFECYCLE.fire(new StepStartedEvent(stepName));
+        StepResult result = new StepResult().withName(stepName);
+        String uuid = UUID.randomUUID().toString();
+        getLifecycle().startStep(uuid, result);
+        STEP_UUID_STACK.get().addFirst(uuid);
     }
 
-    /**
-     * Logs the end of a step. Ensure it matches a {@link #stepStart(String)}.
-     **/
     public static void stepFinish() {
-        Allure.LIFECYCLE.fire(new StepFinishedEvent());
+        getLifecycle().stopStep(STEP_UUID_STACK.get().pop());
     }
-
 }

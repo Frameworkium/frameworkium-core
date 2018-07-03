@@ -14,7 +14,7 @@ import java.util.*;
 
 import static com.frameworkium.core.common.reporting.jira.JiraConfig.REST_ZAPI_PATH;
 import static com.frameworkium.core.common.reporting.jira.JiraConfig.getJIRARequestSpec;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class Execution {
 
@@ -35,17 +35,18 @@ public class Execution {
     }
 
     private void initExecutionIdsAndCurrentStatus() {
-        if (isNotEmpty(version) && isNotEmpty(issue)) {
-            String query = String.format(
-                    "issue='%s' and fixVersion='%s'", issue, version);
+        if (isBlank(version) || isBlank(issue)) {
+            return;
+        }
+        String query = String.format(
+                "issue='%s' and fixVersion='%s'", issue, version);
 
-            SearchExecutions search = new SearchExecutions(query);
-            idList = search.getExecutionIds();
+        SearchExecutions search = new SearchExecutions(query);
+        idList = search.getExecutionIds();
 
-            List<Integer> statusList = search.getExecutionStatuses();
-            if (!statusList.isEmpty()) {
-                currentStatus = statusList.get(0);
-            }
+        List<Integer> statusList = search.getExecutionStatuses();
+        if (!statusList.isEmpty()) {
+            currentStatus = statusList.get(0);
         }
     }
 
@@ -75,20 +76,21 @@ public class Execution {
      * Update issue with a comment and attachments.
      */
     public void update(int status, String comment, String... attachments) {
-        if (null != idList) {
-            for (Integer executionId : idList) {
-                updateStatusAndComment(executionId, status, comment);
-                replaceExistingAttachments(executionId, attachments);
+        if (idList == null) {
+            return;
+        }
+        for (Integer executionId : idList) {
+            updateStatusAndComment(executionId, status, comment);
+            replaceExistingAttachments(executionId, attachments);
 
-                logger.debug("ZAPI Updater - Updated {} to status {}", issue, status);
-            }
+            logger.debug("ZAPI Updater - Updated {} to status {}", issue, status);
         }
     }
 
     private void updateStatusAndComment(Integer executionId, int status, String comment) {
 
-        JSONObject obj = new JSONObject();
         try {
+            JSONObject obj = new JSONObject();
             obj.put("status", String.valueOf(status));
             int commentMaxLen = 750;
             obj.put("comment", StringUtils.abbreviate(comment, commentMaxLen));

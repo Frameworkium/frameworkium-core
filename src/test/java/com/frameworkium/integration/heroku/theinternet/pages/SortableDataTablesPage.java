@@ -1,21 +1,16 @@
-package com.frameworkium.integration.heroku.theinternet.pages.web;
+package com.frameworkium.integration.heroku.theinternet.pages;
 
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import ru.yandex.qatools.allure.annotations.Step;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.element.Table;
 
 import java.util.List;
 
 public class SortableDataTablesPage extends BasePage<SortableDataTablesPage> {
-
-    @Visible
-    @Name("Heading")
-    @FindBy(css = "div.example h3")
-    private WebElement heading;
 
     @Visible
     @Name("Table 1")
@@ -27,23 +22,23 @@ public class SortableDataTablesPage extends BasePage<SortableDataTablesPage> {
     @FindBy(css = "table#table2")
     private Table table2;
 
-    @Step("Get table 1 column {0} contents")
+    @Step("Get table 1 column {colHeader} contents")
     public List<String> getTable1ColumnContents(String colHeader) {
         return getColumnContents(table1, colHeader);
     }
 
-    @Step("Get table 2 column {0} contents")
+    @Step("Get table 2 column {colHeader} contents")
     public List<String> getTable2ColumnContents(String colHeader) {
         return getColumnContents(table2, colHeader);
     }
 
-    @Step("Sort table 2 by column with header {0}")
+    @Step("Sort table 2 by column with header {colHeader}")
     public SortableDataTablesPage sortTable2ByColumnName(String colHeader) {
         sortTableByColumnName(table2, colHeader);
         return this;
     }
 
-    @Step("Sort table {0} by column name {1}")
+    @Step("Sort table {table} by column name {colHeader}")
     private SortableDataTablesPage sortTableByColumnName(Table table, String colHeader) {
         table.getHeadings()
                 .get(table.getHeadingsAsString().indexOf(colHeader))
@@ -51,9 +46,8 @@ public class SortableDataTablesPage extends BasePage<SortableDataTablesPage> {
         return this;
     }
 
-    @Step("Get column contents of column {1} in table {0}")
+    @Step("Get column contents of column {colHeader} in table {table}")
     private List<String> getColumnContents(Table table, String colHeader) {
-
         int colIndex = table.getHeadingsAsString().indexOf(colHeader);
         return table.getColumnsAsString().get(colIndex);
     }

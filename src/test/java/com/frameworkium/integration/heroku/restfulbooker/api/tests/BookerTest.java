@@ -1,6 +1,7 @@
 package com.frameworkium.integration.heroku.restfulbooker.api.tests;
 
-import com.frameworkium.core.api.tests.BaseTest;
+import com.frameworkium.core.api.tests.BaseAPITest;
+import com.frameworkium.core.common.retry.RetryFlakyTest;
 import com.frameworkium.integration.heroku.restfulbooker.api.dto.booking.*;
 import com.frameworkium.integration.heroku.restfulbooker.api.service.booking.BookingService;
 import com.frameworkium.integration.heroku.restfulbooker.api.service.ping.PingService;
@@ -9,7 +10,9 @@ import org.testng.annotations.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-public class BookerTest extends BaseTest {
+// app resets every 10m, so could happen in the middle of this test
+@Test(retryAnalyzer = RetryFlakyTest.class)
+public class BookerTest extends BaseAPITest {
 
     @BeforeClass
     public void ensure_site_is_up_by_using_ping_service() {
@@ -17,7 +20,6 @@ public class BookerTest extends BaseTest {
                 .isEqualTo("Created");
     }
 
-    @Test
     public void create_new_booking() {
         // given some booking data
         BookingService service = new BookingService();
@@ -33,14 +35,12 @@ public class BookerTest extends BaseTest {
                 .isEqualTo(booking);
     }
 
-    @Test
     public void auth_token_matches_expected_pattern() {
         String token = new BookingService().createAuthToken(
                 "admin", "password123");
         assertThat(token).matches("[a-z0-9]{15}");
     }
 
-    @Test
     public void delete_newly_created_booking() {
         // given an existing booking
         BookingService service = new BookingService();

@@ -1,7 +1,6 @@
 package com.frameworkium.core.common.reporting.jira.api;
 
 import com.frameworkium.core.common.reporting.jira.JiraConfig;
-import io.restassured.path.json.JsonPath;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.*;
@@ -12,14 +11,18 @@ public class JiraTest {
 
     private static final Logger logger = LogManager.getLogger();
 
+    private static final String ISSUE_PATH = "issue/";
+
+    private JiraTest() {}
+
     /** Create and send a PUT request to JIRA to change the value of a field. */
     public static void changeIssueFieldValue(
             String issueKey, String fieldToUpdate, String resultValue) {
 
         JSONObject obj = new JSONObject();
         JSONObject fieldObj = new JSONObject();
-        JSONObject setObj = new JSONObject();
         JSONArray setArr = new JSONArray();
+        JSONObject setObj = new JSONObject();
         JSONObject valueObj = new JSONObject();
 
         try {
@@ -29,25 +32,23 @@ public class JiraTest {
             setObj.put("set", valueObj);
             valueObj.put("value", resultValue);
 
+            JiraConfig.getJIRARequestSpec()
+                    .contentType("application/json").and()
+                    .body(obj.toString())
+                    .when()
+                    .put(JIRA_REST_PATH + ISSUE_PATH + issueKey);
         } catch (JSONException e) {
             logger.error("Can't create JSON Object for test case result update", e);
         }
-
-        JiraConfig.getJIRARequestSpec()
-                .contentType("application/json").and()
-                .body(obj.toString())
-                .when()
-                .put(JIRA_REST_PATH + "/issue/" + issueKey);
     }
 
     private static String getFieldId(String fieldName) {
 
-        JsonPath jsonPath = JiraConfig.getJIRARequestSpec()
+        return JiraConfig.getJIRARequestSpec()
                 .when()
                 .get(JIRA_REST_PATH + "/field")
-                .thenReturn().jsonPath();
-
-        return jsonPath.getString(String.format("find {it.name == '%s'}.id", fieldName));
+                .thenReturn().jsonPath()
+                .getString(String.format("find {it.name == '%s'}.id", fieldName));
     }
 
     /**
@@ -59,15 +60,14 @@ public class JiraTest {
 
         try {
             obj.put("body", commentToAdd);
+            JiraConfig.getJIRARequestSpec()
+                    .contentType("application/json")
+                    .body(obj.toString())
+                    .when()
+                    .post(JIRA_REST_PATH + ISSUE_PATH + issueKey + "/comment");
         } catch (JSONException e) {
             logger.error("Can't create JSON Object for comment update", e);
         }
-
-        JiraConfig.getJIRARequestSpec()
-                .contentType("application/json")
-                .body(obj.toString())
-                .when()
-                .post(JIRA_REST_PATH + "/issue/" + issueKey + "/comment");
     }
 
     /**
@@ -88,26 +88,23 @@ public class JiraTest {
         try {
             obj.put("transition", idObj);
             idObj.put("id", transitionId);
+            JiraConfig.getJIRARequestSpec()
+                    .contentType("application/json").and()
+                    .body(obj.toString())
+                    .when()
+                    .post(JIRA_REST_PATH + ISSUE_PATH + issueKey + "/transitions");
         } catch (JSONException e) {
             logger.error("Can't create JSON Object for transition change", e);
         }
-
-        JiraConfig.getJIRARequestSpec()
-                .contentType("application/json").and()
-                .body(obj.toString())
-                .when()
-                .post(JIRA_REST_PATH + "issue/" + issueKey + "/transitions");
     }
 
     private static int getTransitionId(String issueKey, String transitionName) {
 
-        final String jsonPathToTransitionId = String.format(
-                "transitions.find {it -> it.name == '%s'}.id", transitionName);
         return JiraConfig.getJIRARequestSpec()
-                .get(JIRA_REST_PATH + "/issue/" + issueKey + "?expand=transitions.fields")
-                .thenReturn()
-                .jsonPath()
-                .getInt(jsonPathToTransitionId);
+                .get(JIRA_REST_PATH + ISSUE_PATH + issueKey + "?expand=transitions.fields")
+                .thenReturn().jsonPath()
+                .getInt(String.format(
+                        "transitions.find {it -> it.name == '%s'}.id", transitionName));
     }
 
 }

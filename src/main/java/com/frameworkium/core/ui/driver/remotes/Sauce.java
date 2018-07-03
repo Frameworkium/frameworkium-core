@@ -23,11 +23,15 @@ public class Sauce {
                     sauceAuth.getUsername(),
                     sauceAuth.getAccessKey());
 
-    public static URL getURL() throws MalformedURLException {
-        return new URL(String.format(
-                "https://%s:%s@ondemand.saucelabs.com/wd/hub",
-                sauceAuth.getUsername(),
-                sauceAuth.getAccessKey()));
+    public static URL getURL() {
+        try {
+            return new URL(String.format(
+                    "https://%s:%s@ondemand.saucelabs.com/wd/hub",
+                    sauceAuth.getUsername(),
+                    sauceAuth.getAccessKey()));
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     public static boolean isDesired() {
