@@ -11,8 +11,7 @@ public class EdgeImpl extends AbstractDriver
 {
 
     @Override
-    public EdgeOptions getCapabilities()
-    {
+    public EdgeOptions getCapabilities() {
         EdgeOptions edgeOptions = new EdgeOptions();
         edgeOptions.setCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, true);
         edgeOptions.setCapability("requireWindowFocus", true);
@@ -20,11 +19,9 @@ public class EdgeImpl extends AbstractDriver
     }
 
     @Override
-    public WebDriver getWebDriver(Capabilities capabilities)
-    {
+    public WebDriver getWebDriver(Capabilities capabilities) {
         final EdgeOptions edgeOptions;
-        if (capabilities instanceof EdgeOptions)
-        {
+        if (capabilities instanceof EdgeOptions) {
             edgeOptions = (EdgeOptions) capabilities;
         } else {
             edgeOptions = new EdgeOptions().merge(capabilities);
