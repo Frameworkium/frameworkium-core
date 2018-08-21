@@ -108,8 +108,7 @@ public class DriverSetup {
     private static Platform getPlatformType() {
         if (Property.PLATFORM.isSpecified()) {
             return Platform.valueOf(Property.PLATFORM.getValue().toUpperCase());
-        }
-        else {
+        } else {
             return Platform.NONE;
         }
     }
