@@ -5,13 +5,27 @@ import com.frameworkium.integration.github.pages.ExplorePage;
 import com.frameworkium.integration.github.pages.HomePage;
 import io.qameta.allure.Issue;
 import io.qameta.allure.TmsLink;
-import org.testng.annotations.Test;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.NoSuchSessionException;
+import org.testng.annotations.*;
 
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 
 public class ComponentExampleTest extends BaseUITest {
+
+    @BeforeMethod(dependsOnMethods = "configureBrowserBeforeTest")
+    public void increaseBrowserResolution() {
+        BaseUITest.getDriver().getWrappedDriver().manage().window().setSize(new Dimension(1400, 900));
+    }
+
+    @AfterClass
+    public void restoreBrowserResolution() {
+        try {
+            BaseUITest.getDriver().getWrappedDriver().manage().window().maximize();
+        } catch (NoSuchSessionException ignored) {}
+    }
 
     @Issue("CET-1")
     @Test(description = "Simple test showing the use of components")
