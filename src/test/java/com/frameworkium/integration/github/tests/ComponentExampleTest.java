@@ -1,10 +1,8 @@
 package com.frameworkium.integration.github.tests;
 
-import com.frameworkium.core.common.retry.RetryFlakyTest;
 import com.frameworkium.core.ui.tests.BaseUITest;
 import com.frameworkium.integration.github.pages.HomePage;
 import io.qameta.allure.Issue;
-import io.qameta.allure.TmsLink;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -22,8 +20,10 @@ public class ComponentExampleTest extends BaseUITest {
         BaseUITest.getDriver().getWrappedDriver().manage().window().maximize();
     }
 
-    @TmsLink("CET-1")
-    @Test(retryAnalyzer = RetryFlakyTest.class)
+    /**
+     * @deprecated Flaky test, preserved until new, robust component test exists
+     */
+    @Deprecated
     public final void component_example_test() {
 
         // Search for "Selenium" and check SeleniumHQ/selenium is one of the returned repos.
