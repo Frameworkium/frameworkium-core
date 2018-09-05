@@ -15,6 +15,6 @@ public class AngularTwo implements AbstractFramework {
 
     @Override
     public void waitToBeReady(JavascriptExecutor javascriptExecutor) {
-        new NgWebDriver(javascriptExecutor).waitForAngular2RequestsToFinish();
+        new NgWebDriver(javascriptExecutor).waitForAngularRequestsToFinish();
     }
 }

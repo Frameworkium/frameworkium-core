@@ -142,6 +142,18 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     public void onException(Throwable thrw, WebDriver driver) {}
 
     @Override
+    public <X> void beforeGetScreenshotAs(OutputType<X> outputType) {}
+
+    @Override
+    public <X> void afterGetScreenshotAs(OutputType<X> outputType, X x) {}
+
+    @Override
+    public void beforeGetText(WebElement webElement, WebDriver webDriver) {}
+
+    @Override
+    public void afterGetText(WebElement webElement, WebDriver webDriver, String s) {}
+
+    @Override
     public void afterClickOn(WebElement element, WebDriver driver) {}
 
     @Override
