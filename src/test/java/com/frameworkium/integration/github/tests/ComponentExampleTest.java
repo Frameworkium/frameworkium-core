@@ -1,5 +1,6 @@
 package com.frameworkium.integration.github.tests;
 
+import com.frameworkium.core.common.retry.RetryFlakyTest;
 import com.frameworkium.core.ui.tests.BaseUITest;
 import com.frameworkium.integration.github.pages.HomePage;
 import io.qameta.allure.Issue;
@@ -22,7 +23,7 @@ public class ComponentExampleTest extends BaseUITest {
     }
 
     @TmsLink("CET-1")
-    @Test(description = "Simple test showing the use of components")
+    @Test(retryAnalyzer = RetryFlakyTest.class)
     public final void component_example_test() {
 
         // Search for "Selenium" and check SeleniumHQ/selenium is one of the returned repos.
