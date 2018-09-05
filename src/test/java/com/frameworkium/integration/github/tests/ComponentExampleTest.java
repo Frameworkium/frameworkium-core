@@ -3,7 +3,6 @@ package com.frameworkium.integration.github.tests;
 import com.frameworkium.core.ui.tests.BaseUITest;
 import com.frameworkium.integration.github.pages.HomePage;
 import io.qameta.allure.Issue;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -11,14 +10,6 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 
 public class ComponentExampleTest extends BaseUITest {
-
-    @BeforeMethod(dependsOnMethods = "configureBrowserBeforeTest")
-    public void maximizeBrowser() {
-        // Maximises the browse just for these tests.
-        // Assumes the resolution of the available GUI is sufficient to prevent
-        // GitHub page from breaking
-        BaseUITest.getDriver().getWrappedDriver().manage().window().maximize();
-    }
 
     /**
      * @deprecated Flaky test, preserved until new, robust component test exists
@@ -38,7 +29,7 @@ public class ComponentExampleTest extends BaseUITest {
     }
 
     @Issue("Force Visible")
-    @Test(description = "force visible makes hidden element visible")
+    @Test
     public void force_visible_makes_hidden_element_visible() {
         HomePage.open()
                 .with().theHeader()
