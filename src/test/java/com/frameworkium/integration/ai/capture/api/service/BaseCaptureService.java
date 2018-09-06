@@ -4,7 +4,6 @@ import com.frameworkium.core.api.services.BaseService;
 import com.frameworkium.integration.ai.capture.api.constant.CaptureEndpoint;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.http.Method;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;

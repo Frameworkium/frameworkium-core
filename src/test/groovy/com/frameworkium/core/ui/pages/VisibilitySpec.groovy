@@ -128,7 +128,7 @@ class VisibilitySpec extends Specification {
     def "Waiting for Lists of Elements passes as expected where checkAtMost=2"() {
 
         given: "A page objects with Lists of Elements"
-        def pageObject = new PageObjects.ListOfElementsCheckAtMost()
+            def pageObject = new PageObjects.ListOfElementsCheckAtMost()
             pageObject.with {
                 visibles = [newVisibleElement(), newVisibleElement(), newNoInteractionElement()]
                 invisibles = [newInvisibleElement(), newInvisibleElement(), newNoInteractionElement()]
