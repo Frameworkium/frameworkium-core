@@ -68,11 +68,6 @@ public class WelcomePage extends BasePage<WelcomePage> {
 
     @Step("Click the Checkboxes link")
     public CheckboxesPage clickCheckboxesLink() {
-        // TODO: move both of these to a dedicated test
-        logger.trace("Showing example use of the logger in BasePage");
-        // example use of BasePage visibility (not actually required here)
-        visibility.forceVisible(checkboxesLink);
-
         checkboxesLink.click();
         return PageFactory.newInstance(
                 CheckboxesPage.class, Duration.of(15, SECONDS));

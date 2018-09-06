@@ -23,8 +23,8 @@ env:
     - SELENIUM_MAJ_VER=3.11
     - SELENIUM_VER=${SELENIUM_MAJ_VER}.0
     - SELENIUM_JAR=selenium-server-standalone-${SELENIUM_VER}.jar
-    - GECKO_VER=0.20.0
-    - CHROME_DRIVER_VER=2.37
+    - GECKO_VER=0.21.0
+    - CHROME_DRIVER_VER=2.41
     # Override Travis default to give browsers more room
     - _JAVA_OPTIONS="-Xmx1024m -Xms128m"
     # Required to turn on workaround for the following issue:
@@ -34,7 +34,7 @@ env:
 before_script:
   # Setup X to allow non-headless browsers to run
   - export DISPLAY=:99.0
-  - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16
+  - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1400x1024x16
 
   # Set up code climate test reporter
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
@@ -69,7 +69,7 @@ script:
   # Firefox on the grid
   # No longer works with 2 threads on Travis, since 29-Dec-2017:
   # frameworkium 2.5.0, ff 57.0.2, geckodriver 0.19.1
-  - mvn verify -B -Dthreads=1 -Dconfig=FirefoxGrid.yaml
+  - mvn verify -B -Dthreads=1 -Dconfig=FirefoxGrid.yaml -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Firefox off the grid
   - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dheadless=true -Dit.test=TheInternetExampleTests -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}" 2> /dev/null
