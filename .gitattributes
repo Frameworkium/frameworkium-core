@@ -17,6 +17,7 @@
 *.jsp           text
 *.jspf          text
 *.jspx          text
+*.md            text
 *.properties    text
 *.sh            text
 *.tld           text
