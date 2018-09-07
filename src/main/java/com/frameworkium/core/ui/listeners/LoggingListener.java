@@ -111,6 +111,26 @@ public class LoggingListener implements WebDriverEventListener {
         logger.trace("Event listener onException().", thrw);
     }
 
+    @Override
+    public <X> void beforeGetScreenshotAs(OutputType<X> outputType) {
+        logger.trace("Before GetScreenshotAs");
+    }
+
+    @Override
+    public <X> void afterGetScreenshotAs(OutputType<X> outputType, X x) {
+        logger.trace("After GetScreenshotAs");
+    }
+
+    @Override
+    public void beforeGetText(WebElement webElement, WebDriver webDriver) {
+        logger.trace("Before GetText");
+    }
+
+    @Override
+    public void afterGetText(WebElement webElement, WebDriver webDriver, String s) {
+        logger.trace("After GetText");
+    }
+
     private String getLocatorFromElement(WebElement element) {
         String str = element.toString();
         Pattern p = Pattern.compile("->\\s(.*)(?=\\])");

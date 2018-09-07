@@ -92,7 +92,7 @@ public class ScreenshotCapture {
 
     private String getRemoteNodeAddress() throws MalformedURLException {
         return RestAssured
-                .post(getTestSessionURL())
+                .get(getTestSessionURL())
                 .then()
                 .extract().jsonPath()
                 .getString("proxyId");

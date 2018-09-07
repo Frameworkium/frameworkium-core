@@ -5,15 +5,26 @@ import org.openqa.selenium.NoSuchElementException
 import org.openqa.selenium.TimeoutException
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
-import org.openqa.selenium.support.ui.Clock
 import org.openqa.selenium.support.ui.FluentWait
 import org.openqa.selenium.support.ui.Sleeper
 import spock.lang.Specification
 
+import java.time.Clock
+import java.time.Duration
+
 class ExtraExpectedConditionsSpec extends Specification {
 
+    // used for ExtraExpectedConditions that interact with an element
     def mockElement = Mock(WebElement)
-    def wait = new FluentWait<>(Mock(WebDriver), Mock(Clock), Mock(Sleeper))
+    def wait = new FluentWait<>(Mock(WebDriver), Clock.systemUTC(), Sleeper.SYSTEM_SLEEPER)
+            .pollingEvery(Duration.ofMillis(1))
+            .withTimeout(Duration.ofNanos(1))
+
+    // used for ExtraExpectedConditions that use JavaScript
+    def mockWDWrapper = Mock(WebDriverWrapper, constructorArgs: [Mock(WebDriver)])
+    def jsWait = new FluentWait<>(mockWDWrapper, Clock.systemUTC(), Sleeper.SYSTEM_SLEEPER)
+            .pollingEvery(Duration.ofMillis(1))
+            .withTimeout(Duration.ofNanos(1))
 
     // notPresentOrInvisible(WebElement)
 
@@ -24,6 +35,14 @@ class ExtraExpectedConditionsSpec extends Specification {
             }
         when: "waiting for the item not to be present or invisible"
             wait.until(ExtraExpectedConditions.notPresentOrInvisible(mockElement))
+        then: "nothing is thrown"
+            noExceptionThrown()
+    }
+
+    def "waiting for not present element to be notPresentOrInvisible passes"() {
+        given: "The element is not displayed"
+            mockElement.isDisplayed() >> { throw new NoSuchElementException("") }
+        when: "waiting for the item not to be present or invisible"
             wait.until(ExtraExpectedConditions.notPresentOrInvisible(mockElement))
         then: "nothing is thrown"
             noExceptionThrown()
@@ -60,40 +79,39 @@ class ExtraExpectedConditionsSpec extends Specification {
     }
 
     // jQueryAjaxDone()
-    def "waiting for jQueryAjaxDone runs some assumed correct JavaScript"() {
-        given: "A driver which can be cast to JavascriptExecutor"
-            def mockWDWrapper = Mock(WebDriverWrapper, constructorArgs: [Mock(WebDriver)])
-            def jsWait = new FluentWait<>(mockWDWrapper, Mock(Clock), Mock(Sleeper))
+    def "waiting for jQueryAjaxDone runs some JavaScript and times out if false"() {
+        when: "Waiting for jQuery ajax"
+            jsWait.until(ExtraExpectedConditions.jQueryAjaxDone())
+        then: "Timeout is thrown if ajax is not finished"
+            mockWDWrapper.executeScript(_ as String) >> false
+            thrown(TimeoutException)
+    }
+
+    def "waiting for jQueryAjaxDone runs some JavaScript and doesn't timeout if true"() {
         when: "Waiting for jQuery ajax"
             jsWait.until(ExtraExpectedConditions.jQueryAjaxDone())
         then: "nothing is thrown if ajax is finished"
             1 * mockWDWrapper.executeScript(_ as String) >> true
             noExceptionThrown()
-
-        when: "Waiting for jQuery ajax"
-            jsWait.until(ExtraExpectedConditions.jQueryAjaxDone())
-        then: "Timeout is thrown if ajax is not finished"
-            1 * mockWDWrapper.executeScript(_ as String) >> false
-            thrown(TimeoutException)
     }
 
     // documentBodyReady()
 
-    def "waiting for documentBodyReady runs some assumed correct JavaScript"() {
-        given: "A driver which can be cast to JavascriptExecutor"
-            def mockWDWrapper = Mock(WebDriverWrapper, constructorArgs: [Mock(WebDriver)])
-            def jsWait = new FluentWait<>(mockWDWrapper, Mock(Clock), Mock(Sleeper))
+    def "waiting for documentBodyReady runs some JavaScript and times out if false"() {
+        when: "Waiting for documentBodyReady"
+            jsWait.until(ExtraExpectedConditions.documentBodyReady())
+        then: "Timeout is thrown if body is not ready"
+            mockWDWrapper.executeScript(_ as String) >> false
+            thrown(TimeoutException)
+    }
+
+    def "waiting for documentBodyReady runs some JavaScript and doesn't timeout if true"() {
         when: "Waiting for document body ready"
             jsWait.until(ExtraExpectedConditions.documentBodyReady())
         then: "nothing is thrown if body is ready is finish"
             1 * mockWDWrapper.executeScript(_ as String) >> true
             noExceptionThrown()
 
-        when: "Waiting for documentBodyReady"
-            jsWait.until(ExtraExpectedConditions.documentBodyReady())
-        then: "Timeout is thrown if body is not ready"
-            1 * mockWDWrapper.executeScript(_ as String) >> false
-            thrown(TimeoutException)
     }
 
     def static listSize = 3

@@ -7,16 +7,18 @@ import com.frameworkium.core.ui.pages.pageobjects.TestPage
 import com.frameworkium.core.ui.tests.BaseUITest
 import org.junit.Assume
 import org.openqa.selenium.remote.RemoteWebDriver
-import org.openqa.selenium.support.ui.Clock
 import org.openqa.selenium.support.ui.FluentWait
 import org.openqa.selenium.support.ui.Sleeper
 import spock.lang.Specification
+
+import java.time.Clock
 
 class PageFactorySpec extends Specification {
 
     def mockDriver = Mock(Driver)
     def webDriverWrapperSpy = Spy(WebDriverWrapper, constructorArgs: [Mock(RemoteWebDriver)])
-    def mockWait = Mock(FluentWait, constructorArgs: [webDriverWrapperSpy, Mock(Clock), Mock(Sleeper)])
+    def mockWait = Mock(FluentWait, constructorArgs: [webDriverWrapperSpy, Clock.systemUTC(), Mock(Sleeper)])
+
 
     def "Instantiate a simple page object"() {
         // skip test if capture is enabled otherwise things break!
