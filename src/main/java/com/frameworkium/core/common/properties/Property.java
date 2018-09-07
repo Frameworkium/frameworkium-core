@@ -39,7 +39,6 @@ public enum Property {
     MAXIMISE("maximise"),
     RESOLUTION("resolution"),
     VIDEO_CAPTURE_URL("videoCaptureUrl"),
-    CHROME_USER_DATA_DIR("chromeUserDataDir"),
     CUSTOM_BROWSER_IMPL("customBrowserImpl"),
     REUSE_BROWSER("reuseBrowser"),
     THREADS("threads"),

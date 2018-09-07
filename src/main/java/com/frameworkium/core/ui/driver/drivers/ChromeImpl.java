@@ -34,11 +34,6 @@ public class ChromeImpl extends AbstractDriver {
                     ImmutableMap.of("deviceName", Property.DEVICE.getValue()));
         }
 
-        // Allow user to provide their own user directory, for custom chrome profiles
-        if (Property.CHROME_USER_DATA_DIR.isSpecified()) {
-            chromeOptions.addArguments(
-                    "user-data-dir=" + Property.CHROME_USER_DATA_DIR.getValue());
-        }
         chromeOptions.setHeadless(Property.HEADLESS.getBoolean());
         return chromeOptions;
     }
