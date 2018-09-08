@@ -72,13 +72,15 @@ public final class Visibility {
      * This then behaves as expected if a page object extends something which
      * itself extends HtmlElement or BasePage.
      */
-    private List<Field> getDeclaredFieldsIncludingSuperClasses(Class<?> clazz) {
+    private List<Field> getDeclaredFieldsIncludingSuperClasses(Class<?> childClazz) {
         final List<Field> fields = new ArrayList<>();
 
-        for (Class<?> c = clazz;
-                ((c != null) && (c != BasePage.class) && (c != HtmlElement.class));
-                c = c.getSuperclass()) {
-            fields.addAll(Arrays.asList(c.getDeclaredFields()));
+        Class<?> parentClazz = childClazz;
+        while (parentClazz != null
+                && parentClazz != BasePage.class
+                && parentClazz != HtmlElement.class) {
+            fields.addAll(Arrays.asList(parentClazz.getDeclaredFields()));
+            parentClazz = parentClazz.getSuperclass();
         }
         return fields;
     }
