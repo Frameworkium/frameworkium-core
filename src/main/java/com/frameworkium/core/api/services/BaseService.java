@@ -19,6 +19,7 @@ public abstract class BaseService {
     protected static final Logger logger = LogManager.getLogger();
 
     static {
+        // TODO: find all usage of RestAssured and create proxy properties for each
         if (Property.PROXY.isSpecified()) {
             try {
                 RestAssured.proxy(new URI(Property.PROXY.getValue()));
