@@ -33,7 +33,7 @@ class PageFactorySpec extends Specification {
 
         then: "Wait is successful"
             2 * mockDriver.getDriver() >> webDriverWrapperSpy
-            1 * webDriverWrapperSpy.executeScript(_ as String) >> true
+            1 * webDriverWrapperSpy.executeAsyncScript(_ as String) >> true
             !pageObject.isWebElementNull()
     }
 
