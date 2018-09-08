@@ -47,10 +47,7 @@ public abstract class AbstractDriver implements Driver {
 
     private Capabilities addProxyIfRequired(Capabilities caps) {
         if (Property.PROXY.isSpecified()) {
-            MutableCapabilities mutableCapabilities = new MutableCapabilities();
-            mutableCapabilities.setCapability(
-                    CapabilityType.PROXY, createProxy(Property.PROXY.getValue()));
-            return caps.merge(mutableCapabilities);
+            return caps.merge(createProxyCapabilities(Property.PROXY.getValue()));
         } else {
             return caps;
         }
@@ -84,6 +81,11 @@ public abstract class AbstractDriver implements Driver {
         return ableToMaximise && Property.MAXIMISE.getBoolean();
     }
 
+    private static Capabilities createProxyCapabilities(String proxyProperty) {
+        return new ImmutableCapabilities(
+                CapabilityType.PROXY, createProxy(proxyProperty));
+    }
+
     private static Proxy createProxy(String proxyProperty) {
         Proxy proxy = new Proxy();
         switch (proxyProperty.toLowerCase()) {
@@ -107,12 +109,12 @@ public abstract class AbstractDriver implements Driver {
 
     private static Proxy createManualProxy(String proxyProperty) {
         String proxyString = getProxyURL(proxyProperty);
+        logger.debug("All protocols to use proxy address: {}", proxyString);
         Proxy proxy = new Proxy();
         proxy.setProxyType(ProxyType.MANUAL)
                 .setHttpProxy(proxyString)
                 .setFtpProxy(proxyString)
                 .setSslProxy(proxyString);
-        logger.debug("All protocols to use proxy address: {}", proxyString);
         return proxy;
     }
 
