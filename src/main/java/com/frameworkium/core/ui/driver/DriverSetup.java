@@ -8,24 +8,23 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Capabilities;
 import org.reflections.Reflections;
-
 import java.lang.reflect.InvocationTargetException;
 
 public class DriverSetup {
 
     public static final Browser DEFAULT_BROWSER = Browser.FIREFOX;
 
-    /** Supported drivers. */
+    /**Supported drivers.*/
     public enum Browser {
-        FIREFOX, LEGACYFIREFOX, CHROME, OPERA, IE, SAFARI, ELECTRON, CUSTOM
+        FIREFOX, LEGACYFIREFOX, CHROME, OPERA, IE, SAFARI, ELECTRON, CUSTOM, EDGE
     }
 
-    /** Supported remote grids. */
+    /** Supported remote grids.*/
     private enum RemoteGrid {
         SAUCE, BROWSERSTACK, GRID
     }
 
-    /** Supported platforms for remote grids. */
+    /**Supported platforms for remote grids. */
     public enum Platform {
         WINDOWS, OSX, IOS, ANDROID, NONE
     }
@@ -51,7 +50,6 @@ public class DriverSetup {
      * @return The (potentially) remote driver implementation based on parameters
      */
     private Driver instantiateDesiredRemote(Driver driver) {
-
         Capabilities capabilities = driver.getCapabilities();
         Platform platform = getPlatformType();
         switch (getRemoteType()) {
@@ -72,6 +70,8 @@ public class DriverSetup {
                 return new FirefoxImpl();
             case LEGACYFIREFOX:
                 return new LegacyFirefoxImpl();
+            case EDGE:
+                return new EdgeImpl();
             case CHROME:
                 return new ChromeImpl();
             case OPERA:
@@ -84,6 +84,7 @@ public class DriverSetup {
                 return new ElectronImpl();
             case CUSTOM:
                 String customBrowserImpl = Property.CUSTOM_BROWSER_IMPL.getValue();
+
                 try {
                     return getCustomBrowserImpl(customBrowserImpl)
                             .getDeclaredConstructor()
@@ -122,7 +123,8 @@ public class DriverSetup {
         }
     }
 
-    private static RemoteGrid getRemoteType() {
+    private static RemoteGrid getRemoteType()
+    {
         if (Sauce.isDesired()) {
             return RemoteGrid.SAUCE;
         } else if (BrowserStack.isDesired()) {
