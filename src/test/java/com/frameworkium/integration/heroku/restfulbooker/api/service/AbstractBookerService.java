@@ -36,10 +36,6 @@ public abstract class AbstractBookerService extends BaseService {
                 .statusCode(HttpStatus.SC_OK);
     }
 
-    protected ExtractableResponse get(String url) {
-        return request(url);
-    }
-
     protected ExtractableResponse post(Object body, String url) {
         return request(Method.POST, body, url);
     }

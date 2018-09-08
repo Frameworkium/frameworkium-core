@@ -25,7 +25,7 @@ public class ExecutionService extends BaseCaptureService {
 
     @Step("Get Capture Executions, page={page}, pageSize={pageSize}")
     public ExecutionResults getExecutions(int page, int pageSize) {
-        return request(
+        return get(
                 ImmutableMap.of("page", page, "pageSize", pageSize),
                 CaptureEndpoint.EXECUTIONS.getUrl())
                 .as(ExecutionResults.class);
