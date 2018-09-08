@@ -50,11 +50,6 @@ public class VideoCapture {
                     "Timed out waiting for Session ID %s to become available after 6 seconds.",
                     sessionId));
             return;
-        } catch (ConnectException e) {
-            logger.error(String.format(
-                    "Connection was refused for Session ID %s while trying to retrieve the video.",
-                    sessionId));
-            return;
         }
 
         Path path = Paths.get(VIDEO_FOLDER);
@@ -86,7 +81,7 @@ public class VideoCapture {
 
     @Attachment(value = "Video on Failure", type = "video/mp4")
     private static byte[] getVideo(URL videoCaptureURL)
-            throws TimeoutException, InterruptedException, ConnectException {
+            throws TimeoutException, InterruptedException {
         int i = 0;
         while (i++ < 4) {
             logger.debug("Download URL for Video Capture: " + videoCaptureURL);
@@ -94,6 +89,7 @@ public class VideoCapture {
             if (response.getStatusCode() == HttpStatus.SC_OK) {
                 return response.asByteArray();
             }
+            logger.debug("Retrying download URL for Video Capture: " + videoCaptureURL);
             TimeUnit.SECONDS.sleep(2);
         }
         throw new TimeoutException();
