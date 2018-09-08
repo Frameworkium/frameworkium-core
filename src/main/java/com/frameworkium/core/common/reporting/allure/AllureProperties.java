@@ -27,7 +27,6 @@ public class AllureProperties {
             Properties props = new Properties();
             props.putAll(getCommonProps());
             props.store(fos, "See https://github.com/allure-framework/allure-core/wiki/Environment");
-            fos.close();
         } catch (IOException e) {
             logger.error("IO problem when writing allure properties file", e);
         }
