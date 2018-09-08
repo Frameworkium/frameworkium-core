@@ -206,13 +206,6 @@
       <artifactId>cucumber-testng</artifactId>
       <version>1.2.5</version>
     </dependency>
-
-    <!-- Used for custom driver implementation lookup -->
-    <dependency>
-      <groupId>org.reflections</groupId>
-      <artifactId>reflections</artifactId>
-      <version>0.9.11</version>
-    </dependency>
   </dependencies>
 
   <repositories />
