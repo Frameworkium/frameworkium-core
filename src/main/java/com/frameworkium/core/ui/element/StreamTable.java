@@ -34,7 +34,7 @@ import static java.util.stream.Collectors.toList;
  * <li>{@code tbody}</li>
  * </ul>
  *
- * <p>{@link StreamTable} works well on tables which DO NOT use:
+ * <p>{@link StreamTable} works best on tables which DO NOT use:
  *
  * <ul>
  * <li>{@code rowspan}</li>

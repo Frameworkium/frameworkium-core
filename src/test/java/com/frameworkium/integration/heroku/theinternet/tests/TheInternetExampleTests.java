@@ -14,26 +14,25 @@ import java.util.stream.Stream;
 import static com.google.common.truth.Truth.assertThat;
 
 @Feature("The Internet Example Feature")
+@Test
 public class TheInternetExampleTests extends BaseUITest {
 
-    @Issue("HEROKU-2")
+    @Issue("INT-2")
     @Story("Check boxes story")
-    @Test(description = "Checkboxes")
-    public void checkBoxes() {
+    public void check_boxes_can_all_be_checked() {
 
         final int timeout = 15;
-        CheckboxesPage checkboxesPage = WelcomePage.open(timeout)
+        Stream<Boolean> checkboxesStatus =
+                WelcomePage.open(timeout)
                 .clickCheckboxesLink()
-                .checkAllCheckboxes();
+                .checkAllCheckboxes()
+                .getAllCheckboxCheckedStatus();
 
         // Assert that all checkboxes are checked
-        assertThat(checkboxesPage.getAllCheckboxCheckedStatus())
-                .named("check status of checkboxes")
-                .doesNotContain(false);
+        Truth8.assertThat(checkboxesStatus).doesNotContain(false);
     }
 
-    @Issue("HEROKU-3")
-    @Test(description = "Drag and Drop")
+    @Issue("INT-3")
     public void dragAndDrop() {
 
         List<String> headings = WelcomePage.open()
@@ -46,8 +45,7 @@ public class TheInternetExampleTests extends BaseUITest {
                 .containsExactly("B", "A");
     }
 
-    @Issue("HEROKU-5")
-    @Test(description = "Dynamic loading")
+    @Issue("INT-5")
     public void dynamicLoading() {
 
         DynamicLoadingExamplePage dynamicLoadingPage =
@@ -57,29 +55,24 @@ public class TheInternetExampleTests extends BaseUITest {
                         .clickStart().
                         waitForElementToBeDisplayed();
 
-        // Assert that the element is indeed displayed
         assertThat(dynamicLoadingPage.isElementDisplayed())
                 .named("element visibility")
                 .isTrue();
     }
 
-    @Issue("HEROKU-9")
-    @Test(description = "Hovers")
+    @Issue("INT-9")
     public void hovers() {
 
-        // Navigate to the hovers page
-        HoversPage hoversPage = WelcomePage.open().clickHoversLink();
+        String firstFigureCaption = WelcomePage.open()
+                .clickHoversLink()
+                .getFirstFigureCaption();
 
-        // Confirm that the caption under the first figure contains expected text
-        assertThat(hoversPage.getFirstFigureCaption()).contains("name: user1");
-
+        assertThat(firstFigureCaption).contains("name: user1");
     }
 
-    @Issue("HEROKU-11")
-    @Test(description = "Javascript Alerts")
+    @Issue("INT-11")
     public void javascriptAlerts() {
 
-        // Navigate to the javascript alerts page
         JavaScriptAlertsPage javascriptAlerts =
                 WelcomePage.open()
                         .clickJavascriptAlertsLink()
@@ -89,11 +82,9 @@ public class TheInternetExampleTests extends BaseUITest {
                 .isEqualTo("You successfuly clicked an alert");
     }
 
-    @Issue("HEROKU-12")
-    @Test(description = "Key Presses")
+    @Issue("INT-12")
     public void keypresses() {
 
-        // Navigate to the key presses page
         KeyPressesPage keyPressesPage = WelcomePage
                 .open()
                 .clickKeyPressesLink()
