@@ -52,11 +52,10 @@ public abstract class BaseService {
     /**
      * Performs GET request of the URL.
      *
-     * @param url the url to get
      * @return The response from the request
      */
-    protected ExtractableResponse request(String url) {
-        return request(ImmutableMap.of(), url);
+    protected ExtractableResponse get(String url) {
+        return get(ImmutableMap.of(), url);
     }
 
     /**
@@ -66,6 +65,28 @@ public abstract class BaseService {
      * @param url    the URL to GET
      * @return The response from the request
      */
+    protected ExtractableResponse get(Map<String, ?> params, String url) {
+        return request(Method.GET, params, url);
+    }
+
+    /**
+     * Performs GET request of the URL.
+     *
+     * @return The response from the request
+     * @deprecated use {@link #get(String)}
+     */
+    @Deprecated
+    protected ExtractableResponse request(String url) {
+        return request(ImmutableMap.of(), url);
+    }
+
+    /**
+     * Performs GET request of the URL with parameters.
+     *
+     * @return The response from the request
+     * @deprecated use {@link #get(Map, String)}
+     */
+    @Deprecated
     protected ExtractableResponse request(Map<String, ?> params, String url) {
         return request(Method.GET, params, url);
     }

@@ -4,7 +4,7 @@ import com.frameworkium.core.api.services.BaseService;
 import com.frameworkium.integration.ai.capture.api.constant.CaptureEndpoint;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.response.ExtractableResponse;
+import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.apache.http.HttpStatus;
@@ -36,8 +36,13 @@ public class BaseCaptureService extends BaseService {
                 .statusCode(HttpStatus.SC_OK);
     }
 
-    protected ExtractableResponse get(String url) {
-        return request(url);
+    protected ValidatableResponse post(String url, Object body) {
+        return getRequestSpec()
+                .when()
+                .body(body)
+                .post(url)
+                .then()
+                .assertThat().statusCode(HttpStatus.SC_CREATED);
     }
 
 }
