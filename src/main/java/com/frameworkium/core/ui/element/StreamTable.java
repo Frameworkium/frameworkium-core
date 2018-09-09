@@ -127,19 +127,10 @@ public class StreamTable extends HtmlElement {
     }
 
     /**
-     * Returns the first column given a String that matches the text of a header {@code th}.
-     * <pre>
-     * +--+------------+----+
-     * |  | headerText |    |
-     * +--+------------+----+
-     * |  |      |     |    |
-     * |  |   return   |    |
-     * |  |      ˅     |    |
-     * +--+------------+----+
-     * </pre>
-     *
      * @param headerText the text of the header we are looking for
-     * @return the first column which matches the {@code headerText}
+     * @return a {@link Stream} of {@link WebElement}s of the {@code td}s inside
+     *         the {@code tbody} for the first column that matches the trimmed
+     *         text of a header {@code th}.
      */
     public Stream<WebElement> getColumn(String headerText) {
         int index = getHeaderIndex(e -> Objects.equals(e.getText(), headerText));
@@ -147,19 +138,9 @@ public class StreamTable extends HtmlElement {
     }
 
     /**
-     * Returns column given a predicate that matches a header.
-     * <pre>
-     * +--+-------------+----+
-     * |  | headerMatch |    |
-     * +--+-------------+----+
-     * |  |      |      |    |
-     * |  |   return    |    |
-     * |  |      ˅      |    |
-     * +--+-------------+----+
-     * </pre>
-     *
-     * @param headerMatcher the predicate to test the header text that we are looking for
-     * @return the column or range which matches the {@code headerMatcher}
+     * @param headerMatcher predicate to find the header that we are looking for
+     * @return a {@link Stream} of {@link WebElement}s of the {@code td}s inside
+     *         the {@code tbody} for the first column that matches the {code headerMatcher}
      */
     public Stream<WebElement> getColumn(Predicate<WebElement> headerMatcher) {
         return getColumn(getHeaderIndex(headerMatcher));
