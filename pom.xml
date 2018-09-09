@@ -31,7 +31,9 @@
     <system>github issues</system>
     <url>https://github.com/Frameworkium/frameworkium-core/issues</url>
   </issueManagement>
-  <ciManagement />
+  <ciManagement>
+    <url>https://travis-ci.org/Frameworkium/frameworkium-core</url>
+  </ciManagement>
   <distributionManagement />
 
   <properties>
