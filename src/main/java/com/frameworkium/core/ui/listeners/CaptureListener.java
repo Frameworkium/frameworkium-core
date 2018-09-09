@@ -3,8 +3,6 @@ package com.frameworkium.core.ui.listeners;
 import com.frameworkium.core.ui.capture.ElementHighlighter;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.capture.model.Command;
-import com.frameworkium.core.ui.js.framework.Angular;
-import com.frameworkium.core.ui.js.framework.AngularTwo;
 import com.frameworkium.core.ui.pages.Visibility;
 import com.frameworkium.core.ui.tests.BaseUITest;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -110,13 +108,12 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private boolean isFrameworkiumScript(String script) {
         String browserAgentScript = "return navigator.userAgent;";
+        String waitForAngularRequestsPrefix =
+                "var callback = arguments[arguments.length - 1];\n";
 
         return script.equals(browserAgentScript)
-                || script.equals(Angular.IS_PRESENT_JS)
-                || script.equals(AngularTwo.IS_PRESENT_JS)
                 || script.equals(Visibility.FORCE_VISIBLE_SCRIPT)
-                || script.contains("angular.getTestability(el)")
-                || script.contains("definitelyNg2OrNewer");
+                || script.startsWith(waitForAngularRequestsPrefix);
     }
 
     /* Test end methods */
