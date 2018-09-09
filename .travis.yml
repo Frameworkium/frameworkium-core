@@ -69,7 +69,7 @@ before_script:
 
 script:
   # Download deps, compile and run checkstyle
-  - mvn install -B --quiet --show-version -DskipTests=true -Dmaven.javadoc.skip=true
+  - mvn test-compile -B --show-version -DskipTests=true -Dmaven.javadoc.skip=true
 
   # Firefox on the grid
   # No longer works with 2 threads on Travis, since 29-Dec-2017:
@@ -82,7 +82,7 @@ script:
   # Chrome on the grid
   - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
-  # Custom Browser Impl
+  # Custom Browser Impl (without Capture so the PageFactorySpec runs)
   - mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=CustomFirefoxImpl -Dmaximise=true -Dit.test=DocumentationTest 2> /dev/null
 
   # Query Jira for which test to run and then log results to Jira
