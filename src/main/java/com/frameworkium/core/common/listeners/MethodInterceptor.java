@@ -28,52 +28,35 @@ public class MethodInterceptor implements IMethodInterceptor {
     private List<IMethodInstance> filterTestsToRunByJQL(
             List<IMethodInstance> methodsToBeFiltered) {
 
-        if (JQL_QUERY.isSpecified() && JIRA_URL.isSpecified()) {
-            logger.info("Filtering specified tests to run with JQL query results");
-
-            List<IMethodInstance> methodsWithTestIDs = methodsToBeFiltered.stream()
-                    .filter(m -> TestIdUtils.getIssueOrTmsLinkValue(m).isPresent())
-                    .collect(toList());
-
-            List<String> testIDsFromJQL =
-                    new SearchIssues(JQL_QUERY.getValue()).getKeys();
-
-            List<IMethodInstance> methodsToRun = methodsWithTestIDs.stream()
-                    .filter(m -> testIDsFromJQL.contains(
-                            TestIdUtils.getIssueOrTmsLinkValue(m).orElseThrow(IllegalStateException::new)))
-                    .collect(toList());
-
-            logTestMethodInformation(
-                    methodsToBeFiltered, methodsWithTestIDs, methodsToRun);
-
-            return methodsToRun;
-        } else {
+        if (!(JQL_QUERY.isSpecified() && JIRA_URL.isSpecified())) {
             // Can't run the JQL without both JIRA_URL and JQL_QUERY
             return methodsToBeFiltered;
         }
+
+        logger.info("Filtering specified tests to run with JQL query results");
+
+        List<String> testIDsFromJQL =
+                new SearchIssues(JQL_QUERY.getValue()).getKeys();
+
+        List<IMethodInstance> methodsToRun = methodsToBeFiltered.stream()
+                .filter(m -> TestIdUtils.getIssueOrTmsLinkValue(m).isPresent())
+                .filter(m -> testIDsFromJQL.contains(
+                        TestIdUtils.getIssueOrTmsLinkValue(m).orElseThrow(IllegalStateException::new)))
+                .collect(toList());
+
+        logTestMethodInformation(methodsToRun);
+
+        return methodsToRun;
     }
 
-    private void logTestMethodInformation(
-            List<IMethodInstance> methodsPreFiltering,
-            List<IMethodInstance> methodsWithTestIDs,
-            List<IMethodInstance> methodsPostFiltering) {
+    private void logTestMethodInformation(List<IMethodInstance> methodsToRun) {
 
         logger.debug("Running the following test methods:\n{}", () ->
-                methodsPostFiltering.stream()
+                methodsToRun.stream()
                         .map(m -> getMethodFromIMethod(m).getName())
                         .collect(joining("\n")));
 
-        List<String> methodsWithoutTestIds = methodsPreFiltering.stream()
-                .filter(m -> !methodsWithTestIDs.contains(m))
-                .map(m -> getMethodFromIMethod(m).getName())
-                .collect(toList());
-
-        if (methodsWithoutTestIds.size() > 0) {
-            logger.warn("The following tests don't have TestIDs {}",
-                    () -> methodsWithoutTestIds.stream().collect(joining(", ")));
-        }
-
-        logger.info("Running {} tests specified by JQL query", methodsPostFiltering.size());
+        logger.info("Running {} tests specified by JQL query", methodsToRun.size());
     }
 
     private Method getMethodFromIMethod(IMethodInstance iMethod) {
