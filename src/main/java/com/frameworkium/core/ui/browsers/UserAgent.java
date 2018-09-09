@@ -12,17 +12,14 @@ public class UserAgent {
     private String userAgent;
 
     public UserAgent(JavascriptExecutor driver) {
-        userAgent = determineUserAgent(driver);
-    }
-
-    private String determineUserAgent(JavascriptExecutor driver) {
-        if (!Driver.isNative()) {
+        if (Driver.isNative()) {
+            userAgent = null;
+        } else {
             try {
-                return (String) driver.executeScript(SCRIPT);
+                userAgent = (String) driver.executeScript(SCRIPT);
             } catch (Exception ignored) {
             }
         }
-        return null;
     }
 
     public Optional<String> getUserAgent() {
