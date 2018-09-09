@@ -2,11 +2,14 @@ package com.frameworkium.integration.heroku.theinternet.tests;
 
 import com.frameworkium.core.ui.tests.BaseUITest;
 import com.frameworkium.integration.heroku.theinternet.pages.*;
+import com.google.common.truth.Truth8;
 import io.qameta.allure.*;
 import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -100,29 +103,21 @@ public class TheInternetExampleTests extends BaseUITest {
                 .isEqualTo("You entered: " + Keys.ENTER.name());
     }
 
-    @Issue("HEROKU-14")
-    @Test(description = "Table Manipulation & Validation")
+    @Issue("INT-14")
     public void sortDataTable() {
 
-        // Navigate to the sortable data tables page
-        SortableDataTablesPage sortableDataTablesPage =
-                WelcomePage.open().clickSortableDataTablesLink();
+        SortableDataTablesPage tablesPage = SortableDataTablesPage.open();
 
-        // Assert that Table 1 contains "http://www.jdoe.com" in the web site column
-        assertThat(sortableDataTablesPage.getTable1ColumnContents("Web Site"))
+        Truth8.assertThat(tablesPage.getTable1ColumnContents("Web Site"))
                 .contains("http://www.jdoe.com");
 
-        // Sort Table 2 by last name column
-        sortableDataTablesPage.sortTable2ByColumnName("Last Name");
+        List<String> sortedLastNameColumn =
+                tablesPage.sortTable2ByColumnName("Last Name")
+                        .getTable2ColumnContents("Last Name")
+                        .collect(Collectors.toList());
 
-        List<String> lastNameColumn =
-                sortableDataTablesPage.getTable2ColumnContents("Last Name");
-
-        // Confirm that the column is then ordered by the last name
-        assertThat(lastNameColumn).isOrdered();
-
-        // Confirm that "Bach" is then the first surname in table 2
-        assertThat(lastNameColumn.get(0)).isEqualTo("Bach");
+        assertThat(sortedLastNameColumn.get(0)).isEqualTo("Bach");
+        assertThat(sortedLastNameColumn).isOrdered();
     }
 
 }
