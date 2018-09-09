@@ -76,24 +76,26 @@ script:
   # frameworkium 2.5.0, ff 57.0.2, geckodriver 0.19.1
   - mvn verify -B -Dthreads=1 -Dconfig=FirefoxGrid.yaml -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
+  # Following have -o (offline) flag to prevent timing out for snapshot metadata
+
   # Firefox off the grid
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dheadless=true -Dit.test=TheInternetExampleTests -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}" 2> /dev/null
+  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dheadless=true -Dit.test=TheInternetExampleTests -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}" 2> /dev/null
 
   # Chrome on the grid
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
+  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Custom Browser Impl (without Capture so the PageFactorySpec runs)
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=com.frameworkium.integration.CustomFirefoxImpl -Dmaximise=true -Dit.test=DocumentationTest 2> /dev/null
+  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=com.frameworkium.integration.CustomFirefoxImpl -Dmaximise=true -Dit.test=DocumentationTest 2> /dev/null
 
   # Query Jira for which test to run and then log results to Jira
   # Disabled until we have a JIRA to use
   # - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DjiraURL="http://52.29.130.45:8080" -DjqlQuery="issueKey=TEST-1" -DresultVersion="BUILD TEST VERSION" -DzapiCycleRegex="Test Cycle" -DjiraUsername=frameworkium -DjiraPassword=frameworkium -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # SauceLabs - disabled until we have a sauce account to use
-#  - mvn verify -Dsauce=true -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.0 -Ddevice=iPad -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
+  # - mvn verify -Dsauce=true -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.0 -Ddevice=iPad -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Allure report
-  - mvn allure:report -B --quiet
+  - mvn allure:report -B
 
 after_script:
   # Code coverage report
