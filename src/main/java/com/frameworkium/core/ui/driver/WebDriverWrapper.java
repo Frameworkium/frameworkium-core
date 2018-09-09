@@ -1,6 +1,5 @@
 package com.frameworkium.core.ui.driver;
 
-import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
@@ -23,23 +22,10 @@ public class WebDriverWrapper extends EventFiringWebDriver {
      * Get remote web driver wrapper.
      */
     public RemoteWebDriver getWrappedRemoteWebDriver() {
-        WebDriver wd = getWrappedDriver();
-        if (wd instanceof RemoteWebDriver) {
-            return (RemoteWebDriver) wd;
+        if (driver instanceof RemoteWebDriver) {
+            return (RemoteWebDriver) driver;
         } else {
-            throw new IllegalStateException(wd + " is not an instance of RemoteWebDriver");
-        }
-    }
-
-    /**
-     * Get Appium Driver.
-     */
-    public AppiumDriver getWrappedAppiumDriver() {
-        WebDriver wd = getWrappedDriver();
-        if (wd instanceof AppiumDriver) {
-            return (AppiumDriver) wd;
-        } else {
-            throw new IllegalStateException(wd + " is not an instance of AppiumDriver");
+            throw new IllegalStateException(driver + " is not an instance of RemoteWebDriver");
         }
     }
 }
