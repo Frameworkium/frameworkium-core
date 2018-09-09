@@ -5,7 +5,6 @@ browserStack:
 browserVersion:
 build:
 captureURL:
-chromeUserDataDir:
 customBrowserImpl:
 device:
 gridURL:
