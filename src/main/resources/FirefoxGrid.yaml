@@ -5,8 +5,8 @@ browserStack:
 browserVersion:
 build:
 captureURL:
+customBrowserImpl:
 device:
-firefoxProfile:
 gridURL: http://localhost:4444/wd/hub
 headless:
 jiraPassword:
@@ -27,4 +27,6 @@ sauce:
 spiraURL:
 sutName:
 sutVersion:
+threads:
+videoCaptureUrl:
 zapiCycleRegEx:
