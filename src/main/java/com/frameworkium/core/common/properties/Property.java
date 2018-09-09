@@ -1,12 +1,11 @@
 package com.frameworkium.core.common.properties;
 
 import org.apache.commons.lang3.StringUtils;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Objects;
+import java.util.Properties;
 
 public enum Property {
 
@@ -44,7 +43,7 @@ public enum Property {
     THREADS("threads"),
     HEADLESS("headless");
 
-    private static Map<String, Object> configMap = null;
+    private static Properties properties = null;
     private String value;
     private String systemPropertyKey;
 
@@ -62,11 +61,11 @@ public enum Property {
     }
 
     private String getValueFromConfigFile(String key) {
-        if (configMap == null) {
-            configMap = loadConfigFile();
+        if (properties == null) {
+            properties = loadConfigFile();
         }
 
-        Object objFromFile = configMap.get(key);
+        Object objFromFile = properties.get(key);
         if (objFromFile != null) {
             return Objects.toString(objFromFile);
         } else {
@@ -74,19 +73,22 @@ public enum Property {
         }
     }
 
-    private static Map<String, Object> loadConfigFile() {
+    private static Properties loadConfigFile() {
         String configFileName = System.getProperty("config");
-        if (StringUtils.isNotEmpty(configFileName)) {
-            try (InputStream configFileStream =
-                         ClassLoader.getSystemClassLoader()
-                                 .getResourceAsStream(configFileName)) {
-                return new Yaml().load(configFileStream);
-            } catch (IOException | YAMLException e) {
-                throw new IllegalArgumentException(
-                        "Properties file '" + configFileName + "' not found.", e);
-            }
-        } else {
-            return Collections.emptyMap();
+
+        if (StringUtils.isBlank(configFileName)) {
+            return new Properties();
+        }
+
+        try (InputStream configFileStream =
+                     ClassLoader.getSystemClassLoader()
+                             .getResourceAsStream(configFileName)) {
+            Properties properties = new Properties();
+            properties.load(configFileStream);
+            return properties;
+        } catch (IOException e) {
+            throw new IllegalArgumentException(
+                    "Properties file '" + configFileName + "' not found.", e);
         }
     }
 
