@@ -111,7 +111,7 @@ public class LoggingListener implements WebDriverEventListener {
 
     @Override
     public void beforeScript(String script, WebDriver driver) {
-        logger.debug("running script " + script);
+        logger.debug("running script " + StringUtils.abbreviate(script, 512));
     }
 
     @Override
