@@ -370,16 +370,6 @@
         <configuration>
           <!-- Keep version in sync with dependencies -->
           <reportVersion>${allure.version}</reportVersion>
-
-          <!-- Jira specific patterns -->
-          <properties>
-            <allure.issues.tracker.pattern>
-              /browse/%s
-            </allure.issues.tracker.pattern>
-            <allure.tests.management.pattern>
-              /browse/%s
-            </allure.tests.management.pattern>
-          </properties>
         </configuration>
       </plugin>
 
