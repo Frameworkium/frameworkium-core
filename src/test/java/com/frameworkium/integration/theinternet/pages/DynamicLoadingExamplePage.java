@@ -3,6 +3,7 @@ package com.frameworkium.integration.theinternet.pages;
 import com.frameworkium.core.ui.annotations.Invisible;
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
+import com.frameworkium.core.ui.pages.PageFactory;
 import io.qameta.allure.Step;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.htmlelements.annotations.Name;
@@ -25,21 +26,21 @@ public class DynamicLoadingExamplePage extends BasePage<DynamicLoadingExamplePag
     @FindBy(id = "finish")
     private HtmlElement dynamicElement;
 
+    public static DynamicLoadingExamplePage openExampleTwo() {
+        return PageFactory.newInstance(
+                DynamicLoadingExamplePage.class,
+                "http://the-internet.herokuapp.com/dynamic_loading/2");
+    }
+
     @Step("Click Start")
     public DynamicLoadingExamplePage clickStart() {
         startButton.click();
-        wait.until(visibilityOf(dynamicElement));
         return this;
     }
 
-    @Step("Wait for the hidden element to be displayed")
-    public DynamicLoadingExamplePage waitForElementToBeDisplayed() {
+    public String getElementText() {
         wait.until(visibilityOf(dynamicElement));
-        return this;
-    }
-
-    public boolean isElementDisplayed() {
-        return dynamicElement.isDisplayed();
+        return dynamicElement.getText();
     }
 
 }

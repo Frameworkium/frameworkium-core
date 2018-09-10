@@ -24,9 +24,9 @@ public class TheInternetExampleTests extends BaseUITest {
         final int timeout = 15;
         Stream<Boolean> checkboxesStatus =
                 WelcomePage.open(timeout)
-                .clickCheckboxesLink()
-                .checkAllCheckboxes()
-                .getAllCheckboxCheckedStatus();
+                        .clickCheckboxesLink()
+                        .checkAllCheckboxes()
+                        .getAllCheckboxCheckedStatus();
 
         // Assert that all checkboxes are checked
         Truth8.assertThat(checkboxesStatus).doesNotContain(false);
@@ -48,16 +48,13 @@ public class TheInternetExampleTests extends BaseUITest {
     @Issue("INT-5")
     public void dynamicLoading() {
 
-        DynamicLoadingExamplePage dynamicLoadingPage =
-                WelcomePage.open()
-                        .clickDynamicLoading()
-                        .clickExample2()
-                        .clickStart().
-                        waitForElementToBeDisplayed();
+        String elementText =
+                DynamicLoadingExamplePage
+                        .openExampleTwo()
+                        .clickStart()
+                        .getElementText();
 
-        assertThat(dynamicLoadingPage.isElementDisplayed())
-                .named("element visibility")
-                .isTrue();
+        assertThat(elementText).isEqualTo("Hello World!");
     }
 
     @Issue("INT-9")
