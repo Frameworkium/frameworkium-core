@@ -42,14 +42,10 @@ public class WelcomePage extends BasePage<WelcomePage> {
     @FindBy(linkText = "Key Presses")
     private Link keyPressesLink;
 
-    @Name("Sortable Data Tables Link")
-    @FindBy(linkText = "Sortable Data Tables")
-    private Link sortableDataTablesLink;
-
-    @Step("Navigate to http://the-internet.herokuapp.com")
+    @Step("Navigate to https://the-internet.herokuapp.com")
     public static WelcomePage open() {
         return PageFactory.newInstance(
-                WelcomePage.class, "http://the-internet.herokuapp.com");
+                WelcomePage.class, "https://the-internet.herokuapp.com");
     }
 
     /**
@@ -101,11 +97,5 @@ public class WelcomePage extends BasePage<WelcomePage> {
     public KeyPressesPage clickKeyPressesLink() {
         keyPressesLink.click();
         return PageFactory.newInstance(KeyPressesPage.class);
-    }
-
-    @Step("Click the Sortable Data Table link")
-    public SortableDataTablesPage clickSortableDataTablesLink() {
-        sortableDataTablesLink.click();
-        return PageFactory.newInstance(SortableDataTablesPage.class);
     }
 }

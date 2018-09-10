@@ -8,11 +8,11 @@ import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.element.CheckBox;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CheckboxesPage extends BasePage<CheckboxesPage> {
 
-    @Visible(checkAtMost = 2)
+    @Visible(checkAtMost = 1)
     @Name("All checkboxes")
     @FindBy(css = "form input[type='checkbox']")
     private List<CheckBox> allCheckboxes;
@@ -24,11 +24,9 @@ public class CheckboxesPage extends BasePage<CheckboxesPage> {
     }
 
     @Step("Return the checked status of all the checkboxes")
-    public List<Boolean> getAllCheckboxCheckedStatus() {
-
+    public Stream<Boolean> getAllCheckboxCheckedStatus() {
         return allCheckboxes.stream()
-                .map(CheckBox::isSelected)
-                .collect(Collectors.toList());
+                .map(CheckBox::isSelected);
     }
 
 }
