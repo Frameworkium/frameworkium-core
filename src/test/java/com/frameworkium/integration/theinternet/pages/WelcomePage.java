@@ -75,12 +75,6 @@ public class WelcomePage extends BasePage<WelcomePage> {
         return PageFactory.newInstance(DragAndDropPage.class);
     }
 
-    @Step("Click the Dynamic Loading link")
-    public DynamicLoadingPage clickDynamicLoading() {
-        dynamicLoadingLink.click();
-        return PageFactory.newInstance(DynamicLoadingPage.class);
-    }
-
     @Step("Click the Hovers link")
     public HoversPage clickHoversLink() {
         hoversLink.click();
