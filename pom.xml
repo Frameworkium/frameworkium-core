@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.frameworkium</groupId>
@@ -40,6 +42,7 @@
     <threads>1</threads>
     <groups />
     <aspectj.version>1.9.1</aspectj.version>
+    <allure.version>2.7.0</allure.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
@@ -49,34 +52,33 @@
     <maven>3.3.9</maven>
   </prerequisites>
 
+  <!-- Check for updates with mvn versions:display-dependency-updates -->
   <dependencies>
-    <!-- Check for updates with mvn versions:display-dependency-updates -->
-
+    <!-- Selenium related -->
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
       <version>3.14.0</version>
     </dependency>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <version>6.14.3</version>
-    </dependency>
-    <dependency>
-      <groupId>io.qameta.allure</groupId>
-      <artifactId>allure-testng</artifactId>
-      <version>2.7.0</version>
-    </dependency>
-    <dependency>
-      <groupId>io.qameta.allure</groupId>
-      <artifactId>allure-cucumber-jvm</artifactId>
-      <version>2.7.0</version>
-    </dependency>
+
     <dependency>
       <groupId>ru.yandex.qatools.htmlelements</groupId>
       <artifactId>htmlelements-java</artifactId>
       <version>1.19</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.paulhammant</groupId>
+      <artifactId>ngwebdriver</artifactId>
+      <version>1.1.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sf.uadetector</groupId>
+      <artifactId>uadetector-resources</artifactId>
+      <version>2014.10</version>
+    </dependency>
+
     <dependency>
       <groupId>com.saucelabs</groupId>
       <artifactId>sauce_testng</artifactId>
@@ -87,6 +89,44 @@
       <artifactId>saucerest</artifactId>
       <version>1.0.39</version>
     </dependency>
+
+    <!-- Test related -->
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>6.14.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.qameta.allure</groupId>
+      <artifactId>allure-testng</artifactId>
+      <version>${allure.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.qameta.allure</groupId>
+      <artifactId>allure-cucumber-jvm</artifactId>
+      <version>${allure.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>0.42</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.truth.extensions</groupId>
+      <artifactId>truth-java8-extension</artifactId>
+      <version>0.42</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <!-- Required so that Google Truth works -->
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>26.0-jre</version>
+    </dependency>
+
+    <!-- Logging related -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
@@ -102,6 +142,8 @@
       <artifactId>slf4j-simple</artifactId>
       <version>1.7.25</version>
     </dependency>
+
+    <!-- API related -->
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
@@ -113,38 +155,19 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+    <!-- Cucumber -->
     <dependency>
-      <!-- Required so that Google Truth works -->
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>26.0-jre</version>
+      <groupId>info.cukes</groupId>
+      <artifactId>cucumber-java</artifactId>
+      <version>1.2.5</version>
     </dependency>
     <dependency>
-      <groupId>com.google.truth</groupId>
-      <artifactId>truth</artifactId>
-      <version>0.42</version>
+      <groupId>info.cukes</groupId>
+      <artifactId>cucumber-testng</artifactId>
+      <version>1.2.5</version>
     </dependency>
-    <dependency>
-      <groupId>com.google.truth.extensions</groupId>
-      <artifactId>truth-java8-extension</artifactId>
-      <version>0.42</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.aspectj</groupId>
-      <artifactId>aspectjweaver</artifactId>
-      <version>${aspectj.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.paulhammant</groupId>
-      <artifactId>ngwebdriver</artifactId>
-      <version>1.1.4</version>
-    </dependency>
-    <dependency>
-      <groupId>net.sf.uadetector</groupId>
-      <artifactId>uadetector-resources</artifactId>
-      <version>2014.10</version>
-    </dependency>
+
     <dependency>
       <groupId>org.yaml</groupId>
       <artifactId>snakeyaml</artifactId>
@@ -191,26 +214,191 @@
         </exclusion>
       </exclusions>
     </dependency>
-
-    <!-- Cucumber -->
-    <dependency>
-      <groupId>info.cukes</groupId>
-      <artifactId>cucumber-java</artifactId>
-      <version>1.2.5</version>
-    </dependency>
-    <dependency>
-      <groupId>info.cukes</groupId>
-      <artifactId>cucumber-testng</artifactId>
-      <version>1.2.5</version>
-    </dependency>
   </dependencies>
 
-  <repositories />
+  <repositories/>
 
-  <pluginRepositories />
+  <pluginRepositories/>
 
   <build>
     <plugins>
+      <!-- Compiles Java -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.0</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+
+      <!-- Code coverage -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.2</version>
+        <executions>
+          <execution>
+            <id>jacoco-initialize</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <configuration>
+              <!-- Property containing settings for JaCoCo runtime agent -->
+              <propertyName>surefireArgLine</propertyName>
+            </configuration>
+          </execution>
+          <!-- Ensures coverage report is created after running unit tests -->
+          <execution>
+            <id>post-unit-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+          <!-- Ensures coverage report is created after running integration tests -->
+          <execution>
+            <id>pre-integration-test</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <configuration>
+              <!-- Property for JaCoCo runtime agent, passed to Failsafe plugin -->
+              <propertyName>failsafeArgLine</propertyName>
+            </configuration>
+          </execution>
+          <execution>
+            <id>post-integration-test</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Compiles Groovy code for Spock unit tests-->
+      <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <version>1.6.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+              <goal>compileTests</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Spock unit tests (using surefire-plugin) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.22.0</version>
+        <configuration>
+          <!-- Sets arg line for jacoco agent when unit tests are run -->
+          <argLine>${surefireArgLine}</argLine>
+          <includes>
+            <include>*/*Spec.*</include>
+          </includes>
+        </configuration>
+        <!-- Required to run Spock tests with JUnit and not TestNG -->
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-junit47</artifactId>
+            <version>2.22.0</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <!-- Integration tests (failsafe-plugin) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>2.22.0</version>
+        <configuration>
+          <parallel>methods</parallel>
+          <threadCount>${threads}</threadCount>
+          <systemPropertyVariables>
+            <!-- For Frameworkium screenshots on test failure -->
+            <screenshotDirectory>
+              ${project.build.directory}/screenshots
+            </screenshotDirectory>
+            <!-- Required for writing the allure results -->
+            <allure.results.directory>
+              ${project.build.directory}/allure-results
+            </allure.results.directory>
+          </systemPropertyVariables>
+          <includes>
+            <include>**/*Test.java</include>
+            <include>**/*Tests.java</include>
+          </includes>
+          <groups>${groups}</groups>
+          <!-- required for Allure annotations and Jacoco code coverage -->
+          <argLine>
+            -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+            ${failsafeArgLine}
+          </argLine>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Allure2 -->
+      <plugin>
+        <groupId>io.qameta.allure</groupId>
+        <artifactId>allure-maven</artifactId>
+        <version>2.9</version>
+        <configuration>
+          <!-- Keep version in sync with dependencies -->
+          <reportVersion>${allure.version}</reportVersion>
+
+          <!-- Jira specific patterns -->
+          <properties>
+            <allure.issues.tracker.pattern>
+              /browse/%s
+            </allure.issues.tracker.pattern>
+            <allure.tests.management.pattern>
+              /browse/%s
+            </allure.tests.management.pattern>
+          </properties>
+        </configuration>
+      </plugin>
+
+      <!-- Used to attach sources to jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.0.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Checks for Checkstyle violations as part of the build -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -222,24 +410,25 @@
             <version>8.12</version>
           </dependency>
         </dependencies>
-        <configuration>
-          <configLocation>doc/style/style.xml</configLocation>
-          <encoding>UTF-8</encoding>
-          <linkXRef>false</linkXRef>
-          <consoleOutput>true</consoleOutput>
-          <failsOnError>true</failsOnError>
-          <includeTestSourceDirectory>false</includeTestSourceDirectory>
-        </configuration>
         <executions>
           <execution>
             <id>validate</id>
             <phase>validate</phase>
+            <configuration>
+              <configLocation>doc/style/style.xml</configLocation>
+              <encoding>UTF-8</encoding>
+              <consoleOutput>true</consoleOutput>
+              <failsOnError>true</failsOnError>
+            </configuration>
             <goals>
               <goal>check</goal>
             </goals>
           </execution>
         </executions>
       </plugin>
+
+      <!-- Release a new version with Maven, saving a lot of repetitive work.
+      Releasing a project is made in two steps: prepare and perform -->
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
         <version>2.5.3</version>
@@ -251,208 +440,4 @@
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <id>com.frameworkium.core</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <downloadSources>true</downloadSources>
-        <downloadJavadocs>true</downloadJavadocs>
-      </properties>
-      <build>
-        <plugins>
-          <!-- Compiles Java -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.8.0</version>
-            <configuration>
-              <source>1.8</source>
-              <target>1.8</target>
-            </configuration>
-          </plugin>
-
-          <!-- Code coverage -->
-          <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.8.2</version>
-            <executions>
-              <execution>
-                <id>jacoco-initialize</id>
-                <goals>
-                  <goal>prepare-agent</goal>
-                </goals>
-                <configuration>
-                  <!-- Property containing settings for JaCoCo runtime agent -->
-                  <propertyName>surefireArgLine</propertyName>
-                </configuration>
-              </execution>
-              <!-- Ensures unit test coverage report is created after running tests -->
-              <execution>
-                <id>post-unit-test</id>
-                <phase>test</phase>
-                <goals>
-                  <goal>report</goal>
-                </goals>
-              </execution>
-              <!-- Property for JaCoCo runtime agent, passed to Failsafe plugin -->
-              <execution>
-                <id>pre-integration-test</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>prepare-agent</goal>
-                </goals>
-                <configuration>
-                  <propertyName>failsafeArgLine</propertyName>
-                </configuration>
-              </execution>
-              <execution>
-                <id>post-integration-test</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>report</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <!-- Compiles Groovy code for Spock unit tests-->
-          <plugin>
-            <groupId>org.codehaus.gmavenplus</groupId>
-            <artifactId>gmavenplus-plugin</artifactId>
-            <version>1.6.1</version>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>compile</goal>
-                  <goal>compileTests</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <!-- Spock unit tests (using surefire-plugin) -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.22.0</version>
-            <configuration>
-              <!-- Sets arg line for jacoco agent when unit tests are run -->
-              <argLine>${surefireArgLine}</argLine>
-              <includes>
-                <include>*/*Spec.*</include>
-              </includes>
-            </configuration>
-            <!-- Required to run Spock tests with JUnit and not TestNG -->
-            <dependencies>
-              <dependency>
-                <groupId>org.apache.maven.surefire</groupId>
-                <artifactId>surefire-junit47</artifactId>
-                <version>2.22.0</version>
-              </dependency>
-            </dependencies>
-          </plugin>
-
-          <!-- Integration tests (failsafe-plugin) -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <version>2.22.0</version>
-            <configuration>
-              <parallel>methods</parallel>
-              <threadCount>${threads}</threadCount>
-              <systemPropertyVariables>
-                <screenshotDirectory>
-                  ${project.build.directory}/screenshots
-                </screenshotDirectory>
-                <allure.results.directory>
-                  ${project.build.directory}/allure-results
-                </allure.results.directory>
-              </systemPropertyVariables>
-              <testSourceDirectory>
-                ${basedir}/src/test/java
-              </testSourceDirectory>
-              <testClassesDirectory>
-                ${project.build.directory}/test-classes
-              </testClassesDirectory>
-              <reportsDirectory>
-                ${project.build.directory}/report
-              </reportsDirectory>
-              <includes>
-                <include>**/*Test.java</include>
-                <include>**/*Tests.java</include>
-              </includes>
-              <groups>${groups}</groups>
-              <testFailureIgnore>false</testFailureIgnore>
-              <!-- required for Allure annotations and Jacoco code coverage -->
-              <argLine>
-                -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
-                ${failsafeArgLine}
-              </argLine>
-            </configuration>
-            <dependencies>
-              <dependency>
-                <groupId>org.aspectj</groupId>
-                <artifactId>aspectjweaver</artifactId>
-                <version>${aspectj.version}</version>
-              </dependency>
-            </dependencies>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <!-- Allure2 -->
-          <plugin>
-            <groupId>io.qameta.allure</groupId>
-            <artifactId>allure-maven</artifactId>
-            <version>2.9</version>
-            <configuration>
-              <reportVersion>2.4.1</reportVersion>
-              <resultsDirectory>
-                ${project.build.directory}/allure-results
-              </resultsDirectory>
-              <reportDirectory>
-                ${project.build.directory}/allure-report
-              </reportDirectory>
-              <installDirectory>
-                ${project.build.directory}/.allure
-              </installDirectory>
-              <properties>
-                <allure.issues.tracker.pattern>
-                  /browse/%s
-                </allure.issues.tracker.pattern>
-                <allure.tests.management.pattern>
-                  /browse/%s
-                </allure.tests.management.pattern>
-              </properties>
-            </configuration>
-          </plugin>
-
-          <!-- Used to attach sources to jar -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <version>3.0.1</version>
-            <executions>
-              <execution>
-                <id>attach-sources</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
