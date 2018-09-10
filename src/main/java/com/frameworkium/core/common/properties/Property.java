@@ -60,7 +60,7 @@ public enum Property {
         }
     }
 
-    private String getValueFromConfigFile(String key) {
+    private static String getValueFromConfigFile(String key) {
         if (properties == null) {
             properties = loadConfigFile();
         }
