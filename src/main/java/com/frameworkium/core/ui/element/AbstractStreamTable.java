@@ -61,6 +61,14 @@ public abstract class AbstractStreamTable extends HtmlElement {
     protected abstract Stream<WebElement> rows();
 
     /**
+     * @return a {@link Stream} of {@link WebElement}s representing the rows
+     *         of the table.
+     */
+    protected By cellLocator() {
+        return By.cssSelector("td");
+    }
+
+    /**
      * @return a {@link Stream} of visible (i.e. displayed) {@code th} WebElements.
      */
     public Stream<WebElement> getHeadings() {
@@ -98,7 +106,7 @@ public abstract class AbstractStreamTable extends HtmlElement {
      */
     public Stream<Stream<WebElement>> getRows() {
         return rows()
-                .map(el -> el.findElements(By.cssSelector("td")).stream());
+                .map(el -> el.findElements(cellLocator()).stream());
     }
 
     /**
