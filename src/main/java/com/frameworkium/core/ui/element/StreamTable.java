@@ -13,7 +13,7 @@ import java.util.stream.Stream;
  * assumes the header cells are all selectable by {@code thead > tr > th}
  * and the rows are all selectable by {@code tbody > tr}.
  *
- * <p>It can also cope with entire columns or rows which are not displayed.
+ * <p>It can also cope where entire columns or rows are hidden.
  */
 public class StreamTable extends AbstractStreamTable {
 

@@ -191,10 +191,14 @@ public abstract class AbstractStreamTable extends HtmlElement {
      * +--+--------+---------+
      * </pre>
      *
-     * @param lookupHeaderMatcher the predicate to test the range where we want to lookup
-     * @param lookupCellMatcher   the predicate to test the to look up for a match in the lookupRange
-     * @param targetHeaderMatcher the predicate to test the range containing the return value
-     * @return WebElements in the targetRange which matches {@code lookupMatcher} in lookupRange
+     * @param lookupHeaderMatcher matches the header of the column where we want
+     *                            the lookupCellMatcher to run
+     * @param lookupCellMatcher   matches the cells in the column identified
+     *                            by the lookupHeaderMatcher
+     * @param targetHeaderMatcher matches the header of the column of the cells
+     *                            to be returned based upon lookupCellMatcher
+     * @return WebElements in the target column on the same row as those cells
+     *         matching {@code lookupCellMatcher} in lookup column
      */
     public Stream<WebElement> getCellsByLookup(
             Predicate<WebElement> lookupHeaderMatcher,
@@ -209,14 +213,15 @@ public abstract class AbstractStreamTable extends HtmlElement {
         return Streams.zip(
                 lookupColumn,
                 targetColumn,
-                (lookup, target) -> lookupCellMatcher.test(lookup) ? target : null)
+                (lookupCell, targetCell) ->
+                        lookupCellMatcher.test(lookupCell) ? targetCell : null)
                 .filter(Objects::nonNull);
     }
 
     /**
      * Returns index of a header matching the {@code headerPredicate}.
      * This shouldn't be needed outside this class.
-     * If you think it should be, file a bug.
+     * If you think it should be, raise a bug to discuss.
      */
     private int getHeaderIndex(Predicate<WebElement> headerPredicate) {
         List<WebElement> headings = getHeadings().collect(toList());

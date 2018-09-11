@@ -14,8 +14,7 @@ import java.util.stream.Stream;
  * and the rows are all selectable by {@code tbody > tr}.
  *
  * <p>{@link OptimisedStreamTable} is approximately twice as fast as
- * {@link StreamTable} but it cannot cope with entire columns or rows
- * which are not displayed.
+ * {@link StreamTable} but it cannot cope with hidden columns or rows.
  */
 public class OptimisedStreamTable extends AbstractStreamTable {
 

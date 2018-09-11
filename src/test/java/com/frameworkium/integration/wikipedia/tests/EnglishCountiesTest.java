@@ -9,10 +9,12 @@ import org.testng.annotations.Test;
 import static com.google.common.truth.Truth.assertThat;
 
 /**
- * This test demonstrates the different between using the StreamTable and Lists
+ * This test demonstrates the different between using StreamTable and Lists
  * of WebElements.
  * <p>The trade-off is between readability, maintainability and performance.
- * <p>The List option is slightly longer
+ * <p>The List option is slightly longer and slightly more difficult to maintain,
+ * especially if your table is changing shape (but not header text), however it
+ * is significantly faster.
  */
 public class EnglishCountiesTest extends BaseUITest {
 
