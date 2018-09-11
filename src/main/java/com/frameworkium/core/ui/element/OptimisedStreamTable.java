@@ -27,12 +27,12 @@ public class OptimisedStreamTable extends AbstractStreamTable {
 
     @Override
     protected Stream<WebElement> headerCells() {
-        return headerCells.stream().filter(WebElement::isDisplayed);
+        return headerCells.stream();
     }
 
     @Override
     protected Stream<WebElement> rows() {
-        return rows.stream().filter(WebElement::isDisplayed);
+        return rows.stream();
     }
 
 }
