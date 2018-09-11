@@ -7,15 +7,17 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * {@link StreamTable} is an {@link AbstractStreamTable}.
+ * {@link OptimisedStreamTable} is an {@link AbstractStreamTable}.
  *
  * <p>Along with the assumptions made by {@link AbstractStreamTable} this class
  * assumes the header cells are all selectable by {@code thead > tr > th}
  * and the rows are all selectable by {@code tbody > tr}.
  *
- * <p>It can also cope with entire columns or rows which are not displayed.
+ * <p>{@link OptimisedStreamTable} is approximately twice as fast as
+ * {@link StreamTable} but it cannot cope with entire columns or rows
+ * which are not displayed.
  */
-public class StreamTable extends AbstractStreamTable {
+public class OptimisedStreamTable extends AbstractStreamTable {
 
     @FindBy(css = "thead > tr > th")
     private List<WebElement> headerCells;
