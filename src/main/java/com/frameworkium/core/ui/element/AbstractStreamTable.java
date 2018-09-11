@@ -50,13 +50,13 @@ public abstract class AbstractStreamTable extends HtmlElement {
 
     /**
      * @return a {@link Stream} of {@link WebElement}s representing the header
-     * cells of the table.
+     *         cells of the table.
      */
     protected abstract Stream<WebElement> headerCells();
 
     /**
      * @return a {@link Stream} of {@link WebElement}s representing the rows
-     * of the table.
+     *         of the table.
      */
     protected abstract Stream<WebElement> rows();
 
