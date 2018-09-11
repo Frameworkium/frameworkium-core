@@ -65,7 +65,7 @@ public class LoggingListener implements WebDriverEventListener {
     @Override
     public void afterScript(String script, WebDriver driver) {
         // Only log part of a long script
-        // We already log the entire script in beforeScript
+        // We log more of script in beforeScript
         logger.debug(() -> "ran script " + StringUtils.abbreviate(script, 128));
     }
 
@@ -111,6 +111,7 @@ public class LoggingListener implements WebDriverEventListener {
 
     @Override
     public void beforeScript(String script, WebDriver driver) {
+        // Only log part of a long script
         logger.debug("running script " + StringUtils.abbreviate(script, 512));
     }
 
