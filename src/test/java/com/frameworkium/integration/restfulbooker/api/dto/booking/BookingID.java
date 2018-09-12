@@ -1,4 +1,4 @@
-package com.frameworkium.integration.api.dto.booking;
+package com.frameworkium.integration.restfulbooker.api.dto.booking;
 
 import com.frameworkium.core.api.dto.AbstractDTO;
 

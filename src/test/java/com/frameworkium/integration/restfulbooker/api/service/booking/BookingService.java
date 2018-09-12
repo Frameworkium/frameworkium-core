@@ -1,8 +1,8 @@
-package com.frameworkium.integration.api.service.booking;
+package com.frameworkium.integration.restfulbooker.api.service.booking;
 
-import com.frameworkium.integration.api.constant.BookerEndpoint;
-import com.frameworkium.integration.api.dto.booking.*;
-import com.frameworkium.integration.api.service.AbstractBookerService;
+import com.frameworkium.integration.restfulbooker.api.constant.BookerEndpoint;
+import com.frameworkium.integration.restfulbooker.api.dto.booking.*;
+import com.frameworkium.integration.restfulbooker.api.service.AbstractBookerService;
 import com.google.common.collect.ImmutableMap;
 import io.restassured.http.Method;
 

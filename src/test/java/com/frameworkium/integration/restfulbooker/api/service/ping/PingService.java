@@ -1,7 +1,7 @@
-package com.frameworkium.integration.api.service.ping;
+package com.frameworkium.integration.restfulbooker.api.service.ping;
 
-import com.frameworkium.integration.api.constant.BookerEndpoint;
-import com.frameworkium.integration.api.service.AbstractBookerService;
+import com.frameworkium.integration.restfulbooker.api.constant.BookerEndpoint;
+import com.frameworkium.integration.restfulbooker.api.service.AbstractBookerService;
 import io.restassured.RestAssured;
 import io.restassured.specification.ResponseSpecification;
 import org.apache.http.HttpStatus;

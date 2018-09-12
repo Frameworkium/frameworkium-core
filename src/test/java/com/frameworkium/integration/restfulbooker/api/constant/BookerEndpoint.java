@@ -1,4 +1,4 @@
-package com.frameworkium.integration.api.constant;
+package com.frameworkium.integration.restfulbooker.api.constant;
 
 import com.frameworkium.core.api.Endpoint;
 

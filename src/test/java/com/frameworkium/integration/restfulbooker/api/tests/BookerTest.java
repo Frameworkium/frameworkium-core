@@ -1,10 +1,10 @@
-package com.frameworkium.integration.api.tests;
+package com.frameworkium.integration.restfulbooker.api.tests;
 
 import com.frameworkium.core.api.tests.BaseAPITest;
 import com.frameworkium.core.common.retry.RetryFlakyTest;
-import com.frameworkium.integration.api.dto.booking.*;
-import com.frameworkium.integration.api.service.booking.BookingService;
-import com.frameworkium.integration.api.service.ping.PingService;
+import com.frameworkium.integration.restfulbooker.api.dto.booking.*;
+import com.frameworkium.integration.restfulbooker.api.service.booking.BookingService;
+import com.frameworkium.integration.restfulbooker.api.service.ping.PingService;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 

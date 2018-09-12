@@ -1,6 +1,6 @@
-package com.frameworkium.integration.api.dto.booking.search;
+package com.frameworkium.integration.restfulbooker.api.dto.booking.search;
 
-import com.frameworkium.integration.api.dto.booking.Booking;
+import com.frameworkium.integration.restfulbooker.api.dto.booking.Booking;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;

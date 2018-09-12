@@ -1,7 +1,7 @@
-package com.frameworkium.integration.api.service;
+package com.frameworkium.integration.restfulbooker.api.service;
 
 import com.frameworkium.core.api.services.BaseService;
-import com.frameworkium.integration.api.constant.BookerEndpoint;
+import com.frameworkium.integration.restfulbooker.api.constant.BookerEndpoint;
 import io.restassured.RestAssured;
 import io.restassured.http.Method;
 import io.restassured.response.ExtractableResponse;
