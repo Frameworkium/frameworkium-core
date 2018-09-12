@@ -8,16 +8,17 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * {@link StreamTable} is an {@link AbstractStreamTable}.
+ * {@link OptimisedStreamTable} is an {@link AbstractStreamTable}.
  *
  * <p>Along with the assumptions made by {@link AbstractStreamTable} this class
- * assumes the header cells are all selectable by {@code thead > tr > th}.
+ * assumes the header cells are all selectable by {@code thead > tr > th},
  * the rows are all selectable by {@code tbody > tr} and cells inside the rows
  * are selectable by {@code td}.
  *
- * <p>It can also cope where entire columns or rows are hidden.
+ * <p>{@link OptimisedStreamTable} is approximately twice as fast as
+ * {@link StreamTable} but it cannot cope with hidden columns or rows.
  */
-public class StreamTable extends AbstractStreamTable {
+public class OptimisedStreamTable extends AbstractStreamTable {
 
     @FindBy(css = "thead > tr > th")
     private List<WebElement> headerCells;
@@ -27,12 +28,12 @@ public class StreamTable extends AbstractStreamTable {
 
     @Override
     protected Stream<WebElement> headerCells() {
-        return headerCells.stream().filter(WebElement::isDisplayed);
+        return headerCells.stream();
     }
 
     @Override
     protected Stream<WebElement> rows() {
-        return rows.stream().filter(WebElement::isDisplayed);
+        return rows.stream();
     }
 
     @Override

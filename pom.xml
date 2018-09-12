@@ -120,7 +120,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <!-- Required so that Google Truth works -->
+      <!-- Required so that Google Truth works.
+      Also used in some parts of the code -->
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>26.0-jre</version>
