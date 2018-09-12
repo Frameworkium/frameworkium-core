@@ -225,19 +225,6 @@ public abstract class BaseUITest
     /**
      * Create a new {@link Wait} with timeout.
      *
-     * @param timeout timeout in seconds for the {@link Wait}
-     * @return a new {@link Wait} for the thread local driver and given timeout
-     *         which also ignores {@link NoSuchElementException} and
-     *         {@link StaleElementReferenceException}
-     */
-    @Deprecated
-    public static Wait<WebDriver> newWaitWithTimeout(long timeout) {
-        return newWaitWithTimeout(Duration.of(timeout, SECONDS));
-    }
-
-    /**
-     * Create a new {@link Wait} with timeout.
-     *
      * @param timeout timeout {@link Duration} for the {@link Wait}
      * @return a new {@link Wait} for the thread local driver and given timeout
      *         which also ignores {@link NoSuchElementException} and
