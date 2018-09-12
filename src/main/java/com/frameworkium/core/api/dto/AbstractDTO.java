@@ -23,7 +23,7 @@ public abstract class AbstractDTO<T> implements Serializable, Cloneable {
         try {
             return (T) SerializationUtils.clone(this);
         } catch (Exception e) {
-            throw new CloneNotSupportedException(e.toString());
+            throw new CloneNotSupportedException(e.getMessage());
         }
     }
 
