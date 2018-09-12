@@ -2,15 +2,12 @@ package com.frameworkium.core.ui.element;
 
 import com.google.common.collect.Streams;
 import org.openqa.selenium.*;
-import org.openqa.selenium.NoSuchElementException;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
 
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * {@link AbstractStreamTable} is an {@link HtmlElement} which provides a Java 8
@@ -76,7 +73,7 @@ public abstract class AbstractStreamTable extends HtmlElement {
      * @param index 0-based index
      * @return Optional of the heading specified by the index
      */
-    public Optional<WebElement> getHeading(int index) {
+    public Optional<WebElement> getHeading(long index) {
         return getHeadings().skip(index).findFirst();
     }
 
@@ -85,9 +82,7 @@ public abstract class AbstractStreamTable extends HtmlElement {
      * @return Optional of the first heading matching {@code text}
      */
     public Optional<WebElement> getHeading(String text) {
-        return getHeadings()
-                .filter(e -> Objects.equals(e.getText().trim(), text))
-                .findFirst();
+        return getHeading(e -> Objects.equals(e.getText().trim(), text));
     }
 
     /**
@@ -121,7 +116,7 @@ public abstract class AbstractStreamTable extends HtmlElement {
      * @param index 0-based index of the column to return
      * @return {@link Stream} of cells in the table column indexed {@code index}
      */
-    public Stream<WebElement> getColumn(int index) {
+    public Stream<WebElement> getColumn(long index) {
         return getRows()
                 .map(cells -> cells.skip(index).findFirst()
                         .orElseThrow(() -> new NoSuchElementException(
@@ -134,7 +129,7 @@ public abstract class AbstractStreamTable extends HtmlElement {
      *         for the first column that matches the trimmed text of a header.
      */
     public Stream<WebElement> getColumn(String headerText) {
-        int index = getHeaderIndex(e -> Objects.equals(e.getText(), headerText));
+        long index = getHeaderIndex(e -> Objects.equals(e.getText(), headerText));
         return getColumn(index);
     }
 
@@ -199,8 +194,8 @@ public abstract class AbstractStreamTable extends HtmlElement {
             Predicate<WebElement> lookupCellMatcher,
             Predicate<WebElement> targetHeaderMatcher) {
 
-        int lookupColumnIndex = getHeaderIndex(lookupHeaderMatcher);
-        int targetColumnIndex = getHeaderIndex(targetHeaderMatcher);
+        long lookupColumnIndex = getHeaderIndex(lookupHeaderMatcher);
+        long targetColumnIndex = getHeaderIndex(targetHeaderMatcher);
         Stream<WebElement> lookupColumn = getColumn(lookupColumnIndex);
         Stream<WebElement> targetColumn = getColumn(targetColumnIndex);
 
@@ -217,13 +212,13 @@ public abstract class AbstractStreamTable extends HtmlElement {
      * This shouldn't be needed outside this class.
      * If you think it should be, raise a bug to discuss.
      */
-    private int getHeaderIndex(Predicate<WebElement> headerPredicate) {
-        List<WebElement> headings = getHeadings().collect(toList());
-        return IntStream.range(0, headings.size())
-                .filter(i -> headerPredicate.test(headings.get(i)))
+    private long getHeaderIndex(Predicate<WebElement> headerPredicate) {
+        return Streams.mapWithIndex(
+                getHeadings(), (we, i) -> headerPredicate.test(we) ? i : null)
+                .filter(Objects::nonNull)
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException(
-                        "Table header " + headerPredicate + " not found"));
+                        "No header matches " + headerPredicate));
     }
 
 }
