@@ -115,15 +115,6 @@ public abstract class AbstractStreamTable extends HtmlElement {
     }
 
     /**
-     * @return {@link Stream} of rows that are {@link List}s of {@link WebElement}s
-     */
-    public Stream<List<WebElement>> getRowList() {
-        return getRows()
-                .map(row -> row.collect(toList()))
-                .filter(row -> !row.isEmpty());
-    }
-
-    /**
      * Can be used where the index is already known or in other cases where the
      * other methods do not work as expected on tables which violate assumptions.
      *
