@@ -15,9 +15,9 @@ import static com.google.common.truth.Truth.assertThat;
  * especially if your table is changing shape (but not header text), however it
  * is significantly faster.
  */
+@Test
 public class EnglishCountiesTest extends BaseUITest {
 
-    @Test(description = "Playing with English Counties data")
     public final void exploring_english_counties_data_with_stream_table() {
         EnglishCountiesPage page = EnglishCountiesPage.open();
 
@@ -32,7 +32,6 @@ public class EnglishCountiesTest extends BaseUITest {
     }
 
 
-    @Test(description = "Playing (more quickly) with English Counties data")
     public final void exploring_english_counties_data_with_lists() {
         EnglishCountiesUsingListsPage page = EnglishCountiesUsingListsPage.open();
 

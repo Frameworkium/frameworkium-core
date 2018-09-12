@@ -21,10 +21,6 @@ public class DeveloperGuidePage extends BasePage<DeveloperGuidePage> {
     @FindBy(linkText = "Bootstrap")
     private Link bootstrapSearchItem;
 
-    @Name("Guide article title")
-    @FindBy(css = ".main-grid h1")
-    private WebElement guideTitle;
-
     @Name("Loading")
     @FindBy(id = "loading")
     private WebElement loading;

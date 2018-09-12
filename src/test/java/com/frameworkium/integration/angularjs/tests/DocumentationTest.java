@@ -18,10 +18,8 @@ public class DocumentationTest extends BaseUITest {
         DeveloperGuidePage.open();
     }
 
-    @Test(description =
-            "Tests the AngularJS developer documentation and search function",
-            retryAnalyzer = RetryFlakyTest.class)
-    @TmsLink("TEST-1")
+    @Test(retryAnalyzer = RetryFlakyTest.class)
+    @TmsLink("ANG-1")
     public void angular_documentation_test() {
         String guideTitle = DeveloperGuidePage.open()
                 .searchDeveloperGuide("Bootstrap")
