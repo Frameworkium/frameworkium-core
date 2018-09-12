@@ -2,16 +2,19 @@ package com.frameworkium.core.ui.element;
 
 import com.google.common.collect.Streams;
 import org.openqa.selenium.*;
+import org.openqa.selenium.NoSuchElementException;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
  * {@link AbstractStreamTable} is an {@link HtmlElement} which provides a Java 8
  * interface, i.e. {@link Stream} and {@link Optional}, to HTML tables.
+ *
+ * <p>The header cells, rows and locator for cells inside the rows are
+ * supplied by the sub-classes.
  *
  * <p>Each {@link Stream} is lazy, therefore, unlike other Table implementations,
  * the entire table does not have to be read each time, only the minimal amount
@@ -23,13 +26,10 @@ import java.util.stream.Stream;
  * <p>Some assumptions have been made to prevent the complexity exploding while
  * still providing something that is useful.
  *
- * <p>{@link AbstractStreamTable} works best on tables which:
+ * <p>{@link AbstractStreamTable} works best on tables which are regular
+ * i.e. have the same number of columns in every row.
  *
- * <ul>
- * <li>are regular i.e. same number of columns ({@code td}) in every row</li>
- * </ul>
- *
- * <p>and DO NOT use:
+ * <p>And DO NOT use:
  *
  * <ul>
  * <li>{@code rowspan}</li>
@@ -37,11 +37,8 @@ import java.util.stream.Stream;
  * <li>{@code tfoot}</li>
  * </ul>
  *
- * <p>The header cells and rows ({@link WebElement} containing the {@code td} tags)
- * are supplied by the sub-classes.
- *
- * <p>If any of these assumptions are invalid for your table then {@link AbstractStreamTable}
- * might still be useful but use the API with caution.
+ * <p>If any of these assumptions are invalid for your table then
+ * {@link AbstractStreamTable} might still be useful, but use with caution.
  */
 public abstract class AbstractStreamTable extends HtmlElement {
 
@@ -63,7 +60,8 @@ public abstract class AbstractStreamTable extends HtmlElement {
     protected abstract By cellLocator();
 
     /**
-     * @return {@link Stream} of visible (i.e. displayed) {@code th} WebElements.
+     * @return {@link Stream} of {@link WebElement}s representing the table
+     *         heading cells.
      */
     public Stream<WebElement> getHeadings() {
         return headerCells();
@@ -71,7 +69,7 @@ public abstract class AbstractStreamTable extends HtmlElement {
 
     /**
      * @param index 0-based index
-     * @return Optional of the heading specified by the index
+     * @return {@link Optional} of the heading specified by the index
      */
     public Optional<WebElement> getHeading(long index) {
         return getHeadings().skip(index).findFirst();
@@ -79,7 +77,7 @@ public abstract class AbstractStreamTable extends HtmlElement {
 
     /**
      * @param text text of the header cell to return
-     * @return Optional of the first heading matching {@code text}
+     * @return {@link Optional} of the first heading with text matching {@code text}
      */
     public Optional<WebElement> getHeading(String text) {
         return getHeading(e -> Objects.equals(e.getText().trim(), text));
@@ -87,38 +85,40 @@ public abstract class AbstractStreamTable extends HtmlElement {
 
     /**
      * @param headerMatcher matcher for of the header cell to return
-     * @return Optional of the first heading matching {@code headerMatcher}
+     * @return {@link Optional} of the first heading matching {@code headerMatcher}
      */
     public Optional<WebElement> getHeading(Predicate<WebElement> headerMatcher) {
-        return getHeading(getHeaderIndex(headerMatcher));
+        return getHeadings().filter(headerMatcher).findFirst();
     }
 
     /**
-     * @return {@link Stream} of {@link Stream} of cell {@link WebElement}s
+     * @return {@link Stream} of {@link Stream} of row cell {@link WebElement}s
      */
     public Stream<Stream<WebElement>> getRows() {
         return rows()
-                .map(el -> el.findElements(cellLocator()).stream());
+                .map(row -> row.findElements(cellLocator()).stream());
     }
 
     /**
      * @param index 0-based index
-     * @return the row specified by the index
+     * @return {@link Optional} of the row specified by the index
      */
     public Optional<Stream<WebElement>> getRow(int index) {
         return getRows().skip(index).findFirst();
     }
 
     /**
-     * Can be used where the index is already known or in other cases where the
-     * other methods do not work as expected on tables which violate assumptions.
+     * Useful when the index is already known, or in other cases where the other
+     * methods do not work as expected, e.g. on tables which violate assumptions.
      *
      * @param index 0-based index of the column to return
      * @return {@link Stream} of cells in the table column indexed {@code index}
      */
     public Stream<WebElement> getColumn(long index) {
         return getRows()
-                .map(cells -> cells.skip(index).findFirst()
+                .map(rowCells -> rowCells
+                        .skip(index)
+                        .findFirst()
                         .orElseThrow(() -> new NoSuchElementException(
                                 "A row doesn't have column index " + index)));
     }
@@ -167,7 +167,8 @@ public abstract class AbstractStreamTable extends HtmlElement {
     }
 
     /**
-     * Returns {@link WebElement}s from target cells given a match in the lookup column
+     * Returns cells in the target column where the corresponding cell matches
+     * in the lookup column.
      *
      * <pre>
      * +--+--------+---------+
@@ -207,18 +208,12 @@ public abstract class AbstractStreamTable extends HtmlElement {
                 .filter(Objects::nonNull);
     }
 
-    /**
-     * Returns index of a header matching the {@code headerPredicate}.
-     * This shouldn't be needed outside this class.
-     * If you think it should be, raise a bug to discuss.
-     */
     private long getHeaderIndex(Predicate<WebElement> headerPredicate) {
         return Streams.mapWithIndex(
-                getHeadings(), (we, i) -> headerPredicate.test(we) ? i : null)
+                getHeadings(), (webElement, i) -> headerPredicate.test(webElement) ? i : null)
                 .filter(Objects::nonNull)
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException(
-                        "No header matches " + headerPredicate));
+                .orElseThrow(() -> new NoSuchElementException("No header found."));
     }
 
 }
