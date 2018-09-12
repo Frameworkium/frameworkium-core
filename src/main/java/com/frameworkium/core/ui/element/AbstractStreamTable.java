@@ -61,15 +61,12 @@ public abstract class AbstractStreamTable extends HtmlElement {
     protected abstract Stream<WebElement> rows();
 
     /**
-     * @return a {@link Stream} of {@link WebElement}s representing the rows
-     *         of the table.
+     * @return a {@link By} to select cells inside the table rows.
      */
-    protected By cellLocator() {
-        return By.cssSelector("td");
-    }
+    protected abstract By cellLocator();
 
     /**
-     * @return a {@link Stream} of visible (i.e. displayed) {@code th} WebElements.
+     * @return {@link Stream} of visible (i.e. displayed) {@code th} WebElements.
      */
     public Stream<WebElement> getHeadings() {
         return headerCells();
@@ -77,7 +74,7 @@ public abstract class AbstractStreamTable extends HtmlElement {
 
     /**
      * @param index 0-based index
-     * @return Optional of the {@code th} specified by the index
+     * @return Optional of the heading specified by the index
      */
     public Optional<WebElement> getHeading(int index) {
         return getHeadings().skip(index).findFirst();
@@ -85,7 +82,7 @@ public abstract class AbstractStreamTable extends HtmlElement {
 
     /**
      * @param text text of the header cell to return
-     * @return Optional of the first {@code th} matching {@code text}
+     * @return Optional of the first heading matching {@code text}
      */
     public Optional<WebElement> getHeading(String text) {
         return getHeadings()
@@ -95,14 +92,14 @@ public abstract class AbstractStreamTable extends HtmlElement {
 
     /**
      * @param headerMatcher matcher for of the header cell to return
-     * @return Optional of the first {@code th} matching {@code headerMatcher}
+     * @return Optional of the first heading matching {@code headerMatcher}
      */
     public Optional<WebElement> getHeading(Predicate<WebElement> headerMatcher) {
         return getHeading(getHeaderIndex(headerMatcher));
     }
 
     /**
-     * @return {@link Stream} of {@link Stream} of {@code td} {@link WebElement}s
+     * @return {@link Stream} of {@link Stream} of cell {@link WebElement}s
      */
     public Stream<Stream<WebElement>> getRows() {
         return rows()
@@ -131,7 +128,7 @@ public abstract class AbstractStreamTable extends HtmlElement {
      * other methods do not work as expected on tables which violate assumptions.
      *
      * @param index 0-based index of the column to return
-     * @return a stream of {@code td} tags in the table column {@code index}
+     * @return {@link Stream} of cells in the table column indexed {@code index}
      */
     public Stream<WebElement> getColumn(int index) {
         return getRows()
@@ -142,9 +139,8 @@ public abstract class AbstractStreamTable extends HtmlElement {
 
     /**
      * @param headerText the text of the header we are looking for
-     * @return a {@link Stream} of {@link WebElement}s of the {@code td}s inside
-     *         the {@code tbody} for the first column that matches the trimmed
-     *         text of a header {@code th}.
+     * @return a {@link Stream} of {@link WebElement}s of the cells inside
+     *         for the first column that matches the trimmed text of a header.
      */
     public Stream<WebElement> getColumn(String headerText) {
         int index = getHeaderIndex(e -> Objects.equals(e.getText(), headerText));
@@ -153,8 +149,8 @@ public abstract class AbstractStreamTable extends HtmlElement {
 
     /**
      * @param headerMatcher predicate to find the header that we are looking for
-     * @return a {@link Stream} of {@link WebElement}s of the {@code td}s inside
-     *         the {@code tbody} for the first column that matches the {code headerMatcher}
+     * @return a {@link Stream} of {@link WebElement}s of the cells for the
+     *         first column that matches the {@code headerMatcher}
      */
     public Stream<WebElement> getColumn(Predicate<WebElement> headerMatcher) {
         return getColumn(getHeaderIndex(headerMatcher));
@@ -163,10 +159,16 @@ public abstract class AbstractStreamTable extends HtmlElement {
     /**
      * N.B. trims the text from the cells before comparing.
      *
-     * @param lookupColHeaderText the String to match the header where we want to lookup using {@code lookupCellText}
-     * @param lookupCellText      the String to match the to look up for a match in the lookupColHeaderText
-     * @param targetColHeaderText the String to match the header containing the return value
-     * @return all WebElements from targetColHeaderText which matches {@code lookupCellText} in lookupColHeaderText
+     * @param lookupColHeaderText the String to match the header of the column
+     *                            where we want to lookup using {@code lookupCellText}
+     * @param lookupCellText      the String to match the cell(s) in the column
+     *                            identified by {@code lookupColHeaderText} in the
+     *                            column identified by {@code targetColHeaderText}
+     * @param targetColHeaderText the String to match the header containing the
+     *                            return value(s)
+     * @return all {@link WebElement}s from the column matched by
+     *         {@code targetColHeaderText} which matches {@code lookupCellText}
+     *         in {@code lookupColHeaderText}
      * @see #getCellsByLookup(Predicate, Predicate, Predicate)
      */
     public Stream<WebElement> getCellsByLookup(
@@ -179,7 +181,7 @@ public abstract class AbstractStreamTable extends HtmlElement {
     }
 
     /**
-     * Returns WebElements from target cells given a match in the lookup column
+     * Returns {@link WebElement}s from target cells given a match in the lookup column
      *
      * <pre>
      * +--+--------+---------+
@@ -192,13 +194,14 @@ public abstract class AbstractStreamTable extends HtmlElement {
      * </pre>
      *
      * @param lookupHeaderMatcher matches the header of the column where we want
-     *                            the lookupCellMatcher to run
-     * @param lookupCellMatcher   matches the cells in the column identified
-     *                            by the lookupHeaderMatcher
-     * @param targetHeaderMatcher matches the header of the column of the cells
-     *                            to be returned based upon lookupCellMatcher
-     * @return WebElements in the target column on the same row as those cells
-     *         matching {@code lookupCellMatcher} in lookup column
+     *                            to lookup using {@code lookupCellMatcher}
+     * @param lookupCellMatcher   matches the cell(s) in the column
+     *                            identified by {@code lookupHeaderMatcher} in the
+     *                            column identified by {@code targetHeaderMatcher}
+     * @param targetHeaderMatcher matches the header containing the return value(s)
+     * @return {@link WebElement}s from the column matched by
+     *         {@code lookupHeaderMatcher} which matches {@code lookupCellMatcher}
+     *         in {@code lookupHeaderMatcher}
      */
     public Stream<WebElement> getCellsByLookup(
             Predicate<WebElement> lookupHeaderMatcher,

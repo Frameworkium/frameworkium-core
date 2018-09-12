@@ -1,5 +1,6 @@
 package com.frameworkium.core.ui.element;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
@@ -10,8 +11,9 @@ import java.util.stream.Stream;
  * {@link StreamTable} is an {@link AbstractStreamTable}.
  *
  * <p>Along with the assumptions made by {@link AbstractStreamTable} this class
- * assumes the header cells are all selectable by {@code thead > tr > th}
- * and the rows are all selectable by {@code tbody > tr}.
+ * assumes the header cells are all selectable by {@code thead > tr > th}.
+ * the rows are all selectable by {@code tbody > tr} and cells inside the rows
+ * are selectable by {@code td}.
  *
  * <p>It can also cope where entire columns or rows are hidden.
  */
@@ -31,6 +33,11 @@ public class StreamTable extends AbstractStreamTable {
     @Override
     protected Stream<WebElement> rows() {
         return rows.stream().filter(WebElement::isDisplayed);
+    }
+
+    @Override
+    protected By cellLocator() {
+        return By.cssSelector("td");
     }
 
 }
