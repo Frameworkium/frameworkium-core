@@ -15,19 +15,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
-import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.testng.annotations.*;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.stream.IntStream;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
-import static java.util.Objects.isNull;
 
 @Listeners({CaptureListener.class, ScreenshotListener.class, MethodInterceptor.class,
         SauceLabsListener.class, TestListener.class, ResultLoggerListener.class,
@@ -258,8 +257,8 @@ public abstract class BaseUITest
     }
 
     public static String getThreadSessionId() {
-        SessionId sessionId = getDriver().getWrappedRemoteWebDriver().getSessionId();
-        return isNull(sessionId) ? null : sessionId.toString();
+        return Objects.toString(
+                getDriver().getWrappedRemoteWebDriver().getSessionId());
     }
 
     @Override
