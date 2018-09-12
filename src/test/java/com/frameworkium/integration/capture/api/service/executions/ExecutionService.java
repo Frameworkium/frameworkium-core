@@ -1,8 +1,8 @@
-package com.frameworkium.integration.ai.capture.api.service.executions;
+package com.frameworkium.integration.capture.api.service.executions;
 
-import com.frameworkium.integration.ai.capture.api.constant.CaptureEndpoint;
-import com.frameworkium.integration.ai.capture.api.dto.executions.*;
-import com.frameworkium.integration.ai.capture.api.service.BaseCaptureService;
+import com.frameworkium.integration.capture.api.constant.CaptureEndpoint;
+import com.frameworkium.integration.capture.api.dto.executions.*;
+import com.frameworkium.integration.capture.api.service.BaseCaptureService;
 import com.google.common.collect.ImmutableMap;
 import io.qameta.allure.Step;
 

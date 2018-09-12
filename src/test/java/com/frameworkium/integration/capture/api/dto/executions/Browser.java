@@ -1,4 +1,4 @@
-package com.frameworkium.integration.ai.capture.api.dto.executions;
+package com.frameworkium.integration.capture.api.dto.executions;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.frameworkium.core.api.dto.AbstractDTO;

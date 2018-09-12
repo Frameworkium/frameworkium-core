@@ -1,4 +1,4 @@
-package com.frameworkium.integration.ai.capture.api.dto.screenshots;
+package com.frameworkium.integration.capture.api.dto.screenshots;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.frameworkium.core.api.dto.AbstractDTO;

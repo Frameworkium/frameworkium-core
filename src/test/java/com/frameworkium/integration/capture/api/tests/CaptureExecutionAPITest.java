@@ -1,11 +1,11 @@
-package com.frameworkium.integration.ai.capture.api.tests;
+package com.frameworkium.integration.capture.api.tests;
 
 import com.frameworkium.core.api.tests.BaseAPITest;
-import com.frameworkium.integration.ai.capture.api.dto.executions.*;
-import com.frameworkium.integration.ai.capture.api.dto.screenshots.CreateScreenshot;
-import com.frameworkium.integration.ai.capture.api.dto.screenshots.Screenshot;
-import com.frameworkium.integration.ai.capture.api.service.executions.ExecutionService;
-import com.frameworkium.integration.ai.capture.api.service.screenshots.ScreenshotService;
+import com.frameworkium.integration.capture.api.dto.executions.*;
+import com.frameworkium.integration.capture.api.dto.screenshots.CreateScreenshot;
+import com.frameworkium.integration.capture.api.dto.screenshots.Screenshot;
+import com.frameworkium.integration.capture.api.service.executions.ExecutionService;
+import com.frameworkium.integration.capture.api.service.screenshots.ScreenshotService;
 import org.openqa.selenium.NotFoundException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

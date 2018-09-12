@@ -1,7 +1,7 @@
-package com.frameworkium.integration.ai.capture.api.dto.executions;
+package com.frameworkium.integration.capture.api.dto.executions;
 
 import com.frameworkium.core.api.dto.AbstractDTO;
-import com.frameworkium.integration.ai.capture.api.dto.screenshots.Screenshot;
+import com.frameworkium.integration.capture.api.dto.screenshots.Screenshot;
 
 import java.util.List;
 
