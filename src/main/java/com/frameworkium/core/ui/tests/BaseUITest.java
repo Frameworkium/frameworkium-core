@@ -32,7 +32,9 @@ import static java.util.Objects.isNull;
 @Listeners({CaptureListener.class, ScreenshotListener.class, MethodInterceptor.class,
         SauceLabsListener.class, TestListener.class, ResultLoggerListener.class,
         VideoListener.class})
-public abstract class BaseUITest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
+@Test(groups = "base-ui")
+public abstract class BaseUITest
+        implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
     private static final Duration DEFAULT_TIMEOUT = Duration.of(10, SECONDS);
 
