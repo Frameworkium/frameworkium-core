@@ -52,7 +52,7 @@ public abstract class BaseUITest
     /**
      * Runs before the test suite to initialise a pool of drivers if requested.
      */
-    @BeforeSuite
+    @BeforeSuite(alwaysRun = true)
     protected static void initialiseDriverPool() {
         if (Property.REUSE_BROWSER.getBoolean()) {
             int threads = Property.THREADS.getIntWithDefault(1);
