@@ -74,7 +74,7 @@ script:
   # Firefox on the grid
   # No longer works with 2 threads on Travis, since 29-Dec-2017:
   # frameworkium 2.5.0, ff 57.0.2, geckodriver 0.19.1
-  - mvn verify -B -Dthreads=1 -Dconfig=FirefoxGrid.yaml -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
+  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -Dconfig=FirefoxGrid.yaml -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Following have -o (offline) flag to prevent timing out for snapshot metadata
   # Problem appeared Sept 2018
