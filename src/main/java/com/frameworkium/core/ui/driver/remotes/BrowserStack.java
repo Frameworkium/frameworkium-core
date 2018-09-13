@@ -12,7 +12,7 @@ public class BrowserStack {
     }
 
     public static URL getURL() throws MalformedURLException {
-        return new URL(String.format("http://%s:%s@hub.browserstack.com:80/wd/hub",
+        return new URL(String.format("https://%s:%s@hub-cloud.browserstack.com/wd/hub",
                 System.getenv("BROWSER_STACK_USERNAME"),
                 System.getenv("BROWSER_STACK_ACCESS_KEY")));
     }
