@@ -55,9 +55,10 @@ public abstract class BaseUITest
     @BeforeSuite(alwaysRun = true)
     protected static void initialiseDriverPool() {
         if (Property.REUSE_BROWSER.getBoolean()) {
-            int threads = Property.THREADS.getIntWithDefault(1);
-            driverPool = new ArrayBlockingQueue<>(threads);
-            IntStream.range(0, threads)
+            int threadCount = Property.THREADS.getIntWithDefault(1);
+            driverPool = new ArrayBlockingQueue<>(threadCount);
+            IntStream.range(0, threadCount)
+                    .parallel()
                     .mapToObj(i -> new DriverSetup().instantiateDriver())
                     .forEach(driverPool::add);
         }
