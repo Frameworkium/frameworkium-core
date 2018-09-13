@@ -3,18 +3,18 @@ package com.frameworkium.integration.frameworkium.tests;
 import com.frameworkium.core.ui.tests.BaseUITest;
 import com.frameworkium.integration.frameworkium.pages.JQueryDemoPage;
 import com.frameworkium.integration.seleniumhq.pages.SeleniumDownloadPage;
-import com.frameworkium.integration.theinternet.pages.WelcomePage;
-import org.testng.annotations.*;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
+// tests if BeforeMethods are run despite not being in this group
+@Test(groups = "fw-bugs")
 public class FrameworkiumBugsTest extends BaseUITest {
 
-    @BeforeMethod//(dependsOnMethods = "configureBrowserBeforeTest")
+    @BeforeMethod(dependsOnMethods = "configureBrowserBeforeTest")
     public void configureBrowserBeforeUse_allows_browser_access_in_before_method() {
-        configureBrowserBeforeUse();
-        WelcomePage.open();
-        tearDownBrowser();
+        assertThat(getDriver().getPageSource()).isNotEmpty();
     }
 
     public void ensure_jQueryAjaxDone_does_not_fail() {
