@@ -118,7 +118,7 @@ public abstract class BaseUITest
                 initialiseNewScreenshotCapture(testName);
             }
         } catch (Exception e) {
-            baseLogger.error("Failed to configure browser.", e);
+            baseLogger.fatal("Failed to configure browser.", e);
             throw new IllegalStateException("Failed to configure browser.", e);
         }
     }

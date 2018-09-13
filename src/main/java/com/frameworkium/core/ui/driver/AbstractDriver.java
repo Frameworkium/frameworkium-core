@@ -131,7 +131,7 @@ public abstract class AbstractDriver implements Driver {
         } catch (NullPointerException | URISyntaxException e) {
             String message = "Invalid proxy specified, acceptable values are: "
                     + "system, autodetect, direct or http://{hostname}:{port}.";
-            logger.error(message);
+            logger.fatal(message);
             throw new IllegalArgumentException(message, e);
         }
     }
