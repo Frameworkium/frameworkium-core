@@ -185,7 +185,9 @@ public abstract class BaseUITest
     /**
      * Find the calling method and pass it into
      * {@link #configureBrowserBeforeTest(Method)} to configure the browser.
+     * @deprecated use
      */
+    @Deprecated
     protected static void configureBrowserBeforeUse() {
         configureBrowserBeforeTest(
                 getCallingMethod(Thread.currentThread().getStackTrace()[2]));

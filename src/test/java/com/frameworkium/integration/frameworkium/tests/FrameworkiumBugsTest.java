@@ -10,9 +10,8 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class FrameworkiumBugsTest extends BaseUITest {
 
-    @BeforeClass
-    public void configureBrowserBeforeUse_allows_browser_access_in_before_class() {
-        configureBrowserBeforeUse();
+    @BeforeMethod(dependsOnMethods = "configureBrowserBeforeTest")
+    public void dependsOnMethods_allows_browser_access_in_before_method() {
         WelcomePage.open();
     }
 
