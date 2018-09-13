@@ -29,7 +29,7 @@ public class DynamicLoadingExamplePage extends BasePage<DynamicLoadingExamplePag
     public static DynamicLoadingExamplePage openExampleTwo() {
         return PageFactory.newInstance(
                 DynamicLoadingExamplePage.class,
-                "http://the-internet.herokuapp.com/dynamic_loading/2");
+                "https://the-internet.herokuapp.com/dynamic_loading/2");
     }
 
     @Step("Click Start")

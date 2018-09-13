@@ -58,7 +58,7 @@ public class WelcomePage extends BasePage<WelcomePage> {
     public static WelcomePage open(long timeout) {
         return PageFactory.newInstance(
                 WelcomePage.class,
-                "http://the-internet.herokuapp.com",
+                "https://the-internet.herokuapp.com",
                 Duration.of(timeout, SECONDS));
     }
 
