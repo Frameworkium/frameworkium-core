@@ -185,7 +185,9 @@ public abstract class BaseUITest
     /**
      * Find the calling method and pass it into
      * {@link #configureBrowserBeforeTest(Method)} to configure the browser.
-     * @deprecated use
+     *
+     * @deprecated use the following test annotation instead
+     *         {@code @BeforeMethod(dependsOnMethods = "configureBrowserBeforeTest")}
      */
     @Deprecated
     protected static void configureBrowserBeforeUse() {

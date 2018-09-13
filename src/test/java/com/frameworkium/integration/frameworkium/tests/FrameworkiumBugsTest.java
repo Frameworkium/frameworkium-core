@@ -10,9 +10,11 @@ import static com.google.common.truth.Truth.assertThat;
 
 public class FrameworkiumBugsTest extends BaseUITest {
 
-    @BeforeMethod(dependsOnMethods = "configureBrowserBeforeTest")
-    public void dependsOnMethods_allows_browser_access_in_before_method() {
+    @BeforeMethod//(dependsOnMethods = "configureBrowserBeforeTest")
+    public void configureBrowserBeforeUse_allows_browser_access_in_before_method() {
+        configureBrowserBeforeUse();
         WelcomePage.open();
+        tearDownBrowser();
     }
 
     public void ensure_jQueryAjaxDone_does_not_fail() {
