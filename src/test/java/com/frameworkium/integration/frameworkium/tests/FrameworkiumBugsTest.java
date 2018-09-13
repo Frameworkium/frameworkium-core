@@ -3,12 +3,18 @@ package com.frameworkium.integration.frameworkium.tests;
 import com.frameworkium.core.ui.tests.BaseUITest;
 import com.frameworkium.integration.frameworkium.pages.JQueryDemoPage;
 import com.frameworkium.integration.seleniumhq.pages.SeleniumDownloadPage;
-import org.testng.annotations.Test;
+import com.frameworkium.integration.theinternet.pages.WelcomePage;
+import org.testng.annotations.*;
 
 import static com.google.common.truth.Truth.assertThat;
 
-@Test
 public class FrameworkiumBugsTest extends BaseUITest {
+
+    @BeforeClass
+    public void configureBrowserBeforeUse_allows_browser_access_in_before_class() {
+        configureBrowserBeforeUse();
+        WelcomePage.open();
+    }
 
     public void ensure_jQueryAjaxDone_does_not_fail() {
         String headingText =

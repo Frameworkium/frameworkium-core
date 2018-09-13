@@ -15,17 +15,19 @@ public class ChromeImpl extends AbstractDriver {
     @Override
     public ChromeOptions getCapabilities() {
         ChromeOptions chromeOptions = new ChromeOptions();
+
         // useful defaults
         chromeOptions.setCapability(
                 "chrome.switches",
                 Collections.singletonList("--no-default-browser-check"));
-        if (Boolean.parseBoolean(System.getenv("CHROME_NO_SANDBOX"))) {
-            // Workaround Docker/Travis issue
-            chromeOptions.addArguments("--no-sandbox");
-        }
         chromeOptions.setCapability(
                 "chrome.prefs",
                 ImmutableMap.of("profile.password_manager_enabled", "false"));
+
+        // Workaround Docker/Travis issue
+        if (Boolean.parseBoolean(System.getenv("CHROME_NO_SANDBOX"))) {
+            chromeOptions.addArguments("--no-sandbox");
+        }
 
         // Use Chrome's built in device emulators
         if (Property.DEVICE.isSpecified()) {

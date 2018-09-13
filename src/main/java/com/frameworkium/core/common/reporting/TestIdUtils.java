@@ -7,7 +7,7 @@ import org.testng.IMethodInstance;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class TestIdUtils {
 
@@ -16,7 +16,7 @@ public class TestIdUtils {
     }
 
     /**
-     * Get issue or test case ID.
+     * Get TMS Link or Issue ID value.
      *
      * @param iMethod the {@link IMethodInstance} to check for test ID annotations.
      * @return Optional of either the {@link TmsLink} or {@link Issue} value.
@@ -29,7 +29,7 @@ public class TestIdUtils {
     }
 
     /**
-     * Get issue or test case ID for a method.
+     * Get TMS Link or Issue ID for a method.
      *
      * @param method the method to check for test ID annotations.
      * @return Optional of the {@link TmsLink} or {@link Issue} value.
@@ -40,17 +40,17 @@ public class TestIdUtils {
         TmsLink tcIdAnnotation = method.getAnnotation(TmsLink.class);
         Issue issueAnnotation = method.getAnnotation(Issue.class);
 
-        if (!isNull(issueAnnotation) && !isNull(tcIdAnnotation)
+        if (nonNull(issueAnnotation) && nonNull(tcIdAnnotation)
                 && !issueAnnotation.value().equals(tcIdAnnotation.value())) {
             throw new IllegalStateException(
-                    "TestCaseId and Issue annotation are both specified but "
-                            + "not equal for method: " + method.toString());
+                    "TmsLink and Issue annotation are both specified but "
+                            + "not equal for method: " + method);
         }
 
-        if (!isNull(issueAnnotation)) {
-            return Optional.of(issueAnnotation.value());
-        } else if (!isNull(tcIdAnnotation)) {
+        if (nonNull(tcIdAnnotation)) {
             return Optional.of(tcIdAnnotation.value());
+        } else if (nonNull(issueAnnotation)) {
+            return Optional.of(issueAnnotation.value());
         } else {
             return Optional.empty();
         }

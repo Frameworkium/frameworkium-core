@@ -18,7 +18,7 @@ import static com.google.common.truth.Truth.assertThat;
 @Test
 public class EnglishCountiesTest extends BaseUITest {
 
-    public final void exploring_english_counties_data_with_stream_table() {
+    public void exploring_english_counties_data_with_stream_table() {
         EnglishCountiesPage page = EnglishCountiesPage.open();
 
         assertThat(page.populationOf("Cornwall"))
@@ -32,7 +32,7 @@ public class EnglishCountiesTest extends BaseUITest {
     }
 
 
-    public final void exploring_english_counties_data_with_lists() {
+    public void exploring_english_counties_data_with_lists() {
         EnglishCountiesUsingListsPage page = EnglishCountiesUsingListsPage.open();
 
         assertThat(page.populationOf("Cornwall"))
