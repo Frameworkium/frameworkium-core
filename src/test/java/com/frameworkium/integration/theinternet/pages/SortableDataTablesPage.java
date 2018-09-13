@@ -1,7 +1,7 @@
 package com.frameworkium.integration.theinternet.pages;
 
 import com.frameworkium.core.ui.annotations.Visible;
-import com.frameworkium.core.ui.element.StreamTable;
+import com.frameworkium.core.ui.element.OptimisedStreamTable;
 import com.frameworkium.core.ui.pages.BasePage;
 import com.frameworkium.core.ui.pages.PageFactory;
 import org.openqa.selenium.WebElement;
@@ -15,11 +15,11 @@ public class SortableDataTablesPage extends BasePage<SortableDataTablesPage> {
     @Visible
     @CacheLookup
     @FindBy(id = "table1")
-    private StreamTable table1;
+    private OptimisedStreamTable table1;
 
     @CacheLookup
     @FindBy(id = "table2")
-    private StreamTable table2;
+    private OptimisedStreamTable table2;
 
     public static SortableDataTablesPage open() {
         return PageFactory.newInstance(

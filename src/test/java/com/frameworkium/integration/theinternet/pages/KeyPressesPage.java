@@ -12,7 +12,6 @@ import ru.yandex.qatools.htmlelements.annotations.Name;
 public class KeyPressesPage extends BasePage<KeyPressesPage> {
 
     @Visible
-    @Name("Container")
     @FindBy(css = "div.example")
     private WebElement container;
 
@@ -22,10 +21,7 @@ public class KeyPressesPage extends BasePage<KeyPressesPage> {
 
     @Step("Enter a key press {key}")
     public KeyPressesPage enterKeyPress(Keys key) {
-
         (new Actions(driver)).sendKeys(key).perform();
-
-        // We're still on this page, so return this
         return this;
     }
 
