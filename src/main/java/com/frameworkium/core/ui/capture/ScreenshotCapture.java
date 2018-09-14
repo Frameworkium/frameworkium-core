@@ -125,8 +125,8 @@ public class ScreenshotCapture {
             Command command, WebDriver driver, String errorMessage) {
 
         if (executionID == null) {
-            logger.error("Can't send Screenshot." +
-                    " Capture didn't initialise execution for test: " + testID);
+            logger.error("Can't send Screenshot."
+                    + " Capture didn't initialise execution for test: " + testID);
             return;
         }
 
