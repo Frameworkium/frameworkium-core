@@ -23,14 +23,14 @@ import static com.frameworkium.core.common.properties.Property.*;
 import static org.apache.http.HttpStatus.SC_CREATED;
 
 /**
- * Takes and sends screenshots to "Capture"
+ * Takes and sends screenshots to "Capture" asynchronously.
  */
 public class ScreenshotCapture {
 
     private static final Logger logger = LogManager.getLogger();
 
-    /** Executor for async sending of screenshot messages to capture. */
-    private static ExecutorService screenshotExecutor;
+    /** Shared Executor for async sending of screenshot messages to capture. */
+    private static ExecutorService executorService;
 
     private String executionID;
     private String testID;
@@ -83,8 +83,7 @@ public class ScreenshotCapture {
             try {
                 node = InetAddress.getLocalHost().getCanonicalHostName();
             } catch (UnknownHostException e) {
-                logger.warn("Failed to get local machine name");
-                logger.debug(e);
+                logger.debug("Failed to get local machine name", e);
             }
         }
         return node;
@@ -126,7 +125,8 @@ public class ScreenshotCapture {
             Command command, WebDriver driver, String errorMessage) {
 
         if (executionID == null) {
-            logger.debug("No Screenshot sent. Capture didn't initialise for " + testID);
+            logger.error("Can't send Screenshot." +
+                    " Capture didn't initialise execution for test: " + testID);
             return;
         }
 
@@ -155,25 +155,42 @@ public class ScreenshotCapture {
                         .then()
                         .assertThat().statusCode(SC_CREATED);
                 logger.debug("Sent screenshot to Capture for " + testID);
-            } catch (Throwable t) {
+            } catch (Exception e) {
                 logger.warn("Failed sending screenshot to Capture for " + testID);
-                logger.debug(t);
+                logger.debug(e);
             }
         });
     }
 
-    private ExecutorService getScreenshotExecutor() {
-        if (screenshotExecutor == null) {
-            screenshotExecutor = Executors.newSingleThreadExecutor();
+    private synchronized ExecutorService getScreenshotExecutor() {
+        if (executorService == null) {
+            executorService = Executors.newFixedThreadPool(4);
         }
-        return screenshotExecutor;
+        return executorService;
     }
 
-    public static boolean processRemainingBacklog() throws InterruptedException {
-        if (screenshotExecutor == null) {
-            return true;
+    /**
+     * Waits to finish processing any remaining queued Screenshot messages.
+     */
+    public static void processRemainingBacklog() {
+        if (!isRequired() || executorService == null) {
+            return;
         }
-        screenshotExecutor.shutdown();
-        return screenshotExecutor.awaitTermination(2, TimeUnit.MINUTES);
+
+        logger.info("Processing remaining Screenshot Capture backlog...");
+        executorService.shutdown();
+
+        boolean timeout;
+        try {
+            timeout = !executorService.awaitTermination(2, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        if (timeout) {
+            logger.error("Shutdown timed out. "
+                    + "Some screenshots might not have been sent.");
+        } else {
+            logger.info("Finished processing backlog.");
+        }
     }
 }

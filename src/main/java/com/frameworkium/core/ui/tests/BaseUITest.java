@@ -41,7 +41,7 @@ public abstract class BaseUITest
     /** Logger for subclasses (logs with correct class i.e. not BaseUITest). */
     protected final Logger logger = LogManager.getLogger(this);
 
-    private static final Logger baseLogger = LogManager.getLogger();
+    private static final Logger baseLogger = LogManager.getLogger(BaseUITest.class);
 
     private static final ThreadLocal<ScreenshotCapture> capture = ThreadLocal.withInitial(() -> null);
     private static final ThreadLocal<Wait<WebDriver>> wait = ThreadLocal.withInitial(() -> null);
@@ -99,24 +99,8 @@ public abstract class BaseUITest
     }
 
     @AfterSuite(alwaysRun = true)
-    protected static void shutdownScreenshotExecutor() {
-        if (!ScreenshotCapture.isRequired()) {
-            return;
-        }
-        String prefix = "Screenshot Capture: ";
-        baseLogger.info(prefix + "processing remaining async backlog...");
-        try {
-            boolean timeout = !ScreenshotCapture.processRemainingBacklog();
-            if (timeout) {
-                baseLogger.error(prefix + "shutdown timed out. "
-                        + "Some screenshots might not have been sent.");
-            } else {
-                baseLogger.info(prefix + "finished backlog.");
-            }
-        } catch (InterruptedException e) {
-            baseLogger.error(prefix + "executor was interrupted. "
-                    + "Some screenshots might not have been sent.");
-        }
+    private static void processRemainingScreenshotBacklog() {
+        ScreenshotCapture.processRemainingBacklog();
     }
 
     /** Creates the allure properties for the report. */
