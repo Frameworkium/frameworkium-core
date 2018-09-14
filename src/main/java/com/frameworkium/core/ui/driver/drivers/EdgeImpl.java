@@ -5,18 +5,12 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.remote.CapabilityType;
 
 public class EdgeImpl extends AbstractDriver {
 
     @Override
     public EdgeOptions getCapabilities() {
-        EdgeOptions edgeOptions = new EdgeOptions();
-        edgeOptions.setCapability(
-                CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION,
-                true);
-        edgeOptions.setCapability("requireWindowFocus", true);
-        return edgeOptions;
+        return new EdgeOptions();
     }
 
     @Override
