@@ -1,14 +1,14 @@
 package com.frameworkium.core.ui.capture
 
-import com.frameworkium.core.ui.driver.WebDriverWrapper
 import org.openqa.selenium.StaleElementReferenceException
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
+import org.openqa.selenium.support.events.EventFiringWebDriver
 import spock.lang.Specification
 
 class ElementHighlighterSpec extends Specification {
 
-    def mockWDWrapper = Mock(WebDriverWrapper, constructorArgs: [Mock(WebDriver)])
+    def mockWDWrapper = Mock(EventFiringWebDriver, constructorArgs: [Mock(WebDriver)])
     def mockElement = Mock(WebElement)
 
     ElementHighlighter sut = new ElementHighlighter(mockWDWrapper)

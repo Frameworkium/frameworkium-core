@@ -9,29 +9,34 @@ import com.frameworkium.core.ui.js.JavascriptWait;
 import com.frameworkium.core.ui.tests.BaseUITest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.Wait;
 import ru.yandex.qatools.htmlelements.loader.HtmlElementLoader;
 
 import java.time.Duration;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
-
 public abstract class BasePage<T extends BasePage<T>> {
 
     protected final Logger logger = LogManager.getLogger(this);
+
     protected final WebDriver driver;
     protected Wait<WebDriver> wait;
-    /** Visibility with current page wait and driver. */
-    protected Visibility visibility;
-    protected JavascriptWait javascriptWait;
+    private Visibility visibility;
+    private JavascriptWait javascriptWait;
 
     public BasePage() {
-        driver = BaseUITest.getDriver();
-        wait = BaseUITest.getWait();
-        visibility = new Visibility(wait, BaseUITest.getDriver());
-        javascriptWait = new JavascriptWait(driver, wait);
+        this(BaseUITest.getWebDriver(), BaseUITest.getWait());
+    }
+
+    /**
+     * Added to enable testing and, one day, remove coupling to BaseUITest.
+     */
+    public BasePage(WebDriver driver, Wait<WebDriver> wait) {
+        this.driver = driver;
+        this.wait = wait;
+        JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
+        this.visibility = new Visibility(wait, javascriptExecutor);
+        this.javascriptWait = new JavascriptWait(javascriptExecutor, wait);
     }
 
     /**
@@ -70,22 +75,7 @@ public abstract class BasePage<T extends BasePage<T>> {
 
     /**
      * Get new instance of a PageObject of type T,
-     * see {@link BasePage#get(long)} for updating the timeout.
-     *
-     * @param url     the url to open before initialising
-     * @param timeout the timeout, in seconds, for the new {@link Wait} for this page
-     * @return new instance of a PageObject of type T, see {@link BasePage#get()}
-     * @deprecated use {@link #get(String, Duration)}
-     */
-    @Deprecated
-    public T get(String url, long timeout) {
-        updatePageTimeout(Duration.of(timeout, SECONDS));
-        return get(url);
-    }
-
-    /**
-     * Get new instance of a PageObject of type T,
-     * see {@link BasePage#get(long)} for updating the timeout.
+     * see {@link BasePage#get(Duration)} for updating the timeout.
      *
      * @param url     the url to open before initialising
      * @param timeout the timeout for the new {@link Wait} for this page
@@ -95,19 +85,6 @@ public abstract class BasePage<T extends BasePage<T>> {
     public T get(String url, Duration timeout) {
         updatePageTimeout(timeout);
         return get(url);
-    }
-
-    /**
-     * Get new instance of a PageObject of type T.
-     *
-     * @param timeout the timeout, in seconds, for the new {@link Wait} for this page
-     * @return new instance of a PageObject of type T, see {@link BasePage#get()}
-     * @deprecated use {@link #get(Duration)}
-     */
-    @Deprecated
-    public T get(long timeout) {
-        updatePageTimeout(Duration.of(timeout, SECONDS));
-        return get();
     }
 
     /**
@@ -154,8 +131,9 @@ public abstract class BasePage<T extends BasePage<T>> {
 
     private void updatePageTimeout(Duration timeout) {
         wait = BaseUITest.newWaitWithTimeout(timeout);
-        visibility = new Visibility(wait, BaseUITest.getDriver());
-        javascriptWait = new JavascriptWait(driver, wait);
+        JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+        visibility = new Visibility(wait, jsExecutor);
+        javascriptWait = new JavascriptWait(jsExecutor, wait);
     }
 
     private void logPageLoadToAllure() {
@@ -182,6 +160,16 @@ public abstract class BasePage<T extends BasePage<T>> {
                 + getClass().getSimpleName();
     }
 
+    /** Get title of the web page. */
+    public String getTitle() {
+        return driver.getTitle();
+    }
+
+    /** Get page source code of the current page. */
+    public String getSource() {
+        return driver.getPageSource();
+    }
+
     /**
      * Waits for all JS framework requests to finish on page.
      */
@@ -194,11 +182,11 @@ public abstract class BasePage<T extends BasePage<T>> {
      * @return One of Boolean, Long, String, List or WebElement. Or null.
      * @see JavascriptExecutor#executeScript(String, Object...)
      */
-    protected Object executeJS(String javascript) {
+    protected Object executeJS(String javascript, Object... objects) {
         Object returnObj = null;
         JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
         try {
-            returnObj = jsExecutor.executeScript(javascript);
+            returnObj = jsExecutor.executeScript(javascript, objects);
         } catch (Exception e) {
             logger.error("Javascript execution failed!");
             logger.debug("Failed Javascript:" + javascript, e);
@@ -219,11 +207,11 @@ public abstract class BasePage<T extends BasePage<T>> {
      * @return One of Boolean, Long, String, List, WebElement, or null.
      * @see JavascriptExecutor#executeAsyncScript(String, Object...)
      */
-    protected Object executeAsyncJS(String javascript) {
+    protected Object executeAsyncJS(String javascript, Object... objects) {
         Object returnObj = null;
         try {
             JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
-            returnObj = jsExecutor.executeAsyncScript(javascript);
+            returnObj = jsExecutor.executeAsyncScript(javascript, objects);
         } catch (Exception e) {
             logger.error("Async Javascript execution failed!");
             logger.debug("Failed Javascript:\n" + javascript, e);
@@ -231,13 +219,13 @@ public abstract class BasePage<T extends BasePage<T>> {
         return returnObj;
     }
 
-    /** Get title of the web page. */
-    public String getTitle() {
-        return driver.getTitle();
+    /**
+     * Convenience method for {@link Visibility#forceVisible(WebElement)}.
+     *
+     * @param element the {@link WebElement} to "force visible" via Javascript.
+     */
+    protected void forceVisible(WebElement element) {
+        visibility.forceVisible(element);
     }
 
-    /** Get page source code of the current page. */
-    public String getSource() {
-        return driver.getPageSource();
-    }
 }

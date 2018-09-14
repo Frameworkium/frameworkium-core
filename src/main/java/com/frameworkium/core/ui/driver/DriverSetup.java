@@ -34,7 +34,7 @@ public class DriverSetup {
     /**
      * @return An uninitialised desired {@link Driver} Implementation.
      */
-    public Driver instantiateDriver() {
+    public static Driver instantiateDriver() {
         Driver driver = createDriverImpl(getBrowserTypeFromProperty());
         if (useRemoteDriver()) {
             driver = instantiateDesiredRemote(driver);
@@ -49,7 +49,7 @@ public class DriverSetup {
      * @param driver the desired (non-remote) driver implementation
      * @return The (potentially) remote driver implementation based on parameters
      */
-    private Driver instantiateDesiredRemote(Driver driver) {
+    private static Driver instantiateDesiredRemote(Driver driver) {
 
         Capabilities capabilities = driver.getCapabilities();
         Platform platform = getPlatformType();
@@ -65,7 +65,7 @@ public class DriverSetup {
         }
     }
 
-    private Driver createDriverImpl(Browser browser) {
+    private static Driver createDriverImpl(Browser browser) {
         switch (browser) {
             case FIREFOX:
                 return new FirefoxImpl();
@@ -137,7 +137,7 @@ public class DriverSetup {
      * @param implClassName fully qualified name of custom browser impl class
      * @return Class implementing the Driver interface
      */
-    private Class<? extends Driver> getCustomBrowserImpl(String implClassName) {
+    private static Class<? extends Driver> getCustomBrowserImpl(String implClassName) {
         try {
             return Class.forName(implClassName).asSubclass(Driver.class);
         } catch (ClassNotFoundException ex) {

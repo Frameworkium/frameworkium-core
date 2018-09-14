@@ -2,6 +2,7 @@ package com.frameworkium.core.ui.driver;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import static com.frameworkium.core.common.properties.Property.APP_PATH;
 
@@ -16,9 +17,6 @@ public interface Driver {
     static boolean isNative() {
         return APP_PATH.isSpecified();
     }
-
-    /** Method to tear down the driver object. */
-    void tearDown();
 
     /** Method to set-up the driver object. */
     void initialise();
@@ -41,7 +39,7 @@ public interface Driver {
     /**
      * Getter for the driver that wraps the initialised driver.
      *
-     * @return WebDriverWrapper
+     * @return EventFiringWebDriver
      */
-    WebDriverWrapper getDriver();
+    EventFiringWebDriver getWebDriver();
 }

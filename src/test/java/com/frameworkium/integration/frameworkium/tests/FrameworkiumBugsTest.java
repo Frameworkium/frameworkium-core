@@ -14,7 +14,7 @@ public class FrameworkiumBugsTest extends BaseUITest {
 
     @BeforeMethod(dependsOnMethods = "configureBrowserBeforeTest")
     public void configureBrowserBeforeUse_allows_browser_access_in_before_method() {
-        assertThat(getDriver().getPageSource()).isNotEmpty();
+        assertThat(getWebDriver().getPageSource()).isNotEmpty();
     }
 
     public void ensure_jQueryAjaxDone_does_not_fail() {

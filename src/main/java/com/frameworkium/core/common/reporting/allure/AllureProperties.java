@@ -9,8 +9,12 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static com.frameworkium.core.common.properties.Property.*;
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
+/**
+ * Creates the Allure environment.properties file based on properties used.
+ * Each method will overwrite the existing file.
+ */
 public class AllureProperties {
 
     private static final Logger logger = LogManager.getLogger();
@@ -19,13 +23,23 @@ public class AllureProperties {
         // hide default constructor for this util class
     }
 
-    /**
-     * Creates the Allure environment.properties file based on properties used.
-     */
-    public static void create() {
+    public static void createUI() {
+        Properties props = new Properties();
+        props.putAll(getCommonProps());
+        props.putAll(getJiraProperties());
+        props.putAll(getUIProperties());
+        save(props);
+    }
+
+    public static void createAPI() {
+        Properties props = new Properties();
+        props.putAll(getCommonProps());
+        props.putAll(getJiraProperties());
+        save(props);
+    }
+
+    private static void save(Properties props) {
         try (FileOutputStream fos = new FileOutputStream("target/allure-results/environment.properties")) {
-            Properties props = new Properties();
-            props.putAll(getCommonProps());
             props.store(fos, "See https://github.com/allure-framework/allure-core/wiki/Environment");
         } catch (IOException e) {
             logger.error("IO problem when writing allure properties file", e);
@@ -38,23 +52,23 @@ public class AllureProperties {
         if (BUILD.isSpecified()) {
             props.setProperty("Build", BUILD.getValue());
         }
-        if (!isNull(System.getenv("BUILD_URL"))) {
+        if (nonNull(System.getenv("BUILD_URL"))) {
             props.setProperty("Jenkins build URL", System.getenv("BUILD_URL"));
         }
-        if (!isNull(System.getProperty("threads"))) {
-            props.setProperty("Test Thread Count", System.getProperty("threads"));
+        if (THREADS.isSpecified()) {
+            props.setProperty("Test Thread Count",
+                    String.valueOf(THREADS.getIntWithDefault(1)));
         }
-        if (!isNull(System.getProperty("config"))) {
+        if (nonNull(System.getProperty("config"))) {
             props.setProperty("Config file", System.getProperty("config"));
         }
-
-        setJiraProperties(props);
-        setUIProperties(props);
 
         return props;
     }
 
-    private static void setJiraProperties(Properties props) {
+    private static Properties getJiraProperties() {
+        Properties props = new Properties();
+
         if (RESULT_VERSION.isSpecified()) {
             props.setProperty("Jira Result Version", RESULT_VERSION.getValue());
         }
@@ -69,9 +83,13 @@ public class AllureProperties {
         if (JIRA_RESULT_TRANSITION.isSpecified()) {
             props.setProperty("Jira Result Field Name", JIRA_RESULT_TRANSITION.getValue());
         }
+
+        return props;
     }
 
-    private static void setUIProperties(Properties props) {
+    private static Properties getUIProperties() {
+        Properties props = new Properties();
+
         if (APP_PATH.isSpecified()) {
             props.setProperty("App Path", APP_PATH.getValue());
         }
@@ -84,10 +102,14 @@ public class AllureProperties {
         if (PLATFORM_VERSION.isSpecified()) {
             props.setProperty("Platform Version", PLATFORM_VERSION.getValue());
         }
-        setBrowserProperties(props);
+        props.putAll(getBrowserProperties());
+
+        return props;
     }
 
-    private static void setBrowserProperties(Properties props) {
+    private static Properties getBrowserProperties() {
+        Properties props = new Properties();
+
         if (BROWSER.isSpecified()) {
             props.setProperty("Browser", BROWSER.getValue());
         }
@@ -97,8 +119,10 @@ public class AllureProperties {
         if (GRID_URL.isSpecified()) {
             props.setProperty("Grid URL", GRID_URL.getValue());
         }
-        if (BaseUITest.getUserAgent().isPresent()) {
-            props.setProperty("UserAgent", BaseUITest.getUserAgent().get());
-        }
+
+        BaseUITest.getUserAgent()
+                .ifPresent(ua -> props.setProperty("UserAgent", ua));
+
+        return props;
     }
 }

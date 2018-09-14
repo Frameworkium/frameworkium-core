@@ -34,15 +34,14 @@ public class SeleniumDownloadPage extends BasePage<SeleniumDownloadPage> {
     }
 
     public SeleniumDownloadPage hideContent() {
-        BaseUITest.getDriver().executeScript(
-                "arguments[0].style.visibility='hidden';", mainContentDiv);
+        executeJS("arguments[0].style.visibility='hidden';", mainContentDiv);
         wait.until(ExpectedConditions.not(visibilityOf(mainContentDiv)));
         return this;
     }
 
     public SeleniumDownloadPage forceVisibleContent() {
         // ensure force visible works
-        new Visibility().forceVisible(mainContentDiv);
+        forceVisible(mainContentDiv);
         return this;
     }
 

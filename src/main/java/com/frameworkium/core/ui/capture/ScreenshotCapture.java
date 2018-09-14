@@ -57,6 +57,12 @@ public class ScreenshotCapture {
         }
     }
 
+    private RequestSpecification getRequestSpec() {
+        return RestAssured.given()
+                .relaxedHTTPSValidation()
+                .contentType(ContentType.JSON);
+    }
+
     private String getNode() {
 
         String node = "n/a";
@@ -84,12 +90,6 @@ public class ScreenshotCapture {
         return node;
     }
 
-    private RequestSpecification getRequestSpec() {
-        return RestAssured.given()
-                .relaxedHTTPSValidation()
-                .contentType(ContentType.JSON);
-    }
-
     private String getRemoteNodeAddress() throws MalformedURLException {
         return RestAssured
                 .get(getTestSessionURL())
@@ -105,7 +105,7 @@ public class ScreenshotCapture {
                 gridURL.getProtocol(),
                 gridURL.getHost(),
                 gridURL.getPort(),
-                BaseUITest.getDriver().getWrappedRemoteWebDriver().getSessionId());
+                BaseUITest.getThreadSessionId());
     }
 
     public static boolean isRequired() {

@@ -14,9 +14,10 @@ public class JavascriptWait {
     private final Wait<WebDriver> wait;
     private final JavascriptExecutor javascriptExecutor;
 
-    public JavascriptWait(WebDriver driver, Wait<WebDriver> wait) {
+    public JavascriptWait(
+            JavascriptExecutor javascriptExecutor, Wait<WebDriver> wait) {
         this.wait = wait;
-        this.javascriptExecutor = (JavascriptExecutor) driver;
+        this.javascriptExecutor = javascriptExecutor;
     }
 
     /**

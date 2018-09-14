@@ -17,7 +17,7 @@ public abstract class BaseAPITest {
     /** Creates the allure properties for the report, after the test run. */
     @AfterSuite(alwaysRun = true)
     public static void createAllureProperties() {
-        AllureProperties.create();
+        AllureProperties.createAPI();
     }
 
 }

@@ -37,7 +37,8 @@ public class ScreenshotListener extends TestListenerAdapter {
     }
 
     private void takeScreenshotAndSaveLocally(String testName) {
-        takeScreenshotAndSaveLocally(testName, BaseUITest.getDriver());
+        takeScreenshotAndSaveLocally(
+                testName, (TakesScreenshot) BaseUITest.getDriver());
     }
 
     private void takeScreenshotAndSaveLocally(String testName, TakesScreenshot driver) {
