@@ -39,10 +39,10 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
         if (ScreenshotCapture.isRequired() && isUITest(result)) {
             Throwable thrw = result.getThrowable();
             if (null != thrw) {
-                takeScreenshotAndSend(action, BaseUITest.getDriver(), thrw);
+                takeScreenshotAndSend(action, BaseUITest.getWebDriver(), thrw);
             } else {
                 Command command = new Command(action, "n/a", "n/a");
-                takeScreenshotAndSend(command, BaseUITest.getDriver());
+                takeScreenshotAndSend(command, BaseUITest.getWebDriver());
             }
         }
     }

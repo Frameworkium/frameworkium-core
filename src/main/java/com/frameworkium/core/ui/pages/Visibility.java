@@ -21,7 +21,7 @@ import static ru.yandex.qatools.htmlelements.utils.HtmlElementUtils.*;
 /**
  * All things Frameworkium-related dealing with PageObject element visibility.
  */
-final class Visibility {
+public final class Visibility {
 
     public static final String FORCE_VISIBLE_SCRIPT =
             "arguments[0].style.zindex='10000';"
