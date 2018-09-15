@@ -90,7 +90,7 @@ public abstract class BaseUITest
 
     @AfterSuite(alwaysRun = true)
     protected static void tearDownSuite() {
-        driverLifecycle.tearDownDroverPool();
+        driverLifecycle.tearDownDriverPool();
     }
 
     @AfterSuite(alwaysRun = true)

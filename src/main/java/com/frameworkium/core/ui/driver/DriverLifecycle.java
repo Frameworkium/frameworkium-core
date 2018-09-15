@@ -17,13 +17,13 @@ import java.util.stream.IntStream;
  * <p>The methods need to be called in order:
  * <ol>
  * <li>{@link #initDriverPool(Supplier)}
- * (once until {@link #tearDownDroverPool()} has been called)
+ * (once until {@link #tearDownDriverPool()} has been called)
  * <li>{@link #initBrowserBeforeTest(Supplier)}
  * (once until {@link #tearDownDriver()} has been called)
  * <li>{@link #getWebDriver()} (n times only after the above and before the below)
  * <li>{@link #tearDownDriver()}
  * (once after {@link #initBrowserBeforeTest(Supplier)} has been called)
- * <li>{@link #tearDownDroverPool()} (once but multiple calls do nothing)
+ * <li>{@link #tearDownDriverPool()} (once but multiple calls do nothing)
  * </ol>
  */
 public class DriverLifecycle {
@@ -46,6 +46,7 @@ public class DriverLifecycle {
      * add them to the pool up to the number of threads specified.
      *
      * @param driverSupplier the {@link Supplier} that creates {@link Driver}s
+     * @throws IllegalStateException if trying to re-initialise existing pool
      */
     public void initDriverPool(Supplier<Driver> driverSupplier) {
         if (driverPool != null) {
@@ -96,7 +97,7 @@ public class DriverLifecycle {
     }
 
     /**
-     * If reuseBrowser is true, this will {@code }deleteAllCookies} and then
+     * If reuseBrowser is true, this will {@code deleteAllCookies} and then
      * re-add the {@link Driver} back to the pool, else it will call {@code quit()}
      * on the underlying {@link WebDriver}.
      */
@@ -111,14 +112,15 @@ public class DriverLifecycle {
             }
         } catch (Exception e) {
             logger.error("Failed to tear down browser after test method.", e);
+            throw e;
         }
     }
 
     /**
      * Drains the pool, calls {@link WebDriver#quit} on every {@link Driver}
-     * remaining in the pool and null the pool.
+     * remaining in the pool and sets the pool to {@code null}.
      */
-    public void tearDownDroverPool() {
+    public void tearDownDriverPool() {
         if (driverPool == null) {
             return;
         }
