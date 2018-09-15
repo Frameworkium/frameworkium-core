@@ -34,7 +34,8 @@ public class DriverLifecycle {
     private int poolSize;
 
     private BlockingDeque<Driver> driverPool;
-    private static final ThreadLocal<Driver> driver = ThreadLocal.withInitial(() -> null);
+    private static final ThreadLocal<Driver> threadLocalDriver =
+            ThreadLocal.withInitial(() -> null);
 
     public DriverLifecycle(int poolSize, boolean reuseBrowser) {
         this.poolSize = poolSize;
@@ -72,9 +73,9 @@ public class DriverLifecycle {
      */
     public void initBrowserBeforeTest(Supplier<Driver> driverSupplier) {
         if (reuseBrowser) {
-            driver.set(getNextAvailableDriverFromPool());
+            threadLocalDriver.set(getNextAvailableDriverFromPool());
         } else {
-            driver.set(driverSupplier.get());
+            threadLocalDriver.set(driverSupplier.get());
         }
     }
 
@@ -93,7 +94,7 @@ public class DriverLifecycle {
      * @return the driver in use by the current thread.
      */
     public WebDriver getWebDriver() {
-        return driver.get().getWebDriver();
+        return threadLocalDriver.get().getWebDriver();
     }
 
     /**
@@ -103,10 +104,10 @@ public class DriverLifecycle {
      */
     public void tearDownDriver() {
         try {
-            WebDriver webDriver = driver.get().getWebDriver();
+            WebDriver webDriver = threadLocalDriver.get().getWebDriver();
             if (reuseBrowser) {
                 webDriver.manage().deleteAllCookies();
-                driverPool.addLast(driver.get());
+                driverPool.addLast(threadLocalDriver.get());
             } else {
                 webDriver.quit();
             }

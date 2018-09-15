@@ -4,7 +4,11 @@ import org.openqa.selenium.JavascriptExecutor;
 
 public class UserAgent {
 
-    private static final String SCRIPT = "return navigator.userAgent;";
+    public static final String SCRIPT = "return navigator.userAgent;";
+
+    private UserAgent() {
+        // hidden
+    }
 
     public static String getUserAgent(JavascriptExecutor driver) {
         try {
