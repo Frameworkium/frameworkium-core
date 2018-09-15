@@ -18,12 +18,13 @@ public class VideoListener extends TestListenerAdapter {
     @Override
     public void onFinish(ITestContext iTestContext) {
         if (VideoCapture.isRequired()) {
+            VideoCapture videoCapture = new VideoCapture();
             iTestContext
                     .getFailedTests()
                     .getAllResults()
                     .stream()
                     .map(ITestResult::getName)
-                    .forEach(VideoCapture::fetchAndSaveVideo);
+                    .forEach(videoCapture::fetchAndSaveVideo);
         }
     }
 
