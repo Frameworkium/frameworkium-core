@@ -184,7 +184,7 @@ public class ScreenshotCapture {
         try {
             timeout = !executorService.awaitTermination(2, TimeUnit.MINUTES);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
         if (timeout) {
             logger.error("Shutdown timed out. "
