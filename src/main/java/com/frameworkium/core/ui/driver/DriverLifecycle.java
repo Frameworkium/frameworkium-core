@@ -94,7 +94,7 @@ public class DriverLifecycle {
      * @return the driver in use by the current thread.
      */
     public WebDriver getWebDriver() {
-        return threadLocalDriver.get().getWebDriver();
+        return  threadLocalDriver.get().getWebDriver().getWrappedDriver();
     }
 
     /**

@@ -8,10 +8,13 @@ import spock.lang.Unroll
 @Unroll
 class DriverLifecycleSpec extends Specification {
 
-    def webDriverMock =
-            Mock(constructorArgs: [Stub(WebDriver)], EventFiringWebDriver)
+    def webDriverStub = Stub(WebDriver)
+    def EFWebDriverMock =
+            Mock(constructorArgs: [webDriverStub], EventFiringWebDriver) {
+                getWrappedDriver() >> webDriverStub
+            }
     def driverMock = Mock(Driver) {
-        getWebDriver() >> webDriverMock
+        getWebDriver() >> EFWebDriverMock
     }
     def driverSupplier = { driverMock }
 
@@ -22,11 +25,11 @@ class DriverLifecycleSpec extends Specification {
         when:
             sut.initDriverPool(driverSupplier)
             sut.initBrowserBeforeTest(driverSupplier)
-            assert sut.getWebDriver() == webDriverMock
+            assert sut.getWebDriver() == webDriverStub
             sut.tearDownDriver()
             sut.tearDownDriverPool()
         then:
-            webDriverMock.manage() >> Stub(WebDriver.Options)
+            EFWebDriverMock.manage() >> Stub(WebDriver.Options)
             noExceptionThrown()
         where:
             poolSize || reuseBrowser
@@ -43,7 +46,7 @@ class DriverLifecycleSpec extends Specification {
         when:
             sut.tearDownDriver()
         then:
-            1 * webDriverMock.quit() >> { throw new Exception("") }
+            1 * EFWebDriverMock.quit() >> { throw new Exception("") }
             thrown Exception
     }
 
@@ -54,7 +57,7 @@ class DriverLifecycleSpec extends Specification {
         when:
             sut.tearDownDriverPool()
         then:
-            2 * webDriverMock.quit() >>> { throw new Exception("some error") } >> { }
+            2 * EFWebDriverMock.quit() >>> { throw new Exception("some error") } >> { }
     }
 
     def "when reuseBrowser is true initDriverPool can only be called once"() {
