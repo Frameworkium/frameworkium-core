@@ -112,7 +112,8 @@ public class DriverLifecycle {
                 webDriver.quit();
             }
         } catch (Exception e) {
-            logger.error("Failed to tear down browser after test method.", e);
+            logger.error("Failed to tear down browser after test method.");
+            logger.debug("Failed to tear down browser after test method.", e);
             throw e;
         }
     }
@@ -136,7 +137,8 @@ public class DriverLifecycle {
                     try {
                         driver.getWebDriver().quit();
                     } catch (Exception e) {
-                        logger.error("Failed to tear down browser after test suite.", e);
+                        logger.error("Failed to tear down browser after test suite.");
+                        logger.debug("Failed to tear down browser after test suite.", e);
                     }
                 });
     }
