@@ -1,17 +1,17 @@
 package com.frameworkium.core.ui.listeners;
 
-import com.frameworkium.core.ui.capture.VideoCapture;
+import com.frameworkium.core.ui.video.VideoCapture;
 import com.frameworkium.core.ui.tests.BaseUITest;
 import org.testng.*;
 
-import static com.frameworkium.core.ui.capture.VideoCapture.isRequired;
+import static com.frameworkium.core.ui.video.VideoCapture.isRequired;
 
 public class VideoListener extends TestListenerAdapter {
 
     @Override
     public void onTestStart(ITestResult iTestResult) {
         if (isRequired()) {
-            VideoCapture.addTest(iTestResult, BaseUITest.getThreadSessionId());
+            VideoCapture.saveTestSessionID(iTestResult, BaseUITest.getThreadSessionId());
         }
     }
 

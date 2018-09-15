@@ -1,4 +1,4 @@
-package com.frameworkium.core.ui.capture;
+package com.frameworkium.core.ui.video;
 
 import io.qameta.allure.Attachment;
 import io.restassured.RestAssured;
@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.*;
 import java.nio.file.*;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.frameworkium.core.common.properties.Property.VIDEO_CAPTURE_URL;
@@ -22,7 +23,7 @@ public class VideoCapture {
     private static final String VIDEO_FOLDER = "capturedVideo";
     private static final Logger logger = LogManager.getLogger();
 
-    private static HashMap<String, String> testMap = new HashMap<>();
+    private static Map<String, String> testMap = new HashMap<>();
 
     private VideoCapture() {
         // hide default constructor for this util class
@@ -32,7 +33,7 @@ public class VideoCapture {
         return VIDEO_CAPTURE_URL.isSpecified();
     }
 
-    public static void addTest(ITestResult iTestResult, String sessionId) {
+    public static void saveTestSessionID(ITestResult iTestResult, String sessionId) {
         testMap.put(iTestResult.getName(), sessionId);
     }
 
@@ -47,7 +48,7 @@ public class VideoCapture {
             rawVideo = getVideo(videoCaptureURL);
         } catch (InterruptedException | TimeoutException e) {
             logger.error(String.format(
-                    "Timed out waiting for Session ID %s to become available after 6 seconds.",
+                    "Timed out waiting for Session ID %s to become available after 3 retires.",
                     sessionId));
             return;
         }
