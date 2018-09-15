@@ -27,11 +27,9 @@ public class Browser {
 
         Optional<String> userAgent = BaseUITest.getUserAgent();
         if (userAgent.isPresent() && !userAgent.get().isEmpty()) {
-            // Try to parse the UA
             UserAgentStringParser uaParser = UADetectorServiceFactory.getResourceModuleParser();
             ReadableUserAgent agent = uaParser.parse(userAgent.get());
 
-            // Set the params based on this agent
             this.name = agent.getName();
             this.version = agent.getVersionNumber().toVersionString();
             this.device = agent.getDeviceCategory().getName();

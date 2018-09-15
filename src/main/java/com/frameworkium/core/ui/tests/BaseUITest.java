@@ -45,6 +45,7 @@ public abstract class BaseUITest
     private static final ThreadLocal<Wait<WebDriver>> wait = ThreadLocal.withInitial(() -> null);
 
     private static DriverLifecycle driverLifecycle;
+    private static String userAgent;
 
     /**
      * Runs before the test suite to initialise a pool of drivers, if requested.
@@ -74,6 +75,10 @@ public abstract class BaseUITest
         if (ScreenshotCapture.isRequired()) {
             String testName = getTestNameForCapture(testMethod);
             capture.set(new ScreenshotCapture(testName));
+        }
+
+        if (userAgent == null) {
+            userAgent = UserAgent.getUserAgent((JavascriptExecutor) getWebDriver());
         }
     }
 
@@ -191,8 +196,11 @@ public abstract class BaseUITest
         return wait.get();
     }
 
+    /**
+     * @return the user agent of the browser in the first UI test to run.
+     */
     public static Optional<String> getUserAgent() {
-        return new UserAgent((JavascriptExecutor) getWebDriver()).getUserAgent();
+        return Optional.ofNullable(userAgent);
     }
 
     public static String getThreadSessionId() {
