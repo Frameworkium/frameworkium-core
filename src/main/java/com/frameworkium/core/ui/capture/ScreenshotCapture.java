@@ -22,33 +22,31 @@ import java.util.concurrent.*;
 import static com.frameworkium.core.common.properties.Property.*;
 import static org.apache.http.HttpStatus.SC_CREATED;
 
-/**
- * Takes and sends screenshots to "Capture"
- */
+/** Takes and sends screenshots to "Capture" asynchronously. */
 public class ScreenshotCapture {
 
     private static final Logger logger = LogManager.getLogger();
 
-    /** Executor for async sending of screenshot messages to capture. */
-    private static ExecutorService screenshotExecutor;
+    /** Shared Executor for async sending of screenshot messages to capture. */
+    private static final ExecutorService executorService =
+            Executors.newFixedThreadPool(4);
 
-    private String executionID;
     private String testID;
+    private String executionID;
 
     public ScreenshotCapture(String testID) {
-        this.testID = testID;
         logger.debug("About to initialise Capture execution for " + testID);
+        this.testID = testID;
         this.executionID = createExecution(new CreateExecution(testID, getNode()));
         logger.debug("Capture executionID=" + executionID);
     }
 
     private String createExecution(CreateExecution createExecution) {
-
         try {
             return getRequestSpec()
                     .body(createExecution)
                     .when()
-                    .post(CAPTURE_URL.getValue() + "/executions")
+                    .post(CaptureEndpoint.EXECUTIONS.getUrl())
                     .then().statusCode(SC_CREATED)
                     .extract().path("executionID").toString();
         } catch (Exception e) {
@@ -64,30 +62,33 @@ public class ScreenshotCapture {
     }
 
     private String getNode() {
-
         String node = "n/a";
         if (DriverSetup.useRemoteDriver()) {
-            if (Sauce.isDesired()) {
-                node = "SauceLabs";
-            } else if (BrowserStack.isDesired()) {
-                node = "BrowserStack";
-            } else {
-                try {
-                    node = getRemoteNodeAddress();
-                } catch (Exception e) {
-                    logger.warn("Failed to get node address of remote web driver");
-                    logger.debug(e);
-                }
-            }
+            node = getRemoteNode(node);
         } else {
             try {
                 node = InetAddress.getLocalHost().getCanonicalHostName();
             } catch (UnknownHostException e) {
-                logger.warn("Failed to get local machine name");
-                logger.debug(e);
+                logger.debug("Failed to get local machine name", e);
             }
         }
         return node;
+    }
+
+    private String getRemoteNode(String defaultValue) {
+        if (Sauce.isDesired()) {
+            return "SauceLabs";
+        } else if (BrowserStack.isDesired()) {
+            return "BrowserStack";
+        } else {
+            try {
+                return getRemoteNodeAddress();
+            } catch (Exception e) {
+                logger.warn("Failed to get node address of remote web driver");
+                logger.debug(e);
+            }
+        }
+        return defaultValue;
     }
 
     private String getRemoteNodeAddress() throws MalformedURLException {
@@ -126,7 +127,8 @@ public class ScreenshotCapture {
             Command command, WebDriver driver, String errorMessage) {
 
         if (executionID == null) {
-            logger.debug("No Screenshot sent. Capture didn't initialise for " + testID);
+            logger.error("Can't send Screenshot. "
+                    + "Capture didn't initialise execution for test: " + testID);
             return;
         }
 
@@ -137,43 +139,54 @@ public class ScreenshotCapture {
                         driver.getCurrentUrl(),
                         errorMessage,
                         getBase64Screenshot((TakesScreenshot) driver));
-        sendScreenshot(createScreenshotMessage);
+        addScreenshotToSendQueue(createScreenshotMessage);
     }
 
     private String getBase64Screenshot(TakesScreenshot driver) {
         return driver.getScreenshotAs(OutputType.BASE64);
     }
 
+    private void addScreenshotToSendQueue(CreateScreenshot createScreenshotMessage) {
+        executorService.execute(() -> sendScreenshot(createScreenshotMessage));
+    }
+
     private void sendScreenshot(CreateScreenshot createScreenshotMessage) {
-        getScreenshotExecutor().execute(() -> {
-            logger.debug("About to send screenshot to Capture for {}", testID);
-            try {
-                getRequestSpec()
-                        .body(createScreenshotMessage)
-                        .when()
-                        .post(CAPTURE_URL.getValue() + "/screenshot")
-                        .then()
-                        .assertThat().statusCode(SC_CREATED);
-                logger.debug("Sent screenshot to Capture for " + testID);
-            } catch (Throwable t) {
-                logger.warn("Failed sending screenshot to Capture for " + testID);
-                logger.debug(t);
-            }
-        });
+        logger.debug("About to send screenshot to Capture for {}", testID);
+        try {
+            getRequestSpec()
+                    .body(createScreenshotMessage)
+                    .when()
+                    .post(CaptureEndpoint.SCREENSHOT.getUrl())
+                    .then()
+                    .assertThat().statusCode(SC_CREATED);
+            logger.debug("Sent screenshot to Capture for " + testID);
+        } catch (Exception e) {
+            logger.warn("Failed sending screenshot to Capture for " + testID);
+            logger.debug(e);
+        }
     }
 
-    private ExecutorService getScreenshotExecutor() {
-        if (screenshotExecutor == null) {
-            screenshotExecutor = Executors.newSingleThreadExecutor();
-        }
-        return screenshotExecutor;
-    }
+    /** Waits up to 2 minutes to send any remaining Screenshot messages. */
+    public static void processRemainingBacklog() {
 
-    public static boolean processRemainingBacklog() throws InterruptedException {
-        if (screenshotExecutor == null) {
-            return true;
+        executorService.shutdown();
+
+        if (!isRequired()) {
+            return;
         }
-        screenshotExecutor.shutdown();
-        return screenshotExecutor.awaitTermination(2, TimeUnit.MINUTES);
+
+        logger.info("Processing remaining Screenshot Capture backlog...");
+        boolean timeout;
+        try {
+            timeout = !executorService.awaitTermination(2, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(e);
+        }
+        if (timeout) {
+            logger.error("Shutdown timed out. "
+                    + "Some screenshots might not have been sent.");
+        } else {
+            logger.info("Finished processing backlog.");
+        }
     }
 }

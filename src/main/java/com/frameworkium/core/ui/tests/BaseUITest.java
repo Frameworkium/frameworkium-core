@@ -41,8 +41,6 @@ public abstract class BaseUITest
     /** Logger for subclasses (logs with correct class i.e. not BaseUITest). */
     protected final Logger logger = LogManager.getLogger(this);
 
-    private static final Logger baseLogger = LogManager.getLogger();
-
     private static final ThreadLocal<ScreenshotCapture> capture = ThreadLocal.withInitial(() -> null);
     private static final ThreadLocal<Wait<WebDriver>> wait = ThreadLocal.withInitial(() -> null);
 
@@ -55,8 +53,9 @@ public abstract class BaseUITest
     @BeforeSuite(alwaysRun = true)
     protected static void initialiseDriverPool() {
         if (Property.REUSE_BROWSER.getBoolean()) {
-            driverLifecycle = new MultiUseDriverLifecycle(
-                    Property.THREADS.getIntWithDefault(1));
+            driverLifecycle =
+                    new MultiUseDriverLifecycle(
+                            Property.THREADS.getIntWithDefault(1));
         } else {
             driverLifecycle = new SingleUseDriverLifecycle();
         }
@@ -64,11 +63,12 @@ public abstract class BaseUITest
     }
 
     /**
-     * Method which runs first upon running a test, it will do the following.
+     * Runs before each test method, it initialises the following:
      * <ul>
-     * <li>Retrieve the {@link Driver} and initialise the {@link WebDriver}</li>
-     * <li>Initialise the {@link Wait}</li>
-     * <li>Initialise the {@link ScreenshotCapture}</li>
+     * <li>{@link Driver} and {@link WebDriver}</li>
+     * <li>{@link Wait}</li>
+     * <li>{@link ScreenshotCapture}</li>
+     * <li>userAgent</li>
      * </ul>
      */
     @BeforeMethod(alwaysRun = true)
@@ -87,41 +87,31 @@ public abstract class BaseUITest
         }
     }
 
+    private static String getTestNameForCapture(Method testMethod) {
+        Optional<String> testID = TestIdUtils.getIssueOrTmsLinkValue(testMethod);
+        if (!testID.isPresent() || testID.get().isEmpty()) {
+            testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));
+        }
+        return testID.orElse("n/a");
+    }
+
     /** Tears down the browser after the test method. */
     @AfterMethod(alwaysRun = true)
     protected static void tearDownDriver() {
         driverLifecycle.tearDownDriver();
     }
 
+    /**
+     * <ul>
+     * <li>Ensures each driver in the pool has {@code quit()}
+     * <li>Processes remaining screenshot backlog
+     * <li>Create Allure properties
+     * </ul>
+     */
     @AfterSuite(alwaysRun = true)
-    protected static void tearDownSuite() {
+    protected static void afterTestSuiteCleanUp() {
         driverLifecycle.tearDownDriverPool();
-    }
-
-    @AfterSuite(alwaysRun = true)
-    protected static void shutdownScreenshotExecutor() {
-        if (!ScreenshotCapture.isRequired()) {
-            return;
-        }
-        String prefix = "Screenshot Capture: ";
-        baseLogger.info(prefix + "processing remaining async backlog...");
-        try {
-            boolean timeout = !ScreenshotCapture.processRemainingBacklog();
-            if (timeout) {
-                baseLogger.error(prefix + "shutdown timed out. "
-                        + "Some screenshots might not have been sent.");
-            } else {
-                baseLogger.info(prefix + "finished backlog.");
-            }
-        } catch (InterruptedException e) {
-            baseLogger.error(prefix + "executor was interrupted. "
-                    + "Some screenshots might not have been sent.");
-        }
-    }
-
-    /** Creates the allure properties for the report. */
-    @AfterSuite(alwaysRun = true)
-    protected static void createAllureProperties() {
+        ScreenshotCapture.processRemainingBacklog();
         AllureProperties.createUI();
     }
 
@@ -148,15 +138,7 @@ public abstract class BaseUITest
         }
     }
 
-    private static String getTestNameForCapture(Method testMethod) {
-        Optional<String> testID = TestIdUtils.getIssueOrTmsLinkValue(testMethod);
-        if (!testID.isPresent() || testID.get().isEmpty()) {
-            testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));
-        }
-        return testID.orElse("n/a");
-    }
-
-    /** Create a new {@link Wait} for the thread local driver and default timeout. */
+    /** Create a new {@link Wait} with ThreadLocal driver and default timeout. */
     public static Wait<WebDriver> newDefaultWait() {
         return newWaitWithTimeout(DEFAULT_TIMEOUT);
     }

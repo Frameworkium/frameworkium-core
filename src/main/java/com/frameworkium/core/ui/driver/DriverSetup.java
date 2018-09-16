@@ -32,7 +32,7 @@ public class DriverSetup {
     protected static final Logger logger = LogManager.getLogger();
 
     /**
-     * @return An uninitialised desired {@link Driver} Implementation.
+     * @return An uninitialised desired {@link Driver} implementation.
      */
     public static Driver instantiateDriver() {
         Driver driver = createDriverImpl(getBrowserTypeFromProperty());
