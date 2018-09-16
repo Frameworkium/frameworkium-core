@@ -5,7 +5,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 
-import java.util.ArrayList;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.Supplier;
@@ -93,8 +92,7 @@ public class MultiUseDriverLifecycle implements DriverLifecycle {
             return;
         }
 
-        new ArrayList<>(driverPool)
-                .parallelStream()
+        driverPool.parallelStream()
                 .forEach(driver -> {
                     try {
                         driver.getWebDriver().quit();
