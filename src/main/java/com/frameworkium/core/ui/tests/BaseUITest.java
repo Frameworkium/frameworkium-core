@@ -53,8 +53,9 @@ public abstract class BaseUITest
     @BeforeSuite(alwaysRun = true)
     protected static void initialiseDriverPool() {
         if (Property.REUSE_BROWSER.getBoolean()) {
-            driverLifecycle = new MultiUseDriverLifecycle(
-                    Property.THREADS.getIntWithDefault(1));
+            driverLifecycle =
+                    new MultiUseDriverLifecycle(
+                            Property.THREADS.getIntWithDefault(1));
         } else {
             driverLifecycle = new SingleUseDriverLifecycle();
         }
@@ -62,11 +63,12 @@ public abstract class BaseUITest
     }
 
     /**
-     * Method which runs first upon running a test, it will do the following.
+     * Runs before each test method, it initialises the following:
      * <ul>
-     * <li>Retrieve the {@link Driver} and initialise the {@link WebDriver}</li>
-     * <li>Initialise the {@link Wait}</li>
-     * <li>Initialise the {@link ScreenshotCapture}</li>
+     * <li>{@link Driver} and {@link WebDriver}</li>
+     * <li>{@link Wait}</li>
+     * <li>{@link ScreenshotCapture}</li>
+     * <li>userAgent</li>
      * </ul>
      */
     @BeforeMethod(alwaysRun = true)
@@ -85,6 +87,14 @@ public abstract class BaseUITest
         }
     }
 
+    private static String getTestNameForCapture(Method testMethod) {
+        Optional<String> testID = TestIdUtils.getIssueOrTmsLinkValue(testMethod);
+        if (!testID.isPresent() || testID.get().isEmpty()) {
+            testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));
+        }
+        return testID.orElse("n/a");
+    }
+
     /** Tears down the browser after the test method. */
     @AfterMethod(alwaysRun = true)
     protected static void tearDownDriver() {
@@ -99,7 +109,7 @@ public abstract class BaseUITest
      * </ul>
      */
     @AfterSuite(alwaysRun = true)
-    private static void processRemainingScreenshotBacklog() {
+    protected static void afterTestSuiteCleanUp() {
         driverLifecycle.tearDownDriverPool();
         ScreenshotCapture.processRemainingBacklog();
         AllureProperties.createUI();
@@ -126,14 +136,6 @@ public abstract class BaseUITest
         } catch (ClassNotFoundException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static String getTestNameForCapture(Method testMethod) {
-        Optional<String> testID = TestIdUtils.getIssueOrTmsLinkValue(testMethod);
-        if (!testID.isPresent() || testID.get().isEmpty()) {
-            testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));
-        }
-        return testID.orElse("n/a");
     }
 
     /** Create a new {@link Wait} with ThreadLocal driver and default timeout. */
