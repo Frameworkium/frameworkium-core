@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,19 +22,10 @@ public abstract class AbstractDriver implements Driver {
 
     protected static final Logger logger = LogManager.getLogger();
 
-    private WebDriverWrapper webDriverWrapper;
+    private EventFiringWebDriver webDriverWrapper;
 
     @Override
-    public void tearDown() {
-        if (Property.REUSE_BROWSER.getBoolean()) {
-            webDriverWrapper.manage().deleteAllCookies();
-        } else {
-            webDriverWrapper.quit();
-        }
-    }
-
-    @Override
-    public WebDriverWrapper getDriver() {
+    public EventFiringWebDriver getWebDriver() {
         return this.webDriverWrapper;
     }
 
@@ -53,10 +45,10 @@ public abstract class AbstractDriver implements Driver {
         }
     }
 
-    private WebDriverWrapper setupEventFiringWebDriver(Capabilities capabilities) {
+    private EventFiringWebDriver setupEventFiringWebDriver(Capabilities capabilities) {
         Capabilities caps = addProxyIfRequired(capabilities);
         logger.debug("Browser Capabilities: " + caps);
-        WebDriverWrapper eventFiringWD = new WebDriverWrapper(getWebDriver(caps));
+        EventFiringWebDriver eventFiringWD = new EventFiringWebDriver(getWebDriver(caps));
         eventFiringWD.register(new LoggingListener());
         if (ScreenshotCapture.isRequired()) {
             eventFiringWD.register(new CaptureListener());

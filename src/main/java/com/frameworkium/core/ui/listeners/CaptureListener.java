@@ -1,5 +1,6 @@
 package com.frameworkium.core.ui.listeners;
 
+import com.frameworkium.core.ui.browsers.UserAgent;
 import com.frameworkium.core.ui.capture.ElementHighlighter;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.capture.model.Command;
@@ -39,10 +40,10 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
         if (ScreenshotCapture.isRequired() && isUITest(result)) {
             Throwable thrw = result.getThrowable();
             if (null != thrw) {
-                takeScreenshotAndSend(action, BaseUITest.getDriver(), thrw);
+                takeScreenshotAndSend(action, BaseUITest.getWebDriver(), thrw);
             } else {
                 Command command = new Command(action, "n/a", "n/a");
-                takeScreenshotAndSend(command, BaseUITest.getDriver());
+                takeScreenshotAndSend(command, BaseUITest.getWebDriver());
             }
         }
     }
@@ -107,11 +108,10 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     private boolean isFrameworkiumScript(String script) {
-        String browserAgentScript = "return navigator.userAgent;";
         String waitForAngularRequestsPrefix =
                 "var callback = arguments[arguments.length - 1];\n";
 
-        return script.equals(browserAgentScript)
+        return script.equals(UserAgent.SCRIPT)
                 || script.equals(Visibility.FORCE_VISIBLE_SCRIPT)
                 || script.startsWith(waitForAngularRequestsPrefix);
     }

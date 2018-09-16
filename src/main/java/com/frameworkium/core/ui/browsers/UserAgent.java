@@ -2,22 +2,19 @@ package com.frameworkium.core.ui.browsers;
 
 import org.openqa.selenium.JavascriptExecutor;
 
-import java.util.Optional;
-
 public class UserAgent {
 
-    private static final String SCRIPT = "return navigator.userAgent;";
+    public static final String SCRIPT = "return navigator.userAgent;";
 
-    private String userAgent = null;
-
-    public UserAgent(JavascriptExecutor driver) {
-        try {
-            userAgent = (String) driver.executeScript(SCRIPT);
-        } catch (Exception ignored) {
-        }
+    private UserAgent() {
+        // hidden
     }
 
-    public Optional<String> getUserAgent() {
-        return Optional.ofNullable(userAgent);
+    public static String getUserAgent(JavascriptExecutor driver) {
+        try {
+            return (String) driver.executeScript(SCRIPT);
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 }

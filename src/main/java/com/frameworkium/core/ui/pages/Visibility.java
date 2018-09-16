@@ -2,8 +2,6 @@ package com.frameworkium.core.ui.pages;
 
 import com.frameworkium.core.ui.ExtraExpectedConditions;
 import com.frameworkium.core.ui.annotations.*;
-import com.frameworkium.core.ui.driver.WebDriverWrapper;
-import com.frameworkium.core.ui.tests.BaseUITest;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.Wait;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
@@ -34,18 +32,11 @@ public final class Visibility {
             Arrays.asList(Visible.class, Invisible.class, ForceVisible.class);
 
     private final Wait<WebDriver> wait;
-    private final JavascriptExecutor driver;
-
-    /**
-     * Uses the {@link Wait} and {@link WebDriverWrapper} from {@link BaseUITest}.
-     */
-    public Visibility() {
-        this(BaseUITest.getWait(), BaseUITest.getDriver());
-    }
+    private final JavascriptExecutor javascriptExecutor;
 
     public Visibility(Wait<WebDriver> wait, JavascriptExecutor driver) {
         this.wait = wait;
-        this.driver = driver;
+        this.javascriptExecutor = driver;
     }
 
     /**
@@ -58,7 +49,7 @@ public final class Visibility {
      *
      * @param pageObject the "page object" i.e. extends {@link BasePage} or {@link HtmlElement}.
      */
-    public void waitForAnnotatedElementVisibility(Object pageObject) {
+    void waitForAnnotatedElementVisibility(Object pageObject) {
 
         getDeclaredFieldsIncludingSuperClasses(pageObject.getClass())
                 .stream()
@@ -221,7 +212,7 @@ public final class Visibility {
      *
      * @param element the {@link WebElement} to make visible
      */
-    public void forceVisible(WebElement element) {
-        driver.executeScript(FORCE_VISIBLE_SCRIPT, element);
+    void forceVisible(WebElement element) {
+        javascriptExecutor.executeScript(FORCE_VISIBLE_SCRIPT, element);
     }
 }

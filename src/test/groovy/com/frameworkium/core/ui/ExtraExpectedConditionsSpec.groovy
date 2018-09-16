@@ -1,10 +1,10 @@
 package com.frameworkium.core.ui
 
-import com.frameworkium.core.ui.driver.WebDriverWrapper
 import org.openqa.selenium.NoSuchElementException
 import org.openqa.selenium.TimeoutException
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
+import org.openqa.selenium.support.events.EventFiringWebDriver
 import org.openqa.selenium.support.ui.FluentWait
 import org.openqa.selenium.support.ui.Sleeper
 import spock.lang.Specification
@@ -21,7 +21,7 @@ class ExtraExpectedConditionsSpec extends Specification {
             .withTimeout(Duration.ofNanos(1))
 
     // used for ExtraExpectedConditions that use JavaScript
-    def mockWDWrapper = Mock(WebDriverWrapper, constructorArgs: [Mock(WebDriver)])
+    def mockWDWrapper = Mock(EventFiringWebDriver, constructorArgs: [Mock(WebDriver)])
     def jsWait = new FluentWait<>(mockWDWrapper, Clock.systemUTC(), Sleeper.SYSTEM_SLEEPER)
             .pollingEvery(Duration.ofMillis(1))
             .withTimeout(Duration.ofNanos(1))

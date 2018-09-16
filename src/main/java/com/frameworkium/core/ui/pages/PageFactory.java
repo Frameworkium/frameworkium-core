@@ -1,20 +1,19 @@
 package com.frameworkium.core.ui.pages;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 
 public class PageFactory {
 
+    private static final Logger logger = LogManager.getLogger();
+
     private PageFactory() {}
 
     public static <T extends BasePage<T>> T newInstance(Class<T> clazz) {
         return instantiatePageObject(clazz).get();
-    }
-
-    @Deprecated
-    public static <T extends BasePage<T>> T newInstance(
-            Class<T> clazz, long timeoutInSeconds) {
-        return instantiatePageObject(clazz).get(timeoutInSeconds);
     }
 
     public static <T extends BasePage<T>> T newInstance(
@@ -27,12 +26,6 @@ public class PageFactory {
         return instantiatePageObject(clazz).get(url);
     }
 
-    @Deprecated
-    public static <T extends BasePage<T>> T newInstance(
-            Class<T> clazz, String url, long timeoutInSeconds) {
-        return instantiatePageObject(clazz).get(url, timeoutInSeconds);
-    }
-
     public static <T extends BasePage<T>> T newInstance(
             Class<T> clazz, String url, Duration timeout) {
         return instantiatePageObject(clazz).get(url, timeout);
@@ -43,6 +36,7 @@ public class PageFactory {
             return clazz.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException
                 | NoSuchMethodException | InvocationTargetException e) {
+            logger.fatal("Unable to instantiate PageObject", e);
             throw new IllegalStateException("Unable to instantiate PageObject", e);
         }
     }
