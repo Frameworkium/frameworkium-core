@@ -1,5 +1,6 @@
 package com.frameworkium.integration.frameworkium.tests;
 
+import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.ui.tests.BaseUITest;
 import com.frameworkium.integration.frameworkium.pages.JQueryDemoPage;
 import com.frameworkium.integration.seleniumhq.pages.SeleniumDownloadPage;
@@ -38,8 +39,12 @@ public class FrameworkiumBugsTest extends BaseUITest {
         SeleniumDownloadPage.open().waitForContent();
     }
 
-    public void use_base_page_logger() {
+    public void use_various_loggers() {
+        logger.info("Using BaseUITest logger");
+        AllureLogger.logToAllure("Using log to Allure!");
+        AllureLogger.stepStart("Starting a custom allure step.");
         SeleniumDownloadPage.open().log();
+        AllureLogger.stepFinish();
     }
 
 }

@@ -50,7 +50,7 @@ public class SeleniumDownloadPage extends BasePage<SeleniumDownloadPage> {
     }
 
     public void log() {
-        logger.trace("Showing example use of the logger in BasePage");
-        logger.info("Showing example use of the logger in BasePage");
+        logger.trace("Using the BasePage logger");
+        logger.info("Using the BasePage logger");
     }
 }
