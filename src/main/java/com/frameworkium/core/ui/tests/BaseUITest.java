@@ -93,20 +93,18 @@ public abstract class BaseUITest
         driverLifecycle.tearDownDriver();
     }
 
-    @AfterSuite(alwaysRun = true)
-    protected static void tearDownSuite() {
-        driverLifecycle.tearDownDriverPool();
-    }
-
+    /**
+     * <ul>
+     * <li>Ensures each driver in the pool has {@code quit()}
+     * <li>Processes remaining screenshot backlog
+     * <li>Create Allure properties
+     * </ul>
+     */
     @AfterSuite(alwaysRun = true)
     private static void processRemainingScreenshotBacklog() {
+        driverLifecycle.tearDownDriverPool();
         ScreenshotCapture.processRemainingBacklog();
-    }
-
-    /** Creates the allure properties for the report. */
-    @AfterSuite(alwaysRun = true)
-    protected static void createAllureProperties() {
-        AllureProperties.createUI();
+        AllureProperties.create();
     }
 
     /**
