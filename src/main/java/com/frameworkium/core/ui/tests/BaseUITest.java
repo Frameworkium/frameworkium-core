@@ -6,7 +6,9 @@ import com.frameworkium.core.common.reporting.TestIdUtils;
 import com.frameworkium.core.common.reporting.allure.AllureProperties;
 import com.frameworkium.core.ui.browsers.UserAgent;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
-import com.frameworkium.core.ui.driver.*;
+import com.frameworkium.core.ui.driver.Driver;
+import com.frameworkium.core.ui.driver.DriverSetup;
+import com.frameworkium.core.ui.driver.lifecycle.*;
 import com.frameworkium.core.ui.listeners.*;
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
@@ -52,9 +54,12 @@ public abstract class BaseUITest
      */
     @BeforeSuite(alwaysRun = true)
     protected static void initialiseDriverPool() {
-        driverLifecycle = new DriverLifecycle(
-                Property.THREADS.getIntWithDefault(1),
-                Property.REUSE_BROWSER.getBoolean());
+        if (Property.REUSE_BROWSER.getBoolean()) {
+            driverLifecycle = new MultiUseDriverLifecycle(
+                    Property.THREADS.getIntWithDefault(1));
+        } else {
+            driverLifecycle = new SingleUseDriverLifecycle();
+        }
         driverLifecycle.initDriverPool(DriverSetup::instantiateDriver);
     }
 

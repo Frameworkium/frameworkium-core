@@ -1,12 +1,13 @@
-package com.frameworkium.core.ui.driver
+package com.frameworkium.core.ui.driver.lifecycle
 
+import com.frameworkium.core.ui.driver.Driver
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.events.EventFiringWebDriver
 import spock.lang.Specification
 import spock.lang.Unroll
 
 @Unroll
-class DriverLifecycleSpec extends Specification {
+class MultiUseDriverLifecycleSpec extends Specification {
 
     def webDriverStub = Stub(WebDriver)
     def EFWebDriverMock =
@@ -18,10 +19,9 @@ class DriverLifecycleSpec extends Specification {
     }
     def driverSupplier = { driverMock }
 
-    def "following expected lifecycle yields correct driver with DriverLifecycle(#poolSize, #reuseBrowser)"() {
+    def "following expected lifecycle yields correct driver with MultiUseDriverLifecycle(#poolSize)"() {
         given:
-            def sut = new DriverLifecycle(poolSize, reuseBrowser)
-
+            def sut = new MultiUseDriverLifecycle(poolSize)
         when:
             sut.initDriverPool(driverSupplier)
             sut.initBrowserBeforeTest(driverSupplier)
@@ -30,39 +30,40 @@ class DriverLifecycleSpec extends Specification {
             sut.tearDownDriverPool()
         then:
             EFWebDriverMock.manage() >> Stub(WebDriver.Options)
+            poolSize * EFWebDriverMock.quit()
             noExceptionThrown()
         where:
-            poolSize || reuseBrowser
-            1        || true
-            2        || true
-            1        || false
-            2        || false
+            poolSize << [1, 5]
     }
 
     def "if a driver fails to tearDown exception will be thrown"() {
         given:
-            def sut = new DriverLifecycle(1, false)
+            def sut = new MultiUseDriverLifecycle(1)
+            sut.initDriverPool(driverSupplier)
             sut.initBrowserBeforeTest(driverSupplier)
         when:
             sut.tearDownDriver()
         then:
-            1 * EFWebDriverMock.quit() >> { throw new Exception("") }
+            1 * EFWebDriverMock.manage() >> { throw new Exception("") }
             thrown Exception
     }
 
-    def "when reuseBrowser is true throwing exception on quit does not prevent subsequent drivers quitting"() {
+    def "throwing exception on quit does not prevent subsequent drivers quitting"() {
         given:
-            def sut = new DriverLifecycle(2, true)
+            def sut = new MultiUseDriverLifecycle(2)
             sut.initDriverPool(driverSupplier)
         when:
             sut.tearDownDriverPool()
         then:
-            2 * EFWebDriverMock.quit() >>> { throw new Exception("some error") } >> { }
+            // throw one error then do nothing for subsequent calls
+            2 * EFWebDriverMock.quit() >>> {
+                throw new Exception("some error")
+            } >> {}
     }
 
-    def "when reuseBrowser is true initDriverPool can only be called once"() {
+    def "initDriverPool can only be called once"() {
         given:
-            def sut = new DriverLifecycle(1, true)
+            def sut = new MultiUseDriverLifecycle(1)
             sut.initDriverPool(driverSupplier)
         when:
             sut.initDriverPool(driverSupplier)
@@ -70,9 +71,9 @@ class DriverLifecycleSpec extends Specification {
             thrown IllegalStateException
     }
 
-    def "when reuseBrowser is true initDriverPool can only be called again after tearDownDriverPool"() {
+    def "initDriverPool can only be called again after tearDownDriverPool"() {
         given:
-            def sut = new DriverLifecycle(1, true)
+            def sut = new MultiUseDriverLifecycle(1)
             sut.initDriverPool(driverSupplier)
             sut.tearDownDriverPool()
         when:
