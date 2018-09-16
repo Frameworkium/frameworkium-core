@@ -31,8 +31,8 @@ public class ScreenshotCapture {
     private static final ExecutorService executorService =
             Executors.newFixedThreadPool(4);
 
-    private String executionID;
     private String testID;
+    private String executionID;
 
     public ScreenshotCapture(String testID) {
         logger.debug("About to initialise Capture execution for " + testID);
@@ -42,7 +42,6 @@ public class ScreenshotCapture {
     }
 
     private String createExecution(CreateExecution createExecution) {
-
         try {
             return getRequestSpec()
                     .body(createExecution)
@@ -63,7 +62,6 @@ public class ScreenshotCapture {
     }
 
     private String getNode() {
-
         String node = "n/a";
         if (DriverSetup.useRemoteDriver()) {
             node = getRemoteNode(node);
@@ -168,10 +166,9 @@ public class ScreenshotCapture {
         }
     }
 
-    /**
-     * Waits to finish processing any remaining queued Screenshot messages.
-     */
+    /** Waits up to 2 minutes to send any remaining Screenshot messages. */
     public static void processRemainingBacklog() {
+
         executorService.shutdown();
 
         if (!isRequired()) {
@@ -179,7 +176,6 @@ public class ScreenshotCapture {
         }
 
         logger.info("Processing remaining Screenshot Capture backlog...");
-
         boolean timeout;
         try {
             timeout = !executorService.awaitTermination(2, TimeUnit.MINUTES);

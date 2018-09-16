@@ -41,8 +41,6 @@ public abstract class BaseUITest
     /** Logger for subclasses (logs with correct class i.e. not BaseUITest). */
     protected final Logger logger = LogManager.getLogger(this);
 
-    private static final Logger baseLogger = LogManager.getLogger(BaseUITest.class);
-
     private static final ThreadLocal<ScreenshotCapture> capture = ThreadLocal.withInitial(() -> null);
     private static final ThreadLocal<Wait<WebDriver>> wait = ThreadLocal.withInitial(() -> null);
 
@@ -104,7 +102,7 @@ public abstract class BaseUITest
     private static void processRemainingScreenshotBacklog() {
         driverLifecycle.tearDownDriverPool();
         ScreenshotCapture.processRemainingBacklog();
-        AllureProperties.create();
+        AllureProperties.createUI();
     }
 
     /**
@@ -138,7 +136,7 @@ public abstract class BaseUITest
         return testID.orElse("n/a");
     }
 
-    /** Create a new {@link Wait} for the thread local driver and default timeout. */
+    /** Create a new {@link Wait} with ThreadLocal driver and default timeout. */
     public static Wait<WebDriver> newDefaultWait() {
         return newWaitWithTimeout(DEFAULT_TIMEOUT);
     }
