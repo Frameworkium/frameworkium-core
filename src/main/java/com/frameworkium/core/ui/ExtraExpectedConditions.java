@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 /**
  * Frameworkium extension of {@link ExpectedConditions}.
  *
- * <p>The main motivation is to provide useful {@link ExpectedCondition}'s for our
- * lazy proxied {@link WebElement}, {@link TypifiedElement} and {@link HtmlElement}'s.
- * Hence the methods here generally accept <code>? extends WebElement</code>
- * rather than {@link By} because we typically use <code>@FindBy</code> annotations.
+ * <p>This provides useful {@link ExpectedCondition}'s for our lazy proxied
+ * {@link WebElement}, {@link TypifiedElement} and {@link HtmlElement}'s.
+ * The methods here generally accept {@link WebElement} rather than {@link By}
+ * because we typically use {@code @FindBy} annotations in page objects.
  */
 public class ExtraExpectedConditions {
 
@@ -29,13 +29,13 @@ public class ExtraExpectedConditions {
      * <code>not({@link ExpectedConditions#visibilityOf(WebElement)})</code>
      * will fail if the element is not present, but
      * {@link ExpectedConditions#invisibilityOfElementLocated(By)}
-     * waits for either not visibility or not present.
+     * waits for either not visible or not present.
      *
      * @param element the element to wait for
      * @return an {@link ExpectedCondition} which returns <strong>false</strong>
      *         if the element is visible, otherwise <strong>true</strong>.
      */
-    public static ExpectedCondition<Boolean> notPresentOrInvisible(final WebElement element) {
+    public static ExpectedCondition<Boolean> notPresentOrInvisible(WebElement element) {
 
         return expectedCondition(
                 driver -> {
@@ -45,7 +45,7 @@ public class ExtraExpectedConditions {
                         return true;
                     }
                 },
-                String.format("element '%s' to not be present or be invisible", element));
+                String.format("element '%s' to be not present or be invisible", element));
     }
 
     /**
@@ -57,8 +57,8 @@ public class ExtraExpectedConditions {
      *         iff any element is visible, otherwise <strong>null</strong>.
      * @see ExtraExpectedConditions#notPresentOrInvisible(WebElement)
      */
-    public static ExpectedCondition<List<? extends WebElement>> notPresentOrInvisible(
-            final List<? extends WebElement> elements) {
+    public static ExpectedCondition<List<WebElement>> notPresentOrInvisible(
+            List<WebElement> elements) {
 
         return expectedCondition(driver ->
                         elements.stream()
@@ -79,8 +79,8 @@ public class ExtraExpectedConditions {
      * @param expectedSize expected expectedSize to be greater than
      * @return the original list if list size is greater than expectedSize, else null
      */
-    public static ExpectedCondition<List<? extends WebElement>> sizeGreaterThan(
-            List<? extends WebElement> list, int expectedSize) {
+    public static ExpectedCondition<List<WebElement>> sizeGreaterThan(
+            List<WebElement> list, int expectedSize) {
 
         return expectedCondition(
                 driver -> list.size() > expectedSize ? list : null,
@@ -94,8 +94,8 @@ public class ExtraExpectedConditions {
      * @param expectedSize expected expectedSize to be less than
      * @return the original list if list size is less than expectedSize, else null
      */
-    public static ExpectedCondition<List<? extends WebElement>> sizeLessThan(
-            List<? extends WebElement> list, int expectedSize) {
+    public static ExpectedCondition<List<WebElement>> sizeLessThan(
+            List<WebElement> list, int expectedSize) {
 
         return expectedCondition(
                 driver -> list.size() < expectedSize ? list : null,
