@@ -1,15 +1,15 @@
-package com.frameworkium.core.ui.driver
+package com.frameworkium.core.ui.proxy
 
 import org.openqa.selenium.Proxy
 import spock.lang.Specification
 import spock.lang.Unroll
 
 @Unroll
-class AbstractDriverSpec extends Specification {
+class SeleniumProxyFactorySpec extends Specification {
 
     def "providing a property of (#proxyProp) gives proxy of type (#proxyType)"() {
         when:
-            def proxy = AbstractDriver.createProxy(proxyProp)
+            def proxy = SeleniumProxyFactory.createProxy(proxyProp)
         then:
             proxy.proxyType == proxyType
         where:
@@ -22,7 +22,7 @@ class AbstractDriverSpec extends Specification {
 
     def "providing a proxy URL (#proxyProp) is set as expected (#proxyUrl)"() {
         when:
-            def proxy = AbstractDriver.createManualProxy(proxyProp)
+            def proxy = SeleniumProxyFactory.createManualProxy(proxyProp)
         then:
             proxy.proxyType == Proxy.ProxyType.MANUAL
             proxy.httpProxy == proxyUrl
@@ -36,7 +36,7 @@ class AbstractDriverSpec extends Specification {
 
     def "invalid proxy URL (#invalidProxyProp) throw exception"() {
         when:
-            AbstractDriver.getProxyURL(invalidProxyProp)
+            SeleniumProxyFactory.getProxyURL(invalidProxyProp)
         then:
             thrown(IllegalArgumentException)
         where:
