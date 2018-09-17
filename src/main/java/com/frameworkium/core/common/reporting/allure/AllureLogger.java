@@ -37,6 +37,6 @@ public class AllureLogger {
     }
 
     public static void stepFinish() {
-        getLifecycle().stopStep(STEP_UUID_STACK.get().pop());
+        getLifecycle().stopStep(STEP_UUID_STACK.get().removeFirst());
     }
 }

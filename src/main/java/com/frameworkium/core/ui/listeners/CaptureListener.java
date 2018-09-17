@@ -14,7 +14,7 @@ import org.testng.*;
 import static org.apache.commons.lang3.StringUtils.abbreviate;
 
 /**
- * Assumes {@link ScreenshotCapture}.isRequired() is true for WebDriver events.
+ * Assumes {@link ScreenshotCapture#isRequired()} is true for WebDriver events.
  */
 public class CaptureListener implements WebDriverEventListener, ITestListener {
 

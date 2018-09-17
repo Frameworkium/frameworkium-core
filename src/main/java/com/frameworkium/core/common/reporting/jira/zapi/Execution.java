@@ -51,7 +51,7 @@ public class Execution {
     }
 
     /**
-     * Gets the status of the status.
+     * Gets the ZAPI status of the TestNG status.
      *
      * @return ZAPI execution status from the ITestResult status
      */

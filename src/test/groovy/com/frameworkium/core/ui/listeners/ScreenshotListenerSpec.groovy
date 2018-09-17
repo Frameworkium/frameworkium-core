@@ -32,7 +32,6 @@ class ScreenshotListenerSpec extends Specification {
         then:
             1 * mockDriver.getScreenshotAs(_) >> { [1, 2, 3] as byte[] }
             listAllTestScreenshots().count() == screenshotCount + 1
-
     }
 
     def listAllTestScreenshots() {
