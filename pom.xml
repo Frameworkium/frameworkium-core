@@ -36,6 +36,7 @@
   <ciManagement>
     <url>https://travis-ci.org/Frameworkium/frameworkium-core</url>
   </ciManagement>
+
   <distributionManagement />
 
   <properties>
@@ -102,11 +103,6 @@
       <artifactId>allure-testng</artifactId>
       <version>${allure.version}</version>
     </dependency>
-    <dependency>
-      <groupId>io.qameta.allure</groupId>
-      <artifactId>allure-cucumber-jvm</artifactId>
-      <version>${allure.version}</version>
-    </dependency>
 
     <dependency>
       <groupId>com.google.truth</groupId>
@@ -158,18 +154,6 @@
           <artifactId>groovy-xml</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-
-    <!-- Cucumber -->
-    <dependency>
-      <groupId>info.cukes</groupId>
-      <artifactId>cucumber-java</artifactId>
-      <version>1.2.5</version>
-    </dependency>
-    <dependency>
-      <groupId>info.cukes</groupId>
-      <artifactId>cucumber-testng</artifactId>
-      <version>1.2.5</version>
     </dependency>
 
     <!-- Explicitly adding utilities -->
