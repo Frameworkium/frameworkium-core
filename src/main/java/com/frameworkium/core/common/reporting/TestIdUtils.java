@@ -29,23 +29,15 @@ public class TestIdUtils {
     }
 
     /**
-     * Get TMS Link or Issue ID for a method.
+     * Get {@link TmsLink} or {@link Issue} for a method.
+     * If both are specified it will return jus the {@link TmsLink} value.
      *
      * @param method the method to check for test ID annotations.
      * @return Optional of the {@link TmsLink} or {@link Issue} value.
-     * @throws IllegalStateException if {@link TmsLink} and {@link Issue}
-     *                               are both specified inconstantly.
      */
     public static Optional<String> getIssueOrTmsLinkValue(Method method) {
         TmsLink tcIdAnnotation = method.getAnnotation(TmsLink.class);
         Issue issueAnnotation = method.getAnnotation(Issue.class);
-
-        if (nonNull(issueAnnotation) && nonNull(tcIdAnnotation)
-                && !issueAnnotation.value().equals(tcIdAnnotation.value())) {
-            throw new IllegalStateException(
-                    "TmsLink and Issue annotation are both specified but "
-                            + "not equal for method: " + method);
-        }
 
         if (nonNull(tcIdAnnotation)) {
             return Optional.of(tcIdAnnotation.value());

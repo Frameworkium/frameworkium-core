@@ -15,38 +15,31 @@ class TestIdUtilsSpec extends Specification {
         then:
             value == expectedValue
         where:
-            methodName | expectedValue
-            "none"     | Optional.empty()
-            "tmsLink"  | Optional.of("TC-ID")
-            "issue"    | Optional.of("ISSUE")
-            "bothSame" | Optional.of("SAME")
-    }
-
-    def "GetIssueOrTmsLinkValue errors if the TmsLink and Issue are specified with different values"() {
-        when:
-            TestIdUtils.getIssueOrTmsLinkValue(TestIdData.getMethod("bothDifferent"))
-        then:
-            thrown(IllegalStateException)
+            methodName      | expectedValue
+            "none"          | Optional.empty()
+            "tmsLink"       | Optional.of("TMSLink")
+            "issue"         | Optional.of("ISSUE")
+            "bothSame"      | Optional.of("SAME")
+            "bothDifferent" | Optional.of("TMSLink")
     }
 
     class TestIdData {
 
-        public void none() {}
+        void none() {}
 
-        @TmsLink("TC-ID")
-        public void tmsLink() {}
+        @TmsLink("TMSLink")
+        void tmsLink() {}
 
         @Issue("ISSUE")
-        public void issue() {}
+        void issue() {}
 
         @TmsLink("SAME")
         @Issue("SAME")
-        public void bothSame() {}
+        void bothSame() {}
 
-        @TmsLink("SAME-SAME")
-        @Issue("BUT DIFFERENT")
-        public void bothDifferent() {}
-
+        @TmsLink("TMSLink")
+        @Issue("ISSUE")
+        void bothDifferent() {}
     }
 }
 
