@@ -1,12 +1,12 @@
 package com.frameworkium.core.ui.driver;
 
 import com.frameworkium.core.common.properties.Property;
-import com.frameworkium.core.ui.proxy.SeleniumProxyFactory;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
 import com.frameworkium.core.ui.listeners.CaptureListener;
 import com.frameworkium.core.ui.listeners.LoggingListener;
+import com.frameworkium.core.ui.proxy.SeleniumProxyFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Capabilities;
@@ -35,14 +35,6 @@ public abstract class AbstractDriver implements Driver {
         maximiseBrowserIfRequired();
     }
 
-    private Capabilities addProxyIfRequired(Capabilities caps) {
-        if (Property.PROXY.isSpecified()) {
-            return caps.merge(createProxyCapabilities(Property.PROXY.getValue()));
-        } else {
-            return caps;
-        }
-    }
-
     private EventFiringWebDriver setupEventFiringWebDriver(Capabilities capabilities) {
         Capabilities caps = addProxyIfRequired(capabilities);
         logger.debug("Browser Capabilities: " + caps);
@@ -57,24 +49,32 @@ public abstract class AbstractDriver implements Driver {
         return eventFiringWD;
     }
 
-    private void maximiseBrowserIfRequired() {
-        if (isMaximiseRequired()) {
-            this.webDriverWrapper.manage().window().maximize();
+    private static Capabilities addProxyIfRequired(Capabilities caps) {
+        if (Property.PROXY.isSpecified()) {
+            return caps.merge(createProxyCapabilities(Property.PROXY.getValue()));
+        } else {
+            return caps;
         }
-    }
-
-    private boolean isMaximiseRequired() {
-        boolean ableToMaximise = !Sauce.isDesired()
-                && !BrowserStack.isDesired()
-                && !Driver.isNative();
-
-        return ableToMaximise && Property.MAXIMISE.getBoolean();
     }
 
     private static Capabilities createProxyCapabilities(String proxyProperty) {
         return new ImmutableCapabilities(
                 CapabilityType.PROXY,
                 SeleniumProxyFactory.createProxy(proxyProperty));
+    }
+
+    private void maximiseBrowserIfRequired() {
+        if (isMaximiseRequired()) {
+            this.webDriverWrapper.manage().window().maximize();
+        }
+    }
+
+    private static boolean isMaximiseRequired() {
+        boolean ableToMaximise = !Sauce.isDesired()
+                && !BrowserStack.isDesired()
+                && !Driver.isNative();
+
+        return ableToMaximise && Property.MAXIMISE.getBoolean();
     }
 
 }
