@@ -89,7 +89,7 @@ public class DriverSetup {
                             .newInstance();
                 } catch (InstantiationException | IllegalAccessException
                         | NoSuchMethodException | InvocationTargetException e) {
-                    throw new RuntimeException(
+                    throw new IllegalArgumentException(
                             "Unable to use custom browser implementation - " + customBrowserImpl, e);
                 }
             default:
