@@ -72,7 +72,8 @@ script:
   - mvn test-compile -B --show-version -DskipTests=true -Dmaven.javadoc.skip=true
 
   # Firefox on the grid
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dconfig=FirefoxGrid.yaml -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
+  # Dec 2018: Back to 1 thread due to regular NPEs (likely caused by browser crashing)
+  - mvn verify -B -Dthreads=1 -Dconfig=FirefoxGrid.yaml -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Following have -o (offline) flag to prevent timing out for snapshot metadata
   # Problem appeared Sept 2018
