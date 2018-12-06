@@ -72,7 +72,7 @@ script:
   - mvn test-compile -B --show-version -DskipTests=true -Dmaven.javadoc.skip=true
 
   # Firefox on the grid
-  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -Dconfig=FirefoxGrid.yaml -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dconfig=FirefoxGrid.yaml -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Following have -o (offline) flag to prevent timing out for snapshot metadata
   # Problem appeared Sept 2018
