@@ -22,7 +22,7 @@ public class ExtraExpectedConditions {
 
     protected ExtraExpectedConditions() {
         // hide default constructor for this util class
-        // but allow subclassing for more specialised ECs
+        // but allow subclassing for more specialised ExpectedConditions
     }
 
     /**
@@ -58,8 +58,8 @@ public class ExtraExpectedConditions {
      *         iff any element is visible, otherwise <strong>null</strong>.
      * @see ExtraExpectedConditions#notPresentOrInvisible(WebElement)
      */
-    public static ExpectedCondition<List<WebElement>> notPresentOrInvisible(
-            List<WebElement> elements) {
+    public static ExpectedCondition<List<? extends WebElement>> notPresentOrInvisible(
+            List<? extends WebElement> elements) {
 
         return expectedCondition(driver ->
                         elements.stream()
@@ -80,8 +80,8 @@ public class ExtraExpectedConditions {
      * @param expectedSize expected expectedSize to be greater than
      * @return the original list if list size is greater than expectedSize, else null
      */
-    public static ExpectedCondition<List<WebElement>> sizeGreaterThan(
-            List<WebElement> list, int expectedSize) {
+    public static ExpectedCondition<List<? extends WebElement>> sizeGreaterThan(
+            List<? extends WebElement> list, int expectedSize) {
 
         return expectedCondition(
                 driver -> list.size() > expectedSize ? list : null,
@@ -95,8 +95,8 @@ public class ExtraExpectedConditions {
      * @param expectedSize expected expectedSize to be less than
      * @return the original list if list size is less than expectedSize, else null
      */
-    public static ExpectedCondition<List<WebElement>> sizeLessThan(
-            List<WebElement> list, int expectedSize) {
+    public static ExpectedCondition<List<? extends WebElement>> sizeLessThan(
+            List<? extends WebElement> list, int expectedSize) {
 
         return expectedCondition(
                 driver -> list.size() < expectedSize ? list : null,
