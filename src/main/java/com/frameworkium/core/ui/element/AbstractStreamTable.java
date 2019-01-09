@@ -143,7 +143,7 @@ public abstract class AbstractStreamTable extends HtmlElement {
     }
 
     /**
-     * N.B. trims the text from the cells before comparing.
+     * Trims the text from the cells before comparing.
      *
      * @param lookupColHeaderText the String to match the header of the column
      *                            where we want to lookup using {@code lookupCellText}

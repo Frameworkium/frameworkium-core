@@ -398,6 +398,15 @@
         </executions>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.0.1</version>
+        <configuration>
+          <additionalOptions>-Xdoclint:none</additionalOptions>
+        </configuration>
+      </plugin>
+
       <!-- Release a new version with Maven, saving a lot of repetitive work.
       Releasing a project is made in two steps: prepare and perform -->
       <plugin>
