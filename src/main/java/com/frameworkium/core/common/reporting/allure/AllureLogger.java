@@ -30,7 +30,7 @@ public class AllureLogger {
     }
 
     public static void stepStart(String stepName) {
-        StepResult result = new StepResult().withName(stepName);
+        StepResult result = new StepResult().setName(stepName);
         String uuid = UUID.randomUUID().toString();
         getLifecycle().startStep(uuid, result);
         STEP_UUID_STACK.get().addFirst(uuid);
