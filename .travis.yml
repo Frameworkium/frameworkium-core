@@ -24,14 +24,14 @@ env:
     - CAPTURE_URL="http://ec2-35-176-47-3.eu-west-2.compute.amazonaws.com"
     - SUT_NAME="frameworkium-core"
     - SUT_VERSION=${TRAVIS_BRANCH}
-    - THREAD_COUNT=2
+    - THREAD_COUNT=3
     - SELENIUM_MAJ_VER=3.14
     - SELENIUM_VER=${SELENIUM_MAJ_VER}.0
     - SELENIUM_JAR=selenium-server-standalone-${SELENIUM_VER}.jar
     - GECKO_VER=0.23.0
     - CHROME_DRIVER_VER=2.45
     # Override Travis default to give browsers more room
-    - _JAVA_OPTIONS="-Xmx512m -Xms128m"
+    - _JAVA_OPTIONS="-Xmx256m -Xms64m"
     # Required to turn on workaround for the following issue:
     # https://github.com/travis-ci/travis-ci/issues/8836
     - CHROME_NO_SANDBOX=true
