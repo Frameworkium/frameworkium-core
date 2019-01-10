@@ -31,7 +31,7 @@ env:
     - GECKO_VER=0.23.0
     - CHROME_DRIVER_VER=2.45
     # Override Travis default to give browsers more room
-    - _JAVA_OPTIONS="-Xmx1024m -Xms128m"
+    - _JAVA_OPTIONS="-Xmx512m -Xms128m"
     # Required to turn on workaround for the following issue:
     # https://github.com/travis-ci/travis-ci/issues/8836
     - CHROME_NO_SANDBOX=true
@@ -42,13 +42,16 @@ before_script:
   - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1400x1024x16
 
   # Set up code climate test reporter
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
+#  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+#  - chmod +x ./cc-test-reporter
+#  - ./cc-test-reporter before-build
+
+  # check java settings
+  - java --version
 
   # Set up Selenium Grid Hub
   - wget --quiet https://selenium-release.storage.googleapis.com/${SELENIUM_MAJ_VER}/${SELENIUM_JAR}
-  - java -Xmx128m -jar ${SELENIUM_JAR} -role hub > hub.log 2>&1 &
+  - java -Xmx92m -jar ${SELENIUM_JAR} -role hub > hub.log 2>&1 &
 
   # Download geckodriver
   - wget --quiet https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VER}/geckodriver-v${GECKO_VER}-linux64.tar.gz
@@ -62,10 +65,10 @@ before_script:
   - until $(curl --output /dev/null --silent --fail http://localhost:4444/grid/console); do printf '.'; sleep 1; done
 
   # Setup Firefox Selenium Grid Node
-  - java -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > ff-node.log  2>&1 &
+  - java -Xmx92m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > ff-node.log  2>&1 &
 
   # Set up Chrome Selenium Grid Node
-  - java -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5556 > chrome-node.log 2>&1 &
+  - java -Xmx92m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5556 > chrome-node.log 2>&1 &
 
 script:
   # Download deps, compile and run checkstyle
@@ -73,22 +76,26 @@ script:
 
   # Firefox on the grid
   # Dec 2018: Back to 1 thread due to regular NPEs (likely caused by browser crashing)
-  - mvn verify -B -Dthreads=1 -Dconfig=FirefoxGrid.yaml -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dconfig=FirefoxGrid.yaml -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
+
+  - cat ff-node.log
+
+  - cat hub.log
 
   # Following have -o (offline) flag to prevent timing out for snapshot metadata
   # Problem appeared Sept 2018
 
   # Firefox off the grid
-  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dheadless=true -Dit.test=TheInternetExampleTests -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}" 2> /dev/null
+#  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dheadless=true -Dit.test=TheInternetExampleTests -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}" 2> /dev/null
 
   # Chrome on the grid
-  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
+#  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Custom Browser Impl (without Capture so the PageFactorySpec runs)
-  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=com.frameworkium.integration.CustomFirefoxImpl -Dmaximise=true -Dit.test=DocumentationTest 2> /dev/null
+#  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=com.frameworkium.integration.CustomFirefoxImpl -Dmaximise=true -Dit.test=DocumentationTest 2> /dev/null
 
   # Test groups and test that all @Before methods in BaseUITest run
-  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -Dgroups=fw-bugs -DreuseBrowser=true -Dheadless=true
+#  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -Dgroups=fw-bugs -DreuseBrowser=true -Dheadless=true
 
   # Query Jira for which test to run and then log results to Jira
   # Disabled until we have a JIRA to use
@@ -98,13 +105,13 @@ script:
   # - mvn verify -Dsauce=true -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.0 -Ddevice=iPad -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Allure report
-  - mvn allure:report -B
+#  - mvn allure:report -B
 
-after_script:
+#after_script:
   # Code coverage report
-  - bash <(curl -s https://codecov.io/bash)
+#  - bash <(curl -s https://codecov.io/bash)
 
   # Upload code coverage to code climate - with workaround for jacoco (Dec 2017)
-  - cp target/site/jacoco/jacoco.xml src/main/java/jacoco.xml
-  - cd src/main/java/
-  - ../../../cc-test-reporter after-build -t jacoco --exit-code $TRAVIS_TEST_RESULT
+#  - cp target/site/jacoco/jacoco.xml src/main/java/jacoco.xml
+#  - cd src/main/java/
+#  - ../../../cc-test-reporter after-build -t jacoco --exit-code $TRAVIS_TEST_RESULT
