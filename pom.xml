@@ -379,6 +379,11 @@
         <configuration>
           <!-- Keep version in sync with dependencies -->
           <reportVersion>${allure.version}</reportVersion>
+          <!--
+            Hack until they fix the plugin
+            (see https://github.com/allure-framework/allure-maven/issues/66)
+          -->
+          <allureDownloadUrl>https://dl.bintray.com/qameta/maven/io/qameta/allure/allure-commandline/%s/allure-commandline-%s.zip </allureDownloadUrl>
         </configuration>
       </plugin>
 
