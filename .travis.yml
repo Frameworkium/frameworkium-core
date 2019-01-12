@@ -21,7 +21,7 @@ cache:
 
 env:
   global:
-    - CAPTURE_URL="http://ec2-35-176-47-3.eu-west-2.compute.amazonaws.com"
+    - CAPTURE_URL="http://capture-6c06138r.cloudapp.net"
     - SUT_NAME="frameworkium-core"
     - SUT_VERSION=${TRAVIS_BRANCH}
     - THREAD_COUNT=2
