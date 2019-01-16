@@ -5,7 +5,7 @@ import com.frameworkium.core.api.Endpoint;
 /** The various Endpoints of Capture. */
 public enum CaptureEndpoint implements Endpoint {
 
-    BASE_URI("http://ec2-35-176-47-3.eu-west-2.compute.amazonaws.com"),
+    BASE_URI("http://capture-6c06138r.cloudapp.net"),
     EXECUTIONS("/executions"),
     GET_EXECUTION("/executions/%s"),
     SUT_NAMES("/softwareUnderTest/names"),
