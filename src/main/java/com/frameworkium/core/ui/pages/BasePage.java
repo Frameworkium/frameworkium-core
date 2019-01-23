@@ -114,7 +114,7 @@ public abstract class BasePage<T extends BasePage<T>> {
     @SuppressWarnings("unchecked")
     public T get() {
 
-        HtmlElementLoader.populatePageObject(this, driver);
+        initPageObjectFields();
 
         // Wait for Elements & JS
         visibility.waitForAnnotatedElementVisibility(this);
@@ -127,6 +127,14 @@ public abstract class BasePage<T extends BasePage<T>> {
         logPageLoadToAllure();
 
         return (T) this;
+    }
+
+    /**
+     * Method to initialise the fields in the page object.
+     * Can be overridden where a custom implementation is desired.
+     */
+    protected void initPageObjectFields() {
+        HtmlElementLoader.populatePageObject(this, driver);
     }
 
     private void updatePageTimeout(Duration timeout) {
