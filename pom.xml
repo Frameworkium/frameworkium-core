@@ -41,7 +41,7 @@
     <threads>1</threads>
     <groups />
     <aspectj.version>1.9.2</aspectj.version>
-    <allure.version>2.8.1</allure.version>
+    <allure.version>2.9.0</allure.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
@@ -57,13 +57,13 @@
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>3.14.0</version>
+      <version>3.141.59</version>
     </dependency>
 
     <dependency>
       <groupId>ru.yandex.qatools.htmlelements</groupId>
       <artifactId>htmlelements-java</artifactId>
-      <version>1.19</version>
+      <version>1.20.0</version>
     </dependency>
 
     <dependency>
