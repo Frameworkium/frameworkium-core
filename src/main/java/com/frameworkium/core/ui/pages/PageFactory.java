@@ -10,7 +10,7 @@ public class PageFactory {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private PageFactory() {}
+    protected PageFactory() {}
 
     public static <T extends BasePage<T>> T newInstance(Class<T> clazz) {
         return instantiatePageObject(clazz).get();
