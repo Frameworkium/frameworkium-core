@@ -1,11 +1,11 @@
 package com.frameworkium.core.ui.listeners;
 
+import com.frameworkium.core.ui.UITestLifecycle;
 import com.frameworkium.core.ui.browsers.UserAgent;
 import com.frameworkium.core.ui.capture.ElementHighlighter;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.pages.Visibility;
-import com.frameworkium.core.ui.tests.BaseUITest;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.events.WebDriverEventListener;
@@ -19,7 +19,7 @@ import static org.apache.commons.lang3.StringUtils.abbreviate;
 public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private void takeScreenshotAndSend(Command command, WebDriver driver) {
-        BaseUITest.getCapture().takeAndSendScreenshot(command, driver);
+        UITestLifecycle.get().getCapture().takeAndSendScreenshot(command, driver);
     }
 
     private void takeScreenshotAndSend(String action, WebDriver driver) {
@@ -29,27 +29,27 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private void takeScreenshotAndSend(String action, WebDriver driver, Throwable thrw) {
 
-        BaseUITest.getCapture().takeAndSendScreenshotWithError(
+        UITestLifecycle.get().getCapture().takeAndSendScreenshotWithError(
                 new Command(action, "n/a", "n/a"),
                 driver,
                 thrw.getMessage() + "\n" + ExceptionUtils.getStackTrace(thrw));
     }
 
     private void sendFinalScreenshot(ITestResult result, String action) {
-        // As this can be called from any test type, ensure this is not an API test
-        if (ScreenshotCapture.isRequired() && isUITest(result)) {
+        if (ScreenshotCapture.isRequired() && isUITest()) {
             Throwable thrw = result.getThrowable();
+            WebDriver driver = UITestLifecycle.get().getWebDriver();
             if (null != thrw) {
-                takeScreenshotAndSend(action, BaseUITest.getWebDriver(), thrw);
+                takeScreenshotAndSend(action, driver, thrw);
             } else {
                 Command command = new Command(action, "n/a", "n/a");
-                takeScreenshotAndSend(command, BaseUITest.getWebDriver());
+                takeScreenshotAndSend(command, driver);
             }
         }
     }
 
-    private boolean isUITest(ITestResult result) {
-        return result.getInstance() instanceof BaseUITest;
+    private boolean isUITest() {
+        return UITestLifecycle.get().isInitialised();
     }
 
     private void highlightElementOnClickAndSendScreenshot(

@@ -1,6 +1,6 @@
 package com.frameworkium.core.ui.listeners;
 
-import com.frameworkium.core.ui.tests.BaseUITest;
+import com.frameworkium.core.ui.UITestLifecycle;
 import com.frameworkium.core.ui.video.VideoCapture;
 import org.testng.*;
 
@@ -11,7 +11,7 @@ public class VideoListener extends TestListenerAdapter {
         if (VideoCapture.isRequired()) {
             VideoCapture.saveTestSessionID(
                     iTestResult.getName(),
-                    BaseUITest.getThreadSessionId());
+                    UITestLifecycle.get().getRemoteSessionId());
         }
     }
 

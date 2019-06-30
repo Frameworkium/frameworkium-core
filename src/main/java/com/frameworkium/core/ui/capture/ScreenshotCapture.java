@@ -1,6 +1,7 @@
 package com.frameworkium.core.ui.capture;
 
 import com.frameworkium.core.common.properties.Property;
+import com.frameworkium.core.ui.UITestLifecycle;
 import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.capture.model.message.CreateExecution;
 import com.frameworkium.core.ui.capture.model.message.CreateScreenshot;
@@ -8,7 +9,6 @@ import com.frameworkium.core.ui.driver.Driver;
 import com.frameworkium.core.ui.driver.DriverSetup;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
-import com.frameworkium.core.ui.tests.BaseUITest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
@@ -106,7 +106,7 @@ public class ScreenshotCapture {
                 gridURL.getProtocol(),
                 gridURL.getHost(),
                 gridURL.getPort(),
-                BaseUITest.getThreadSessionId());
+                UITestLifecycle.get().getRemoteSessionId());
     }
 
     public static boolean isRequired() {

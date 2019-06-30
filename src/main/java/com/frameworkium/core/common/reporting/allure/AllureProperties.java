@@ -1,7 +1,7 @@
 package com.frameworkium.core.common.reporting.allure;
 
 import com.frameworkium.core.common.properties.Property;
-import com.frameworkium.core.ui.tests.BaseUITest;
+import com.frameworkium.core.ui.UITestLifecycle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -73,7 +73,7 @@ public class AllureProperties {
 
     private static Properties getUIProperties() {
         Properties props = new Properties();
-        BaseUITest.getUserAgent()
+        UITestLifecycle.get().getUserAgent()
                 .ifPresent(ua -> props.setProperty("UserAgent", ua));
         return props;
     }

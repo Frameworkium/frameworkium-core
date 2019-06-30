@@ -1,6 +1,7 @@
 package com.frameworkium.integration.frameworkium.tests;
 
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
+import com.frameworkium.core.ui.UITestLifecycle;
 import com.frameworkium.core.ui.tests.BaseUITest;
 import com.frameworkium.integration.frameworkium.pages.JQueryDemoPage;
 import com.frameworkium.integration.seleniumhq.pages.SeleniumDownloadPage;
@@ -15,7 +16,7 @@ public class FrameworkiumBugsTest extends BaseUITest {
 
     @BeforeMethod(dependsOnMethods = "configureBrowserBeforeTest")
     public void configureBrowserBeforeUse_allows_browser_access_in_before_method() {
-        assertThat(getWebDriver().getPageSource()).isNotEmpty();
+        assertThat(UITestLifecycle.get().getWebDriver().getPageSource()).isNotEmpty();
     }
 
     public void ensure_jQueryAjaxDone_does_not_fail() {

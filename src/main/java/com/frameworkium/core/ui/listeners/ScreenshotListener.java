@@ -1,5 +1,6 @@
 package com.frameworkium.core.ui.listeners;
 
+import com.frameworkium.core.ui.UITestLifecycle;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.driver.DriverSetup.Browser;
 import com.frameworkium.core.ui.tests.BaseUITest;
@@ -38,7 +39,7 @@ public class ScreenshotListener extends TestListenerAdapter {
 
     private void takeScreenshotAndSaveLocally(String testName) {
         takeScreenshotAndSaveLocally(
-                testName, (TakesScreenshot) BaseUITest.getWebDriver());
+                testName, (TakesScreenshot) UITestLifecycle.get().getWebDriver());
     }
 
     private void takeScreenshotAndSaveLocally(String testName, TakesScreenshot driver) {

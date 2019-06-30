@@ -1,12 +1,12 @@
 package com.frameworkium.core.ui.pages;
 
 import com.frameworkium.core.common.reporting.allure.AllureLogger;
+import com.frameworkium.core.ui.UITestLifecycle;
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.driver.Driver;
 import com.frameworkium.core.ui.js.JavascriptWait;
-import com.frameworkium.core.ui.tests.BaseUITest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
@@ -25,7 +25,7 @@ public abstract class BasePage<T extends BasePage<T>> {
     private JavascriptWait javascriptWait;
 
     public BasePage() {
-        this(BaseUITest.getWebDriver(), BaseUITest.getWait());
+        this(UITestLifecycle.get().getWebDriver(), UITestLifecycle.get().getWait());
     }
 
     /**
@@ -138,7 +138,7 @@ public abstract class BasePage<T extends BasePage<T>> {
     }
 
     private void updatePageTimeout(Duration timeout) {
-        wait = BaseUITest.newWaitWithTimeout(timeout);
+        wait = UITestLifecycle.get().newWaitWithTimeout(timeout);
         JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
         visibility = new Visibility(wait, jsExecutor);
         javascriptWait = new JavascriptWait(jsExecutor, wait);
@@ -156,7 +156,7 @@ public abstract class BasePage<T extends BasePage<T>> {
         if (ScreenshotCapture.isRequired()) {
             Command pageLoadCommand = new Command(
                     "load", "page", getSimplePageObjectName());
-            BaseUITest.getCapture().takeAndSendScreenshot(
+            UITestLifecycle.get().getCapture().takeAndSendScreenshot(
                     pageLoadCommand, driver);
         }
     }

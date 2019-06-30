@@ -18,8 +18,7 @@ public class MultiUseDriverLifecycle implements DriverLifecycle {
     private int poolSize;
     private BlockingDeque<Driver> driverPool;
 
-    private static final ThreadLocal<Driver> threadLocalDriver =
-            ThreadLocal.withInitial(() -> null);
+    private static final ThreadLocal<Driver> threadLocalDriver = new ThreadLocal<>();
 
     public MultiUseDriverLifecycle(int poolSize) {
         this.poolSize = poolSize;
