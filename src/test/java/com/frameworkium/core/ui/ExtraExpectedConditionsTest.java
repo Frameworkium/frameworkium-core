@@ -4,7 +4,8 @@ import com.frameworkium.core.ui.element.StreamTable;
 import org.testng.annotations.Test;
 import ru.yandex.qatools.htmlelements.element.Link;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Tests to ensure elements other than just WebElements can be passed into

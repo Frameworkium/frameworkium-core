@@ -1,8 +1,8 @@
 package com.frameworkium.integration.seleniumhq.pages;
 
 import com.frameworkium.core.ui.annotations.Visible;
-import com.frameworkium.core.ui.pages.*;
-import com.frameworkium.core.ui.tests.BaseUITest;
+import com.frameworkium.core.ui.pages.BasePage;
+import com.frameworkium.core.ui.pages.PageFactory;
 import com.frameworkium.integration.seleniumhq.components.HeaderComponent;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;

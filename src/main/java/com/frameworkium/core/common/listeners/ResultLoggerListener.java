@@ -6,8 +6,8 @@ import com.frameworkium.core.common.reporting.jira.JiraConfig;
 import com.frameworkium.core.common.reporting.jira.api.JiraTest;
 import com.frameworkium.core.common.reporting.jira.zapi.Execution;
 import com.frameworkium.core.common.reporting.spira.SpiraExecution;
+import com.frameworkium.core.ui.UITestLifecycle;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
-import com.frameworkium.core.ui.tests.BaseUITest;
 import com.google.common.base.Throwables;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -279,7 +279,7 @@ public class ResultLoggerListener implements ITestListener {
         commentBuilder.append("\nOS: ")
                 .append(getOSInfo())
                 .append("\nUserAgent: ")
-                .append(BaseUITest.getUserAgent());
+                .append(UITestLifecycle.get().getUserAgent());
 
         if (!isNull(result.getThrowable())) {
             commentBuilder.append("\nStacktrace: ")

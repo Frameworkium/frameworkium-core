@@ -17,8 +17,7 @@ public class SingleUseDriverLifecycle implements DriverLifecycle {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private static final ThreadLocal<Driver> threadLocalDriver =
-            ThreadLocal.withInitial(() -> null);
+    private static final ThreadLocal<Driver> threadLocalDriver = new ThreadLocal<>();
 
     /**
      * Sets the {@link Driver} created by the supplied {@link Supplier} to the

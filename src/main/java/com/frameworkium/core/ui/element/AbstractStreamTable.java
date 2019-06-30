@@ -2,10 +2,10 @@ package com.frameworkium.core.ui.element;
 
 import com.google.common.collect.Streams;
 import org.openqa.selenium.*;
-import org.openqa.selenium.NoSuchElementException;
 import ru.yandex.qatools.htmlelements.element.HtmlElement;
 
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
