@@ -40,8 +40,9 @@
   <properties>
     <threads>1</threads>
     <groups />
-    <aspectj.version>1.9.2</aspectj.version>
-    <allure.version>2.9.0</allure.version>
+    <aspectj.version>1.9.4</aspectj.version>
+    <allure.version>2.12.1</allure.version>
+    <truth.version>0.46</truth.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
@@ -86,7 +87,7 @@
     <dependency>
       <groupId>com.saucelabs</groupId>
       <artifactId>saucerest</artifactId>
-      <version>1.0.39</version>
+      <version>1.0.42</version>
     </dependency>
 
     <!-- Test related -->
@@ -105,12 +106,13 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>0.42</version>
+      <!--Version 1.0 is expected to release on July 8-->
+      <version>${truth.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.truth.extensions</groupId>
       <artifactId>truth-java8-extension</artifactId>
-      <version>0.42</version>
+      <version>${truth.version}</version>
     </dependency>
 
     <!-- Required so that Google Truth works.
@@ -118,31 +120,31 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>27.0.1-jre</version>
+      <version>28.0-jre</version>
     </dependency>
 
     <!-- Logging related -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
-      <version>2.11.1</version>
+      <version>2.12.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
-      <version>2.11.1</version>
+      <version>2.12.0</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.25</version>
+      <version>1.7.26</version>
     </dependency>
 
     <!-- API related -->
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
-      <version>3.2.0</version>
+      <version>4.0.0</version>
       <exclusions>
         <exclusion>
           <groupId>org.codehaus.groovy</groupId>
@@ -159,7 +161,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.8.1</version>
+      <version>3.9</version>
     </dependency>
     <dependency>
       <groupId>org.json</groupId>
@@ -169,12 +171,12 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-      <version>2.9.8</version>
+      <version>2.9.9</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
-      <version>2.5.5</version>
+      <version>2.5.7</version>
       <type>pom</type>
     </dependency>
 
@@ -182,7 +184,7 @@
     <dependency>
       <groupId>org.spockframework</groupId>
       <artifactId>spock-core</artifactId>
-      <version>1.2-groovy-2.5</version>
+      <version>1.3-groovy-2.5</version>
       <scope>test</scope>
     </dependency>
 
@@ -200,13 +202,16 @@
   <pluginRepositories />
 
   <build>
+    <!-- Check for updates with mvn versions:display-plugin-updates -->
     <plugins>
       <!-- Compiles Java -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
+        <version>3.8.1</version>
         <configuration>
+          <!-- From JDK10 on 'release' is used -->
+          <!--<release>11</release>-->
           <source>1.8</source>
           <target>1.8</target>
         </configuration>
@@ -216,12 +221,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.1.0</version>
         <dependencies>
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>8.18</version>
+            <version>8.22</version>
           </dependency>
         </dependencies>
         <executions>
@@ -245,7 +250,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.2</version>
+        <version>0.8.4</version>
         <executions>
           <!-- Start the agent for unit tests -->
           <execution>
@@ -293,7 +298,7 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.6.1</version>
+        <version>1.7.1</version>
         <executions>
           <execution>
             <goals>
@@ -307,14 +312,18 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.0</version>
+        <version>3.0.0-M3</version>
         <configuration>
           <!-- Sets arg line for jacoco agent when unit tests are run -->
-          <argLine>${surefireArgLine}</argLine>
+          <argLine>
+            ${surefireArgLine}
+          </argLine>
+
           <includes>
             <include>*/*Spec.*</include>
           </includes>
         </configuration>
+
         <!-- Required to run Spock tests with JUnit and not TestNG -->
         <dependencies>
           <dependency>
@@ -329,7 +338,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>2.22.0</version>
+        <version>3.0.0-M3</version>
         <configuration>
           <parallel>methods</parallel>
           <threadCount>${threads}</threadCount>
@@ -372,18 +381,14 @@
       </plugin>
 
       <!-- Allure2 -->
+      <!--Hack seems to be fixed with the new version of the plugin-->
       <plugin>
         <groupId>io.qameta.allure</groupId>
         <artifactId>allure-maven</artifactId>
-        <version>2.9</version>
+        <version>2.10.0</version>
         <configuration>
           <!-- Keep version in sync with dependencies -->
           <reportVersion>${allure.version}</reportVersion>
-          <!--
-            Hack until they fix the plugin
-            (see https://github.com/allure-framework/allure-maven/issues/66)
-          -->
-          <allureDownloadUrl>https://dl.bintray.com/qameta/maven/io/qameta/allure/allure-commandline/%s/allure-commandline-%s.zip </allureDownloadUrl>
         </configuration>
       </plugin>
 
@@ -391,7 +396,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>3.0.1</version>
+        <version>3.1.0</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -405,7 +410,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.0.1</version>
+        <version>3.1.0</version>
         <configuration>
           <additionalOptions>-Xdoclint:none</additionalOptions>
         </configuration>
@@ -419,6 +424,16 @@
         <configuration>
           <useReleaseProfile>false</useReleaseProfile>
           <tagNameFormat>@{version}</tagNameFormat>
+        </configuration>
+      </plugin>
+
+      <!--  Helps find latest plugins for your project  -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <version>2.7</version>
+        <configuration>
+          <generateBackupPoms>false</generateBackupPoms>
         </configuration>
       </plugin>
     </plugins>
