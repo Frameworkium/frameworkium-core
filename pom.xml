@@ -107,12 +107,12 @@
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
       <!--Version 1.0 is expected to release on July 8-->
-      <version>0.46</version>
+      <version>${truth.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.truth.extensions</groupId>
       <artifactId>truth-java8-extension</artifactId>
-      <version>0.46</version>
+      <version>${truth.version}</version>
     </dependency>
 
     <!-- Required so that Google Truth works.
@@ -202,6 +202,7 @@
   <pluginRepositories />
 
   <build>
+    <!-- Check for updates with mvn versions:display-plugin-updates -->
     <plugins>
       <!-- Compiles Java -->
       <plugin>
@@ -225,9 +226,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <!--The 8.18 to 8.22 upgrade requires curly brackets '{}' to be on separate lines. Many modules will need to be checked for this. Please advise to change or not?-->
-            <!--<version>8.22</version>-->
-            <version>8.18</version>
+            <version>8.22</version>
           </dependency>
         </dependencies>
         <executions>
@@ -428,9 +427,7 @@
         </configuration>
       </plugin>
 
-      <!--  Helps find latest plugins for your project
-      Run 'mvn versions:display-plugin-updates' in cmd line
-      -->
+      <!--  Helps find latest plugins for your project  -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
