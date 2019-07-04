@@ -41,14 +41,9 @@ public class TheInternetExampleTests extends BaseUITest {
                 .dragAontoB()
                 .getListOfHeadings();
 
-        // Method named() has been depreciated. Unsure if this is a viable fix
         assertWithMessage("Order of headings")
                 .that(headings)
                 .containsExactly("B", "A");
-
-//        assertThat(headings)
-//                .named("Order of headings")
-//                .containsExactly("B", "A");
     }
 
     @Issue("INT-5")
