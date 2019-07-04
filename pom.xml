@@ -314,11 +314,8 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.0.0-M3</version>
         <configuration>
-          <!-- Sets arg line for jacoco agent when unit tests are run -->
-          <argLine>
-            ${surefireArgLine}
-          </argLine>
-
+          <!-- Sets arg line for Jacoco agent when unit tests are run -->
+          <argLine>${surefireArgLine}</argLine>
           <includes>
             <include>*/*Spec.*</include>
           </includes>
@@ -381,7 +378,6 @@
       </plugin>
 
       <!-- Allure2 -->
-      <!--Hack seems to be fixed with the new version of the plugin-->
       <plugin>
         <groupId>io.qameta.allure</groupId>
         <artifactId>allure-maven</artifactId>
