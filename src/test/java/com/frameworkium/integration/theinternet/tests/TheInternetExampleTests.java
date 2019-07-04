@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 @Feature("The Internet Example Feature")
 @Test
@@ -40,9 +41,14 @@ public class TheInternetExampleTests extends BaseUITest {
                 .dragAontoB()
                 .getListOfHeadings();
 
-        assertThat(headings)
-                .named("Order of headings")
+        // Method named() has been depreciated. Unsure if this is a viable fix
+        assertWithMessage("Order of headings")
+                .that(headings)
                 .containsExactly("B", "A");
+
+//        assertThat(headings)
+//                .named("Order of headings")
+//                .containsExactly("B", "A");
     }
 
     @Issue("INT-5")
@@ -105,7 +111,7 @@ public class TheInternetExampleTests extends BaseUITest {
                         .collect(Collectors.toList());
 
         assertThat(sortedLastNameColumn.get(0)).isEqualTo("Bach");
-        assertThat(sortedLastNameColumn).isOrdered();
+        assertThat(sortedLastNameColumn).isInOrder();
     }
 
 }
