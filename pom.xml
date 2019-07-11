@@ -42,7 +42,7 @@
     <groups />
     <aspectj.version>1.9.4</aspectj.version>
     <allure.version>2.12.1</allure.version>
-    <truth.version>0.46</truth.version>
+    <truth.version>1.0</truth.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
@@ -106,7 +106,6 @@
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <!--Version 1.0 is expected to release on July 8-->
       <version>${truth.version}</version>
     </dependency>
     <dependency>
