@@ -22,5 +22,6 @@ public class EdgeImpl extends AbstractDriver {
             edgeOptions = new EdgeOptions().merge(capabilities);
         }
         return new EdgeDriver(edgeOptions);
+        
     }
 }
