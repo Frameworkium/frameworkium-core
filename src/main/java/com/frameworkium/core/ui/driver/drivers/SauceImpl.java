@@ -76,7 +76,6 @@ public class SauceImpl extends AbstractDriver {
 
     private MutableCapabilities getAndroidCapabilities() {
         MutableCapabilities caps = new MutableCapabilities(capabilities);
-        caps.merge(DesiredCapabilities.android());
         caps.setCapability("platform", "Linux");
         if (PLATFORM_VERSION.isSpecified()) {
             caps.setCapability("version", PLATFORM_VERSION.getValue());
@@ -88,7 +87,6 @@ public class SauceImpl extends AbstractDriver {
 
     private MutableCapabilities getIOSCapabilities() {
         MutableCapabilities caps = new MutableCapabilities(capabilities);
-        caps.merge(DesiredCapabilities.iphone());
         caps.setCapability("platform", "OS X 10.10");
         if (PLATFORM_VERSION.isSpecified()) {
             caps.setCapability("version", PLATFORM_VERSION.getValue());
@@ -109,10 +107,8 @@ public class SauceImpl extends AbstractDriver {
         caps.setCapability("browserName", "");
         switch (platform) {
             case IOS:
-                caps.merge(DesiredCapabilities.iphone());
                 return getAppiumCapabilities(caps, "iOS", "Simulator");
             case ANDROID:
-                caps.merge(DesiredCapabilities.android());
                 return getAppiumCapabilities(caps, "Android", "Emulator");
             default:
                 throw new IllegalStateException("Appium is only available on iOS/Android");
