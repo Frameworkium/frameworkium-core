@@ -1,0 +1,38 @@
+package com.frameworkium.core.common.reporting.jira.service;
+
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.frameworkium.core.common.reporting.jira.JiraConfig;
+import io.restassured.config.ObjectMapperConfig;
+import io.restassured.config.RestAssuredConfig;
+import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
+
+public abstract class AbstractJiraService {
+
+    protected RequestSpecification getRequestSpec() {
+        return JiraConfig.getJIRARequestSpec()
+                .config(config())
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON);
+    }
+
+    private RestAssuredConfig config() {
+        return RestAssuredConfig.config().objectMapperConfig(
+                ObjectMapperConfig.objectMapperConfig().jackson2ObjectMapperFactory(
+                        (type, s) -> {
+                            final ObjectMapper objectMapper = new ObjectMapper();
+                            objectMapper.registerModule(new JavaTimeModule());
+                            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                            objectMapper.setVisibility(PropertyAccessor.GETTER, JsonAutoDetect.Visibility.NONE);
+                            objectMapper.setVisibility(PropertyAccessor.SETTER, JsonAutoDetect.Visibility.NONE);
+                            objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+                            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+                            return objectMapper;
+                        }
+                )
+        );
+    }
+}
