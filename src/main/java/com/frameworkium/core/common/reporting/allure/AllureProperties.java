@@ -7,7 +7,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
@@ -40,15 +44,17 @@ public class AllureProperties {
     }
 
     private static Properties getAllFrameworkiumProperties() {
-        Map<String, String> allProperties =
-                Arrays.stream(Property.values())
-                        .filter(Property::isSpecified)
-                        .collect(Collectors.toMap(
-                                Property::toString,
-                                Property::getValue));
-
         Properties properties = new Properties();
-        properties.putAll(allProperties);
+        Arrays.stream(Property.values())
+                .filter(Property::isSpecified)
+                .forEach(property -> {
+                    if(property.toString().toUpperCase().contains("PASSWORD")) {
+                        properties.setProperty(property.toString(), "**********");
+                    } else {
+                        properties.setProperty(property.toString(), property.getValue());
+                    }
+                });
+
         return properties;
     }
 
