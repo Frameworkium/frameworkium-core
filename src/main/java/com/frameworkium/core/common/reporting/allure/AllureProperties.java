@@ -7,7 +7,9 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
@@ -45,11 +47,20 @@ public class AllureProperties {
                         .filter(Property::isSpecified)
                         .collect(Collectors.toMap(
                                 Property::toString,
-                                Property::getValue));
+                                AllureProperties::obfuscatePasswordValue));
 
         Properties properties = new Properties();
         properties.putAll(allProperties);
         return properties;
+    }
+
+    private static String obfuscatePasswordValue(Property p) {
+        String key = p.toString();
+        String value = p.getValue();
+        if (key.toLowerCase().contains("password")) {
+            return value.replaceAll(".", "*");
+        }
+        return value;
     }
 
     private static Properties getCommonProps() {
