@@ -50,7 +50,8 @@ public class EnglishCountiesPage extends BasePage<EnglishCountiesPage> {
 
     public Stream<Integer> densities() {
         return listTable
-                .getColumn(e -> e.getText().startsWith("Density"))
+                // hard-coded index because headers are now row-span=2
+                .getColumn(6)
                 .map(WebElement::getText)
                 .map(density -> density.replaceAll(",", ""))
                 .map(Integer::parseInt);
