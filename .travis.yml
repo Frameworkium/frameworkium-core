@@ -71,7 +71,7 @@ before_script:
 
 script:
   # Download deps, compile and run checkstyle
-  - mvn test-compile -UB --show-version -DskipTests=true -Dmaven.javadoc.skip=true
+  - mvn test-compile -B -U --show-version -DskipTests=true -Dmaven.javadoc.skip=true
 
   # Firefox on the grid
   # Dec 2018: Back to 1 thread due to regular NPEs (likely caused by browser crashing)
