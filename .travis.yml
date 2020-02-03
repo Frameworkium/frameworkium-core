@@ -30,8 +30,8 @@ env:
     - SELENIUM_MAJ_VER=3.141
     - SELENIUM_VER=${SELENIUM_MAJ_VER}.59
     - SELENIUM_JAR=selenium-server-standalone-${SELENIUM_VER}.jar
-    - GECKO_VER=0.24.0
-    - CHROME_DRIVER_VER=77.0.3865.40
+    - GECKO_VER=0.26.0
+    - CHROME_DRIVER_VER=80.0.3987.16
     # Override Travis default to give browsers more room
     - _JAVA_OPTIONS="-Xmx1024m -Xms128m"
     # Required to turn on workaround for the following issue:
@@ -71,7 +71,7 @@ before_script:
 
 script:
   # Download deps, compile and run checkstyle
-  - mvn test-compile -B --show-version -DskipTests=true -Dmaven.javadoc.skip=true
+  - mvn test-compile -B -U --show-version -DskipTests=true -Dmaven.javadoc.skip=true
 
   # Firefox on the grid
   # Dec 2018: Back to 1 thread due to regular NPEs (likely caused by browser crashing)
