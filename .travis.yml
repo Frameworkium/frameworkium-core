@@ -102,6 +102,9 @@ script:
   # Allure report
   - mvn allure:report -B
 
+  # Support test reporting for Jacoco and code climate
+  - mvn test jacoco:report
+
 after_script:
   # Code coverage report
   - bash <(curl -s https://codecov.io/bash)
