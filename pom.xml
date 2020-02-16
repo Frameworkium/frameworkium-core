@@ -438,4 +438,24 @@
     </plugins>
   </build>
 
+  <!--  Support test reporting for Jacoco and code climate-->
+  <!-- REFERENCE: https://medium.com/capital-one-tech/improve-java-code-with-unit-tests-and-jacoco-b342643736ed  -->
+  <!-- REFERENCE: https://github.com/TheoOkafor/mini-calendly-java -->
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <!-- select non-aggregate reports -->
+              <report>report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>
