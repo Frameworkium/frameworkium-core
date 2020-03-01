@@ -7,5 +7,4 @@ public class ProjectDto extends AbstractDTO<ProjectDto> {
     @JsonSerialize(as = String.class)
     public Long id;
     public String key;
-    //truncated stuff i don't care about
 }

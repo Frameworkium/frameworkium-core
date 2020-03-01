@@ -39,10 +39,10 @@ public class CycleLightDto extends AbstractDTO<CycleLightDto> {
         private String build;
         private String environment;
         private String description;
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MMM/yy",
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "d/MMM/yy",
                 with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES)
         private LocalDate startDate;
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MMM/yy",
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "d/MMM/yy",
                 with = JsonFormat.Feature.ACCEPT_CASE_INSENSITIVE_VALUES)
         private LocalDate endDate;
         private Long projectId;

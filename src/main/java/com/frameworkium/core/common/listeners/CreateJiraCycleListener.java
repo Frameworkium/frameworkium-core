@@ -2,7 +2,9 @@ package com.frameworkium.core.common.listeners;
 
 import com.beust.jcommander.ParameterException;
 import com.frameworkium.core.common.properties.Property;
-import com.frameworkium.core.common.reporting.jira.dto.cycle.*;
+import com.frameworkium.core.common.reporting.jira.dto.cycle.CreateNewCycleDto;
+import com.frameworkium.core.common.reporting.jira.dto.cycle.CycleDto;
+import com.frameworkium.core.common.reporting.jira.dto.cycle.CycleLightDto;
 import com.frameworkium.core.common.reporting.jira.dto.execution.AddTestToCycleOperationDto;
 import com.frameworkium.core.common.reporting.jira.dto.project.ProjectDto;
 import com.frameworkium.core.common.reporting.jira.dto.version.VersionDto;
@@ -11,15 +13,21 @@ import io.qameta.allure.TmsLink;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.NotFoundException;
-import org.testng.*;
+import org.testng.ISuite;
+import org.testng.ISuiteListener;
+import org.testng.ITestNGMethod;
 import org.testng.internal.ConstructorOrMethod;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static java.text.MessageFormat.format;
+import static java.lang.String.format;
+
 
 public class CreateJiraCycleListener implements ISuiteListener {
     private final Logger logger = LogManager.getLogger(CreateJiraCycleListener.class);
@@ -28,8 +36,8 @@ public class CreateJiraCycleListener implements ISuiteListener {
     @Override
     public void onStart(ISuite suite) {
         if (!hasResultVersionSpecified() || !hasZapiRegexCycleSpecified()) {
-            logger.info("ResultVersion and/or ZapiCycleRegex not set. "
-                    + "Skipping CreateJiraCycleListener as it is not needed...");
+            logger.info("ResultVersion and/or ZapiCycleRegex was not set. "
+                    + "Skipping automated creation of JIRA version and Zephyr cycle as it is not needed...");
             return;
         }
         final String targetProjectKey = getProjectKey(suite);
@@ -65,7 +73,7 @@ public class CreateJiraCycleListener implements ISuiteListener {
                     + "    </listener>"
                     + "\n");
         }
-        logger.info(() -> format("Targeting JIRA project with key: {0}", targetProjectKey));
+        logger.info(() -> format("Targeting JIRA project with key: %s", targetProjectKey));
         return targetProjectKey;
     }
 
@@ -93,26 +101,27 @@ public class CreateJiraCycleListener implements ISuiteListener {
                 .filter(versionDto -> versionDto.name.equals(Property.RESULT_VERSION.getValue()))
                 .findFirst();
         targetVersion.ifPresent(foundVersion ->
-                logger.info(() -> format("Found in Zephyr; resultVersion: \"{0}\" with resultVersionId: \"{1}\"",
+                logger.info(() -> format("Found in Zephyr; [ resultVersion: %s ] with [ resultVersionId: %s ]",
                         Property.RESULT_VERSION.getValue(), foundVersion.id)));
         return targetVersion.orElseGet(() -> {
-            final VersionDto createdVersion = jiraService.version().createVersion(VersionDto.newBuilder()
+            final VersionDto createdVersion = jiraService.version()
+                    .createVersion(VersionDto.newBuilder()
                     .projectId(targetProject.id)
                     .name(Property.RESULT_VERSION.getValue())
                     .build());
-            logger.info(() -> format("Created in Zephyr; resultVersion: \"{0}\" with resultVersionId: \"{1}\"",
+            logger.info(() -> format("Created in Zephyr; [ resultVersion: %s ] with [ resultVersionId: %s ]",
                     Property.RESULT_VERSION.getValue(), createdVersion.id));
             return createdVersion;
         });
     }
 
-    private Entry<String, CycleDto> createZapiCycleIfNoneExist(ProjectDto targetProjectDto,
-                                                               VersionDto targetVersionDto) {
+    private Entry<String, CycleDto> createZapiCycleIfNoneExist(
+            ProjectDto targetProjectDto, VersionDto targetVersionDto) {
 
-        final Optional<Entry<String, CycleDto>> targetCycleEntry = getListOfCycles(targetProjectDto.id,
-                targetVersionDto.id);
+        final Optional<Entry<String, CycleDto>> targetCycleEntry =
+                getListOfCycles(targetProjectDto.id, targetVersionDto.id);
         targetCycleEntry.ifPresent(cycleDtoEntry ->
-                logger.info(() -> format("Found in Zephyr; cycle: \"{0}\" with cycleId: \"{1}\"",
+                logger.info(() -> format("Found in Zephyr; [ cycle: %s ] with [ cycleId: %s ]",
                         Property.ZAPI_CYCLE_REGEX.getValue(), cycleDtoEntry.getKey())));
         return targetCycleEntry.orElseGet(() -> {
             final String createdCycleId = jiraService.cycle().createNewCycle(
@@ -123,40 +132,41 @@ public class CreateJiraCycleListener implements ISuiteListener {
                                     .name(Property.ZAPI_CYCLE_REGEX.getValue())
                                     .build())
                             .build()).id;
-            logger.info(() -> format("Created in Zephyr; cycle: \"{0}\" with cycleId: \"{1}\"",
+            logger.info(() -> format("Created in Zephyr; [ cycle: %s ] with [ cycleId: %s ]",
                     Property.ZAPI_CYCLE_REGEX.getValue(), createdCycleId));
 
             return getListOfCycles(targetProjectDto.id, targetVersionDto.id)
                     .orElseThrow(() -> new NotFoundException(format("Unable to find in JIRA newly created"
-                                    + " cycle: \"{0}\" with cycleId: \"{1}\"; cycle creation may have failed",
+                                    + " [ cycle: %s ] with [ cycleId: %s ]. Cycle creation may have failed",
                             Property.ZAPI_CYCLE_REGEX.getValue(), createdCycleId)));
         });
     }
 
-    private Optional<Entry<String, CycleDto>> getListOfCycles(Long targetProjectId, Long targetVersionId) {
+    private Optional<Entry<String, CycleDto>> getListOfCycles(
+            Long targetProjectId, Long targetVersionId) {
         Predicate<Entry<String, CycleDto>> hasTargetVersion = stringCycleInformationDtoEntry
                 -> stringCycleInformationDtoEntry.getValue().versionName.equals(Property.RESULT_VERSION.getValue());
         Predicate<Entry<String, CycleDto>> hasTargetCycle = stringCycleInformationDtoEntry
                 -> stringCycleInformationDtoEntry.getValue()
                 .cycleLightDto.name.equals(Property.ZAPI_CYCLE_REGEX.getValue());
-        return jiraService.cycle().getListOfCycle(targetProjectId, targetVersionId).map.entrySet().stream()
+        return jiraService.cycle()
+                .getListOfCycle(targetProjectId, targetVersionId).map.entrySet().stream()
                 .filter(hasTargetVersion)
                 .filter(hasTargetCycle)
                 .findFirst();
     }
 
-    private void createExecutionsIfNoneExist(ProjectDto targetProjectDto,
-                                             VersionDto targetVersionDto,
-                                             Entry<String, CycleDto> targetCycleEntry,
-                                             List<String> testLinks) {
+    private void createExecutionsIfNoneExist(
+            ProjectDto targetProjectDto, VersionDto targetVersionDto,
+            Entry<String, CycleDto> targetCycleEntry, List<String> testLinks) {
         Long totalCycleExecutions = targetCycleEntry.getValue().totalCycleExecutions;
 
+        logger.info(() -> format("Preexisting executions (%d total) found under "
+                        + "[ version: %s, cycle: %s ]. Opting to NOT add further executions.",
+                totalCycleExecutions,
+                targetVersionDto.name,
+                targetCycleEntry.getValue().cycleLightDto.name));
         if (totalCycleExecutions != 0) {
-            logger.info(() -> format("Preexisting executions ({2} total) found under "
-                            + "version: \"{0}\", cycle: \"{1}\". Opting to NOT add further executions.",
-                    targetVersionDto.name,
-                    targetCycleEntry.getValue().cycleLightDto.name,
-                    totalCycleExecutions));
             return;
         }
 
@@ -169,10 +179,9 @@ public class CreateJiraCycleListener implements ISuiteListener {
                         .method("1")
                         .build());
 
-        logger.info(() -> format("Added execution run in JIRA under"
-                        + " version: \"{0}\", cycleName: \"{1}\", cycleId: \"{2}\".\n"
-                        + "List of tests added into execution: \n"
-                        + "{3}",
+        logger.info(() -> format("Added execution run in JIRA under [ version: %s, cycleName: %s, cycleId: %s ].\n"
+                        + "  List of tests added into execution: \n"
+                        + "  %s",
                 targetVersionDto.name,
                 targetCycleEntry.getValue().cycleLightDto.name,
                 targetCycleEntry.getKey(),
