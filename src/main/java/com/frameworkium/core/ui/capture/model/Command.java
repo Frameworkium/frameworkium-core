@@ -25,25 +25,20 @@ public class Command {
 
     private void setUsingAndValue(WebElement element) {
         // TODO: Improve this. Use hacky solution in LoggingListener?
-        if (Driver.isNative()) {
+        if (StringUtils.isNotBlank(element.getAttribute("id"))) {
+            this.using = "id";
+            this.value = element.getAttribute("id");
+        } else if (!(element.getText()).isEmpty()) {
+            this.using = "linkText";
+            this.value = element.getText();
+        } else if (!element.getTagName().isEmpty()) {
+            this.using = "css";
+            this.value = element.getTagName() + "."
+                    + element.getAttribute("class").replace(" ", ".");
+        } else {
+            // must be something weird
             this.using = "n/a";
             this.value = "n/a";
-        } else {
-            if (StringUtils.isNotBlank(element.getAttribute("id"))) {
-                this.using = "id";
-                this.value = element.getAttribute("id");
-            } else if (!(element.getText()).isEmpty()) {
-                this.using = "linkText";
-                this.value = element.getText();
-            } else if (!element.getTagName().isEmpty()) {
-                this.using = "css";
-                this.value = element.getTagName() + "."
-                        + element.getAttribute("class").replace(" ", ".");
-            } else {
-                // must be something weird
-                this.using = "n/a";
-                this.value = "n/a";
-            }
         }
     }
 }

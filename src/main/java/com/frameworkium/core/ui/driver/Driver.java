@@ -4,18 +4,11 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
-import static com.frameworkium.core.common.properties.Property.APP_PATH;
-
 public interface Driver {
 
     /** Check whether the driver is for a mobile device. */
     static boolean isMobile() {
         return false;
-    }
-
-    /** Check whether the driver is for a native mobile app. */
-    static boolean isNative() {
-        return APP_PATH.isSpecified();
     }
 
     /** Method to set-up the driver object. */

@@ -1,12 +1,9 @@
 package com.frameworkium.core.ui.pages;
 
-import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.ui.UITestLifecycle;
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.capture.model.Command;
-import com.frameworkium.core.ui.driver.Driver;
-import com.frameworkium.core.ui.js.JavascriptWait;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
@@ -22,7 +19,6 @@ public abstract class BasePage<T extends BasePage<T>> {
     protected final WebDriver driver;
     protected Wait<WebDriver> wait;
     private Visibility visibility;
-    private JavascriptWait javascriptWait;
 
     public BasePage() {
         this(UITestLifecycle.get().getWebDriver(), UITestLifecycle.get().getWait());
@@ -36,7 +32,6 @@ public abstract class BasePage<T extends BasePage<T>> {
         this.wait = wait;
         JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
         this.visibility = new Visibility(wait, javascriptExecutor);
-        this.javascriptWait = new JavascriptWait(javascriptExecutor, wait);
     }
 
     /**
@@ -118,13 +113,9 @@ public abstract class BasePage<T extends BasePage<T>> {
 
         // Wait for Elements & JS
         visibility.waitForAnnotatedElementVisibility(this);
-        if (!Driver.isNative()) {
-            javascriptWait.waitForJavascriptEventsOnLoad();
-        }
 
         // Log
         takePageLoadedScreenshotAndSendToCapture();
-        logPageLoadToAllure();
 
         return (T) this;
     }
@@ -141,15 +132,6 @@ public abstract class BasePage<T extends BasePage<T>> {
         wait = UITestLifecycle.get().newWaitWithTimeout(timeout);
         JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
         visibility = new Visibility(wait, jsExecutor);
-        javascriptWait = new JavascriptWait(jsExecutor, wait);
-    }
-
-    private void logPageLoadToAllure() {
-        try {
-            AllureLogger.logToAllure("Page '" + getClass().getName() + "' successfully loaded");
-        } catch (Exception e) {
-            logger.warn("Error logging page load, but loaded successfully", e);
-        }
     }
 
     private void takePageLoadedScreenshotAndSendToCapture() {
@@ -176,13 +158,6 @@ public abstract class BasePage<T extends BasePage<T>> {
     /** Get page source code of the current page. */
     public String getSource() {
         return driver.getPageSource();
-    }
-
-    /**
-     * Waits for all JS framework requests to finish on page.
-     */
-    protected void waitForJavascriptFrameworkToFinish() {
-        javascriptWait.waitForJavascriptFramework();
     }
 
     /**

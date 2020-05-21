@@ -37,7 +37,6 @@ public class DeveloperGuidePage extends BasePage<DeveloperGuidePage> {
 
     public DeveloperGuidePage clickBootstrapSearchItem() {
         bootstrapSearchItem.click();
-        waitForJavascriptFrameworkToFinish();
         wait.until(ExtraExpectedConditions.notPresentOrInvisible(loading));
         return this;
     }

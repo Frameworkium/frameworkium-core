@@ -20,9 +20,6 @@ public class Browser {
     public String platform;
     public String platformVersion;
 
-    /**
-     * Create browser object.
-     */
     public Browser() {
 
         Optional<String> userAgent = UITestLifecycle.get().getUserAgent();
@@ -45,15 +42,6 @@ public class Browser {
             }
             if (BROWSER_VERSION.isSpecified()) {
                 this.version = BROWSER_VERSION.getValue();
-            }
-            if (DEVICE.isSpecified()) {
-                this.device = DEVICE.getValue();
-            }
-            if (PLATFORM.isSpecified()) {
-                this.platform = PLATFORM.getValue();
-            }
-            if (PLATFORM_VERSION.isSpecified()) {
-                this.platformVersion = PLATFORM_VERSION.getValue();
             }
         }
     }

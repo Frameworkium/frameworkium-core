@@ -2,8 +2,6 @@ package com.frameworkium.core.ui.driver;
 
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.driver.drivers.*;
-import com.frameworkium.core.ui.driver.remotes.BrowserStack;
-import com.frameworkium.core.ui.driver.remotes.Sauce;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Capabilities;
@@ -12,22 +10,15 @@ import java.lang.reflect.InvocationTargetException;
 
 public class DriverSetup {
 
-    public static final Browser DEFAULT_BROWSER = Browser.FIREFOX;
+    public static final Browser DEFAULT_BROWSER = Browser.CHROME;
 
     /** Supported drivers. */
     public enum Browser {
-        FIREFOX, LEGACYFIREFOX, CHROME, EDGE, IE, SAFARI, ELECTRON, CUSTOM
+        FIREFOX, CHROME, EDGE, IE, SAFARI, CUSTOM
     }
 
     /** Supported remote grids. */
-    private enum RemoteGrid {
-        SAUCE, BROWSERSTACK, GRID
-    }
-
-    /** Supported platforms for remote grids. */
-    public enum Platform {
-        WINDOWS, OSX, IOS, ANDROID, NONE
-    }
+    private enum RemoteGrid { GRID }
 
     protected static final Logger logger = LogManager.getLogger();
 
@@ -52,25 +43,16 @@ public class DriverSetup {
     private static Driver instantiateDesiredRemote(Driver driver) {
 
         Capabilities capabilities = driver.getCapabilities();
-        Platform platform = getPlatformType();
-        switch (getRemoteType()) {
-            case SAUCE:
-                return new SauceImpl(platform, capabilities);
-            case BROWSERSTACK:
-                return new BrowserStackImpl(platform, capabilities);
-            case GRID:
-                return new GridImpl(capabilities);
-            default:
-                return driver;
+        if (getRemoteType() == RemoteGrid.GRID) {
+            return new GridImpl(capabilities);
         }
+        return driver;
     }
 
     private static Driver createDriverImpl(Browser browser) {
         switch (browser) {
             case FIREFOX:
                 return new FirefoxImpl();
-            case LEGACYFIREFOX:
-                return new LegacyFirefoxImpl();
             case CHROME:
                 return new ChromeImpl();
             case EDGE:
@@ -79,8 +61,6 @@ public class DriverSetup {
                 return new InternetExplorerImpl();
             case SAFARI:
                 return new SafariImpl();
-            case ELECTRON:
-                return new ElectronImpl();
             case CUSTOM:
                 String customBrowserImpl = Property.CUSTOM_BROWSER_IMPL.getValue();
                 try {
@@ -98,17 +78,7 @@ public class DriverSetup {
     }
 
     public static boolean useRemoteDriver() {
-        return Property.GRID_URL.isSpecified()
-                || Sauce.isDesired()
-                || BrowserStack.isDesired();
-    }
-
-    private static Platform getPlatformType() {
-        if (Property.PLATFORM.isSpecified()) {
-            return Platform.valueOf(Property.PLATFORM.getValue().toUpperCase());
-        } else {
-            return Platform.NONE;
-        }
+        return Property.GRID_URL.isSpecified();
     }
 
     private static Browser getBrowserTypeFromProperty() {
@@ -122,13 +92,7 @@ public class DriverSetup {
     }
 
     private static RemoteGrid getRemoteType() {
-        if (Sauce.isDesired()) {
-            return RemoteGrid.SAUCE;
-        } else if (BrowserStack.isDesired()) {
-            return RemoteGrid.BROWSERSTACK;
-        } else {
-            return RemoteGrid.GRID;
-        }
+        return RemoteGrid.GRID;
     }
 
     /**

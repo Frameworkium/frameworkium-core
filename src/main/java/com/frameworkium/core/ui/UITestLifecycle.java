@@ -1,15 +1,11 @@
 package com.frameworkium.core.ui;
 
 import com.frameworkium.core.common.properties.Property;
-import com.frameworkium.core.common.reporting.TestIdUtils;
-import com.frameworkium.core.common.reporting.allure.AllureProperties;
 import com.frameworkium.core.ui.browsers.UserAgent;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.driver.DriverSetup;
 import com.frameworkium.core.ui.driver.lifecycle.*;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -91,11 +87,8 @@ public class UITestLifecycle {
     }
 
     private String getTestNameForCapture(Method testMethod) {
-        Optional<String> testID = TestIdUtils.getIssueOrTmsLinkValue(testMethod);
-        if (!testID.isPresent() || testID.get().isEmpty()) {
-            testID = Optional.of(StringUtils.abbreviate(testMethod.getName(), 20));
-        }
-        return testID.orElse("n/a");
+        String methodName = testMethod.getName().replaceAll("_", " ");
+        return StringUtils.abbreviate(methodName, 35);
     }
 
     /** Run after each test method to clear or tear down the browser */
@@ -111,7 +104,6 @@ public class UITestLifecycle {
     public void afterTestSuite() {
         driverLifecycle.tearDownDriverPool();
         ScreenshotCapture.processRemainingBacklog();
-        AllureProperties.createUI();
     }
 
     /**

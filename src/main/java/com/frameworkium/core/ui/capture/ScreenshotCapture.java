@@ -5,10 +5,7 @@ import com.frameworkium.core.ui.UITestLifecycle;
 import com.frameworkium.core.ui.capture.model.Command;
 import com.frameworkium.core.ui.capture.model.message.CreateExecution;
 import com.frameworkium.core.ui.capture.model.message.CreateScreenshot;
-import com.frameworkium.core.ui.driver.Driver;
 import com.frameworkium.core.ui.driver.DriverSetup;
-import com.frameworkium.core.ui.driver.remotes.BrowserStack;
-import com.frameworkium.core.ui.driver.remotes.Sauce;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
@@ -31,8 +28,8 @@ public class ScreenshotCapture {
     private static final ExecutorService executorService =
             Executors.newFixedThreadPool(4);
 
-    private String testID;
-    private String executionID;
+    private final String testID;
+    private final String executionID;
 
     public ScreenshotCapture(String testID) {
         logger.debug("About to initialise Capture execution for " + testID);
@@ -76,17 +73,11 @@ public class ScreenshotCapture {
     }
 
     private String getRemoteNode(String defaultValue) {
-        if (Sauce.isDesired()) {
-            return "SauceLabs";
-        } else if (BrowserStack.isDesired()) {
-            return "BrowserStack";
-        } else {
-            try {
-                return getRemoteNodeAddress();
-            } catch (Exception e) {
-                logger.warn("Failed to get node address of remote web driver");
-                logger.debug(e);
-            }
+        try {
+            return getRemoteNodeAddress();
+        } catch (Exception e) {
+            logger.warn("Failed to get node address of remote web driver");
+            logger.debug(e);
         }
         return defaultValue;
     }
@@ -110,10 +101,9 @@ public class ScreenshotCapture {
     }
 
     public static boolean isRequired() {
-        boolean allCapturePropertiesSpecified = CAPTURE_URL.isSpecified()
+        return CAPTURE_URL.isSpecified()
                 && SUT_NAME.isSpecified()
                 && SUT_VERSION.isSpecified();
-        return allCapturePropertiesSpecified && !Driver.isNative();
     }
 
     public void takeAndSendScreenshot(Command command, WebDriver driver) {

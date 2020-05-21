@@ -2,7 +2,6 @@ package com.frameworkium.integration.theinternet.pages;
 
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
-import io.qameta.allure.Step;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.htmlelements.annotations.Name;
@@ -21,7 +20,6 @@ public class JavaScriptAlertsPage extends BasePage<JavaScriptAlertsPage> {
     @FindBy(css = "p#result")
     private WebElement resultArea;
 
-    @Step("Click alert")
     public JavaScriptAlertsPage clickAlertButtonAndAccept() {
         jsAlertButton.click();
         driver.switchTo().alert().accept();
@@ -29,7 +27,6 @@ public class JavaScriptAlertsPage extends BasePage<JavaScriptAlertsPage> {
         return this;
     }
 
-    @Step("Click prompt")
     public String getResultText() {
         return resultArea.getText();
     }

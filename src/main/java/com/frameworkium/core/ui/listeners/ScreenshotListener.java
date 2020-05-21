@@ -2,9 +2,7 @@ package com.frameworkium.core.ui.listeners;
 
 import com.frameworkium.core.ui.UITestLifecycle;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
-import com.frameworkium.core.ui.driver.DriverSetup.Browser;
 import com.frameworkium.core.ui.tests.BaseUITest;
-import io.qameta.allure.Attachment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
@@ -14,9 +12,6 @@ import org.testng.TestListenerAdapter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.*;
-
-import static com.frameworkium.core.common.properties.Property.BROWSER;
-import static com.frameworkium.core.ui.driver.DriverSetup.Browser.ELECTRON;
 
 public class ScreenshotListener extends TestListenerAdapter {
 
@@ -70,25 +65,18 @@ public class ScreenshotListener extends TestListenerAdapter {
         return Files.isDirectory(screenshotDirectory);
     }
 
-    @Attachment(value = "Screenshot on failure", type = "image/png")
-    private byte[] writeScreenshotToFile(TakesScreenshot driver, Path screenshot) {
+    private void writeScreenshotToFile(TakesScreenshot driver, Path screenshot) {
         try (OutputStream screenshotStream = Files.newOutputStream(screenshot)) {
             byte[] bytes = driver.getScreenshotAs(OutputType.BYTES);
             screenshotStream.write(bytes);
-            screenshotStream.close();
-            return bytes;
         } catch (IOException e) {
             logger.error("Unable to write " + screenshot, e);
         } catch (WebDriverException e) {
             logger.error("Unable to take screenshot.", e);
         }
-        return null;
     }
 
     private boolean isScreenshotSupported(ITestResult testResult) {
-        boolean isElectron = BROWSER.isSpecified()
-                && ELECTRON.equals(Browser.valueOf(BROWSER.getValue().toUpperCase()));
-        boolean isUITest = testResult.getInstance() instanceof BaseUITest;
-        return isUITest && !isElectron;
+        return testResult.getInstance() instanceof BaseUITest;
     }
 }

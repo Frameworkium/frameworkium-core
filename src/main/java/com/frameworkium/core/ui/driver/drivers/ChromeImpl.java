@@ -29,13 +29,6 @@ public class ChromeImpl extends AbstractDriver {
             chromeOptions.addArguments("--no-sandbox");
         }
 
-        // Use Chrome's built in device emulators
-        if (Property.DEVICE.isSpecified()) {
-            chromeOptions.setExperimentalOption(
-                    "mobileEmulation",
-                    ImmutableMap.of("deviceName", Property.DEVICE.getValue()));
-        }
-
         chromeOptions.setHeadless(Property.HEADLESS.getBoolean());
         return chromeOptions;
     }

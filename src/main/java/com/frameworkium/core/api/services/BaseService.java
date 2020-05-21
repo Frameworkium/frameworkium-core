@@ -1,8 +1,6 @@
 package com.frameworkium.core.api.services;
 
-import com.frameworkium.core.common.properties.Property;
 import com.google.common.collect.ImmutableMap;
-import io.restassured.RestAssured;
 import io.restassured.http.Method;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.specification.RequestSpecification;
@@ -10,24 +8,11 @@ import io.restassured.specification.ResponseSpecification;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 
 public abstract class BaseService {
 
     protected static final Logger logger = LogManager.getLogger();
-
-    static {
-        if (Property.PROXY.isSpecified()) {
-            try {
-                RestAssured.proxy(new URI(Property.PROXY.getValue()));
-            } catch (URISyntaxException e) {
-                logger.error("Proxy URI given is in an invalid format."
-                        + " Ensure it's in the format of: http://{hostname}:{port}", e);
-            }
-        }
-    }
 
     /**
      * Used to define the RequestSpecification common to all operations

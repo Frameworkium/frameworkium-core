@@ -7,45 +7,35 @@ import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
 
+/**
+ * Global propereties.
+ * TODO: use TypeSafe config
+ */
 public enum Property {
 
-    BUILD("build"),
-    JIRA_URL("jiraURL"),
-    SPIRA_URL("spiraURL"),
-    RESULT_VERSION("resultVersion"),
-    ZAPI_CYCLE_REGEX("zapiCycleRegEx"),
-    JQL_QUERY("jqlQuery"),
-    JIRA_USERNAME("jiraUsername"),
-    JIRA_PASSWORD("jiraPassword"),
+    THREADS("threads"),
+
+    // Capture
+    CAPTURE_URL("captureURL"),
     SUT_NAME("sutName"),
     SUT_VERSION("sutVersion"),
-    JIRA_RESULT_FIELD_NAME("jiraResultFieldName"),
-    JIRA_RESULT_TRANSITION("jiraResultTransition"),
-    PROXY("proxy"),
-    MAX_RETRY_COUNT("maxRetryCount"),
+
     // UI specific
     BROWSER("browser"),
     BROWSER_VERSION("browserVersion"),
-    PLATFORM("platform"),
-    PLATFORM_VERSION("platformVersion"),
-    DEVICE("device"),
-    CAPTURE_URL("captureURL"),
     GRID_URL("gridURL"),
-    APP_PATH("appPath"),
-    APPLICATION_NAME("applicationName"),
-    SAUCE("sauce"),
-    BROWSER_STACK("browserStack"),
+
     MAXIMISE("maximise"),
     RESOLUTION("resolution"),
-    VIDEO_CAPTURE_URL("videoCaptureUrl"),
-    CUSTOM_BROWSER_IMPL("customBrowserImpl"),
+
     REUSE_BROWSER("reuseBrowser"),
-    THREADS("threads"),
-    HEADLESS("headless");
+    HEADLESS("headless"),
+    CUSTOM_BROWSER_IMPL("customBrowserImpl")
+    ;
 
     private static Properties properties = null;
-    private String value;
-    private String systemPropertyKey;
+    private final String value;
+    private final String systemPropertyKey;
 
     Property(String key) {
         this.systemPropertyKey = key;

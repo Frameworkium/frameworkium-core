@@ -1,9 +1,7 @@
 package com.frameworkium.integration.theinternet.pages;
 
-import com.frameworkium.core.common.reporting.allure.AllureLogger;
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
-import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -67,19 +65,14 @@ public class DragAndDropPage extends BasePage<DragAndDropPage> {
      */
     private void simulateDragAndDrop(String from, String to) {
         executeJS(scriptToSimulateDragDrop());
-        // TODO: move AllureLogger steps to dedicated test
-        AllureLogger.stepStart("testing step start");
         executeJS("$('" + from + "').simulateDragDrop({ dropTarget: '" + to + "'});");
-        AllureLogger.stepFinish();
     }
 
-    @Step("Drag A onto B")
     public DragAndDropPage dragAontoB() {
         simulateDragAndDrop("#column-a", "#column-b");
         return this;
     }
 
-    @Step("Get order of headers")
     public List<String> getListOfHeadings() {
         return boxes.stream()
                 .map(WebElement::getText)

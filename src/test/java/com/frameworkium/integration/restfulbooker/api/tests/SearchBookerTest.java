@@ -1,7 +1,6 @@
 package com.frameworkium.integration.restfulbooker.api.tests;
 
 import com.frameworkium.core.api.tests.BaseAPITest;
-import com.frameworkium.core.common.retry.RetryFlakyTest;
 import com.frameworkium.integration.restfulbooker.api.dto.booking.Booking;
 import com.frameworkium.integration.restfulbooker.api.dto.booking.BookingID;
 import com.frameworkium.integration.restfulbooker.api.dto.booking.search.SearchParamsMapper;
@@ -16,7 +15,7 @@ import java.util.List;
 import static com.google.common.truth.Truth.assertThat;
 
 // app resets every 10m, so could happen in the middle of this test
-@Test(retryAnalyzer = RetryFlakyTest.class)
+@Test
 public class SearchBookerTest extends BaseAPITest {
 
     @BeforeClass
