@@ -49,9 +49,6 @@ nbactions.xml
 
 # Other things #
 ################
-ajcore.*.txt
 test-output/
 logs/
 /screenshots/
-capturedVideo/
-.allure
