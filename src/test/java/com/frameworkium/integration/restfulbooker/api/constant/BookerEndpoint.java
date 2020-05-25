@@ -11,10 +11,10 @@ public enum BookerEndpoint implements Endpoint {
     BOOKING_ID("/booking/%d"),
     AUTH("/auth");
 
-    private String url;
+    private final String urlFormat;
 
-    BookerEndpoint(String url) {
-        this.url = url;
+    BookerEndpoint(String urlFormat) {
+        this.urlFormat = urlFormat;
     }
 
     /**
@@ -23,7 +23,7 @@ public enum BookerEndpoint implements Endpoint {
      */
     @Override
     public String getUrl(Object... params) {
-        return String.format(url, params);
+        return String.format(urlFormat, params);
     }
 
 }

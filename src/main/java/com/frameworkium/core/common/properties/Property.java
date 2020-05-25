@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 /**
- * Global propereties.
+ * Global properties.
  * TODO: use TypeSafe config
  */
 public enum Property {
@@ -26,7 +26,6 @@ public enum Property {
     GRID_URL("gridURL"),
 
     MAXIMISE("maximise"),
-    RESOLUTION("resolution"),
 
     REUSE_BROWSER("reuseBrowser"),
     HEADLESS("headless"),

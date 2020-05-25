@@ -2,7 +2,6 @@ package com.frameworkium.integration.seleniumhq.pages;
 
 import com.frameworkium.core.ui.annotations.Visible;
 import com.frameworkium.core.ui.pages.BasePage;
-import com.frameworkium.core.ui.pages.PageFactory;
 import com.frameworkium.integration.seleniumhq.components.HeaderComponent;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -20,9 +19,8 @@ public class SeleniumDownloadPage extends BasePage<SeleniumDownloadPage> {
     private Link latestDownloadLink;
 
     public static SeleniumDownloadPage open() {
-        return PageFactory.newInstance(
-                SeleniumDownloadPage.class,
-                "https://selenium.dev/downloads/");
+        return new SeleniumDownloadPage()
+                .get("https://selenium.dev/downloads/");
     }
 
     public String getLatestVersion() {
