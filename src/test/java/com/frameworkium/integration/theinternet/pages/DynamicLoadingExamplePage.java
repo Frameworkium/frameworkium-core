@@ -1,9 +1,9 @@
 package com.frameworkium.integration.theinternet.pages;
 
-import com.frameworkium.core.ui.annotations.Invisible;
-import com.frameworkium.core.ui.annotations.Visible;
-import com.frameworkium.core.ui.pages.BasePage;
-import com.frameworkium.core.ui.pages.PageFactory;
+import com.frameworkium.lite.ui.annotations.Invisible;
+import com.frameworkium.lite.ui.annotations.Visible;
+import com.frameworkium.lite.ui.pages.BasePage;
+import com.frameworkium.lite.ui.pages.PageFactory;
 import org.openqa.selenium.support.FindBy;
 import ru.yandex.qatools.htmlelements.annotations.Name;
 import ru.yandex.qatools.htmlelements.annotations.Timeout;

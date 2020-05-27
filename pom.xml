@@ -1,19 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.github.frameworkium</groupId>
-  <artifactId>frameworkium-core</artifactId>
-  <version>3.0.1-SNAPSHOT</version>
-  <name>frameworkium-core</name>
+  <groupId>com.github.ham1</groupId>
+  <artifactId>frameworkium-lite</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>frameworkium-lite</name>
   <description>
-    Frameworkium core code.
-    Referenced by the frameworkium-examples project, with more example tests.
+    A UI and API Test framework, based upon Frameworkium Core.
   </description>
   <url />
-  <inceptionYear>2015</inceptionYear>
-  <organization>
-    <name>Frameworkium</name>
-  </organization>
+  <inceptionYear>2020</inceptionYear>
   <licenses />
 
   <developers />
@@ -22,17 +18,17 @@
   <modules />
 
   <scm>
-    <connection>scm:git:git@github.com:ham1/frameworkium-core</connection>
-    <url>scm:git:git@github.com:ham1/frameworkium-core</url>
-    <developerConnection>scm:git:git@github.com:ham1/frameworkium-core</developerConnection>
+    <connection>scm:git:git@github.com:ham1/frameworkium-lite</connection>
+    <url>scm:git:git@github.com:ham1/frameworkium-lite</url>
+    <developerConnection>scm:git:git@github.com:ham1/frameworkium-lite</developerConnection>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
     <system>github issues</system>
-    <url>https://github.com/ham1/frameworkium-core/issues</url>
+    <url>https://github.com/ham1/frameworkium-lite/issues</url>
   </issueManagement>
   <ciManagement>
-    <url>https://travis-ci.com/ham1/frameworkium-core</url>
+    <url>https://travis-ci.com/ham1/frameworkium-lite</url>
   </ciManagement>
 
   <distributionManagement />
@@ -40,7 +36,6 @@
   <properties>
     <threads>1</threads>
     <groups />
-    <truth.version>1.0.1</truth.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
@@ -79,14 +74,9 @@
     </dependency>
 
     <dependency>
-      <groupId>com.google.truth</groupId>
-      <artifactId>truth</artifactId>
-      <version>${truth.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.truth.extensions</groupId>
-      <artifactId>truth-java8-extension</artifactId>
-      <version>${truth.version}</version>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>3.16.1</version>
     </dependency>
 
     <!-- Required so that Google Truth works.
@@ -128,7 +118,7 @@
       <version>2.11.0</version>
     </dependency>
 
-    <!-- Unit Testing -->
+    <!-- Local Unit Testing -->
     <dependency>
       <groupId>org.spockframework</groupId>
       <artifactId>spock-core</artifactId>
@@ -143,6 +133,7 @@
       <version>2.6</version>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 
   <repositories />
@@ -288,7 +279,7 @@
           <parallel>methods</parallel>
           <threadCount>${threads}</threadCount>
           <systemPropertyVariables>
-            <!-- For Frameworkium screenshots on test failure -->
+            <!-- For Local screenshots on test failure -->
             <screenshotDirectory>
               ${project.build.directory}/screenshots
             </screenshotDirectory>
@@ -299,9 +290,7 @@
           </includes>
           <groups>${groups}</groups>
           <!-- required for Jacoco code coverage -->
-          <argLine>
-            ${failsafeArgLine}
-          </argLine>
+          <argLine>${failsafeArgLine}</argLine>
         </configuration>
         <executions>
           <execution>
@@ -313,7 +302,6 @@
         </executions>
       </plugin>
 
-      <!-- Used to attach sources to jar -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>

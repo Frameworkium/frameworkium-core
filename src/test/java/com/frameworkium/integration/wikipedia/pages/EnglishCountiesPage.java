@@ -1,9 +1,9 @@
 package com.frameworkium.integration.wikipedia.pages;
 
-import com.frameworkium.core.ui.annotations.Visible;
-import com.frameworkium.core.ui.element.OptimisedStreamTable;
-import com.frameworkium.core.ui.pages.BasePage;
-import com.frameworkium.core.ui.pages.PageFactory;
+import com.frameworkium.lite.ui.annotations.Visible;
+import com.frameworkium.lite.ui.element.OptimisedStreamTable;
+import com.frameworkium.lite.ui.pages.BasePage;
+import com.frameworkium.lite.ui.pages.PageFactory;
 
 import org.openqa.selenium.NotFoundException;
 import org.openqa.selenium.WebElement;
@@ -36,11 +36,11 @@ public class EnglishCountiesPage extends BasePage<EnglishCountiesPage> {
     }
 
     public int populationOf(String countyName) {
-        Predicate<WebElement> headerLookUp = e -> e.getText().trim().equals("County");
         Predicate<WebElement> lookUpCellMatcher = e -> e.getText().trim().equals(countyName);
-        Predicate<WebElement> targetColHeaderLookup = e -> e.getText().trim().startsWith("Population");
+        int lookupColumnIndex = 0;
+        int targetColumnIndex = 1;
         String population = listTable
-                .getCellsByLookup(headerLookUp, lookUpCellMatcher, targetColHeaderLookup)
+                .getCellsByLookupAndIndex(lookUpCellMatcher, lookupColumnIndex, targetColumnIndex)
                 .findFirst()
                 .orElseThrow(NotFoundException::new)
                 .getText()

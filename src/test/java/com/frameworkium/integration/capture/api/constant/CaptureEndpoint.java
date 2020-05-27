@@ -1,6 +1,6 @@
 package com.frameworkium.integration.capture.api.constant;
 
-import com.frameworkium.core.api.Endpoint;
+import com.frameworkium.lite.api.Endpoint;
 
 /** The various Endpoints of Capture. */
 public enum CaptureEndpoint implements Endpoint {
@@ -12,10 +12,10 @@ public enum CaptureEndpoint implements Endpoint {
     SUT_VERSIONS("/softwareUnderTest/versions/%s"),
     SCREENSHOT("/screenshot");
 
-    private String url;
+    private final String urlFormat;
 
-    CaptureEndpoint(String url) {
-        this.url = url;
+    CaptureEndpoint(String urlFormat) {
+        this.urlFormat = urlFormat;
     }
 
     /**
@@ -24,7 +24,7 @@ public enum CaptureEndpoint implements Endpoint {
      */
     @Override
     public String getUrl(Object... params) {
-        return String.format(url, params);
+        return String.format(urlFormat, params);
     }
 
 }

@@ -1,15 +1,16 @@
 package com.frameworkium.integration.wikipedia.tests;
 
-import com.frameworkium.core.ui.tests.BaseUITest;
+import com.frameworkium.lite.ui.tests.BaseUITest;
 import com.frameworkium.integration.wikipedia.pages.EnglishCountiesPage;
 import com.frameworkium.integration.wikipedia.pages.EnglishCountiesUsingListsPage;
 import org.testng.annotations.Test;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * This test demonstrates the different between using StreamTable and Lists
- * of WebElements.
+ * This test demonstrates the different between using
+ * {@link com.frameworkium.lite.ui.element.StreamTable} and {@link java.util.List}s
+ * of {@link org.openqa.selenium.WebElement}s.
  * <p>The trade-off is between readability, maintainability and performance.
  * <p>The List option is slightly longer and slightly more difficult to maintain,
  * especially if your table is changing shape (but not header text), however it
@@ -22,7 +23,7 @@ public class EnglishCountiesTest extends BaseUITest {
         EnglishCountiesPage page = EnglishCountiesPage.open();
 
         assertThat(page.populationOf("Cornwall"))
-                .isAtLeast(550_000);
+                .isGreaterThan(550_000);
         // at least two counties have population densities of more than 3000
         assertThat(page.densities()
                 .filter(density -> density > 3000)
@@ -36,7 +37,7 @@ public class EnglishCountiesTest extends BaseUITest {
         EnglishCountiesUsingListsPage page = EnglishCountiesUsingListsPage.open();
 
         assertThat(page.populationOf("Cornwall"))
-                .isAtLeast(550_000);
+                .isGreaterThan(550_000);
         // at least two counties have population densities of more than 3000
         assertThat(page.densities()
                 .filter(density -> density > 3000)

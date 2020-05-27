@@ -1,7 +1,7 @@
 package com.frameworkium.integration.capture.api.dto.screenshots;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.frameworkium.core.api.dto.AbstractDTO;
+import com.frameworkium.lite.api.dto.AbstractDTO;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;

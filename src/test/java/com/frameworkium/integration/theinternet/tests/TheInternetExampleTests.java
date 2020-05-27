@@ -1,8 +1,7 @@
 package com.frameworkium.integration.theinternet.tests;
 
-import com.frameworkium.core.ui.tests.BaseUITest;
+import com.frameworkium.lite.ui.tests.BaseUITest;
 import com.frameworkium.integration.theinternet.pages.*;
-import com.google.common.truth.Truth8;
 import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
 
@@ -10,8 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth.assertWithMessage;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Test
 public class TheInternetExampleTests extends BaseUITest {
@@ -26,7 +24,7 @@ public class TheInternetExampleTests extends BaseUITest {
                         .getAllCheckboxCheckedStatus();
 
         // Assert that all checkboxes are checked
-        Truth8.assertThat(checkboxesStatus).doesNotContain(false);
+        assertThat(checkboxesStatus).doesNotContain(false);
     }
 
     public void dragAndDrop() {
@@ -36,9 +34,7 @@ public class TheInternetExampleTests extends BaseUITest {
                 .dragAontoB()
                 .getListOfHeadings();
 
-        assertWithMessage("Order of headings")
-                .that(headings)
-                .containsExactly("B", "A");
+        assertThat(headings).containsExactly("B", "A");
     }
 
     public void dynamicLoading() {
@@ -87,7 +83,7 @@ public class TheInternetExampleTests extends BaseUITest {
 
         SortableDataTablesPage tablesPage = SortableDataTablesPage.open();
 
-        Truth8.assertThat(tablesPage.getTable1ColumnContents("Web Site"))
+        assertThat(tablesPage.getTable1ColumnContents("Web Site"))
                 .contains("http://www.jdoe.com");
 
         List<String> sortedLastNameColumn =
@@ -96,7 +92,7 @@ public class TheInternetExampleTests extends BaseUITest {
                         .collect(Collectors.toList());
 
         assertThat(sortedLastNameColumn.get(0)).isEqualTo("Bach");
-        assertThat(sortedLastNameColumn).isInOrder();
+        assertThat(sortedLastNameColumn).isSorted();
     }
 
 }

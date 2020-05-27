@@ -1,6 +1,6 @@
 package com.frameworkium.integration.capture.api.service;
 
-import com.frameworkium.core.api.services.BaseService;
+import com.frameworkium.lite.api.services.BaseService;
 import com.frameworkium.integration.capture.api.constant.CaptureEndpoint;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

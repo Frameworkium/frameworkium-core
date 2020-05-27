@@ -1,7 +1,7 @@
 package com.frameworkium.integration.seleniumhq.pages;
 
-import com.frameworkium.core.ui.annotations.Visible;
-import com.frameworkium.core.ui.pages.BasePage;
+import com.frameworkium.lite.ui.annotations.Visible;
+import com.frameworkium.lite.ui.pages.BasePage;
 import com.frameworkium.integration.seleniumhq.components.HeaderComponent;
 import org.openqa.selenium.support.CacheLookup;
 

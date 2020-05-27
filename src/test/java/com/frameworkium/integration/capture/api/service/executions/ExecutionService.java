@@ -16,8 +16,8 @@ public class ExecutionService extends BaseCaptureService {
 
     public ExecutionResults getExecutions(int page, int pageSize) {
         return get(
-                ImmutableMap.of("page", page, "pageSize", pageSize),
-                CaptureEndpoint.EXECUTIONS.getUrl())
+                CaptureEndpoint.EXECUTIONS.getUrl(),
+                ImmutableMap.of("page", page, "pageSize", pageSize))
                 .as(ExecutionResults.class);
     }
 

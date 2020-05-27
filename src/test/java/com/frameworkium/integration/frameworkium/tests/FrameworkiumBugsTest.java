@@ -1,13 +1,13 @@
 package com.frameworkium.integration.frameworkium.tests;
 
-import com.frameworkium.core.ui.UITestLifecycle;
-import com.frameworkium.core.ui.tests.BaseUITest;
+import com.frameworkium.lite.ui.UITestLifecycle;
+import com.frameworkium.lite.ui.tests.BaseUITest;
 import com.frameworkium.integration.frameworkium.pages.JQueryDemoPage;
 import com.frameworkium.integration.seleniumhq.pages.SeleniumDownloadPage;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 // tests if BeforeMethods are run despite not being in this group
 @Test(groups = "fw-bugs")

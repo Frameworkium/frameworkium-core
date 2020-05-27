@@ -4,7 +4,6 @@ import com.frameworkium.integration.restfulbooker.api.constant.BookerEndpoint;
 import com.frameworkium.integration.restfulbooker.api.dto.booking.*;
 import com.frameworkium.integration.restfulbooker.api.service.AbstractBookerService;
 import com.google.common.collect.ImmutableMap;
-import io.restassured.http.Method;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,7 @@ public class BookingService extends AbstractBookerService {
     }
 
     public List<BookingID> search(Map<String, String> searchParams) {
-        return request(Method.GET, searchParams, BookerEndpoint.BOOKING.getUrl())
+        return get(BookerEndpoint.BOOKING.getUrl(), searchParams)
                 .jsonPath().getList(".", BookingID.class);
     }
 

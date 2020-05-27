@@ -1,10 +1,10 @@
 package com.frameworkium.integration.angularjs.tests;
 
-import com.frameworkium.core.ui.tests.BaseUITest;
+import com.frameworkium.lite.ui.tests.BaseUITest;
 import com.frameworkium.integration.angularjs.pages.DeveloperGuidePage;
 import org.testng.annotations.Test;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DocumentationTest extends BaseUITest {
 

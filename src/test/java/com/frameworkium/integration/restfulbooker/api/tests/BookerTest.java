@@ -1,22 +1,21 @@
 package com.frameworkium.integration.restfulbooker.api.tests;
 
-import com.frameworkium.core.api.tests.BaseAPITest;
+import com.frameworkium.lite.api.tests.BaseAPITest;
 import com.frameworkium.integration.restfulbooker.api.dto.booking.*;
 import com.frameworkium.integration.restfulbooker.api.service.booking.BookingService;
 import com.frameworkium.integration.restfulbooker.api.service.ping.PingService;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 // app resets every 10m, so could happen in the middle of this test
-@Test
+@Test(enabled = false) // currently down
 public class BookerTest extends BaseAPITest {
 
     @BeforeClass
     public void ensure_site_is_up_by_using_ping_service() {
-        assertThat(new PingService().ping())
-                .isEqualTo("Created");
+        assertThat(new PingService().ping()).isEqualTo("Created");
     }
 
     public void create_new_booking() {

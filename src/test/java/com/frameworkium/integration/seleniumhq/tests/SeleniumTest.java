@@ -1,9 +1,9 @@
 package com.frameworkium.integration.seleniumhq.tests;
 
-import com.frameworkium.core.ui.tests.BaseUITest;
+import com.frameworkium.lite.ui.tests.BaseUITest;
 import com.frameworkium.integration.seleniumhq.pages.HomePage;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SeleniumTest extends BaseUITest {
 

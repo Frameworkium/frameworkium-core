@@ -1,6 +1,6 @@
 package com.frameworkium.integration.capture.api.tests;
 
-import com.frameworkium.core.api.tests.BaseAPITest;
+import com.frameworkium.lite.api.tests.BaseAPITest;
 import com.frameworkium.integration.capture.api.dto.executions.*;
 import com.frameworkium.integration.capture.api.dto.screenshots.CreateScreenshot;
 import com.frameworkium.integration.capture.api.dto.screenshots.Screenshot;
@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.google.common.truth.Truth.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /** Tests for the Capture execution API. */
 @Ignore
@@ -43,7 +43,7 @@ public class CaptureExecutionAPITest extends BaseAPITest {
                 new ExecutionService().getExecutions(1, 10);
 
         assertThat(latestExecutions.total)
-                .isAtLeast(latestExecutions.results.size());
+                .isGreaterThanOrEqualTo(latestExecutions.results.size());
 
         List<ExecutionResponse> filteredExecutions =
                 latestExecutions

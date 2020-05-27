@@ -1,7 +1,7 @@
 package com.frameworkium.integration.capture.api.dto.executions;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.frameworkium.core.api.dto.AbstractDTO;
+import com.frameworkium.lite.api.dto.AbstractDTO;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Browser extends AbstractDTO<Browser> {

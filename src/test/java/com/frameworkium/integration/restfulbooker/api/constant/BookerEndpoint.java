@@ -1,6 +1,6 @@
 package com.frameworkium.integration.restfulbooker.api.constant;
 
-import com.frameworkium.core.api.Endpoint;
+import com.frameworkium.lite.api.Endpoint;
 
 /** The various Endpoints of Restful Booker. */
 public enum BookerEndpoint implements Endpoint {
