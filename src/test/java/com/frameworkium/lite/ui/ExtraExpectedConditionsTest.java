@@ -2,7 +2,7 @@ package com.frameworkium.lite.ui;
 
 import com.frameworkium.lite.ui.element.StreamTable;
 import org.testng.annotations.Test;
-import ru.yandex.qatools.htmlelements.element.Link;
+import com.frameworkium.lite.htmlelements.element.Link;
 
 import java.util.ArrayList;
 import java.util.List;

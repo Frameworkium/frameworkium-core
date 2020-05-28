@@ -4,19 +4,16 @@ import com.frameworkium.lite.ui.annotations.Visible;
 import com.frameworkium.lite.ui.pages.BasePage;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import ru.yandex.qatools.htmlelements.annotations.Name;
-import ru.yandex.qatools.htmlelements.element.Button;
+import com.frameworkium.lite.htmlelements.element.Button;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 public class JavaScriptAlertsPage extends BasePage<JavaScriptAlertsPage> {
 
     @Visible
-    @Name("JS Alert button")
     @FindBy(css = "button[onclick='jsAlert()']")
     private Button jsAlertButton;
 
-    @Name("Result area")
     @FindBy(css = "p#result")
     private WebElement resultArea;
 

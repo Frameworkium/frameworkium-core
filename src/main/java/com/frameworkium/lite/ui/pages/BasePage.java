@@ -1,5 +1,6 @@
 package com.frameworkium.lite.ui.pages;
 
+import com.frameworkium.lite.htmlelements.loader.HtmlElementLoader;
 import com.frameworkium.lite.ui.UITestLifecycle;
 import com.frameworkium.lite.ui.annotations.Visible;
 import com.frameworkium.lite.ui.capture.ScreenshotCapture;
@@ -8,7 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.Wait;
-import ru.yandex.qatools.htmlelements.loader.HtmlElementLoader;
 
 import java.time.Duration;
 

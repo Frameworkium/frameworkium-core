@@ -8,11 +8,10 @@ import groovy.transform.InheritConstructors
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.support.CacheLookup
 import org.openqa.selenium.support.FindBy
-import ru.yandex.qatools.htmlelements.annotations.Name
-import ru.yandex.qatools.htmlelements.annotations.Timeout
-import ru.yandex.qatools.htmlelements.element.CheckBox
-import ru.yandex.qatools.htmlelements.element.HtmlElement
-import ru.yandex.qatools.htmlelements.element.TextInput
+import com.frameworkium.lite.htmlelements.annotations.Timeout
+import com.frameworkium.lite.htmlelements.element.CheckBox
+import com.frameworkium.lite.htmlelements.element.HtmlElement
+import com.frameworkium.lite.htmlelements.element.TextInput
 
 class PageObjects {
 
@@ -104,7 +103,6 @@ class PageObjects {
         @ForceVisible
         @Invisible
         @Timeout(42)
-        @Name("named element")
         @FindBy(css = "html")
         @CacheLookup
         CheckBox myTypifiedElement

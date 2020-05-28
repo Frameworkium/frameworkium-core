@@ -1,8 +1,8 @@
 package com.frameworkium.lite.ui.element;
 
+import com.frameworkium.lite.htmlelements.element.HtmlElement;
 import com.google.common.collect.Streams;
 import org.openqa.selenium.*;
-import ru.yandex.qatools.htmlelements.element.HtmlElement;
 
 import java.util.Objects;
 import java.util.Optional;

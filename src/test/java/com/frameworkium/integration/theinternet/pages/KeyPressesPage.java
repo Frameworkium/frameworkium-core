@@ -6,7 +6,6 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
-import ru.yandex.qatools.htmlelements.annotations.Name;
 
 public class KeyPressesPage extends BasePage<KeyPressesPage> {
 
@@ -14,7 +13,6 @@ public class KeyPressesPage extends BasePage<KeyPressesPage> {
     @FindBy(css = "div.example")
     private WebElement container;
 
-    @Name("Result")
     @FindBy(css = "p#result")
     private WebElement result;
 

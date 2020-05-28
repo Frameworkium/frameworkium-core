@@ -5,8 +5,8 @@ import com.frameworkium.lite.ui.pages.PageFactory;
 import com.frameworkium.integration.seleniumhq.pages.SeleniumDownloadPage;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.support.FindBy;
-import ru.yandex.qatools.htmlelements.element.HtmlElement;
-import ru.yandex.qatools.htmlelements.element.Link;
+import com.frameworkium.lite.htmlelements.element.HtmlElement;
+import com.frameworkium.lite.htmlelements.element.Link;
 
 @FindBy(id = "header")
 public class HeaderComponent extends HtmlElement {

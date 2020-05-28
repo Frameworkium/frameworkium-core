@@ -199,7 +199,6 @@
         <module name="CommentsIndentation"/>
 
         <module name="JavadocTagContinuationIndentation"/>
-        <module name="JavadocParagraph"/>
         <module name="AtclauseOrder">
             <property name="tagOrder" value="@param, @return, @throws, @deprecated"/>
             <property name="target"

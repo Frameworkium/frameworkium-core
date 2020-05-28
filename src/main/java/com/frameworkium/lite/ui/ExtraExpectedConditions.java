@@ -1,10 +1,10 @@
 package com.frameworkium.lite.ui;
 
+import com.frameworkium.lite.htmlelements.element.HtmlElement;
+import com.frameworkium.lite.htmlelements.element.TypifiedElement;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import ru.yandex.qatools.htmlelements.element.HtmlElement;
-import ru.yandex.qatools.htmlelements.element.TypifiedElement;
 
 import java.util.List;
 import java.util.function.Function;

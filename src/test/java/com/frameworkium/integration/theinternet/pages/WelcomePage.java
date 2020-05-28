@@ -5,8 +5,7 @@ import com.frameworkium.lite.ui.annotations.Visible;
 import com.frameworkium.lite.ui.pages.BasePage;
 import com.frameworkium.lite.ui.pages.PageFactory;
 import org.openqa.selenium.support.FindBy;
-import ru.yandex.qatools.htmlelements.annotations.Name;
-import ru.yandex.qatools.htmlelements.element.Link;
+import com.frameworkium.lite.htmlelements.element.Link;
 
 import java.time.Duration;
 
@@ -15,29 +14,23 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 public class WelcomePage extends BasePage<WelcomePage> {
 
     @Visible
-    @Name("Checkboxes link")
     @FindBy(linkText = "Checkboxes")
     private Link checkboxesLink;
 
     // ForceVisible not strictly required, just testing it doesn't error
     @ForceVisible
-    @Name("Drag and Drop link")
     @FindBy(linkText = "Drag and Drop")
     private Link dragAndDropLink;
 
-    @Name("Dynamic Loading link")
     @FindBy(linkText = "Dynamic Loading")
     private Link dynamicLoadingLink;
 
-    @Name("Hovers Link")
     @FindBy(linkText = "Hovers")
     private Link hoversLink;
 
-    @Name("JavaScript Alerts Link")
     @FindBy(linkText = "JavaScript Alerts")
     private Link javascriptAlertsLink;
 
-    @Name("Key Presses Link")
     @FindBy(linkText = "Key Presses")
     private Link keyPressesLink;
 

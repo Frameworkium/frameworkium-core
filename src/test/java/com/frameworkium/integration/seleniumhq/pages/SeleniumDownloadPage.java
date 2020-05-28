@@ -5,7 +5,7 @@ import com.frameworkium.lite.ui.pages.BasePage;
 import com.frameworkium.integration.seleniumhq.components.HeaderComponent;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import ru.yandex.qatools.htmlelements.element.Link;
+import com.frameworkium.lite.htmlelements.element.Link;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 

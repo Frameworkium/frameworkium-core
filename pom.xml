@@ -45,19 +45,21 @@
     <maven>3.3.9</maven>
   </prerequisites>
 
+  <repositories>
+    <!-- Enables us to get dependencies from github e.g. frameworkium -->
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+  </repositories>
+
   <!-- Check for updates with mvn versions:display-dependency-updates -->
   <dependencies>
     <!-- Selenium related -->
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>3.141.59</version>
-    </dependency>
-
-    <dependency>
-      <groupId>ru.yandex.qatools.htmlelements</groupId>
-      <artifactId>htmlelements-java</artifactId>
-      <version>1.20.0</version>
+      <version>4.0.0-alpha-5</version>
     </dependency>
 
     <dependency>
@@ -79,8 +81,8 @@
       <version>3.16.1</version>
     </dependency>
 
-    <!-- Required so that Google Truth works.
-    Also used in some parts of the code -->
+    <!-- Used in some parts of the code and is the latest version
+         rather than rely an older version from Selenium. -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
@@ -136,7 +138,6 @@
 
   </dependencies>
 
-  <repositories />
 
   <pluginRepositories />
 
