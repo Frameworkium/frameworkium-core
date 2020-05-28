@@ -88,7 +88,7 @@ public class UITestLifecycle {
 
     private String getTestNameForCapture(Method testMethod) {
         String methodName = testMethod.getName().replaceAll("_", " ");
-        return StringUtils.abbreviate(methodName, 35);
+        return StringUtils.abbreviate(methodName, 64);
     }
 
     /** Run after each test method to clear or tear down the browser */
