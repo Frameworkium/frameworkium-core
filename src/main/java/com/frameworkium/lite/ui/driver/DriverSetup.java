@@ -4,7 +4,6 @@ import com.frameworkium.lite.common.properties.Property;
 import com.frameworkium.lite.ui.driver.drivers.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.Capabilities;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -17,9 +16,6 @@ public class DriverSetup {
         FIREFOX, CHROME, EDGE, IE, SAFARI, CUSTOM
     }
 
-    /** Supported remote grids. */
-    private enum RemoteGrid { GRID }
-
     protected static final Logger logger = LogManager.getLogger();
 
     /**
@@ -28,24 +24,9 @@ public class DriverSetup {
     public static Driver instantiateDriver() {
         Driver driver = createDriverImpl(getBrowserTypeFromProperty());
         if (useRemoteDriver()) {
-            driver = instantiateDesiredRemote(driver);
+            driver = new GridImpl(driver.getCapabilities());
         }
         driver.initialise();
-        return driver;
-    }
-
-    /**
-     * Uses parameters to determine which browser/remote/platform to use.
-     *
-     * @param driver the desired (non-remote) driver implementation
-     * @return The (potentially) remote driver implementation based on parameters
-     */
-    private static Driver instantiateDesiredRemote(Driver driver) {
-
-        Capabilities capabilities = driver.getCapabilities();
-        if (getRemoteType() == RemoteGrid.GRID) {
-            return new GridImpl(capabilities);
-        }
         return driver;
     }
 
@@ -89,10 +70,6 @@ public class DriverSetup {
         } else {
             return DEFAULT_BROWSER;
         }
-    }
-
-    private static RemoteGrid getRemoteType() {
-        return RemoteGrid.GRID;
     }
 
     /**

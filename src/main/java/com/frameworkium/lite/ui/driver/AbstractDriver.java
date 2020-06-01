@@ -7,6 +7,7 @@ import com.frameworkium.lite.ui.listeners.LoggingListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -22,9 +23,7 @@ public abstract class AbstractDriver implements Driver {
         return this.webDriverWrapper;
     }
 
-    /**
-     * Creates the Wrapped Driver object and maximises if required.
-     */
+    /** Creates the Wrapped Driver object and maximises if required. */
     public void initialise() {
         this.webDriverWrapper = setupEventFiringWebDriver(getCapabilities());
         maximiseBrowserIfRequired();
@@ -32,13 +31,14 @@ public abstract class AbstractDriver implements Driver {
 
     private EventFiringWebDriver setupEventFiringWebDriver(Capabilities capabilities) {
         logger.debug("Browser Capabilities: " + capabilities);
-        EventFiringWebDriver eventFiringWD = new EventFiringWebDriver(getWebDriver(capabilities));
-        eventFiringWD.register(new LoggingListener());
+        WebDriver webDriver = getWebDriver(capabilities);
+        EventFiringWebDriver eventFiringDriver = new EventFiringWebDriver(webDriver);
+        eventFiringDriver.register(new LoggingListener());
         if (ScreenshotCapture.isRequired()) {
-            eventFiringWD.register(new CaptureListener());
+            eventFiringDriver.register(new CaptureListener());
         }
-        eventFiringWD.manage().timeouts().setScriptTimeout(10, SECONDS);
-        return eventFiringWD;
+        eventFiringDriver.manage().timeouts().setScriptTimeout(10, SECONDS);
+        return eventFiringDriver;
     }
 
     private void maximiseBrowserIfRequired() {

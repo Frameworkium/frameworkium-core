@@ -32,7 +32,7 @@ public class SingleUseDriverLifecycle implements DriverLifecycle {
 
     @Override
     public WebDriver getWebDriver() {
-        return threadLocalDriver.get().getWebDriver().getWrappedDriver();
+        return threadLocalDriver.get().getWebDriver();
     }
 
     /**

@@ -48,7 +48,7 @@ public class MultiUseDriverLifecycle implements DriverLifecycle {
      * Will set the current {@link ThreadLocal} {@link Driver} to be the next
      * available from the pool.
      *
-     * @param driverSupplier the {@link Supplier} that creates {@link Driver}s
+     * @param driverSupplier ignored for this DriverLifecycle
      * @throws java.util.NoSuchElementException if this pool is empty
      */
     @Override
@@ -58,7 +58,7 @@ public class MultiUseDriverLifecycle implements DriverLifecycle {
 
     @Override
     public WebDriver getWebDriver() {
-        return threadLocalDriver.get().getWebDriver().getWrappedDriver();
+        return threadLocalDriver.get().getWebDriver();
     }
 
     /**
@@ -104,4 +104,3 @@ public class MultiUseDriverLifecycle implements DriverLifecycle {
         driverPool = null; // allows re-initialisation
     }
 }
-
