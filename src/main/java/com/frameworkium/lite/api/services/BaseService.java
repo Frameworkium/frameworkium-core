@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public abstract class BaseService {
 
-    protected static final Logger logger = LogManager.getLogger();
+    protected final Logger logger = LogManager.getLogger(this);
 
     /**
      * Used to define the RequestSpecification common to all operations
