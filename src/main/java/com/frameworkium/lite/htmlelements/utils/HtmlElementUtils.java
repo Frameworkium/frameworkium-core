@@ -18,7 +18,12 @@ import static org.apache.commons.lang3.reflect.ConstructorUtils.invokeConstructo
 /** Contains utility methods used in framework. */
 public final class HtmlElementUtils {
 
-    public static final int DEFAULT_TIMEOUT_SECS = 10;
+    /**
+     * Default implicit timeout for HtmlElements, should be less than
+     * any explicit waits to prevent
+     * {@code org.openqa.selenium.TimeoutException: Supplied function might have stalled}
+     */
+    public static final int DEFAULT_TIMEOUT_SECS = 6;
 
     private HtmlElementUtils() {
     }
