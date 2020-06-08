@@ -77,8 +77,8 @@ public class ExtraExpectedConditions {
      * Useful for waiting for items to be added to a list.
      *
      * @param list the lazy proxy for {@code List<WebElement>}
-     * @param size expected expectedSize to be greater than
-     * @return the original list if list size is greater than expectedSize, else null
+     * @param size expected size to be greater than
+     * @return the original list if list size is greater than size, else null
      */
     public static ExpectedCondition<List<? extends WebElement>> sizeGreaterThan(
             List<? extends WebElement> list, int size) {
@@ -92,8 +92,8 @@ public class ExtraExpectedConditions {
      * Useful for waiting for items to be removed from a list.
      *
      * @param list the lazy proxy for {@code List<WebElement>}
-     * @param size expected expectedSize to be less than
-     * @return the original list if list size is less than expectedSize, else null
+     * @param size expected size to be less than
+     * @return the original list if list size is less than size, else null
      */
     public static ExpectedCondition<List<? extends WebElement>> sizeLessThan(
             List<? extends WebElement> list, int size) {
@@ -101,6 +101,21 @@ public class ExtraExpectedConditions {
         return expectedCondition(
                 driver -> list.size() < size ? list : null,
                 "list size of " + list.size() + " to be less than " + size);
+    }
+
+    /**
+     * Useful for waiting for lists to be a known size.
+     *
+     * @param list the lazy proxy for {@code List<WebElement>}
+     * @param expectedSize expected list size
+     * @return the original list if list size is equal to expectedSize, else null
+     */
+    public static ExpectedCondition<List<? extends WebElement>> sizeEqualTo(
+            List<? extends WebElement> list, int expectedSize) {
+
+        return expectedCondition(
+                driver -> list.size() == expectedSize ? list : null,
+                "list size of " + list.size() + " to be equal to " + expectedSize);
     }
 
     /**
