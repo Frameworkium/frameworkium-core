@@ -2,10 +2,12 @@ package com.frameworkium.lite.ui.element;
 
 import com.frameworkium.lite.htmlelements.element.HtmlElement;
 import com.google.common.collect.Streams;
+import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.*;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -111,16 +113,16 @@ public abstract class AbstractStreamTable extends HtmlElement {
      * Useful when the index is already known, or in other cases where the other
      * methods do not work as expected, e.g. on tables which violate assumptions.
      *
+     * N.B. If any give rows don't have this column, they will simply be omitted
+     *
      * @param index 0-based index of the column to return
      * @return {@link Stream} of cells in the table column indexed {@code index}
      */
     public Stream<WebElement> getColumn(long index) {
         return getRows()
-                .map(rowCells -> rowCells
-                        .skip(index)
-                        .findFirst()
-                        .orElseThrow(() -> new NoSuchElementException(
-                                "A row doesn't have column index " + index)));
+                .map(rowCells -> rowCells.skip(index).findFirst())
+                .filter(Optional::isPresent)
+                .map(Optional::get);
     }
 
     /**
@@ -233,12 +235,16 @@ public abstract class AbstractStreamTable extends HtmlElement {
         Stream<WebElement> lookupColumn = getColumn(lookupColumnIndex);
         Stream<WebElement> targetColumn = getColumn(targetColumnIndex);
 
-        return Streams.zip(
-                lookupColumn,
-                targetColumn,
-                (lookupCell, targetCell) ->
-                        lookupCellMatcher.test(lookupCell) ? targetCell : null)
+        return Streams.zip(lookupColumn, targetColumn, targetOrNull(lookupCellMatcher))
                 .filter(Objects::nonNull);
+    }
+
+    @NotNull
+    private BiFunction<WebElement, WebElement, WebElement> targetOrNull(Predicate<WebElement> lookupCellMatcher) {
+        return (lookupCell, targetCell) ->
+                lookupCellMatcher.test(lookupCell)
+                        ? targetCell
+                        : null;
     }
 
     @SuppressWarnings("UnstableApiUsage")
