@@ -15,7 +15,7 @@ public class HomePage extends BasePage<HomePage> {
     public static HomePage open() {
         return PageFactory.newInstance(
                 HomePage.class,
-                "https://www.seleniumhq.org/");
+                "https://selenium.dev/");
     }
 
     public HeaderComponent getHeader() {

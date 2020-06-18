@@ -9,7 +9,7 @@ import ru.yandex.qatools.htmlelements.element.Link;
 @FindBy(id = "header")
 public class HeaderComponent extends HtmlElement {
 
-    @FindBy(css = "#menu_download > a")
+    @FindBy(css = "#navbar > a:nth-child(3)")
     private Link downloadLink;
 
     public SeleniumDownloadPage clickDownloadLink() {

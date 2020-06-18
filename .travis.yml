@@ -23,15 +23,15 @@ cache:
 
 env:
   global:
-    - CAPTURE_URL="http://capture-6c06138r.cloudapp.net"
+    - CAPTURE_URL=""
     - SUT_NAME="frameworkium-core"
     - SUT_VERSION=${TRAVIS_BRANCH}
     - THREAD_COUNT=2
     - SELENIUM_MAJ_VER=3.141
     - SELENIUM_VER=${SELENIUM_MAJ_VER}.59
     - SELENIUM_JAR=selenium-server-standalone-${SELENIUM_VER}.jar
-    - GECKO_VER=0.24.0
-    - CHROME_DRIVER_VER=77.0.3865.40
+    - GECKO_VER=0.26.0
+    - CHROME_DRIVER_VER=80.0.3987.16
     # Override Travis default to give browsers more room
     - _JAVA_OPTIONS="-Xmx1024m -Xms128m"
     # Required to turn on workaround for the following issue:
@@ -71,20 +71,21 @@ before_script:
 
 script:
   # Download deps, compile and run checkstyle
-  - mvn test-compile -B --show-version -DskipTests=true -Dmaven.javadoc.skip=true
+  - mvn test-compile -B -U --show-version -DskipTests=true -Dmaven.javadoc.skip=true
 
   # Firefox on the grid
   # Dec 2018: Back to 1 thread due to regular NPEs (likely caused by browser crashing)
-  - mvn verify -B -Dthreads=1 -Dconfig=FirefoxGrid.yaml -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
+  - mvn verify -B -Dthreads=1 -Dconfig=FirefoxGrid.yaml
+  - #-DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
   # Following have -o (offline) flag to prevent timing out for snapshot metadata
   # Problem appeared Sept 2018
 
   # Firefox off the grid
-  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dheadless=true -Dit.test=TheInternetExampleTests -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}" 2> /dev/null
+  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dheadless=true -Dit.test=TheInternetExampleTests 2> /dev/null
 
   # Chrome on the grid
-  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub -DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
+  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub
 
   # Custom Browser Impl (without Capture so the PageFactorySpec runs)
   - mvn verify -B -o -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=com.frameworkium.integration.CustomFirefoxImpl -Dmaximise=true -Dit.test=DocumentationTest 2> /dev/null

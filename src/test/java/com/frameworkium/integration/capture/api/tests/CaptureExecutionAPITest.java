@@ -8,6 +8,7 @@ import com.frameworkium.integration.capture.api.service.executions.ExecutionServ
 import com.frameworkium.integration.capture.api.service.screenshots.ScreenshotService;
 import org.openqa.selenium.NotFoundException;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 import static com.google.common.truth.Truth.assertThat;
 
 /** Tests for the Capture execution API. */
+@Ignore
 public class CaptureExecutionAPITest extends BaseAPITest {
 
     private CreateExecution createExMessage;
