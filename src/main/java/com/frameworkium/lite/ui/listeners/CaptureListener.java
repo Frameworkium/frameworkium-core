@@ -1,5 +1,6 @@
 package com.frameworkium.lite.ui.listeners;
 
+import com.frameworkium.lite.ui.ExtraExpectedConditions;
 import com.frameworkium.lite.ui.UITestLifecycle;
 import com.frameworkium.lite.ui.browsers.UserAgent;
 import com.frameworkium.lite.ui.capture.ElementHighlighter;
@@ -12,6 +13,8 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.testng.*;
+
+import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.abbreviate;
 
@@ -32,7 +35,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     private void takeScreenshotAndSend(String action, WebDriver driver) {
-        Command command = new Command(action, "n/a", "n/a");
+        var command = new Command(action, "n/a", "n/a");
         takeScreenshotAndSend(command, driver);
     }
 
@@ -51,7 +54,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
             if (null != thrw) {
                 takeScreenshotAndSend(action, driver, thrw);
             } else {
-                Command command = new Command(action, "n/a", "n/a");
+                var command = new Command(action, "n/a", "n/a");
                 takeScreenshotAndSend(command, driver);
             }
         }
@@ -68,7 +71,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
         }
         ElementHighlighter highlighter = new ElementHighlighter(driver);
         highlighter.highlightElement(element);
-        Command command = new Command("click", element);
+        var command = new Command("click", element);
         takeScreenshotAndSend(command, driver);
         highlighter.unhighlightPrevious();
     }
@@ -96,13 +99,13 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     @Override
     public void beforeNavigateTo(String url, WebDriver driver) {
-        Command command = new Command("nav", "url", url);
+        var command = new Command("nav", "url", url);
         takeScreenshotAndSend(command, driver);
     }
 
     @Override
     public void afterSwitchToWindow(String windowName, WebDriver driver) {
-        Command command = new Command("nav", "window", windowName);
+        var command = new Command("nav", "window", windowName);
         takeScreenshotAndSend(command, driver);
     }
 
@@ -117,12 +120,13 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     private boolean isFrameworkiumScript(String script) {
-        String waitForAngularRequestsPrefix =
-                "var callback = arguments[arguments.length - 1];\n";
+        var frameworkiumScripts = List.of(
+                UserAgent.SCRIPT,
+                Visibility.FORCE_VISIBLE_SCRIPT,
+                ExtraExpectedConditions.JQUERY_AJAX_DONE_SCRIPT
+        );
 
-        return script.equals(UserAgent.SCRIPT)
-                || script.equals(Visibility.FORCE_VISIBLE_SCRIPT)
-                || script.startsWith(waitForAngularRequestsPrefix);
+        return frameworkiumScripts.stream().anyMatch(script::equals);
     }
 
     /* Test end methods */

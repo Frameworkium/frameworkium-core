@@ -20,6 +20,9 @@ import java.util.stream.Collectors;
  */
 public class ExtraExpectedConditions {
 
+    public static final String JQUERY_AJAX_DONE_SCRIPT =
+            "return !!window.jQuery && jQuery.active === 0;";
+
     protected ExtraExpectedConditions() {
         // hide default constructor for this util class
         // but allow subclassing for more specialised ExpectedConditions
@@ -164,7 +167,7 @@ public class ExtraExpectedConditions {
     public static ExpectedCondition<Boolean> jQueryAjaxDone() {
 
         return javascriptExpectedCondition(
-                "return !!window.jQuery && jQuery.active === 0;",
+                JQUERY_AJAX_DONE_SCRIPT,
                 "jQuery AJAX queries to not be active");
     }
 

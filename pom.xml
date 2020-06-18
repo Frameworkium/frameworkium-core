@@ -150,10 +150,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
         <configuration>
-          <!-- From JDK10 on 'release' is used -->
-          <!--<release>11</release>-->
-          <source>1.8</source>
-          <target>1.8</target>
+          <release>11</release>
         </configuration>
       </plugin>
 
