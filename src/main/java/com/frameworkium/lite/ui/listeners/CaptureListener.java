@@ -7,6 +7,8 @@ import com.frameworkium.lite.ui.capture.ScreenshotCapture;
 import com.frameworkium.lite.ui.capture.model.Command;
 import com.frameworkium.lite.ui.pages.Visibility;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.testng.*;
@@ -18,8 +20,15 @@ import static org.apache.commons.lang3.StringUtils.abbreviate;
  */
 public class CaptureListener implements WebDriverEventListener, ITestListener {
 
+    private final Logger logger = LogManager.getLogger(this);
+
     private void takeScreenshotAndSend(Command command, WebDriver driver) {
-        UITestLifecycle.get().getCapture().takeAndSendScreenshot(command, driver);
+        try {
+            UITestLifecycle.get().getCapture().takeAndSendScreenshot(command, driver);
+        } catch (NullPointerException npe) {
+            logger.warn("NullPointerException in takeScreenshotAndSend, screenshot not sent");
+            logger.trace(npe);
+        }
     }
 
     private void takeScreenshotAndSend(String action, WebDriver driver) {
