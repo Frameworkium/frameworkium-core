@@ -5,7 +5,6 @@ import com.frameworkium.lite.ui.browsers.UserAgent;
 import com.frameworkium.lite.ui.capture.ScreenshotCapture;
 import com.frameworkium.lite.ui.driver.DriverSetup;
 import com.frameworkium.lite.ui.driver.lifecycle.*;
-import com.frameworkium.lite.ui.tests.BaseUITest;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -21,7 +20,7 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 
 /**
  * Handles all UI test related state and life cycle.
- * Contains a ThreadLocal instance
+ * Contains a ThreadLocal instance of itself.
  */
 public class UITestLifecycle {
 
@@ -70,8 +69,7 @@ public class UITestLifecycle {
 
         wait.set(newWaitWithTimeout(DEFAULT_TIMEOUT));
 
-        if (ScreenshotCapture.isRequired() &&
-                this.getClass().isAssignableFrom(BaseUITest.class)) {
+        if (ScreenshotCapture.isRequired()) {
             capture.set(new ScreenshotCapture(testName));
         }
 
@@ -90,7 +88,7 @@ public class UITestLifecycle {
 
     private String getTestNameForCapture(Method testMethod) {
         String methodName = testMethod.getName().replaceAll("_", " ");
-        return StringUtils.abbreviate(methodName, 64);
+        return StringUtils.abbreviate(methodName, 72);
     }
 
     /** Run after each test method to clear or tear down the browser */

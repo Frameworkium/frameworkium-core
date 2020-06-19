@@ -68,9 +68,8 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
         }
     }
 
-    private boolean isUITest(Class<?> clazz) {
-        return clazz.isAssignableFrom(BaseUITest.class)
-                && UITestLifecycle.get().isInitialised();
+    private boolean isUITest(Class<?> testClass) {
+        return BaseUITest.class.isAssignableFrom(testClass);
     }
 
     private void highlightElementOnClickAndSendScreenshot(
