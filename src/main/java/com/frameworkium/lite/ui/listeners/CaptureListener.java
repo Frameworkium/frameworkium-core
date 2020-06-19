@@ -7,6 +7,7 @@ import com.frameworkium.lite.ui.capture.ElementHighlighter;
 import com.frameworkium.lite.ui.capture.ScreenshotCapture;
 import com.frameworkium.lite.ui.capture.model.Command;
 import com.frameworkium.lite.ui.pages.Visibility;
+import com.frameworkium.lite.ui.tests.BaseUITest;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,7 +56,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     private void sendFinalScreenshot(ITestResult result, String action) {
-        if (ScreenshotCapture.isRequired() && isUITest()) {
+        if (ScreenshotCapture.isRequired() && isUITest(result.getInstance().getClass())) {
             Throwable thrw = result.getThrowable();
             WebDriver driver = UITestLifecycle.get().getWebDriver();
             if (null != thrw) {
@@ -67,8 +68,9 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
         }
     }
 
-    private boolean isUITest() {
-        return UITestLifecycle.get().isInitialised();
+    private boolean isUITest(Class<?> clazz) {
+        return clazz.isAssignableFrom(BaseUITest.class)
+                && UITestLifecycle.get().isInitialised();
     }
 
     private void highlightElementOnClickAndSendScreenshot(
