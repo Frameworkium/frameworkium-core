@@ -5,6 +5,7 @@ import com.frameworkium.lite.ui.browsers.UserAgent;
 import com.frameworkium.lite.ui.capture.ScreenshotCapture;
 import com.frameworkium.lite.ui.driver.DriverSetup;
 import com.frameworkium.lite.ui.driver.lifecycle.*;
+import com.frameworkium.lite.ui.tests.BaseUITest;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -69,7 +70,8 @@ public class UITestLifecycle {
 
         wait.set(newWaitWithTimeout(DEFAULT_TIMEOUT));
 
-        if (ScreenshotCapture.isRequired()) {
+        if (ScreenshotCapture.isRequired() &&
+                this.getClass().isAssignableFrom(BaseUITest.class)) {
             capture.set(new ScreenshotCapture(testName));
         }
 
