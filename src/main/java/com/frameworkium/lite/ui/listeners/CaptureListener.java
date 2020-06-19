@@ -56,7 +56,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     private void sendFinalScreenshot(ITestResult result, String action) {
-        if (ScreenshotCapture.isRequired() && isUITest(result.getInstance().getClass())) {
+        if (ScreenshotCapture.isRequired() && isUITest(result.getTestClass().getRealClass())) {
             Throwable thrw = result.getThrowable();
             WebDriver driver = UITestLifecycle.get().getWebDriver();
             if (null != thrw) {
