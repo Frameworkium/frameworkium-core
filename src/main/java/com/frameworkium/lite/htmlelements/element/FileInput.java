@@ -1,5 +1,6 @@
 package com.frameworkium.lite.htmlelements.element;
 
+import com.frameworkium.lite.common.properties.Property;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.LocalFileDetector;
@@ -35,7 +36,8 @@ public class FileInput extends TypifiedElement {
         // Proxy can't be used to check the element class, so find real WebElement
         WebElement fileInputElement = getNotProxiedInputElement();
         // Set local file detector in case of remote driver usage
-        if (isOnRemoteWebDriver(fileInputElement)) {
+        if (Property.GRID_URL.isSpecified()
+                || isOnRemoteWebDriver(fileInputElement)) {
             setLocalFileDetector((RemoteWebElement) fileInputElement);
         }
 
@@ -56,7 +58,8 @@ public class FileInput extends TypifiedElement {
         // Proxy can't be used to check the element class, so find real WebElement
         WebElement fileInputElement = getNotProxiedInputElement();
         // Set local file detector in case of remote driver usage
-        if (isOnRemoteWebDriver(fileInputElement)) {
+        if (Property.GRID_URL.isSpecified()
+                || isOnRemoteWebDriver(fileInputElement)) {
             setLocalFileDetector((RemoteWebElement) fileInputElement);
         }
 
