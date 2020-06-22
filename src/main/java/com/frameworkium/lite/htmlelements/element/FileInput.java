@@ -2,8 +2,7 @@ package com.frameworkium.lite.htmlelements.element;
 
 import com.frameworkium.lite.common.properties.Property;
 import com.frameworkium.lite.ui.UITestLifecycle;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.*;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
@@ -35,9 +34,7 @@ public class FileInput extends TypifiedElement {
      */
     public void setFileToUpload(final String fileName) {
         // Set local file detector in case of remote driver usage
-        if (Property.GRID_URL.isSpecified()) {
-            ((RemoteWebDriver) ((EventFiringWebDriver) UITestLifecycle.get().getWebDriver()).getWrappedDriver()).setFileDetector(new LocalFileDetector());
-        }
+        setLocalFileDetectorIfRequired();
 
         String filePath = getFilePath(fileName);
         sendKeys(filePath);
@@ -54,14 +51,21 @@ public class FileInput extends TypifiedElement {
      */
     public void setFilesToUpload(List<String> fileNames) {
         // Set local file detector in case of remote driver usage
-        if (Property.GRID_URL.isSpecified()) {
-            ((RemoteWebDriver) ((EventFiringWebDriver) UITestLifecycle.get().getWebDriver()).getWrappedDriver()).setFileDetector(new LocalFileDetector());
-        }
+        setLocalFileDetectorIfRequired();
 
         String filePaths = fileNames.stream()
                 .map(this::getFilePath)
                 .collect(Collectors.joining("\n"));
         sendKeys(filePaths);
+    }
+
+    private void setLocalFileDetectorIfRequired() {
+        if (Property.GRID_URL.isSpecified()) {
+            WebDriver webDriver = UITestLifecycle.get().getWebDriver();
+            EventFiringWebDriver efDriver = (EventFiringWebDriver) webDriver;
+            RemoteWebDriver remoteDriver = (RemoteWebDriver) efDriver.getWrappedDriver();
+            remoteDriver.setFileDetector(new LocalFileDetector());
+        }
     }
 
     /**
