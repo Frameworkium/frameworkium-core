@@ -3,7 +3,7 @@
 
   <groupId>com.github.ham1</groupId>
   <artifactId>frameworkium-lite</artifactId>
-  <version>4.0.0</version>
+  <version>4.0.1-SNAPSHOT</version>
   <name>frameworkium-lite</name>
   <description>
     A UI and API Test framework, based upon Frameworkium Core.
