@@ -61,8 +61,8 @@ before_script:
   - unzip chromedriver_linux64.zip -d ~/bin
   - unzip chromedriver_linux64.zip
   - mkdir chromedriver
-    unzip chromedriver_linux64.zip -d chromedriver/
-    export PATH=$PATH:$PWD/chromedriver
+  - unzip chromedriver_linux64.zip -d chromedriver/
+  - export PATH=$PATH:$PWD/chromedriver
 
   # Wait for grid hub to be up
   - until $(curl --output /dev/null --silent --fail http://localhost:4444/grid/console); do printf '.'; sleep 1; done
