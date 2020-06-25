@@ -5,11 +5,10 @@ jdk:
 
 # docker, see: https://docs.travis-ci.com/user/reference/overview/
 sudo: false
-dist: xenial
+dist: trusty
 
 addons:
   firefox: latest
-  chrome: stable
 
 install: true # disable default mvn install
 
@@ -31,6 +30,7 @@ env:
     - SELENIUM_VER=${SELENIUM_MAJ_VER}.59
     - SELENIUM_JAR=selenium-server-standalone-${SELENIUM_VER}.jar
     - GECKO_VER=0.26.0
+    - CHROME_DRIVER_VER=83.0.4103.39
     # Override Travis default to give browsers more room
     - _JAVA_OPTIONS="-Xmx1024m -Xms128m"
     # Required to turn on workaround for the following issue:
@@ -38,6 +38,10 @@ env:
     - CHROME_NO_SANDBOX=true
 
 before_script:
+  # workaround due to installation issue of trusty stable chrome: https://travis-ci.community/t/you-can-no-longer-install-chrome-stable-on-trusty-machines/8521
+  - wget --quiet http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_83.0.4103.116-1_amd64.deb
+  - sudo dpkg -i google-chrome*.deb
+  -
   # Setup X to allow non-headless browsers to run
   - export DISPLAY=:99.0
   - /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1400x1024x16
@@ -56,18 +60,17 @@ before_script:
   - tar -xzf geckodriver-v${GECKO_VER}-linux64.tar.gz
 
   # Download chromedriver
-  - LATEST_CHROMEDRIVER_VERSION=`curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE"`
-  - curl "https://chromedriver.storage.googleapis.com/${LATEST_CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" -O
+  - wget --quiet http://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VER}/chromedriver_linux64.zip
   - unzip chromedriver_linux64.zip
 
   # Wait for grid hub to be up
   - until $(curl --output /dev/null --silent --fail http://localhost:4444/grid/console); do printf '.'; sleep 1; done
 
   # Setup Firefox Selenium Grid Node
-  - java -Dwebdriver.chrome.driver=chromedriver -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > ff-node.log  2>&1 &
+  - java -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > ff-node.log  2>&1 &
 
   # Set up Chrome Selenium Grid Node
-  - java -Dwebdriver.chrome.driver=chromedriver -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5556 > chrome-node.log 2>&1 &
+  - java -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5556 > chrome-node.log 2>&1 &
 
 script:
   # Download deps, compile and run checkstyle
