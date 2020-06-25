@@ -40,7 +40,7 @@ env:
 before_script:
   # workaround due to installation issue of trusty stable chrome: https://travis-ci.community/t/you-can-no-longer-install-chrome-stable-on-trusty-machines/8521
   - wget --quiet http://security.ubuntu.com/ubuntu/pool/universe/c/chromium-browser/chromium-browser_83.0.4103.61-0ubuntu0.18.04.1_amd64.deb
-  - sudo dpkg -i google-chrome*.deb
+  - sudo dpkg -i chromium-browser*.deb
   -
   # Setup X to allow non-headless browsers to run
   - export DISPLAY=:99.0
