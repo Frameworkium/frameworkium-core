@@ -7,7 +7,7 @@ build:
 captureURL:
 customBrowserImpl:
 device:
-gridURL:
+gridURL: http://localhost:4444/wd/hub
 headless:
 jiraPassword:
 jiraResultFieldName:
