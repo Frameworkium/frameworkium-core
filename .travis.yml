@@ -60,15 +60,18 @@ before_script:
   - curl "https://chromedriver.storage.googleapis.com/${LATEST_CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" -O
   - unzip chromedriver_linux64.zip -d ~/bin
   - unzip chromedriver_linux64.zip
+  - mkdir chromedriver
+    unzip chromedriver_linux64.zip -d chromedriver/
+    export PATH=$PATH:$PWD/chromedriver
 
   # Wait for grid hub to be up
   - until $(curl --output /dev/null --silent --fail http://localhost:4444/grid/console); do printf '.'; sleep 1; done
 
   # Setup Firefox Selenium Grid Node
-  - java -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > ff-node.log  2>&1 &
+  - java -Dwebdriver.chrome.driver=chromedriver/ -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > ff-node.log  2>&1 &
 
   # Set up Chrome Selenium Grid Node
-  - java -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5556 > chrome-node.log 2>&1 &
+  - java -Dwebdriver.chrome.driver=chromedriver/ -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5556 > chrome-node.log 2>&1 &
 
 script:
   # Download deps, compile and run checkstyle
