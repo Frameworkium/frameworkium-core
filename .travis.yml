@@ -5,7 +5,7 @@ jdk:
 
 # docker, see: https://docs.travis-ci.com/user/reference/overview/
 sudo: false
-dist: trusty
+dist: xenial
 
 addons:
   firefox: latest
