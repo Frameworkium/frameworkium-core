@@ -59,6 +59,7 @@ before_script:
   - LATEST_CHROMEDRIVER_VERSION=`curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE"`
   - curl "https://chromedriver.storage.googleapis.com/${LATEST_CHROMEDRIVER_VERSION}/chromedriver_linux64.zip" -O
   - unzip chromedriver_linux64.zip -d ~/bin
+  - unzip chromedriver_linux64.zip
 
   # Wait for grid hub to be up
   - until $(curl --output /dev/null --silent --fail http://localhost:4444/grid/console); do printf '.'; sleep 1; done
