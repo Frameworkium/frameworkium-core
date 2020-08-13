@@ -73,6 +73,10 @@
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
       <version>7.1.0</version>
+      <!--
+      Can't upgrade to 7.3.0 as it destroys usability in IntelliJ, see:
+      https://stackoverflow.com/questions/57299606/testng-by-default-disables-loading-dtd-from-unsecure-urls
+      -->
     </dependency>
 
     <dependency>
@@ -105,7 +109,7 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.11.1</version>
+      <version>2.11.2</version>
     </dependency>
 
     <!-- Explicitly adding utilities -->
@@ -117,7 +121,7 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-      <version>2.11.1</version>
+      <version>2.11.2</version>
     </dependency>
 
     <!-- Local Unit Testing -->
