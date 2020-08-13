@@ -11,10 +11,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.frameworkium.lite.htmlelements.utils.HtmlElementUtils.*;
+import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
 
@@ -132,7 +132,7 @@ public final class Visibility {
                 list -> wait.until(visibilityOfAllElements(
                         list.stream()
                                 .limit(checkAtMost == -1 ? list.size() : checkAtMost)
-                                .collect(Collectors.toList()))));
+                                .collect(toList()))));
 
         // recurse inside HtmlElements
         if (isHtmlElementList(field)) {
@@ -156,7 +156,7 @@ public final class Visibility {
                 list -> wait.until(ExtraExpectedConditions.notPresentOrInvisible(
                         list.stream()
                                 .limit(checkAtMost == -1 ? list.size() : checkAtMost)
-                                .collect(Collectors.toList()))));
+                                .collect(toList()))));
     }
 
     /**
@@ -184,14 +184,22 @@ public final class Visibility {
             Consumer<WebElement> fun,
             Consumer<List<WebElement>> listFun) {
 
-        if (isWebElementList(field) || isTypifiedElementList(field) || isHtmlElementList(field)) {
-            listFun.accept((List<WebElement>) objectFromField);
-        } else if (objectFromField instanceof WebElement) {
-            fun.accept((WebElement) objectFromField);
-        } else {
-            throw new IllegalArgumentException(
-                    "Only elements of type HtmlElement, TypifiedElement, WebElement or "
-                            + "Lists thereof are supported by Visibility annotations.");
+        try {
+            if (isWebElementList(field)
+                    || isTypifiedElementList(field)
+                    || isHtmlElementList(field)) {
+                listFun.accept((List<WebElement>) objectFromField);
+            } else if (objectFromField instanceof WebElement) {
+                fun.accept((WebElement) objectFromField);
+            } else {
+                throw new IllegalArgumentException(
+                        "Only elements of type HtmlElement, TypifiedElement, WebElement or "
+                                + "Lists thereof are supported by Visibility annotations.");
+            }
+        } catch (TimeoutException toex) {
+            String msg = "Timed out waiting for "
+                    + field.getDeclaringClass() + "." + field.getName();
+            throw new TimeoutException(msg, toex);
         }
     }
 
