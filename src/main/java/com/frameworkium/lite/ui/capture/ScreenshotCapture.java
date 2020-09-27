@@ -76,8 +76,7 @@ public class ScreenshotCapture {
         try {
             return getRemoteNodeAddress();
         } catch (Exception e) {
-            logger.warn("Failed to get node address of remote web driver");
-            logger.debug(e);
+            logger.debug ("Failed to get node address of remote web driver", e);
         }
         return defaultValue;
     }
