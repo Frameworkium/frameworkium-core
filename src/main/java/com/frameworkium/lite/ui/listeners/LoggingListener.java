@@ -24,12 +24,12 @@ public class LoggingListener implements WebDriverEventListener {
 
     @Override
     public void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysSent) {
-        logger.debug(() -> "changed value of element with " + getLocatorFromElement(element));
+        logger.debug("changed value of element with {}", () -> getLocatorFromElement(element));
     }
 
     @Override
     public void afterClickOn(WebElement element, WebDriver driver) {
-        logger.debug(() -> "clicked element with " + getLocatorFromElement(element));
+        logger.debug("clicked element with {}", () -> getLocatorFromElement(element));
     }
 
     @Override
@@ -66,27 +66,27 @@ public class LoggingListener implements WebDriverEventListener {
     public void afterScript(String script, WebDriver driver) {
         // Only log part of a long script
         // We log more of script in beforeScript
-        logger.debug(() -> "ran script " + StringUtils.abbreviate(script, 128));
+        logger.debug("ran script {}", () -> StringUtils.abbreviate(script, 128));
     }
 
     @Override
     public void beforeSwitchToWindow(String windowName, WebDriver driver) {
-        logger.debug("before switch to window " + windowName);
+        logger.debug("before switch to window {}", windowName);
     }
 
     @Override
     public void afterSwitchToWindow(String windowName, WebDriver driver) {
-        logger.debug("after switch to window " + windowName);
+        logger.debug("after switch to window {}", windowName);
     }
 
     @Override
     public void beforeChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend) {
-        logger.debug(() -> "change value of element with " + getLocatorFromElement(element));
+        logger.debug("change value of element with {}", () -> getLocatorFromElement(element));
     }
 
     @Override
     public void beforeClickOn(WebElement element, WebDriver driver) {
-        logger.debug(() -> "click element with " + getLocatorFromElement(element));
+        logger.debug("click element with {}", () -> getLocatorFromElement(element));
     }
 
     @Override
@@ -106,13 +106,13 @@ public class LoggingListener implements WebDriverEventListener {
 
     @Override
     public void beforeNavigateTo(String url, WebDriver driver) {
-        logger.debug("navigate to " + url);
+        logger.debug("navigate to {}", url);
     }
 
     @Override
     public void beforeScript(String script, WebDriver driver) {
         // Only log part of a long script
-        logger.debug("running script " + StringUtils.abbreviate(script, 512));
+        logger.debug("running script {}", () -> StringUtils.abbreviate(script, 512));
     }
 
     @Override
