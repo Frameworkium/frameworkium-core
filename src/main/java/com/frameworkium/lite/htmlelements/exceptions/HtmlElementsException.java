@@ -5,6 +5,9 @@ package com.frameworkium.lite.htmlelements.exceptions;
  * page object can't be instantiated or initialized.
  */
 public class HtmlElementsException extends RuntimeException {
+
+    private static final long serialVersionUID = 1L;
+
     public HtmlElementsException() {
         super();
     }
