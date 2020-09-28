@@ -10,11 +10,13 @@ import org.openqa.selenium.support.ui.FluentWait
 import org.openqa.selenium.support.ui.Sleeper
 import org.openqa.selenium.support.ui.Wait
 import com.frameworkium.lite.htmlelements.element.TextInput
+import spock.lang.Ignore
 import spock.lang.Specification
 
 import java.time.Clock
 import java.time.Duration
 
+@Ignore
 class VisibilitySpec extends Specification {
 
     /* Mocks used in each test */

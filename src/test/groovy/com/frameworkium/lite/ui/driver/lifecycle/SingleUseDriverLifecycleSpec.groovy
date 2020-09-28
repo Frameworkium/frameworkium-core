@@ -3,6 +3,7 @@ package com.frameworkium.lite.ui.driver.lifecycle
 import com.frameworkium.lite.ui.driver.Driver
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.events.EventFiringWebDriver
+import spock.lang.Ignore
 import spock.lang.Specification
 
 class SingleUseDriverLifecycleSpec extends Specification {
@@ -19,7 +20,7 @@ class SingleUseDriverLifecycleSpec extends Specification {
 
     def sut = new SingleUseDriverLifecycle()
 
-
+    @Ignore
     def "following expected lifecycle yields correct driver"() {
         when:
             sut.initDriverPool(driverSupplier)
@@ -32,6 +33,7 @@ class SingleUseDriverLifecycleSpec extends Specification {
             noExceptionThrown()
     }
 
+    @Ignore
     def "following subset of expected lifecycle yields correct driver for SingleUseDriverLifecycle"() {
         when:
             sut.initBrowserBeforeTest(driverSupplier)

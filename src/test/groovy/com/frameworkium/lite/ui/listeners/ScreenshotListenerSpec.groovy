@@ -1,6 +1,7 @@
 package com.frameworkium.lite.ui.listeners
 
 import org.openqa.selenium.TakesScreenshot
+import spock.lang.Ignore
 import spock.lang.Specification
 
 import java.nio.file.Files
@@ -23,6 +24,7 @@ class ScreenshotListenerSpec extends Specification {
 
     def sut = new ScreenshotListener()
 
+    @Ignore
     def "takeScreenshotAndSaveLocally takes a screenshot and saves file"() {
         given:
             TakesScreenshot mockDriver = Mock()

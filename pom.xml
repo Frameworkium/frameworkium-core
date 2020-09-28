@@ -45,14 +45,6 @@
     <maven>3.3.9</maven>
   </prerequisites>
 
-  <repositories>
-    <!-- Enables us to get dependencies from github e.g. frameworkium -->
-    <repository>
-      <id>jitpack.io</id>
-      <url>https://jitpack.io</url>
-    </repository>
-  </repositories>
-
   <!-- Check for updates with mvn versions:display-dependency-updates -->
   <dependencies>
     <!-- Selenium related -->
@@ -128,7 +120,7 @@
     <dependency>
       <groupId>org.spockframework</groupId>
       <artifactId>spock-core</artifactId>
-      <version>2.0-M2-groovy-3.0</version>
+      <version>2.0-M3-groovy-3.0</version>
       <scope>test</scope>
     </dependency>
 
@@ -141,7 +133,6 @@
     </dependency>
 
   </dependencies>
-
 
   <pluginRepositories />
 
@@ -258,19 +249,11 @@
         <configuration>
           <!-- Sets arg line for Jacoco agent when unit tests are run -->
           <argLine>${surefireArgLine}</argLine>
+          <failIfNoTests>true</failIfNoTests>
           <includes>
-            <include>*/*Spec.*</include>
+            <include>**/*Spec.*</include>
           </includes>
         </configuration>
-
-        <!-- Required to run Spock tests with JUnit and not TestNG -->
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.surefire</groupId>
-            <artifactId>surefire-junit47</artifactId>
-            <version>3.0.0-M5</version>
-          </dependency>
-        </dependencies>
       </plugin>
 
       <!-- Integration tests (failsafe-plugin) -->
@@ -279,6 +262,7 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>3.0.0-M5</version>
         <configuration>
+          <failIfNoTests>true</failIfNoTests>
           <parallel>methods</parallel>
           <threadCount>${threads}</threadCount>
           <systemPropertyVariables>
@@ -295,6 +279,13 @@
           <!-- required for Jacoco code coverage -->
           <argLine>${failsafeArgLine}</argLine>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-testng</artifactId>
+            <version>3.0.0-M5</version>
+          </dependency>
+        </dependencies>
         <executions>
           <execution>
             <goals>
