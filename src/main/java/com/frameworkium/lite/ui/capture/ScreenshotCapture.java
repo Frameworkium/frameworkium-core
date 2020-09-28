@@ -32,10 +32,10 @@ public class ScreenshotCapture {
     private final String executionID;
 
     public ScreenshotCapture(String testID) {
-        logger.debug("About to initialise Capture execution for " + testID);
+        logger.debug("About to initialise Capture execution for {}", testID);
         this.testID = testID;
         this.executionID = createExecution(new CreateExecution(testID, getNode()));
-        logger.debug("Capture executionID=" + executionID);
+        logger.debug("Capture executionID={}", executionID);
     }
 
     private String createExecution(CreateExecution createExecution) {
@@ -117,7 +117,7 @@ public class ScreenshotCapture {
 
         if (executionID == null) {
             logger.error("Can't send Screenshot. "
-                    + "Capture didn't initialise execution for test: " + testID);
+                    + "Capture didn't initialise execution for test: {}", testID);
             return;
         }
 
@@ -148,9 +148,9 @@ public class ScreenshotCapture {
                     .post(CaptureEndpoint.SCREENSHOT.getUrl())
                     .then()
                     .assertThat().statusCode(SC_CREATED);
-            logger.debug("Sent screenshot to Capture for " + testID);
+            logger.debug("Sent screenshot to Capture for {}", testID);
         } catch (Exception e) {
-            logger.warn("Failed sending screenshot to Capture for " + testID);
+            logger.warn("Failed sending screenshot to Capture for {}", testID);
             logger.debug(e);
         }
     }
