@@ -13,20 +13,19 @@ import spock.lang.Specification
 import java.time.Clock
 import java.time.Duration
 
-@Ignore
 class ExtraExpectedConditionsSpec extends Specification {
 
     // used for ExtraExpectedConditions that interact with an element
     def mockElement = Mock(WebElement)
     def wait = new FluentWait<>(Mock(WebDriver), Clock.systemUTC(), Sleeper.SYSTEM_SLEEPER)
             .pollingEvery(Duration.ofMillis(1))
-            .withTimeout(Duration.ofNanos(1))
+            .withTimeout(Duration.ofMillis(100))
 
     // used for ExtraExpectedConditions that use JavaScript
     def mockWDWrapper = Mock(EventFiringWebDriver, constructorArgs: [Mock(WebDriver)])
     def jsWait = new FluentWait<>(mockWDWrapper, Clock.systemUTC(), Sleeper.SYSTEM_SLEEPER)
             .pollingEvery(Duration.ofMillis(1))
-            .withTimeout(Duration.ofNanos(1))
+            .withTimeout(Duration.ofMillis(100))
 
     // notPresentOrInvisible(WebElement)
 
