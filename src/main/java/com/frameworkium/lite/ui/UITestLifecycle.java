@@ -106,15 +106,6 @@ public class UITestLifecycle {
     }
 
     /**
-     * @return new Wait with default timeout.
-     * @deprecated use {@code UITestLifecycle.get().getWait()} instead.
-     */
-    @Deprecated
-    public Wait<WebDriver> newDefaultWait() {
-        return newWaitWithTimeout(DEFAULT_TIMEOUT);
-    }
-
-    /**
      * @param timeout timeout for the new Wait
      * @return a Wait with the given timeout
      */
