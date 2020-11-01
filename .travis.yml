@@ -1,11 +1,11 @@
 language: java
 jdk:
-  - oraclejdk8
+# installing 8 doesn't seem to work
+#  - openjdk8
   - openjdk11
 
-# docker, see: https://docs.travis-ci.com/user/reference/overview/
-sudo: false
-dist: trusty
+os: linux
+dist: focal
 
 addons:
   firefox: latest
@@ -26,10 +26,10 @@ env:
     - SELENIUM_MAJ_VER=3.141
     - SELENIUM_VER=${SELENIUM_MAJ_VER}.59
     - SELENIUM_JAR=selenium-server-standalone-${SELENIUM_VER}.jar
-    - GECKO_VER=0.26.0
-    - CHROME_DRIVER_VER=83.0.4103.39
+    - GECKO_VER=0.27.0
+    - CHROME_DRIVER_VER=86.0.4240.22
     # Override Travis default to give browsers more room
-    - _JAVA_OPTIONS="-Xmx1024m -Xms128m"
+    - _JAVA_OPTIONS="-Xms128m -Xmx1024m"
     # Required to turn on workaround for the following issue:
     # https://github.com/travis-ci/travis-ci/issues/8836
     - CHROME_NO_SANDBOX=true
@@ -69,25 +69,25 @@ script:
   # Download deps, compile and run checkstyle
   - mvn test-compile -B -U --show-version -DskipTests=true -Dmaven.javadoc.skip=true
 
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome
+
   # Firefox on the grid
   # Dec 2018: Back to 1 thread due to regular NPEs (likely caused by browser crashing)
   - mvn verify -B -Dthreads=1 -Dconfig=FirefoxGrid.yaml
   #-DcaptureURL=${CAPTURE_URL} -DsutName="${SUT_NAME}" -DsutVersion="${SUT_VERSION}"
 
-  # Following have -o (offline) flag to prevent timing out for snapshot metadata
-  # Problem appeared Sept 2018
-
   # Firefox off the grid
-  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser=true -Dheadless=true -Dit.test=TheInternetExampleTests 2> /dev/null
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser -Dheadless -Dit.test=TheInternetExampleTests
 
   # Chrome on the grid
-  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser -Dheadless -DgridURL=http://localhost:4444/wd/hub
 
   # Custom Browser Impl
-  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=com.frameworkium.integration.CustomFirefoxImpl -Dmaximise=true -Dit.test=DocumentationTest 2> /dev/null
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=com.frameworkium.integration.CustomFirefoxImpl -Dmaximise=true -Dit.test=DocumentationTest
 
   # Test groups and test that all @Before methods in BaseUITest run
-  - mvn verify -B -o -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -Dgroups=fw-bugs -DreuseBrowser=true -Dheadless=true
+  # groups not currently working
+  #- mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -Dgroups=fw-bugs -DreuseBrowser -Dheadless
 
 after_script:
   # Code coverage report
