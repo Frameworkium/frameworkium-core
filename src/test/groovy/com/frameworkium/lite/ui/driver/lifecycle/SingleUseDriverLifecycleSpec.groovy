@@ -20,12 +20,14 @@ class SingleUseDriverLifecycleSpec extends Specification {
 
     def sut = new SingleUseDriverLifecycle()
 
-    @Ignore
     def "following expected lifecycle yields correct driver"() {
         when:
             sut.initDriverPool(driverSupplier)
             sut.initBrowserBeforeTest(driverSupplier)
-            assert sut.getWebDriver() == webDriverStub
+        then:
+            sut.getWebDriver() == EFWebDriverMock
+
+        when:
             sut.tearDownDriver()
             sut.tearDownDriverPool()
         then:
@@ -33,11 +35,12 @@ class SingleUseDriverLifecycleSpec extends Specification {
             noExceptionThrown()
     }
 
-    @Ignore
     def "following subset of expected lifecycle yields correct driver for SingleUseDriverLifecycle"() {
         when:
             sut.initBrowserBeforeTest(driverSupplier)
-            assert sut.getWebDriver() == webDriverStub
+        then:
+            sut.getWebDriver() == EFWebDriverMock
+        when:
             sut.tearDownDriver()
         then:
             1 * EFWebDriverMock.quit()
@@ -52,5 +55,22 @@ class SingleUseDriverLifecycleSpec extends Specification {
         then:
             1 * EFWebDriverMock.quit() >> { throw new Exception("") }
             thrown Exception
+    }
+
+    def "reinit current driver quits existing and returns new"() {
+        def EFWebDriverMock2 = Mock(constructorArgs: [webDriverStub], EventFiringWebDriver)
+        def driverMock2 = Mock(Driver) {
+            getWebDriver() >> EFWebDriverMock2
+        }
+        def driverSupplier2 = { driverMock2 }
+
+        given:
+            sut.initBrowserBeforeTest(driverSupplier)
+            assert sut.getWebDriver() == EFWebDriverMock
+        when:
+            sut.reinitialiseCurrentDriver(driverSupplier2)
+            sut.initBrowserBeforeTest(driverSupplier2)
+        then:
+            sut.getWebDriver() == EFWebDriverMock2
     }
 }

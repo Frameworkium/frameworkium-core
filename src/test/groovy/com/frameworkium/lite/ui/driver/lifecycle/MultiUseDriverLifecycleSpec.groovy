@@ -3,7 +3,6 @@ package com.frameworkium.lite.ui.driver.lifecycle
 import com.frameworkium.lite.ui.driver.Driver
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.support.events.EventFiringWebDriver
-import spock.lang.Ignore
 import spock.lang.Specification
 
 class MultiUseDriverLifecycleSpec extends Specification {
@@ -18,14 +17,16 @@ class MultiUseDriverLifecycleSpec extends Specification {
     }
     def driverSupplier = { driverMock }
 
-    @Ignore
     def "following expected lifecycle yields correct driver with MultiUseDriverLifecycle(#poolSize)"() {
         given:
             def sut = new MultiUseDriverLifecycle(poolSize)
         when:
             sut.initDriverPool(driverSupplier)
             sut.initBrowserBeforeTest(driverSupplier)
-            assert sut.getWebDriver() == webDriverStub
+        then:
+            sut.getWebDriver() == EFWebDriverMock
+
+        when:
             sut.tearDownDriver()
             sut.tearDownDriverPool()
         then:
@@ -80,5 +81,24 @@ class MultiUseDriverLifecycleSpec extends Specification {
             sut.initDriverPool(driverSupplier)
         then:
             noExceptionThrown()
+    }
+
+    def "reinit current driver quits existing and returns new"() {
+        given:
+            def EFWebDriverMock2 = Mock(constructorArgs: [webDriverStub], EventFiringWebDriver)
+            def driverMock2 = Mock(Driver) {
+                getWebDriver() >> EFWebDriverMock2
+            }
+            def driverSupplier2 = { driverMock2 }
+
+            def sut = new MultiUseDriverLifecycle(1)
+            sut.initDriverPool(driverSupplier)
+            sut.initBrowserBeforeTest(null)
+            assert sut.getWebDriver() == EFWebDriverMock
+        when:
+            sut.reinitialiseCurrentDriver(driverSupplier2)
+            sut.initBrowserBeforeTest(null)
+        then:
+            sut.getWebDriver() == EFWebDriverMock2
     }
 }

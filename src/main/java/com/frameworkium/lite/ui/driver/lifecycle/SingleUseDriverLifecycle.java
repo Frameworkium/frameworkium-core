@@ -50,5 +50,14 @@ public class SingleUseDriverLifecycle implements DriverLifecycle {
             threadLocalDriver.remove();
         }
     }
+
+    @Override
+    public void reinitialiseCurrentDriver(Supplier<Driver> newDriverSupplier) {
+        try {
+            threadLocalDriver.get().getWebDriver().quit();
+        } catch (Exception e) {
+            logger.debug("Failed to quit current driver during reinitialise.", e);
+        }
+    }
 }
 
