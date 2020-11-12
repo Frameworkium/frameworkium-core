@@ -10,7 +10,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import java.time.Duration;
 
 public abstract class AbstractDriver implements Driver {
 
@@ -26,25 +26,21 @@ public abstract class AbstractDriver implements Driver {
     /** Creates the Wrapped Driver object and maximises if required. */
     public void initialise() {
         this.webDriverWrapper = setupEventFiringWebDriver(getCapabilities());
-        maximiseBrowserIfRequired();
+        if (Property.MAXIMISE.getBoolean()) {
+            this.webDriverWrapper.manage().window().maximize();
+        }
     }
 
     private EventFiringWebDriver setupEventFiringWebDriver(Capabilities capabilities) {
-        logger.debug("Browser Capabilities: " + capabilities);
+        logger.debug("Browser Capabilities: {}", capabilities);
         WebDriver webDriver = getWebDriver(capabilities);
         EventFiringWebDriver eventFiringDriver = new EventFiringWebDriver(webDriver);
         eventFiringDriver.register(new LoggingListener());
         if (ScreenshotCapture.isRequired()) {
             eventFiringDriver.register(new CaptureListener());
         }
-        eventFiringDriver.manage().timeouts().setScriptTimeout(10, SECONDS);
+        eventFiringDriver.manage().timeouts().setScriptTimeout(Duration.ofSeconds(21));
         return eventFiringDriver;
-    }
-
-    private void maximiseBrowserIfRequired() {
-        if (Property.MAXIMISE.getBoolean()) {
-            this.webDriverWrapper.manage().window().maximize();
-        }
     }
 
 }

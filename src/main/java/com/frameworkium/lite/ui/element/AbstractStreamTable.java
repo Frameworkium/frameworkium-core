@@ -2,7 +2,6 @@ package com.frameworkium.lite.ui.element;
 
 import com.frameworkium.lite.htmlelements.element.HtmlElement;
 import com.google.common.collect.Streams;
-import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.*;
 
 import java.util.Objects;
@@ -112,7 +111,7 @@ public abstract class AbstractStreamTable extends HtmlElement {
     /**
      * Useful when the index is already known, or in other cases where the other
      * methods do not work as expected, e.g. on tables which violate assumptions.
-     *
+     * <p>
      * N.B. If any give rows don't have this column, they will simply be omitted
      *
      * @param index 0-based index of the column to return
@@ -239,7 +238,6 @@ public abstract class AbstractStreamTable extends HtmlElement {
                 .filter(Objects::nonNull);
     }
 
-    @NotNull
     private BiFunction<WebElement, WebElement, WebElement> targetOrNull(Predicate<WebElement> lookupCellMatcher) {
         return (lookupCell, targetCell) ->
                 lookupCellMatcher.test(lookupCell)
