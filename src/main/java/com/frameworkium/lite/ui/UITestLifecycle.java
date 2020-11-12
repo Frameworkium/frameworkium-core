@@ -26,25 +26,27 @@ public class UITestLifecycle {
 
     private static final Duration DEFAULT_TIMEOUT = Duration.of(10, SECONDS);
 
-    private static final ThreadLocal<ScreenshotCapture> capture = new ThreadLocal<>();
-    private static final ThreadLocal<Wait<WebDriver>> wait = new ThreadLocal<>();
-    private static final ThreadLocal<UITestLifecycle> uiTestLifecycle = ThreadLocal.withInitial(UITestLifecycle::new);
+    private static final ThreadLocal<UITestLifecycle> THREAD_LOCAL_INSTANCE =
+            ThreadLocal.withInitial(UITestLifecycle::new);
 
     private static DriverLifecycle driverLifecycle;
     private static String userAgent;
 
+    private ScreenshotCapture capture;
+    private Wait<WebDriver> wait;
+
     /** @return a ThreadLocal instance of {@link UITestLifecycle} */
     public static UITestLifecycle get() {
-        return uiTestLifecycle.get();
+        return THREAD_LOCAL_INSTANCE.get();
     }
 
     /** @return check to see if class initialised correctly. */
     public boolean isInitialised() {
-        return wait.get() != null;
+        return wait != null;
     }
 
     /** Run this before the test suite to initialise a pool of drivers. */
-    public void beforeSuite() {
+    public static void beforeSuite() {
         if (Property.REUSE_BROWSER.getBoolean()) {
             driverLifecycle =
                     new MultiUseDriverLifecycle(
@@ -53,6 +55,14 @@ public class UITestLifecycle {
             driverLifecycle = new SingleUseDriverLifecycle();
         }
         driverLifecycle.initDriverPool(DriverSetup::instantiateDriver);
+    }
+
+    /**
+     * @param testMethod the method about to run, used to extract the test name
+     * @see #beforeTestMethod(String)
+     */
+    public void beforeTestMethod(Method testMethod) {
+        beforeTestMethod(getTestNameForCapture(testMethod));
     }
 
     /**
@@ -67,27 +77,24 @@ public class UITestLifecycle {
     public void beforeTestMethod(String testName) {
         driverLifecycle.initBrowserBeforeTest(DriverSetup::instantiateDriver);
 
-        wait.set(newWaitWithTimeout(DEFAULT_TIMEOUT));
+        wait = newWaitWithTimeout(DEFAULT_TIMEOUT);
+
+        // Capture reads the userAgent, so ensure this is set beforehand
+        updateUserAgent();
 
         if (ScreenshotCapture.isRequired()) {
-            capture.set(new ScreenshotCapture(testName));
-        }
-
-        if (userAgent == null) {
-            userAgent = UserAgent.getUserAgent((JavascriptExecutor) getWebDriver());
+            capture = new ScreenshotCapture(testName);
         }
     }
 
-    /**
-     * @param testMethod the method about to run, used to extract the test name
-     * @see #beforeTestMethod(String)
-     */
-    public void beforeTestMethod(Method testMethod) {
-        beforeTestMethod(getTestNameForCapture(testMethod));
+    private static void updateUserAgent() {
+        if (userAgent == null) {
+            userAgent = UserAgent.getUserAgent((JavascriptExecutor) get().getWebDriver());
+        }
     }
 
     private String getTestNameForCapture(Method testMethod) {
-        String methodName = testMethod.getName().replaceAll("_", " ");
+        String methodName = testMethod.getName().replace("_", " ");
         return StringUtils.abbreviate(methodName, 72);
     }
 
@@ -130,11 +137,11 @@ public class UITestLifecycle {
     }
 
     public ScreenshotCapture getCapture() {
-        return capture.get();
+        return capture;
     }
 
     public Wait<WebDriver> getWait() {
-        return wait.get();
+        return wait;
     }
 
     /**
