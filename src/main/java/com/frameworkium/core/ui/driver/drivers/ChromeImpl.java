@@ -3,6 +3,7 @@ package com.frameworkium.core.ui.driver.drivers;
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.driver.AbstractDriver;
 import com.google.common.collect.ImmutableMap;
+import org.apache.commons.lang.math.NumberUtils;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -37,6 +38,14 @@ public class ChromeImpl extends AbstractDriver {
         }
 
         chromeOptions.setHeadless(Property.HEADLESS.getBoolean());
+
+        if (NumberUtils.isNumber(Property.BROWSER_HEIGHT.getValue())
+                && NumberUtils.isNumber(Property.BROWSER_WIDTH.getValue())) {
+            chromeOptions.addArguments(
+                    String.format("window-size=%s,%s",
+                            Property.BROWSER_WIDTH.getValue(),
+                            Property.BROWSER_HEIGHT.getValue()));
+        }
         return chromeOptions;
     }
 
