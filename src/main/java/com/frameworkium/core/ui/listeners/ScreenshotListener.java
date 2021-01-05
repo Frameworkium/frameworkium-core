@@ -38,12 +38,8 @@ public class ScreenshotListener extends TestListenerAdapter {
     }
 
     private void takeScreenshotAndSaveLocally(String testName) {
-        try {
-            takeScreenshotAndSaveLocally(
-                    testName, (TakesScreenshot) UITestLifecycle.get().getWebDriver());
-        } catch (final Exception ex) {
-            logger.error("An error occurred whilst trying to take a screenshot.", ex);
-        }
+        takeScreenshotAndSaveLocally(
+                testName, (TakesScreenshot) UITestLifecycle.get().getWebDriver());
     }
 
     private void takeScreenshotAndSaveLocally(String testName, TakesScreenshot driver) {
