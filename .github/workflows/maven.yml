@@ -11,7 +11,6 @@ on:
 
 env:
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
-  SLACK_NOTIFICATION_CHANNEL : '#frameworkium-ci'
   THREAD_COUNT: 2
   CAPTURE_URL: http://capture-6c06138r.cloudapp.net
   SUT_NAME: frameworkium-bdd
@@ -25,10 +24,11 @@ jobs:
       matrix:
         java-version: [ 1.8, 1.11 ]
     steps:
-      - uses: act10ns/slack@v1
+      - name: Notify Slack of CI start
+        uses: act10ns/slack@v1
         with:
           status: starting
-          channel: "$SLACK_NOTIFICATION_CHANNEL"
+          channel: '#frameworkium-ci'
         if: always()
       - uses: actions/checkout@v2
       - name: Set up JDK ${{ matrix.java-version }}
@@ -70,11 +70,12 @@ jobs:
           fail_ci_if_error: true
           verbose: true
 
-      - uses: act10ns/slack@v1
+      - name: Notify Slack of CI status
+        uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: "$SLACK_NOTIFICATION_CHANNEL"
+          channel: '#frameworkium-ci'
         if: always()
 
 
