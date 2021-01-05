@@ -1,0 +1,8 @@
+version: 2
+
+updates:
+  - package-ecosystem: "java:maven"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+
