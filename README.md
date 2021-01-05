@@ -1,6 +1,6 @@
 # Frameworkium Core
 
-[![CI Status][status-svg]][status]
+![build](https://github.com/frameworkium/frameworkium-core/workflows/frameworkium%20build/badge.svg)
 [![codecov.io][codecov-svg]][codecov]
 [![Maintainability][cc-badge]][codeclimate]
 
