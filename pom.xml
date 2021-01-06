@@ -186,6 +186,18 @@
       <version>2.0-M4-groovy-3.0</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.7.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.7.0</version>
+      <scope>test</scope>
+    </dependency>
 
     <!-- Integration Testing -->
     <dependency>
@@ -319,15 +331,6 @@
             <include>*/*Spec.*</include>
           </includes>
         </configuration>
-
-        <!-- Required to run Spock tests with JUnit and not TestNG -->
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.maven.surefire</groupId>
-            <artifactId>surefire-junit47</artifactId>
-            <version>3.0.0-M5</version>
-          </dependency>
-        </dependencies>
       </plugin>
 
       <!-- Integration tests (failsafe-plugin) -->
