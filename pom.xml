@@ -3,7 +3,7 @@
 
   <groupId>com.github.frameworkium</groupId>
   <artifactId>frameworkium-core</artifactId>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.0.2-SNAPSHOT</version>
   <name>frameworkium-core</name>
   <description>
     Frameworkium core code.
@@ -24,7 +24,7 @@
   <scm>
     <connection>scm:git:git@github.com:frameworkium/frameworkium-core</connection>
     <url>scm:git:git@github.com:frameworkium/frameworkium-core</url>
-    <developerConnection>scm:git:git@github.com:frameworkium/frameworkium-core</developerConnection>
+    <developerConnection>scm:git:git@gitproxy:frameworkium/frameworkium-core</developerConnection>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
