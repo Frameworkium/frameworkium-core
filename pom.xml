@@ -361,6 +361,7 @@
             -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
             ${failsafeArgLine}
           </argLine>
+          <failIfNoTests>true</failIfNoTests>
         </configuration>
         <dependencies>
           <dependency>
