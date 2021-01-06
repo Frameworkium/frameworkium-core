@@ -24,12 +24,6 @@ jobs:
       matrix:
         java-version: [ 1.8, 1.11 ]
     steps:
-      - name: Notify Slack of CI start
-        uses: act10ns/slack@v1
-        with:
-          status: starting
-          channel: '#frameworkium-ci'
-        if: always()
       - uses: actions/checkout@v2
       - name: Set up JDK ${{ matrix.java-version }}
         uses: actions/setup-java@v1
@@ -69,13 +63,5 @@ jobs:
           files: ./target/site/jacoco/jacoco.xml
           fail_ci_if_error: true
           verbose: true
-
-      - name: Notify Slack of CI status
-        uses: act10ns/slack@v1
-        with:
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-          channel: '#frameworkium-ci'
-        if: always()
 
 
