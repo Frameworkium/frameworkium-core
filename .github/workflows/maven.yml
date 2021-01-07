@@ -10,10 +10,9 @@ on:
     branches: [ master ]
 
 env:
-  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
   THREAD_COUNT: 2
   CAPTURE_URL: http://capture-6c06138r.cloudapp.net
-  SUT_NAME: frameworkium-bdd
+  SUT_NAME: frameworkium-core
   SUT_VERSION: $GITHUB_REF
 
 
