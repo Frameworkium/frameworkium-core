@@ -1,6 +1,7 @@
 # Frameworkium Core
 
 ![build](https://github.com/frameworkium/frameworkium-core/workflows/frameworkium%20build/badge.svg)
+![release](https://img.shields.io/github/v/release/frameworkium/frameworkium-core)
 [![codecov.io][codecov-svg]][codecov]
 [![Maintainability][cc-badge]][codeclimate]
 
