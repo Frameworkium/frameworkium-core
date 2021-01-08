@@ -17,13 +17,11 @@ env:
 
 
 jobs:
-  # Label of the container job
-  container-job:
-    # Containers must run in Linux based operating systems
+  build:
     runs-on: ubuntu-latest
-    # Docker Hub image that `container-job` executes in
-    container: openjdk:latest
-    # Service containers to run with `container-job`
+    strategy:
+      matrix:
+        java-version: [ 1.8, 1.11 ]
     services:
       # Label used to access the service container
       wiremock:
@@ -35,13 +33,6 @@ jobs:
           - 8089:8089
         volumes:
           - src/resources/test/mappings:/home/wiremock/mappings
-
-
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java-version: [ 1.8, 1.11 ]
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK ${{ matrix.java-version }}
