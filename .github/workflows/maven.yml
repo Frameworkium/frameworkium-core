@@ -37,13 +37,12 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-
       - name: Start wiremock server
         uses: williamhaw/setup-wiremock-action@v0.1.2
         id: setup-wiremock
         with:
           mappings: 'src/test/resources/mappings'
-          http-port: 8089
+          http-port: '8089'
       - name: Get the WireMock standard output
         run: echo "${{ steps.setup-wiremock.outputs.wiremock-stdout }}"
       - name: Build with Maven - checkstyle
