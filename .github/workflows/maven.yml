@@ -33,6 +33,7 @@ jobs:
         id: setup-wiremock
         with:
           mappings: 'src/test/resources/mappings'
+          http-port: '8080'
       - name: Get the WireMock standard output
         run: echo "${{ steps.setup-wiremock.outputs.wiremock-stdout }}"
       - name: Start selenoid
