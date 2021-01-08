@@ -22,26 +22,19 @@ jobs:
     strategy:
       matrix:
         java-version: [ 1.8, 1.11 ]
-    services:
-      # Label used to access the service container
-      wiremock:
-        # Docker Hub image
-        image: rodolpheche/wiremock
-        ports:
-          - 8080:8080
-        options: >-
-          --health-cmd "curl -s http://localhost:8080/ping || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        volumes:
-          - ${{ github.workspace }}/src/resources/test/mappings:/home/wiremock/mappings
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK ${{ matrix.java-version }}
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java-version }}
+      - name: Start WireMock server
+        uses: williamhaw/setup-wiremock-action@v0.1.2
+        id: setup-wiremock
+        with:
+          mappings: 'src/test/resources/mappings'
+      - name: Get the WireMock standard output
+        run: echo "${{ steps.setup-wiremock.outputs.wiremock-stdout }}"
       - name: Start selenoid
         uses: Xotabu4/selenoid-github-action@v1
       - name: Cache local Maven repository
