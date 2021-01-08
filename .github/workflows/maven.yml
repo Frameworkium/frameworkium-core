@@ -28,14 +28,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java-version }}
-      - name: Start WireMock server
-        uses: williamhaw/setup-wiremock-action@v0.1.2
-        id: setup-wiremock
-        with:
-          mappings: 'src/test/resources/mappings'
-          http-port: '8080'
-      - name: Get the WireMock standard output
-        run: echo "${{ steps.setup-wiremock.outputs.wiremock-stdout }}"
       - name: Start selenoid
         uses: Xotabu4/selenoid-github-action@v1
       - name: Cache local Maven repository
@@ -45,8 +37,10 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - name: Get the WireMock standard output
-        run: echo "${{ steps.setup-wiremock.outputs.wiremock-stdout }}"
+      - name: Start WireMock container
+        uses: docker://rodolpheche/wiremock:2.27.2
+        with:
+          args: --port 8080 --root-dir /github/workspace/src/test/resources/mappings
       - name: Build with Maven - checkstyle
         run: mvn test-compile -B -U --show-version -DskipTests=true -Dmaven.javadoc.skip=true
       - name: Build with Maven - firefox off grid
