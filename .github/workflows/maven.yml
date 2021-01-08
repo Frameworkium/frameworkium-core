@@ -28,7 +28,7 @@ jobs:
         # Docker Hub image
         image: rodolpheche/wiremock
         options: >-
-          --port 8089
+          --port=8089
         ports:
           - 8089:8089
         volumes:
