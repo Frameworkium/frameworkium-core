@@ -30,12 +30,12 @@ jobs:
         ports:
           - 8080:8080
         options: >-
-          --health-cmd "curl -s -w '%{http_code}\n' http://localhost:8080/ping -o /dev/null"
+          --health-cmd "curl -s http://localhost:8080/ping || exit 1"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
         volumes:
-          - src/resources/test/mappings:/home/wiremock/mappings
+          - ${{ github.workspace }}/src/resources/test/mappings:/home/wiremock/mappings
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK ${{ matrix.java-version }}
