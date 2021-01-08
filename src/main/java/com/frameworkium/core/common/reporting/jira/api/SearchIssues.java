@@ -5,6 +5,7 @@ import io.restassured.path.json.JsonPath;
 
 import java.util.List;
 
+@Deprecated
 public class SearchIssues {
 
     private static final int MAX_SEARCH_RESULTS = 1000;

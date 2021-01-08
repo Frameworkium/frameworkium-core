@@ -1,7 +1,7 @@
 package com.frameworkium.core.common.listeners;
 
 import com.frameworkium.core.common.reporting.TestIdUtils;
-import com.frameworkium.core.common.reporting.jira.api.SearchIssues;
+import com.frameworkium.core.common.reporting.jira.service.SearchService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.*;
@@ -36,7 +36,7 @@ public class MethodInterceptor implements IMethodInterceptor {
         logger.info("Filtering specified tests to run with JQL query results");
 
         List<String> testIDsFromJQL =
-                new SearchIssues(JQL_QUERY.getValue()).getKeys();
+                new SearchService(JQL_QUERY.getValue()).getKeys();
 
         List<IMethodInstance> methodsToRun = methodsToBeFiltered.stream()
                 .filter(m -> TestIdUtils.getIssueOrTmsLinkValue(m).isPresent())
