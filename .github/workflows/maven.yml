@@ -17,6 +17,26 @@ env:
 
 
 jobs:
+  # Label of the container job
+  container-job:
+    # Containers must run in Linux based operating systems
+    runs-on: ubuntu-latest
+    # Docker Hub image that `container-job` executes in
+    container: openjdk:latest
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      wiremock:
+        # Docker Hub image
+        image: rodolpheche/wiremock
+        options: >-
+          --port 8089
+        ports:
+          - 8089:8089
+        volumes:
+          - src/resources/test/mappings:/home/wiremock/mappings
+
+
   build:
     runs-on: ubuntu-latest
     strategy:
@@ -37,11 +57,6 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - name: Start wiremock server
-        uses: williamhaw/setup-wiremock-action@v0.1.2
-        id: setup-wiremock
-        with:
-          mappings: 'src/test/resources/mappings'
       - name: Get the WireMock standard output
         run: echo "${{ steps.setup-wiremock.outputs.wiremock-stdout }}"
       - name: Build with Maven - checkstyle
