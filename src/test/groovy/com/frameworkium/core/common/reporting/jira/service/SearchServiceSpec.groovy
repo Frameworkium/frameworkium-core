@@ -7,7 +7,7 @@ class SearchServiceSpec extends Specification {
     def "Getting keys from JQL JIRA search"() {
         given:
             // todo - parameterize jiraURL
-            System.properties["jiraURL"] = "http://localhost:8089/jira/rest/api/2"
+            System.properties["jiraURL"] = "http://localhost:8080/jira/rest/api/2"
             System.properties["jiraUsername"] = "username"
             System.properties["jiraPassword"] = "password"
         when:

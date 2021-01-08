@@ -27,9 +27,13 @@ jobs:
       wiremock:
         # Docker Hub image
         image: rodolpheche/wiremock
-        options: --port 8089
         ports:
-          - 8089:8089
+          - 8080:8080
+        options: >-
+          - health-cmd "curl -s -w '%{http_code}\n' http://localhost:8080/ping -o /dev/null"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         volumes:
           - src/resources/test/mappings:/home/wiremock/mappings
     steps:
