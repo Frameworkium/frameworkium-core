@@ -42,7 +42,7 @@ jobs:
         uses: williamhaw/setup-wiremock-action@v0.1.2
         id: setup-wiremock
         with:
-          mappings: '/src/test/resources/mappings'
+          mappings: 'src/test/resources/mappings'
           http-port: 8089
       - name: Get the WireMock standard output
         run: echo "${{ steps.setup-wiremock.outputs.wiremock-stdout }}"
