@@ -68,11 +68,11 @@ jobs:
       - name: Build allure report
         if: always()
         run: mvn allure:report -B
-#      - name: Dump docker logs on failure
-#        if: failure()
-#        uses: jwalton/gh-docker-logs@v1
-#        with:
-#          images: 'wiremock'
+      - name: Dump docker logs on failure
+        if: failure()
+        uses: jwalton/gh-docker-logs@v1
+        with:
+          images: 'wiremock'
       - name: Upload coverage Codecov
         uses: codecov/codecov-action@v1
         with:
