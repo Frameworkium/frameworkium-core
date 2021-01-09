@@ -22,6 +22,15 @@ jobs:
     strategy:
       matrix:
         java-version: [ 1.8, 1.11 ]
+    services:
+      wiremock:
+        image: rodolpheche/wiremock:2.27.2
+        options: >-
+          - rodolpheche/wiremock --https-port 8443 --verbose
+        ports:
+          - 8080:8080
+        volumes:
+          - src/test/resources/mappings:/home/wiremock
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK ${{ matrix.java-version }}
@@ -37,8 +46,8 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - name: Start WireMock container
-        run: docker-compose -f docker-compose-ci.yml up -d
+#      - name: Start WireMock container
+#        run: docker-compose -f docker-compose-ci.yml up -d
       - name: Build with Maven - checkstyle
         run: mvn test-compile -B -U --show-version -DskipTests=true -Dmaven.javadoc.skip=true
       - name: Build with Maven - firefox off grid
@@ -58,11 +67,11 @@ jobs:
       - name: Build allure report
         if: always()
         run: mvn allure:report -B
-      - name: Dump docker logs on failure
-        if: failure()
-        uses: jwalton/gh-docker-logs@v1
-        with:
-          images: 'wiremock'
+#      - name: Dump docker logs on failure
+#        if: failure()
+#        uses: jwalton/gh-docker-logs@v1
+#        with:
+#          images: 'wiremock'
       - name: Upload coverage Codecov
         uses: codecov/codecov-action@v1
         with:
