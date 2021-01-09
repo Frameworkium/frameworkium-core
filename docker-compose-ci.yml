@@ -2,7 +2,8 @@ version: "3.9"
 services:
   wiremock:
     image: rodolpheche/wiremock
-    ports: "8080:8080"
+    ports:
+      - "8080:8080"
     command: [ 'rodolpheche/wiremock', '--port 8080', '--verbose', '--record-mappings' ]
     volumes:
       - src/test/resources/mappings:/home/wiremock
