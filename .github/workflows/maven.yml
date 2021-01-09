@@ -28,8 +28,8 @@ jobs:
         options: rodolpheche/wiremock --port 8080 --verbose
         ports:
           - 8080:8080
-#        volumes:
-#          - ./src/test/resources/mappings:/home/wiremock
+        volumes:
+          - ./src/test/resources/mappings:/home/wiremock
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK ${{ matrix.java-version }}
