@@ -30,7 +30,7 @@ jobs:
         ports:
           - 8080:8080
         volumes:
-          - src/test/resources/mappings:/home/wiremock
+          - ./src/test/resources/mappings:/home/wiremock
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK ${{ matrix.java-version }}
