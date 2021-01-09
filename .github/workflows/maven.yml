@@ -26,7 +26,7 @@ jobs:
       wiremock:
         image: rodolpheche/wiremock:2.27.2
         options: >-
-          - rodolpheche/wiremock --https-port 8443 --verbose
+          - rodolpheche/wiremock --port 8080 --verbose
         ports:
           - 8080:8080
         volumes:
