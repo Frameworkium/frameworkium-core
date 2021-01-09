@@ -62,7 +62,7 @@ jobs:
         if: failure()
         uses: jwalton/gh-docker-logs@v1
         with:
-          images: "wiremock"
+          images: 'wiremock'
       - name: Upload coverage Codecov
         uses: codecov/codecov-action@v1
         with:
