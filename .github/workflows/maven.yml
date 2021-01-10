@@ -26,7 +26,7 @@ jobs:
     services:
       wiremock:
         image: rodolpheche/wiremock:2.27.2
-        options: --health-cmd='curl localhost:8080 || exit 1' rodolpheche/wiremock --port 8080 --verbose --name wiremock
+        options: --health-cmd='curl http://localhost:8080 || exit 1' rodolpheche/wiremock --port 8080 --verbose --name wiremock
         ports:
           - "8080:8080"
     steps:
@@ -37,7 +37,7 @@ jobs:
           java-version: ${{ matrix.java-version }}
       - name: Configure wiremock mappings
         run: |
-          ls | xargs -I{} curl -X POST -H "Content-Type: application/json" -d @{} localhost:${{ job.services.wiremock.ports[8080] }}/__admin/mappings
+          ls src/test/resources/mappings | xargs -I{} curl -X POST -H "Content-Type: application/json" -d @{} localhost:${{ job.services.wiremock.ports[8080] }}/__admin/mappings
       - name: Start selenoid
         uses: Xotabu4/selenoid-github-action@v1
       - name: Cache local Maven repository
