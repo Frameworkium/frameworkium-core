@@ -22,12 +22,23 @@ jobs:
     strategy:
       matrix:
         java-version: [ 1.8, 1.11 ]
+#    container: node:10.18-jessie
+    services:
+      wiremock:
+        image: rodolpheche/wiremock:2.27.2
+        options: --name wiremock
+        ports:
+          - "8080:8080"
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK ${{ matrix.java-version }}
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java-version }}
+      - name: Configure wiremock mappings
+        working-directory: src/test/resources/mappings
+        run: |
+          ls | xargs -I{} curl -v -X POST -H "Content-Type: application/json" -d @{} http://localhost:8080/__admin/mappings
       - name: Start selenoid
         uses: Xotabu4/selenoid-github-action@v1
       - name: Cache local Maven repository
@@ -56,6 +67,11 @@ jobs:
       - name: Build allure report
         if: always()
         run: mvn allure:report -B
+      - name: Dump docker logs on failure
+        if: failure()
+        uses: jwalton/gh-docker-logs@v1
+        with:
+          images: 'wiremock'
       - name: Upload coverage Codecov
         uses: codecov/codecov-action@v1
         with:
