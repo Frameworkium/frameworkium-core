@@ -38,7 +38,7 @@ jobs:
       - name: Configure wiremock mappings
         working-directory: src/test/resources/mappings
         run: |
-          ls | xargs -I{} curl -X POST -H "Content-Type: application/json" -v --trace -d @{} http://localhost:8080/__admin/mappings
+          ls | xargs -I{} curl -v --trace -X POST -H "Content-Type: application/json" -d @{} http://localhost:8080/__admin/mappings
       - name: Start selenoid
         uses: Xotabu4/selenoid-github-action@v1
       - name: Cache local Maven repository
