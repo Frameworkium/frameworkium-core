@@ -26,7 +26,7 @@ jobs:
     services:
       wiremock:
         image: rodolpheche/wiremock:2.27.2
-        options: rodolpheche/wiremock --port 8080 --verbose --name wiremock
+        options: --port 8080 --verbose --name wiremock
         ports:
           - "8080:8080"
     steps:
