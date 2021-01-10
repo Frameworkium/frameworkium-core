@@ -26,7 +26,9 @@ jobs:
     services:
       wiremock:
         image: rodolpheche/wiremock:2.27.2
-        options: --health-cmd 'curl http://localhost:8080 || exit 1' rodolpheche/wiremock --port 8080 --verbose --name wiremock
+        options: >-
+          --health-cmd 'curl http://localhost:8080 || exit 1'
+          rodolpheche/wiremock --port 8080 --verbose --name wiremock
         ports:
           - "8080:8080"
     steps:
