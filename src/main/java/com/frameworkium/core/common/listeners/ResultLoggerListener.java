@@ -3,7 +3,6 @@ package com.frameworkium.core.common.listeners;
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.TestIdUtils;
 import com.frameworkium.core.common.reporting.jira.JiraConfig;
-import com.frameworkium.core.common.reporting.jira.api.JiraTest;
 import com.frameworkium.core.common.reporting.jira.service.Issue;
 import com.frameworkium.core.common.reporting.jira.zapi.Execution;
 import com.frameworkium.core.common.reporting.spira.SpiraExecution;
@@ -64,7 +63,7 @@ public class ResultLoggerListener implements ITestListener {
     private void moveThroughTransitions(String issueAnnotation, String[] jiraTransitions) {
         for (String jiraTransition : jiraTransitions) {
             try {
-                JiraTest.transitionIssue(issueAnnotation, jiraTransition);
+                issue.transition(issueAnnotation, jiraTransition);
                 logger.debug(
                         "Performed transition '{}' on '{}'",
                         jiraTransition,
