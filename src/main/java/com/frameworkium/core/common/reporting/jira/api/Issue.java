@@ -25,6 +25,7 @@ public class Issue {
      * @param inwardIssue  inward issue key
      * @param outwardIssue outward issue key
      */
+    @Deprecated
     public void linkIssues(String type, String inwardIssue, String outwardIssue) {
         JSONObject obj = new JSONObject();
         JSONObject typeObj = new JSONObject();
@@ -49,7 +50,9 @@ public class Issue {
                 .post(JiraConfig.JIRA_REST_PATH + "issueLink");
     }
 
-    /** Returns list of attachment IDs. */
+    /**
+     * Returns list of attachment IDs.
+     */
     public List<String> getAttachmentIds() {
 
         return JiraConfig.getJIRARequestSpec()
@@ -59,7 +62,9 @@ public class Issue {
                 .getList("fields.attachment.id");
     }
 
-    /** Adds the file attachment to the JIRA issue. */
+    /**
+     * Adds the file attachment to the JIRA issue.
+     */
     public void addAttachment(File attachment) {
         String attachmentPath = String.format("issue/%s/attachments", issueKey);
 
