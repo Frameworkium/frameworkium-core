@@ -8,6 +8,7 @@ public enum JiraEndpoint implements Endpoint {
     REST_API_PATH("/rest/api/2"),
     SEARCH("/search"),
     ISSUE("/issue"),
+    ISSUELINK("/issueLink"),
     FIELD("/field");
 
     JiraEndpoint(String url) {
