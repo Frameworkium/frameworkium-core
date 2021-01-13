@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "url": "/jira/rest/api/2/search?jql=searchServiceSpec&startAt=0&maxResults=1000"
+    "url": "/rest/api/2/search?jql=searchServiceSpec&startAt=0&maxResults=1000"
   },
   "response": {
     "status": 200,
