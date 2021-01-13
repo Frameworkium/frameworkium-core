@@ -9,7 +9,8 @@ public class Issue extends AbstractJiraService {
      * Edit a field in a JIRA issue
      *
      * @param issueKey      the issue's key value
-     * @param fieldToUpdate the issue's field to update. Only editable field can be updated. Use /rest/api/2/issue/{issueIdOrKey}/editmeta to find out which
+     * @param fieldToUpdate the issue's field to update. Only editable field can be updated.
+     *                      Use /rest/api/2/issue/{issueIdOrKey}/editmeta to find out which
      * @param resultValue   the desired field value
      */
     public void editField(String issueKey, String fieldToUpdate, String resultValue) {
