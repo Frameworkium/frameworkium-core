@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.frameworkium.core.api.services.BaseService;
 import com.frameworkium.core.common.properties.Property;
+import com.frameworkium.core.common.reporting.jira.endpoint.JiraEndpoint;
 import io.restassured.RestAssured;
 import io.restassured.config.ObjectMapperConfig;
 import io.restassured.config.RestAssuredConfig;
@@ -17,7 +18,7 @@ public class AbstractJiraService extends BaseService {
     @Override
     protected RequestSpecification getRequestSpec() {
         return RestAssured.given()
-                .baseUri(Property.JIRA_URL.getValue())
+                .baseUri(JiraEndpoint.BASE_URI.getUrl())
                 .relaxedHTTPSValidation()
                 .config(config())
                 .auth().preemptive().basic(
