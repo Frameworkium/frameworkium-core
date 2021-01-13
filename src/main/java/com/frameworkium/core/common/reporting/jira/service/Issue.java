@@ -72,4 +72,45 @@ public class Issue extends AbstractJiraService {
             logger.error("Can't create JSON Object for comment update", e);
         }
     }
+
+    /**
+     * Perform a transition on an issue. When performing the transition you can update or set other issue fields.
+     *
+     * @param issueKey       the issue's key value
+     * @param transitionName the name of the transition to perform on
+     */
+    public void transition(String issueKey, String transitionName) {
+        transitionById(issueKey, getTransitionId(issueKey, transitionName));
+    }
+
+    private void transitionById(String issueKey, String transitionId) {
+        JSONObject obj = new JSONObject();
+        JSONObject idObj = new JSONObject();
+
+        try {
+            obj.put("transition", idObj);
+            idObj.put("id", transitionId);
+            getRequestSpec().log().ifValidationFails()
+                    .basePath(JiraEndpoint.ISSUE.getUrl())
+                    .contentType(ContentType.JSON).and()
+                    .pathParam("issueKey", issueKey)
+                    .body(obj.toString())
+                    .when()
+                    .post("/{issueKey}/transitions");
+        } catch (JSONException e) {
+            logger.error("Can't create JSON Object for transition change", e);
+        }
+    }
+
+    private String getTransitionId(String issueKey, String transitionName) {
+        return getRequestSpec().log().ifValidationFails()
+                .basePath(JiraEndpoint.ISSUE.getUrl())
+                .pathParam("issueKey", issueKey)
+                .queryParam("expand", "transitions.fields")
+                .get("/{issueKey}/transitions").then().log().ifValidationFails()
+                .extract().jsonPath()
+                .getString(String.format(
+                        "transitions.find {it -> it.name == '%s'}.id", transitionName));
+    }
 }
+
