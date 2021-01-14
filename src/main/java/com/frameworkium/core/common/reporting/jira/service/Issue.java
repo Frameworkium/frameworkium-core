@@ -2,18 +2,41 @@ package com.frameworkium.core.common.reporting.jira.service;
 
 import com.frameworkium.core.common.reporting.jira.endpoint.JiraEndpoint;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 import org.json.*;
 
+import java.io.File;
+
 public class Issue extends AbstractJiraService {
+    public final String issueKey;
+    private static final String ISSUE_KEY = "issueKey";
+
+    public Issue(String issueKey) {
+        this.issueKey = issueKey;
+    }
+
+    /**
+     * Returns a full representation of the issue for the given issue key.
+     *
+     * @return the full representation of the issue as JsonPath
+     */
+    public JsonPath getIssue() {
+        return getRequestSpec().log().ifValidationFails()
+                .basePath(JiraEndpoint.ISSUE.getUrl())
+                .when()
+                .get(issueKey)
+                .then().log().ifValidationFails()
+                .extract().jsonPath();
+    }
+
     /**
      * Edit a field in a JIRA issue
      *
-     * @param issueKey      the issue's key value
      * @param fieldToUpdate the issue's field to update. Only editable field can be updated.
      *                      Use /rest/api/2/issue/{issueIdOrKey}/editmeta to find out which
      * @param resultValue   the desired field value
      */
-    public void editField(String issueKey, String fieldToUpdate, String resultValue) {
+    public void editField(String fieldToUpdate, String resultValue) {
         JSONObject obj = new JSONObject();
         JSONObject fieldObj = new JSONObject();
         JSONArray setArr = new JSONArray();
@@ -53,10 +76,9 @@ public class Issue extends AbstractJiraService {
     /**
      * Add comment into a JIRA issue
      *
-     * @param issueKey     the issue's key value
      * @param commentToAdd the comment to add
      */
-    public void addComment(String issueKey, String commentToAdd) {
+    public void addComment(String commentToAdd) {
         JSONObject obj = new JSONObject();
 
         try {
@@ -64,7 +86,7 @@ public class Issue extends AbstractJiraService {
             getRequestSpec().log().ifValidationFails()
                     .basePath(JiraEndpoint.ISSUE.getUrl())
                     .contentType(ContentType.JSON)
-                    .pathParam("issueKey", issueKey)
+                    .pathParam(ISSUE_KEY, issueKey)
                     .body(obj.toString())
                     .when()
                     .post("/{issueKey}/comment");
@@ -76,14 +98,13 @@ public class Issue extends AbstractJiraService {
     /**
      * Perform a transition on an issue. When performing the transition you can update or set other issue fields.
      *
-     * @param issueKey       the issue's key value
      * @param transitionName the name of the transition to perform on
      */
-    public void transition(String issueKey, String transitionName) {
-        transitionById(issueKey, getTransitionId(issueKey, transitionName));
+    public void transition(String transitionName) {
+        transitionById(getTransitionId(transitionName));
     }
 
-    private void transitionById(String issueKey, String transitionId) {
+    private void transitionById(String transitionId) {
         JSONObject obj = new JSONObject();
         JSONObject idObj = new JSONObject();
 
@@ -93,7 +114,7 @@ public class Issue extends AbstractJiraService {
             getRequestSpec().log().ifValidationFails()
                     .basePath(JiraEndpoint.ISSUE.getUrl())
                     .contentType(ContentType.JSON).and()
-                    .pathParam("issueKey", issueKey)
+                    .pathParam(ISSUE_KEY, issueKey)
                     .body(obj.toString())
                     .when()
                     .post("/{issueKey}/transitions");
@@ -102,15 +123,31 @@ public class Issue extends AbstractJiraService {
         }
     }
 
-    private String getTransitionId(String issueKey, String transitionName) {
+    private String getTransitionId(String transitionName) {
         return getRequestSpec().log().ifValidationFails()
                 .basePath(JiraEndpoint.ISSUE.getUrl())
-                .pathParam("issueKey", issueKey)
+                .pathParam(ISSUE_KEY, issueKey)
                 .queryParam("expand", "transitions.fields")
                 .get("/{issueKey}/transitions").then().log().ifValidationFails()
                 .extract().jsonPath()
                 .getString(String.format(
                         "transitions.find {it -> it.name == '%s'}.id", transitionName));
+    }
+
+    /**
+     * Add one or more attachments to an issue.
+     *
+     * @param attachment The file to attach
+     */
+    public void addAttachment(File attachment) {
+        getRequestSpec().log().ifValidationFails()
+                .basePath(JiraEndpoint.ISSUE.getUrl())
+                .pathParam(ISSUE_KEY, issueKey)
+                .header("X-Atlassian-Token", "nocheck")
+                .multiPart(attachment).and()
+                .when()
+                .post("/{issueKey}/attachments").then().log().ifValidationFails()
+                .extract().statusLine();
     }
 }
 
