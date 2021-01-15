@@ -1,17 +1,14 @@
-package com.frameworkium.core.common.reporting.jira.endpoint;
+package com.frameworkium.core.common.reporting.zephyr.endpoint;
 
 import com.frameworkium.core.api.Endpoint;
 import com.frameworkium.core.common.properties.Property;
 
-public enum JiraEndpoint implements Endpoint {
+public enum ZephyrEndpoint implements Endpoint {
     BASE_URI(Property.JIRA_URL.getValue()),
-    REST_API_PATH("/rest/api/2"),
-    SEARCH("/search"),
-    ISSUE("/issue"),
-    ISSUELINK("/issueLink"),
-    FIELD("/field");
+    REST_API_PATH("/rest/zapi/2/zql"),
+    SEARCH("/executeSearch");
 
-    JiraEndpoint(String url) {
+    ZephyrEndpoint(String url) {
         this.url = url;
     }
 
@@ -26,7 +23,7 @@ public enum JiraEndpoint implements Endpoint {
         if (url.equals(REST_API_PATH.url) || url.equals(BASE_URI.url)) {
             return String.format(url, params);
         }
-        // returns with the rest API path e.g. /rest/api/2/issue
+        // returns with the rest API path e.g. /rest/zapi/2/issue
         String urlWithRestAPIPath = REST_API_PATH.url + url;
         return String.format(urlWithRestAPIPath, params);
     }

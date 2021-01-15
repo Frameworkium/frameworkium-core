@@ -1,18 +1,17 @@
-package com.frameworkium.core.common.reporting.jira.service;
+package com.frameworkium.core.common.reporting.zephyr.service;
 
 import com.frameworkium.core.api.services.BaseService;
 import com.frameworkium.core.common.properties.Property;
-import com.frameworkium.core.common.reporting.jira.endpoint.JiraEndpoint;
+import com.frameworkium.core.common.reporting.zephyr.endpoint.ZephyrEndpoint;
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
-
-public class AbstractJiraService extends BaseService {
+public class AbstractZephyrService extends BaseService {
     @Override
     protected RequestSpecification getRequestSpec() {
         return RestAssured.given()
-                .baseUri(JiraEndpoint.BASE_URI.getUrl())
+                .baseUri(ZephyrEndpoint.BASE_URI.getUrl())
                 .relaxedHTTPSValidation()
                 .auth().preemptive().basic(
                         Property.JIRA_USERNAME.getValue(),

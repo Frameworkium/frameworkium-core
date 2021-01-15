@@ -1,25 +1,25 @@
-package com.frameworkium.core.common.reporting.jira.zapi;
+package com.frameworkium.core.common.reporting.zephyr.service;
 
 import com.frameworkium.core.common.properties.Property;
-import com.frameworkium.core.common.reporting.jira.JiraConfig;
+import com.frameworkium.core.common.reporting.zephyr.endpoint.ZephyrEndpoint;
 import io.restassured.path.json.JsonPath;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Deprecated
-public class SearchExecutions {
-
+public class SearchExecutions extends AbstractZephyrService {
     private final JsonPath jsonPath;
 
     /**
      * Constructor which executes the given query.
      */
     SearchExecutions(String query) {
-        jsonPath = JiraConfig.getJIRARequestSpec()
+        jsonPath = getRequestSpec().log().ifValidationFails()
+                .basePath(ZephyrEndpoint.SEARCH.getUrl())
+                .queryParam("zqlQuery", query)
                 .when()
-                .get(JiraConfig.REST_ZAPI_PATH + "zql/executeSearch?zqlQuery=" + query)
-                .thenReturn().jsonPath();
+                .get().then().log().ifValidationFails()
+                .extract().jsonPath();
     }
 
     public List<Integer> getExecutionIds() {
