@@ -7,7 +7,6 @@ import io.restassured.path.json.JsonPath;
 import java.util.ArrayList;
 import java.util.List;
 
-@Deprecated
 public class SearchExecutions {
 
     private final JsonPath jsonPath;

@@ -13,7 +13,7 @@ public class SearchExecutions extends AbstractZephyrService {
     /**
      * Constructor which executes the given query.
      */
-    SearchExecutions(String query) {
+    public SearchExecutions(String query) {
         jsonPath = getRequestSpec().log().ifValidationFails()
                 .basePath(ZephyrEndpoint.SEARCH.getUrl())
                 .queryParam("zqlQuery", query)
