@@ -14,7 +14,7 @@ public class JiraService {
         return new ExecutionService();
     }
 
-    public VersionService version() {
-        return new VersionService();
+    public Version version() {
+        return new Version();
     }
 }

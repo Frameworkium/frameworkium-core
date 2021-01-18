@@ -1,20 +1,20 @@
 package com.frameworkium.core.common.reporting.jira.service;
 
 import com.frameworkium.core.common.reporting.jira.dto.version.VersionDto;
+import com.frameworkium.core.common.reporting.jira.endpoint.JiraEndpoint;
 
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
 
-public class VersionService extends AbstractJiraService {
-    private static final String VERSION_REST_PATH = "/rest/api/2/version";
+public class Version extends AbstractJiraService {
 
-    protected VersionService() {
+    protected Version() {
     }
 
     public VersionDto getVersion(String versionId) {
         return getRequestSpec()
+                .basePath(JiraEndpoint.VERSION.getUrl())
                 .pathParam("id", versionId)
-                .basePath(VERSION_REST_PATH)
                 .get("/{id}")
                 .then()
                 .log().ifValidationFails()
@@ -25,7 +25,7 @@ public class VersionService extends AbstractJiraService {
 
     public VersionDto createVersion(VersionDto versionDto) {
         return getRequestSpec()
-                .basePath(VERSION_REST_PATH)
+                .basePath(JiraEndpoint.VERSION.getUrl())
                 .body(versionDto)
                 .post()
                 .then()

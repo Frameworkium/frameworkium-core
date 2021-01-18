@@ -10,7 +10,8 @@ public enum JiraEndpoint implements Endpoint {
     SEARCH("/search"),
     ISSUE("/issue"),
     ISSUELINK("/issueLink"),
-    FIELD("/field");
+    FIELD("/field"),
+    VERSION("/version");
 
     JiraEndpoint(String url) {
         this.url = url;
