@@ -5,7 +5,7 @@ import com.frameworkium.core.common.reporting.jira.dto.execution.AddTestToCycleO
 import static com.frameworkium.core.common.reporting.jira.JiraConfig.REST_ZAPI_PATH;
 import static org.apache.http.HttpStatus.SC_OK;
 
-public class ExecutionService extends AbstractJiraService {
+public class Execution extends AbstractJiraService {
     private static final String EXECUTION_REST_PATH = REST_ZAPI_PATH + "execution";
 
     public String addTestsToCycle(AddTestToCycleOperationDto addTestToCycleOperationDto) {
