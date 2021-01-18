@@ -1,7 +1,7 @@
 package com.frameworkium.core.common.reporting.jira.dto.execution;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.databind.annotation.*;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.frameworkium.core.api.dto.AbstractDTO;
 
 import java.util.List;
@@ -12,7 +12,9 @@ public class AddTestToCycleOperationDto extends AbstractDTO<AddTestToCycleOperat
     public List<String> issues;
     public String searchId;
     public String method;
+    @JsonSerialize(using = ToStringSerializer.class)
     public Long projectId;
+    @JsonSerialize(using = ToStringSerializer.class)
     public Long versionId;
 
 

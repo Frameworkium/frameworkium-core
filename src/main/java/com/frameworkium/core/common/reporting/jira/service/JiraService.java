@@ -6,12 +6,12 @@ public class JiraService {
         return new Project();
     }
 
-    public CycleService cycle() {
-        return new CycleService();
+    public Cycle cycle() {
+        return new Cycle();
     }
 
-    public ExecutionService execution() {
-        return new ExecutionService();
+    public Execution execution() {
+        return new Execution();
     }
 
     public Version version() {

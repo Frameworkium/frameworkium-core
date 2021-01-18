@@ -5,7 +5,7 @@ import com.frameworkium.core.common.reporting.jira.dto.cycle.*;
 import static com.frameworkium.core.common.reporting.jira.JiraConfig.REST_ZAPI_PATH;
 import static org.apache.http.HttpStatus.SC_OK;
 
-public class CycleService extends AbstractJiraService {
+public class Cycle extends AbstractJiraService {
     private static final String CYCLE_REST_PATH = REST_ZAPI_PATH + "cycle";
 
     public CycleListDto getListOfCycle(Long projectId, Long versionId) {
