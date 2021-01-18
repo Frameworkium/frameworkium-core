@@ -9,11 +9,11 @@ class AttachmentSpec extends Specification {
     def "Get attachment Ids"() {
         given:
             String issueKey = "KEY-${UUID.randomUUID().toString()}"
-            JsonPath jsonPath = create(issueKey)
+            JsonPath mockedResponse = createMockedResponse(issueKey)
             Issue mockedIssue = Stub(Issue)
             Attachment attachment = new Attachment(mockedIssue)
         when:
-            mockedIssue.getIssue() >> jsonPath
+            mockedIssue.getIssue() >> mockedResponse
             List<String> ids = attachment.getIds()
         then:
             with(ids) {
@@ -21,22 +21,7 @@ class AttachmentSpec extends Specification {
             }
     }
 
-    def "Get attachment Ids2"() {
-        given:
-            String issueKey = "ORION-${UUID.randomUUID().toString()}"
-            JsonPath jsonPath = create(issueKey)
-            Issue mockedIssue = Stub(Issue)
-            Attachment attachment = new Attachment(mockedIssue)
-        when:
-            mockedIssue.getIssue() >> jsonPath
-            List<String> ids = attachment.getIds()
-        then:
-            with(ids) {
-                ids == ["10000", "10001"]
-            }
-    }
-
-    private static JsonPath create(String issueKey) {
+    private static JsonPath createMockedResponse(String issueKey) {
         def obj = ["id"    : "6767",
                    "key"   : issueKey,
                    "fields": [
@@ -67,6 +52,4 @@ class AttachmentSpec extends Specification {
         JsonPath jsonPath = JsonPath.from(body)
         return jsonPath
     }
-
-
 }

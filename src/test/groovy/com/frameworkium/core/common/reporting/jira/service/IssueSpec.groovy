@@ -13,6 +13,7 @@ import static com.github.tomakehurst.wiremock.common.Metadata.metadata
 
 class IssueSpec extends Specification {
     String issueKey = "KEY-${UUID.randomUUID().toString()}"
+    String issueBaseUrl = JiraEndpoint.ISSUE.getUrl()
     Issue issue = new Issue(issueKey)
     String stubId = UUID.randomUUID().toString() // to uniquely identify stub for cleanup later
     @Shared
@@ -30,29 +31,12 @@ class IssueSpec extends Specification {
 
     def "Get an Issue"() {
         given:
-            String issueBaseUrl = JiraEndpoint.ISSUE.getUrl()
             //GET /rest/api/2/issue/{issueIdOrKey}
             String url = "${issueBaseUrl}/${issueKey}"
-
-            def obj = ["id"    : "6767",
-                       "key"   : issueKey,
-                       "fields": [
-                               "watcher"    : ["isWatching": false,
-                                               "watchCount": 1],
-                               "attachment": [[
-                                                       "filename" : "picture.jpg",
-                                                       "created"  : "2017-12-07T09:23:19.542+0000",
-                                                       "size"     : 23123,
-                                                       "mimeType" : "image/jpeg",
-                                                       "content"  : "http://www.example.com/jira/attachments/10000",
-                                                       "thumbnail": "http://www.example.com/jira/secure/thumbnail/10000"
-                                               ]]
-                       ]
-            ]
-            String body = new JsonBuilder(obj).toString()
+            def responseBody = createMockedIssueResponse(issueKey)
             wireMock.register(get(urlPathMatching(url))
                     .withMetadata(metadata().attr("id", stubId))
-                    .willReturn(aResponse().withBody(body)
+                    .willReturn(aResponse().withBody(responseBody)
                             .withStatus(200))
             )
         when:
@@ -71,21 +55,9 @@ class IssueSpec extends Specification {
             String fieldId = "fieldId"
             String fieldNewValue = "fieldNewValue"
             //PUT /rest/api/2/issue/{issueIdOrKey}
-            String issueBaseUrl = JiraEndpoint.ISSUE.getUrl()
             String url = "${issueBaseUrl}/${issueKey}"
-
-            // used when getting field Id
-            def list = [[id: fieldId, name: fieldName]]
-            String fieldObjects = new JsonBuilder(list).toString()
-            // used when editing jira issue
-            def obj = [
-                    "update": [
-                            (fieldId): [
-                                    ["set": ["value": fieldNewValue]]
-                            ]
-                    ]
-            ]
-            String expectedBody = new JsonBuilder(obj).toString()
+            def fieldObjects = createMockedFieldResponse(fieldId, fieldName)
+            def editFieldRequestBody = createMockedEditFieldRequestBody(fieldId, fieldNewValue)
 
             wireMock.register(get(urlPathEqualTo(JiraEndpoint.FIELD.getUrl()))
                     .withMetadata(metadata().attr("id", stubId))
@@ -94,57 +66,68 @@ class IssueSpec extends Specification {
             )
             wireMock.register(put(urlPathMatching(url))
                     .withMetadata(metadata().attr("id", stubId))
+                    .withRequestBody(equalToJson(editFieldRequestBody))
                     .willReturn(aResponse().withStatus(204))
             )
         when:
             issue.editField(fieldName, fieldNewValue)
         then:
-            List<LoggedRequest> loggedRequests = wireMock.find(putRequestedFor(urlPathMatching(url)))
-            loggedRequests.last().bodyAsString == expectedBody
+            List<LoggedRequest> loggedRequests = wireMock.find(putRequestedFor(urlPathMatching(url))
+                    .withRequestBody(equalToJson(editFieldRequestBody)))
+            loggedRequests.size() == 1
     }
 
     def "Add a comment into JIRA issue"() {
         given:
-            String issueBaseUrl = JiraEndpoint.ISSUE.getUrl()
             //POST /rest/api/2/issue/{issueIdOrKey}/comment
             String url = "${issueBaseUrl}/${issueKey}/comment"
-            String comment = "Lorem ipsum"
-            def obj = ["body": comment]
-            String expectedBody = new JsonBuilder(obj).toString()
+            def commentRequestBody = createMockedAddCommentRequestBody("Lorem ipsum")
 
             wireMock.register(post(urlPathEqualTo(url))
                     .withMetadata(metadata().attr("id", stubId))
+                    .withRequestBody(equalToJson(commentRequestBody))
                     .willReturn(aResponse().withStatus(201))
             )
         when:
-            issue.addComment(comment)
+            issue.addComment("Lorem ipsum")
         then:
-            List<LoggedRequest> loggedRequests = wireMock.find(postRequestedFor(urlPathMatching(url)))
-            loggedRequests.last().bodyAsString == expectedBody
+            List<LoggedRequest> loggedRequests = wireMock.find(postRequestedFor(urlPathMatching(url))
+                    .withRequestBody(equalToJson(commentRequestBody)))
+            loggedRequests.size() == 1
     }
 
     def "Perform a transition on an issue "() {
         given:
             //POST /rest/api/2/issue/{issueIdOrKey}/transitions
-            String issueBaseUrl = JiraEndpoint.ISSUE.getUrl()
             def url = "${issueBaseUrl}/${issueKey}/transitions"
-            String transitionName = "MyTransition"
-            String transitionId = "1212"
+            String transitionName = UUID.randomUUID().toString()
+            String transitionId = new Random().nextLong().toString()
 
-            setStubForGettingTransitionId(wireMock, url, transitionId, transitionName, stubId)
-            def expectedBody = setStubForPerformingTransition(wireMock, url, transitionId, stubId)
+            def transitionIdObj = createMockedTransitionIdResponse(transitionId, transitionName)
+            wireMock.register(get(urlPathMatching(url))
+                    .withMetadata(metadata().attr("id", stubId))
+                    .withQueryParam("expand", equalTo("transitions.fields"))
+                    .willReturn(aResponse().withBody(transitionIdObj)
+                            .withStatus(200))
+            )
 
+            def transitionRequestBody = createMockedPerformTransitionRequestBody(transitionId)
+            wireMock.register(post(urlPathEqualTo(url))
+                    .withMetadata(metadata().attr("id", stubId))
+                    .withRequestBody(equalToJson(transitionRequestBody))
+                    .willReturn(aResponse().withStatus(204))
+            )
         when:
             issue.transition(transitionName)
         then:
-            List<LoggedRequest> loggedRequests = wireMock.find(postRequestedFor(urlPathMatching(url)))
-            loggedRequests.last().bodyAsString == expectedBody
+            List<LoggedRequest> loggedRequests = wireMock.find(postRequestedFor(urlPathMatching(url))
+                    .withRequestBody(equalToJson(transitionRequestBody)))
+            loggedRequests.size() == 1
     }
 
     def "Attach a file to a issue"() {
         given:
             //POST /rest/api/2/issue/{issueIdOrKey}/attachments
-            String issueBaseUrl = JiraEndpoint.ISSUE.getUrl()
             def url = "${issueBaseUrl}/${issueKey}/attachments"
             File file = createNewFile("temp.txt")
             wireMock.register(post(urlPathMatching(url))
@@ -159,37 +142,63 @@ class IssueSpec extends Specification {
             loggedRequests.size() == 1
     }
 
-    static def setStubForGettingTransitionId(
-            WireMock wireMock, String transitionUrl, String transitionId, String transitionName, String stubId) {
+    private static def createMockedIssueResponse(String issueKey) {
+        def obj = ["id"    : "6767",
+                   "key"   : issueKey,
+                   "fields": [
+                           "watcher"   : ["isWatching": false,
+                                          "watchCount": 1],
+                           "attachment": [[
+                                                  "filename" : "picture.jpg",
+                                                  "created"  : "2017-12-07T09:23:19.542+0000",
+                                                  "size"     : 23123,
+                                                  "mimeType" : "image/jpeg",
+                                                  "content"  : "http://www.example.com/jira/attachments/10000",
+                                                  "thumbnail": "http://www.example.com/jira/secure/thumbnail/10000"
+                                          ]]
+                   ]
+        ]
+        return new JsonBuilder(obj).toString()
+    }
+
+    private static def createMockedFieldResponse(String fieldId, String fieldName) {
+        // used when getting field Id
+        def list = [[id: fieldId, name: fieldName]]
+        return new JsonBuilder(list).toString()
+    }
+
+    private static def createMockedEditFieldRequestBody(String fieldId, String fieldNewValue) {
+        // used when editing jira issue
+        def obj = [
+                "update": [
+                        (fieldId): [
+                                ["set": ["value": fieldNewValue]]
+                        ]
+                ]
+        ]
+        return new JsonBuilder(obj).toString()
+    }
+
+    private static def createMockedAddCommentRequestBody(String comment) {
+        def obj = ["body": comment]
+        return new JsonBuilder(obj).toString()
+    }
+
+    private static def createMockedTransitionIdResponse(String transitionId, String transitionName) {
         // we will get this when we GET transition by Id
         def idObj = [
                 "transitions": [["id": transitionId, "name": transitionName]]
         ]
-        String transitionIdObj = new JsonBuilder(idObj).toString()
-        wireMock.register(get(urlPathMatching("${transitionUrl}"))
-                .withMetadata(metadata().attr("id", stubId))
-                .withQueryParam("expand", equalTo("transitions.fields"))
-                .willReturn(aResponse().withBody(transitionIdObj)
-                        .withStatus(200))
-        )
+        return new JsonBuilder(idObj).toString()
     }
 
-    static String setStubForPerformingTransition(
-            WireMock wireMock, String transitionUrl, String transitionId, String stubId) {
+    private static def createMockedPerformTransitionRequestBody(String transitionId) {
         // use this to perform transition
-        def o = [
-                "transition": ["id": transitionId]
-        ]
-        String body = new JsonBuilder(o).toString()
-        wireMock.register(post(urlPathEqualTo(transitionUrl))
-                .withMetadata(metadata().attr("id", stubId))
-                .withRequestBody(equalToJson(body))
-                .willReturn(aResponse().withStatus(204))
-        )
-        return body
+        def o = ["transition": ["id": transitionId]]
+        return new JsonBuilder(o).toString()
     }
 
-    static File createNewFile(String filename) {
+    private static File createNewFile(String filename) {
         File file = new File(filename)
         file.createNewFile()
         return file

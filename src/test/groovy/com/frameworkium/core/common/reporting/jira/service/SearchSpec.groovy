@@ -14,31 +14,20 @@ class SearchSpec extends Specification {
     @Shared
     WireMock wireMock = new WireMock("localhost", 8080)
 
+    def setupSpec() {
+        System.properties["jiraURL"] = "http://localhost:8080"
+        System.properties["jiraUsername"] = "username"
+        System.properties["jiraPassword"] = "password"
+    }
+
     def cleanup() {
         wireMock.removeStubsByMetadataPattern(matchingJsonPath(/$.id/, equalTo(stubId)))
     }
 
     def "Getting keys from JQL JIRA search"() {
         given:
-            // todo - parameterize jiraURL
-            System.properties["jiraURL"] = "http://localhost:8080"
-            System.properties["jiraUsername"] = "username"
-            System.properties["jiraPassword"] = "password"
             String searchTerm = "ISearchForThis"
-            def obj = [
-                    "startAt"   : 0,
-                    "maxResults": 1000,
-                    "total"     : 2,
-                    "issues"    : [
-                            ["id" : "10001",
-                             "key": "KEY-1"
-                            ],
-                            ["id" : "10002",
-                             "key": "KEY-2"
-                            ]
-                    ]
-            ]
-            String searchResult = new JsonBuilder(obj).toString()
+            def searchResult = createMockedSearchResultResponse()
             wireMock.register(get(urlPathEqualTo(JiraEndpoint.SEARCH.getUrl()))
                     .withMetadata(metadata().attr("id", stubId))
                     .withQueryParam("jql", equalTo(searchTerm))
@@ -51,5 +40,22 @@ class SearchSpec extends Specification {
             def searchService = new Search(searchTerm)
         then:
             searchService.getKeys() == ["KEY-1", "KEY-2"]
+    }
+
+    private static def createMockedSearchResultResponse() {
+        def obj = [
+                "startAt"   : 0,
+                "maxResults": 1000,
+                "total"     : 2,
+                "issues"    : [
+                        ["id" : "10001",
+                         "key": "KEY-1"
+                        ],
+                        ["id" : "10002",
+                         "key": "KEY-2"
+                        ]
+                ]
+        ]
+        return new JsonBuilder(obj).toString()
     }
 }
