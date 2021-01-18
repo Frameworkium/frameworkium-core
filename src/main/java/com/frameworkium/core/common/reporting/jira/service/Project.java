@@ -14,7 +14,7 @@ public class Project extends AbstractJiraService {
     }
 
     public ProjectDto getProject(String projectIdOrKey) {
-        ProjectDto x = getRequestSpec()
+        return getRequestSpec()
                 .basePath(JiraEndpoint.PROJECT.getUrl())
                 .pathParam("projectIdOrKey", projectIdOrKey)
                 .contentType(ContentType.JSON)
@@ -24,7 +24,6 @@ public class Project extends AbstractJiraService {
                 .statusCode(SC_OK)
                 .extract()
                 .as(ProjectDto.class);
-        return x;
     }
 
     public List<VersionDto> getProjectVersions(String projectIdOrKey) {
