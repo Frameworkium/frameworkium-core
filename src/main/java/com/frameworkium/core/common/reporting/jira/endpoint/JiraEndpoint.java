@@ -6,10 +6,12 @@ import com.frameworkium.core.common.properties.Property;
 public enum JiraEndpoint implements Endpoint {
     BASE_URI(Property.JIRA_URL.getValue()),
     REST_API_PATH("/rest/api/2"),
+    PROJECT("/project"),
     SEARCH("/search"),
     ISSUE("/issue"),
     ISSUELINK("/issueLink"),
-    FIELD("/field");
+    FIELD("/field"),
+    VERSION("/version");
 
     JiraEndpoint(String url) {
         this.url = url;
