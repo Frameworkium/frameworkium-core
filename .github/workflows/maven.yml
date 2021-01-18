@@ -1,0 +1,82 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: frameworkium build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  THREAD_COUNT: 2
+  CAPTURE_URL: http://capture-6c06138r.cloudapp.net
+  SUT_NAME: frameworkium-core
+  SUT_VERSION: $GITHUB_REF
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [ 1.8, 1.11 ]
+#    container: node:10.18-jessie
+    services:
+      wiremock:
+        image: rodolpheche/wiremock:2.27.2
+        options: --name wiremock
+        ports:
+          - "8080:8080"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java-version }}
+#      - name: Configure wiremock mappings
+#        working-directory: src/test/resources/mappings
+#        run: |
+#          ls | xargs -I{} curl -v -X POST -H "Content-Type: application/json" -d @{} http://localhost:8080/__admin/mappings
+      - name: Start selenoid
+        uses: Xotabu4/selenoid-github-action@v1
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Build with Maven - checkstyle
+        run: mvn test-compile -B -U --show-version -DskipTests=true -Dmaven.javadoc.skip=true
+      - name: Build with Maven - firefox off grid
+        run: mvn verify -B -Dthreads=$THREAD_COUNT -Dbrowser=firefox -DreuseBrowser -Dheadless -DcaptureURL=$CAPTURE_URL -DsutName="$SUT_NAME" -DsutVersion="$SUT_VERSION" -Dwebdriver.firefox.logfile=/dev/null
+      - name: Build with Maven - chrome on grid
+        run: mvn verify -B -Dthreads=$THREAD_COUNT -Dbrowser=chrome -Dmaximise=True -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub
+      - name: Build with Maven - custom browser on grid
+        run: mvn verify -B -Dthreads=$THREAD_COUNT -DcustomBrowserImpl=com.frameworkium.integration.CustomFirefoxImpl -Dmaximise=true  -DgridURL=http://localhost:4444/wd/hub -Dit.test=DocumentationTest 2> /dev/null
+      - name: Build with Maven - test groups and verify that all @Before methods in BaseUITest
+        run: mvn verify -B -Dthreads=$THREAD_COUNT -Dbrowser=chrome -Dgroups=fw-bugs -DreuseBrowser=true -Dheadless=true
+        # Disabled until we have a JIRA to use
+        #      - name: Build with Maven
+        #        run: mvn verify -B -Dthreads=$THREAD_COUNT -Dbrowser=chrome -DjiraURL="http://52.29.130.45:8080" -DjqlQuery="issueKey=TEST-1" -DresultVersion="BUILD TEST VERSION" -DzapiCycleRegex="Test Cycle" -DjiraUsername=frameworkium -DjiraPassword=frameworkium -DcaptureURL=$CAPTURE_URL -DsutName="$SUT_NAME" -DsutVersion="$SUT_VERSION"
+        # Disabled until we have saucelabs account
+        #      - name: Build with Maven - saucelabs
+        #        run: mvn verify -Dsauce=true -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.0 -Ddevice=iPad -DcaptureURL=$CAPTURE_URL -DsutName="$SUT_NAME" -DsutVersion="$SUT_VERSION"
+      - name: Build allure report
+        if: always()
+        run: mvn allure:report -B
+      - name: Dump docker logs on failure
+        if: failure()
+        uses: jwalton/gh-docker-logs@v1
+        with:
+          images: 'wiremock'
+      - name: Upload coverage Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          files: ./target/site/jacoco/jacoco.xml
+          fail_ci_if_error: true
+          verbose: true
+
+

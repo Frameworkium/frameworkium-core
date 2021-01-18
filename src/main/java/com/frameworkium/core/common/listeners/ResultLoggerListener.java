@@ -3,7 +3,7 @@ package com.frameworkium.core.common.listeners;
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.TestIdUtils;
 import com.frameworkium.core.common.reporting.jira.JiraConfig;
-import com.frameworkium.core.common.reporting.jira.api.JiraTest;
+import com.frameworkium.core.common.reporting.jira.service.Issue;
 import com.frameworkium.core.common.reporting.jira.zapi.Execution;
 import com.frameworkium.core.common.reporting.spira.SpiraExecution;
 import com.frameworkium.core.ui.UITestLifecycle;
@@ -16,6 +16,7 @@ import org.testng.*;
 import java.lang.reflect.Method;
 
 import static com.frameworkium.core.common.properties.Property.CAPTURE_URL;
+import static java.text.MessageFormat.format;
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.time.DateUtils.MILLIS_PER_SECOND;
 
@@ -30,6 +31,7 @@ public class ResultLoggerListener implements ITestListener {
         if (issueOrTestCaseId.isEmpty()) {
             return;
         }
+        Issue issue = new Issue(issueOrTestCaseId);
 
         String comment = String.format(
                 "Starting %s.%s",
@@ -45,23 +47,25 @@ public class ResultLoggerListener implements ITestListener {
             logger.info("Logging WIP to Jira using issue transitions");
             moveThroughTransitions(issueOrTestCaseId,
                     JiraConfig.JiraTransition.JIRA_TRANSITION_WIP);
-            JiraTest.addComment(issueOrTestCaseId, comment);
+            issue.addComment(comment);
         }
         if (jiraFieldLoggingParamsProvided(result)) {
-            logger.info("Logging WIP to Jira by updating the specified field - "
-                    + Property.JIRA_RESULT_FIELD_NAME.getValue());
-            JiraTest.changeIssueFieldValue(
-                    issueOrTestCaseId,
+            logger.info(() ->
+                    format("Logging WIP to Jira by updating the specified field - {0}",
+                            Property.JIRA_RESULT_FIELD_NAME.getValue()));
+            issue.editField(
                     Property.JIRA_RESULT_FIELD_NAME.getValue(),
-                    JiraConfig.JiraFieldStatus.JIRA_STATUS_WIP);
-            JiraTest.addComment(issueOrTestCaseId, comment);
+                    JiraConfig.JiraFieldStatus.JIRA_STATUS_WIP
+            );
+            issue.addComment(comment);
         }
     }
 
     private void moveThroughTransitions(String issueAnnotation, String[] jiraTransitions) {
+        Issue issue = new Issue(issueAnnotation);
         for (String jiraTransition : jiraTransitions) {
             try {
-                JiraTest.transitionIssue(issueAnnotation, jiraTransition);
+                issue.transition(jiraTransition);
                 logger.debug(
                         "Performed transition '{}' on '{}'",
                         jiraTransition,
@@ -82,6 +86,7 @@ public class ResultLoggerListener implements ITestListener {
         if (issueOrTestCaseId.isEmpty()) {
             return;
         }
+        Issue issue = new Issue(issueOrTestCaseId);
 
         String comment = "PASS\n" + baseComment(result);
 
@@ -94,16 +99,16 @@ public class ResultLoggerListener implements ITestListener {
             logger.info("Logging PASS to Jira using issue transitions");
             moveThroughTransitions(issueOrTestCaseId,
                     JiraConfig.JiraTransition.JIRA_TRANSITION_PASS);
-            JiraTest.addComment(issueOrTestCaseId, comment);
+            issue.addComment(comment);
         }
         if (jiraFieldLoggingParamsProvided(result)) {
-            logger.info("Logging PASS to Jira by updating the specified field - "
-                    + Property.JIRA_RESULT_FIELD_NAME.getValue());
-            JiraTest.changeIssueFieldValue(
-                    issueOrTestCaseId,
+            logger.info(() ->
+                    format("Logging PASS to Jira by updating the specified field - {0}",
+                            Property.JIRA_RESULT_FIELD_NAME.getValue()));
+            issue.editField(
                     Property.JIRA_RESULT_FIELD_NAME.getValue(),
                     JiraConfig.JiraFieldStatus.JIRA_STATUS_PASS);
-            JiraTest.addComment(issueOrTestCaseId, comment);
+            issue.addComment(comment);
         }
         if (spiraLoggingParamsProvided(result)) {
             new SpiraExecution().recordTestResult(
@@ -130,6 +135,7 @@ public class ResultLoggerListener implements ITestListener {
         if (issueOrTestCaseId.isEmpty()) {
             return;
         }
+        Issue issue = new Issue(issueOrTestCaseId);
 
         String comment = "FAIL\n" + this.baseComment(result);
 
@@ -142,16 +148,15 @@ public class ResultLoggerListener implements ITestListener {
             logger.info("Logging FAIL to Jira using issue transitions");
             moveThroughTransitions(issueOrTestCaseId,
                     JiraConfig.JiraTransition.JIRA_TRANSITION_FAIL);
-            JiraTest.addComment(issueOrTestCaseId, comment);
+            issue.addComment(comment);
         }
         if (jiraFieldLoggingParamsProvided(result)) {
-            logger.info("Logging FAIL to Jira by updating the specified field - "
-                    + Property.JIRA_RESULT_FIELD_NAME.getValue());
-            JiraTest.changeIssueFieldValue(
-                    issueOrTestCaseId,
+            logger.info(() -> format("Logging FAIL to Jira by updating the specified field - {0}",
+                    Property.JIRA_RESULT_FIELD_NAME.getValue()));
+            issue.editField(
                     Property.JIRA_RESULT_FIELD_NAME.getValue(),
                     JiraConfig.JiraFieldStatus.JIRA_STATUS_FAIL);
-            JiraTest.addComment(issueOrTestCaseId, comment);
+            issue.addComment(comment);
         }
         if (spiraLoggingParamsProvided(result)) {
             new SpiraExecution().recordTestResult(
@@ -173,6 +178,7 @@ public class ResultLoggerListener implements ITestListener {
         if (issueOrTestCaseId.isEmpty()) {
             return;
         }
+        Issue issue = new Issue(issueOrTestCaseId);
 
         String comment = "BLOCKED\n" + this.baseComment(result);
 
@@ -185,16 +191,15 @@ public class ResultLoggerListener implements ITestListener {
             logger.info("Logging BLOCKED to Jira using issue transitions");
             moveThroughTransitions(issueOrTestCaseId,
                     JiraConfig.JiraTransition.JIRA_TRANSITION_BLOCKED);
-            JiraTest.addComment(issueOrTestCaseId, comment);
+            issue.addComment(comment);
         }
         if (jiraFieldLoggingParamsProvided(result)) {
-            logger.info("Logging BLOCKED to Jira by updating the specified field - "
-                    + Property.JIRA_RESULT_FIELD_NAME.getValue());
-            JiraTest.changeIssueFieldValue(
-                    issueOrTestCaseId,
+            logger.info(() -> format("Logging BLOCKED to Jira by updating the specified field - {0}",
+                    Property.JIRA_RESULT_FIELD_NAME.getValue()));
+            issue.editField(
                     Property.JIRA_RESULT_FIELD_NAME.getValue(),
                     JiraConfig.JiraFieldStatus.JIRA_STATUS_BLOCKED);
-            JiraTest.addComment(issueOrTestCaseId, comment);
+            issue.addComment(comment);
         }
         if (spiraLoggingParamsProvided(result)) {
             new SpiraExecution().recordTestResult(
@@ -214,25 +219,25 @@ public class ResultLoggerListener implements ITestListener {
     @Override
     public void onFinish(ITestContext context) {}
 
-    private Boolean zapiLoggingParamsProvided(ITestResult result) {
+    private boolean zapiLoggingParamsProvided(ITestResult result) {
         return Property.JIRA_URL.isSpecified()
                 && Property.RESULT_VERSION.isSpecified()
                 && !getIssueOrTestCaseIdAnnotation(result).isEmpty();
     }
 
-    private Boolean jiraTransitionLoggingParamsProvided(ITestResult result) {
+    private boolean jiraTransitionLoggingParamsProvided(ITestResult result) {
         return Property.JIRA_URL.isSpecified()
                 && Property.JIRA_RESULT_TRANSITION.isSpecified()
                 && !getIssueOrTestCaseIdAnnotation(result).isEmpty();
     }
 
-    private Boolean jiraFieldLoggingParamsProvided(ITestResult result) {
+    private boolean jiraFieldLoggingParamsProvided(ITestResult result) {
         return Property.JIRA_URL.isSpecified()
                 && Property.JIRA_RESULT_FIELD_NAME.isSpecified()
                 && !getIssueOrTestCaseIdAnnotation(result).isEmpty();
     }
 
-    private Boolean spiraLoggingParamsProvided(ITestResult result) {
+    private boolean spiraLoggingParamsProvided(ITestResult result) {
         return Property.SPIRA_URL.isSpecified()
                 && !getIssueOrTestCaseIdAnnotation(result).isEmpty();
     }

@@ -36,7 +36,7 @@ public class EnglishCountiesPage extends BasePage<EnglishCountiesPage> {
     }
 
     public int populationOf(String countyName) {
-        Predicate<WebElement> headerLookUp = e -> e.getText().trim().equals("County");
+        Predicate<WebElement> headerLookUp = e -> e.getText().trim().startsWith("County");
         Predicate<WebElement> lookUpCellMatcher = e -> e.getText().trim().equals(countyName);
         Predicate<WebElement> targetColHeaderLookup = e -> e.getText().trim().startsWith("Population");
         String population = listTable
