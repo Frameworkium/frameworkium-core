@@ -1,16 +1,14 @@
 package com.frameworkium.core.common.reporting.jira.service;
 
 import com.frameworkium.core.common.reporting.jira.dto.cycle.*;
+import com.frameworkium.core.common.reporting.jira.endpoint.ZephyrEndpoint;
 
-import static com.frameworkium.core.common.reporting.jira.JiraConfig.REST_ZAPI_PATH;
 import static org.apache.http.HttpStatus.SC_OK;
 
 public class Cycle extends AbstractJiraService {
-    private static final String CYCLE_REST_PATH = REST_ZAPI_PATH + "cycle";
-
     public CycleListDto getListOfCycle(Long projectId, Long versionId) {
         return getRequestSpec()
-                .basePath(CYCLE_REST_PATH)
+                .basePath(ZephyrEndpoint.CYCLE.getUrl())
                 .queryParam("projectId", projectId)
                 .queryParam("versionId", versionId)
                 .get()
@@ -23,7 +21,7 @@ public class Cycle extends AbstractJiraService {
 
     public CreateCycleSuccessDto createNewCycle(CreateNewCycleDto createNewCycleDto) {
         return getRequestSpec()
-                .basePath(CYCLE_REST_PATH)
+                .basePath(ZephyrEndpoint.CYCLE.getUrl())
                 .body(createNewCycleDto)
                 .post()
                 .then()
