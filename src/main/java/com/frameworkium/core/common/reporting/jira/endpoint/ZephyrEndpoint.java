@@ -7,7 +7,8 @@ public enum ZephyrEndpoint implements Endpoint {
     BASE_URI(Property.JIRA_URL.getValue()),
     REST_API_PATH("/rest/zapi/2"),
     EXECUTION("/execution"),
-    ADD_TEST_TO_EXECUTION("/execution/addTestsToCycle");
+    ADD_TEST_TO_EXECUTION("/execution/addTestsToCycle"),
+    CYCLE("/cycle");
 
     private final String url;
 
