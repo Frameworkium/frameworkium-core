@@ -4,19 +4,30 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.frameworkium.core.common.reporting.jira.JiraConfig;
+import com.frameworkium.core.api.services.BaseService;
+import com.frameworkium.core.common.properties.Property;
+import com.frameworkium.core.common.reporting.jira.endpoint.JiraEndpoint;
+import io.restassured.RestAssured;
 import io.restassured.config.ObjectMapperConfig;
 import io.restassured.config.RestAssuredConfig;
-import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 
-public abstract class AbstractJiraService {
-
+public abstract class AbstractJiraService extends BaseService {
+    @Override
     protected RequestSpecification getRequestSpec() {
-        return JiraConfig.getJIRARequestSpec()
+        return RestAssured.given()
+                .baseUri(JiraEndpoint.BASE_URI.getUrl())
                 .config(config())
-                .contentType(ContentType.JSON)
-                .accept(ContentType.JSON);
+                .relaxedHTTPSValidation()
+                .auth().preemptive().basic(
+                        Property.JIRA_USERNAME.getValue(),
+                        Property.JIRA_PASSWORD.getValue());
+    }
+
+    @Override
+    protected ResponseSpecification getResponseSpec() {
+        throw new AssertionError("Unimplemented");
     }
 
     private RestAssuredConfig config() {
@@ -36,3 +47,4 @@ public abstract class AbstractJiraService {
         );
     }
 }
+
