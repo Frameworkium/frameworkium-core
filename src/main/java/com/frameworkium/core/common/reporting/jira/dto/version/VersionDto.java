@@ -13,8 +13,9 @@ public class VersionDto extends AbstractDTO<VersionDto> {
     public final String description;
     public final String name;
     public final Boolean archived;
-    public final Boolean released;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     public final LocalDate releaseDate;
+    public final Boolean released;
     public final Boolean overdue;
     public final LocalDate userReleaseDate;
     public final String project;
