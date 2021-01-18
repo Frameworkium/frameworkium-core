@@ -51,7 +51,7 @@ class ProjectSpec extends Specification {
 
     def "get project versions from Jira"() {
         given:
-            def projectVersionUrl = "${projectBaseUrl}/${projectId}/versions"
+            def projectVersionUrl = "${projectBaseUrl}/${projectKey}/versions"
             def versionsResponse = createMockedListOfVersionsResponse(projectId)
             wireMock.register(get(urlPathEqualTo(projectVersionUrl))
                     .withMetadata(metadata().attr("id", stubId))
@@ -64,7 +64,7 @@ class ProjectSpec extends Specification {
             with(response) {
                 response.size() == 2
                 response.each { it.projectId == projectId }
-                response.collect { it.id as String } == ["10000", "10001"]
+                response.collect { it.id.toString() } == ["10000", "10010"]
             }
     }
 
@@ -76,16 +76,15 @@ class ProjectSpec extends Specification {
     private static def createMockedListOfVersionsResponse(Long projectId) {
         def obj = [
                 [
-                        "self"           : "http://www.example.com/jira/rest/api/2/version/10000",
-                        "id"             : "10000",
-                        "description"    : "An excellent version",
-                        "name"           : "New Version 1",
-                        "archived"       : false,
-                        "released"       : true,
-                        "releaseDate"    : "2010-07-06",
-                        "overdue"        : true,
-                        "userReleaseDate": "6/Jul/2010",
-                        "projectId"      : projectId
+                        "self"       : "http://www.example.com/jira/rest/api/2/version/10000",
+                        "id"         : "10000",
+                        "description": "An excellent version",
+                        "name"       : "New Version 1",
+                        "archived"   : false,
+                        "released"   : true,
+                        "releaseDate": "2010-07-06",
+                        "overdue"    : true,
+                        "projectId"  : projectId
                 ],
                 [
                         "self"       : "http://www.example.com/jira/rest/api/2/version/10010",
