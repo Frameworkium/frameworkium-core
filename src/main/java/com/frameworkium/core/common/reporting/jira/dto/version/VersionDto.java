@@ -8,17 +8,17 @@ import java.time.LocalDate;
 
 @JsonDeserialize(builder = VersionDto.Builder.class)
 public class VersionDto extends AbstractDTO<VersionDto> {
-    public String self;
-    public Long id;
-    public String description;
-    public String name;
-    public Boolean archived;
-    public Boolean released;
-    public LocalDate releaseDate;
-    public Boolean overdue;
-    public LocalDate userReleaseDate;
-    public String project;
-    public Long projectId;
+    public final String self;
+    public final Long id;
+    public final String description;
+    public final String name;
+    public final Boolean archived;
+    public final Boolean released;
+    public final LocalDate releaseDate;
+    public final Boolean overdue;
+    public final LocalDate userReleaseDate;
+    public final String project;
+    public final Long projectId;
 
     private VersionDto(final Builder builder) {
         self = builder.self;

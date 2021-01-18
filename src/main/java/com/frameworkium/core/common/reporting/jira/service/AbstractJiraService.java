@@ -16,7 +16,7 @@ import io.restassured.specification.ResponseSpecification;
 public abstract class AbstractJiraService extends BaseService {
     @Override
     protected RequestSpecification getRequestSpec() {
-        return RestAssured.given()
+        return RestAssured.given().log().ifValidationFails()
                 .baseUri(JiraEndpoint.BASE_URI.getUrl())
                 .config(config())
                 .relaxedHTTPSValidation()

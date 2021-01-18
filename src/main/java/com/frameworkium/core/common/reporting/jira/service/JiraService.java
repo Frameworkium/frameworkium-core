@@ -2,8 +2,8 @@ package com.frameworkium.core.common.reporting.jira.service;
 
 public class JiraService {
 
-    public ProjectService project() {
-        return new ProjectService();
+    public Project project() {
+        return new Project();
     }
 
     public CycleService cycle() {
