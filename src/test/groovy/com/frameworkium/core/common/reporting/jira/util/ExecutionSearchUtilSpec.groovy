@@ -1,18 +1,22 @@
 package com.frameworkium.core.common.reporting.jira.util
 
+
 import com.frameworkium.core.common.reporting.jira.endpoint.ZephyrEndpoint
 import com.github.tomakehurst.wiremock.client.WireMock
 import groovy.json.JsonBuilder
+import spock.lang.Requires
 import spock.lang.Shared
 import spock.lang.Specification
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*
 import static com.github.tomakehurst.wiremock.common.Metadata.metadata
 
+@Requires({ System.getProperty("zapiCycleRegEx") != null })
 class ExecutionSearchUtilSpec extends Specification {
     def versionId = new Random().nextLong()
     def projectId = new Random().nextLong()
     def zqlQuery = UUID.randomUUID().toString()
+    def searchBaseUrl = ZephyrEndpoint.EXECUTE_SEARCH.getUrl()
     String stubId = UUID.randomUUID().toString() // to uniquely identify stub for cleanup later
     @Shared
     WireMock wireMock = new WireMock("localhost", 8080)
@@ -21,7 +25,6 @@ class ExecutionSearchUtilSpec extends Specification {
         System.properties["jiraURL"] = "http://localhost:8080"
         System.properties["jiraUsername"] = "username"
         System.properties["jiraPassword"] = "password"
-        System.properties["zapiCycleRegEx"] = "myCycle"
     }
 
     def cleanup() {
@@ -30,8 +33,6 @@ class ExecutionSearchUtilSpec extends Specification {
 
     def "Get execution Ids optionally with Property.ZAPI_REGEX_CYCLE set"() {
         given:
-            // ZephyrEndpoint call needs to be after zapiCycleRegEx is set so that isSpecified() returns true
-            def searchBaseUrl = ZephyrEndpoint.EXECUTE_SEARCH.getUrl()
             def searchResponse = createMockedSearchResponse(projectId, versionId)
             wireMock.register(get(urlPathEqualTo(searchBaseUrl))
                     .withMetadata(metadata().attr("id", stubId))
@@ -52,8 +53,6 @@ class ExecutionSearchUtilSpec extends Specification {
 
     def "Get execution status Ids optionally with Property.ZAPI_REGEX_CYCLE set"() {
         given:
-            // ZephyrEndpoint call needs to be after zapiCycleRegEx is set so that isSpecified() returns true
-            def searchBaseUrl = ZephyrEndpoint.EXECUTE_SEARCH.getUrl()
             def searchResponse = createMockedSearchResponse(projectId, versionId)
             wireMock.register(get(urlPathEqualTo(searchBaseUrl))
                     .withMetadata(metadata().attr("id", stubId))
