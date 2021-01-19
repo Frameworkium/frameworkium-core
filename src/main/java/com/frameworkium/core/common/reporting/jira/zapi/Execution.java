@@ -2,6 +2,7 @@ package com.frameworkium.core.common.reporting.jira.zapi;
 
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.jira.JiraConfig;
+import com.frameworkium.core.common.reporting.jira.util.ExecutionSearchUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,10 +42,10 @@ public class Execution {
         String query = String.format(
                 "issue='%s' and fixVersion='%s'", issue, version);
 
-        SearchExecutions search = new SearchExecutions(query);
-        idList = search.getExecutionIds();
+        final ExecutionSearchUtil executionSearchUtil = new ExecutionSearchUtil(query);
+        idList = executionSearchUtil.getExecutionIdsByZAPICycleRegex();
 
-        List<Integer> statusList = search.getExecutionStatuses();
+        List<Integer> statusList = executionSearchUtil.getExecutionStatusesByZAPICycleRegex();
         if (!statusList.isEmpty()) {
             currentStatus = statusList.get(0);
         }

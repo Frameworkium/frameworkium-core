@@ -8,6 +8,7 @@ public enum ZephyrEndpoint implements Endpoint {
     REST_API_PATH("/rest/zapi/2"),
     EXECUTION("/execution"),
     ADD_TEST_TO_EXECUTION("/execution/addTestsToCycle"),
+    EXECUTE_SEARCH("/zql/executeSearch"),
     CYCLE("/cycle");
 
     private final String url;
