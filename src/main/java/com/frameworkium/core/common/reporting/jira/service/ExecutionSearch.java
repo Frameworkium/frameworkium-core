@@ -9,7 +9,8 @@ public class ExecutionSearch extends AbstractJiraService {
         return search(zqlQuery, null, null, null, null);
     }
 
-    public ExecutionSearchDto search(String zqlQuery, Integer filterId, Integer offset, Integer maxRecords, String expand) {
+    public ExecutionSearchDto search(
+            String zqlQuery, Integer filterId, Integer offset, Integer maxRecords, String expand) {
         RequestSpecification reqspec = getRequestSpec()
                 .basePath(ZephyrEndpoint.EXECUTE_SEARCH.getUrl())
                 .queryParam("zqlQuery", zqlQuery);
