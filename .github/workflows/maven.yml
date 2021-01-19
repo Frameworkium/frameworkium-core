@@ -22,7 +22,6 @@ jobs:
     strategy:
       matrix:
         java-version: [ 1.8, 1.11 ]
-    #    container: node:10.18-jessie
     services:
       wiremock:
         image: rodolpheche/wiremock:2.27.2
