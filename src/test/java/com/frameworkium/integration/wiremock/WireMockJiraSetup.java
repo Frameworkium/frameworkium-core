@@ -12,8 +12,10 @@ import org.testng.annotations.Test;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 @Test
+/* This is called in pre-integration-test phase to setup mocked jira responses for the integration-test phase
+ * This mocked jira is specifically for tests that utilizes Frameworkium's Jira manipulation capabilities
+ */
 public class WireMockJiraSetup extends BaseAPITest {
-
     public void mockJiraSetup() {
         final WireMock wireMock = new WireMock();
 
