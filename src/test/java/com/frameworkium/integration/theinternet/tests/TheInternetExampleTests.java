@@ -30,7 +30,7 @@ public class TheInternetExampleTests extends BaseUITest {
                         .getAllCheckboxCheckedStatus();
 
         // Assert that all checkboxes are checked
-        Truth8.assertThat(checkboxesStatus).doesNotContain(true);
+        Truth8.assertThat(checkboxesStatus).doesNotContain(false);
     }
 
     @Issue("INT-3")
