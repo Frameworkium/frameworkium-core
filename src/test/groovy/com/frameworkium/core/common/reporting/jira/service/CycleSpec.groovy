@@ -4,6 +4,7 @@ import com.frameworkium.core.common.reporting.jira.dto.cycle.CreateNewCycleDto
 import com.frameworkium.core.common.reporting.jira.dto.cycle.CycleLightDto
 import com.frameworkium.core.common.reporting.jira.dto.cycle.CycleListDto
 import com.frameworkium.core.common.reporting.jira.endpoint.ZephyrEndpoint
+import com.frameworkium.core.common.reporting.jira.zapi.Cycle
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.verification.LoggedRequest
 import groovy.json.JsonBuilder

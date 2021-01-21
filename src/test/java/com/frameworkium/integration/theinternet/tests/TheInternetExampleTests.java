@@ -15,7 +15,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 @Feature("The Internet Example Feature")
-@Test
+@Test(groups = {"experiment"})
 public class TheInternetExampleTests extends BaseUITest {
 
     @Issue("INT-2")

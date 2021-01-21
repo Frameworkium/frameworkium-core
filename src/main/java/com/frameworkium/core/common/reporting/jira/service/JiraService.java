@@ -1,5 +1,8 @@
 package com.frameworkium.core.common.reporting.jira.service;
 
+import com.frameworkium.core.common.reporting.jira.zapi.Cycle;
+import com.frameworkium.core.common.reporting.jira.zapi.Execution;
+
 public class JiraService {
 
     public Project project() {

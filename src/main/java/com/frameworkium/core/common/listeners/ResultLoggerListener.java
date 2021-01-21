@@ -4,7 +4,7 @@ import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.TestIdUtils;
 import com.frameworkium.core.common.reporting.jira.JiraConfig;
 import com.frameworkium.core.common.reporting.jira.service.Issue;
-import com.frameworkium.core.common.reporting.jira.zapi.Execution;
+import com.frameworkium.core.common.reporting.jira.util.ExecutionUtil;
 import com.frameworkium.core.common.reporting.spira.SpiraExecution;
 import com.frameworkium.core.ui.UITestLifecycle;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
@@ -40,7 +40,7 @@ public class ResultLoggerListener implements ITestListener {
 
         if (zapiLoggingParamsProvided(result)) {
             logger.info("Logging WIP to zapi");
-            new Execution(issueOrTestCaseId)
+            new ExecutionUtil(issueOrTestCaseId)
                     .update(JiraConfig.ZapiStatus.ZAPI_STATUS_WIP, comment);
         }
         if (jiraTransitionLoggingParamsProvided(result)) {
@@ -92,7 +92,7 @@ public class ResultLoggerListener implements ITestListener {
 
         if (zapiLoggingParamsProvided(result)) {
             logger.info("Logging PASS to zapi");
-            new Execution(issueOrTestCaseId)
+            new ExecutionUtil(issueOrTestCaseId)
                     .update(JiraConfig.ZapiStatus.ZAPI_STATUS_PASS, comment);
         }
         if (jiraTransitionLoggingParamsProvided(result)) {
@@ -141,7 +141,7 @@ public class ResultLoggerListener implements ITestListener {
 
         if (zapiLoggingParamsProvided(result)) {
             logger.info("Logging FAIL to zapi");
-            new Execution(issueOrTestCaseId)
+            new ExecutionUtil(issueOrTestCaseId)
                     .update(JiraConfig.ZapiStatus.ZAPI_STATUS_FAIL, comment);
         }
         if (jiraTransitionLoggingParamsProvided(result)) {
@@ -184,7 +184,7 @@ public class ResultLoggerListener implements ITestListener {
 
         if (zapiLoggingParamsProvided(result)) {
             logger.info("Logging BLOCKED to zapi");
-            new Execution(issueOrTestCaseId)
+            new ExecutionUtil(issueOrTestCaseId)
                     .update(JiraConfig.ZapiStatus.ZAPI_STATUS_BLOCKED, comment);
         }
         if (jiraTransitionLoggingParamsProvided(result)) {

@@ -3,11 +3,16 @@ package com.frameworkium.core.common.reporting.jira.service;
 import com.frameworkium.core.common.reporting.jira.endpoint.JiraEndpoint;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.*;
 
 import java.io.File;
 
+import static java.text.MessageFormat.format;
+
 public class Issue extends AbstractJiraService {
+    private static final Logger logger = LogManager.getLogger();
     public final String issueKey;
     private static final String ISSUE_KEY = "issueKey";
 
@@ -41,14 +46,12 @@ public class Issue extends AbstractJiraService {
         JSONObject fieldObj = new JSONObject();
         JSONArray setArr = new JSONArray();
         JSONObject setObj = new JSONObject();
-        JSONObject valueObj = new JSONObject();
 
         try {
             obj.put("update", fieldObj);
             fieldObj.put(getFieldId(fieldToUpdate), setArr);
             setArr.put(setObj);
-            setObj.put("set", valueObj);
-            valueObj.put("value", resultValue);
+            setObj.put("set", resultValue);
 
             getRequestSpec().log().ifValidationFails()
                     .basePath(JiraEndpoint.ISSUE.getUrl())
@@ -101,6 +104,7 @@ public class Issue extends AbstractJiraService {
      * @param transitionName the name of the transition to perform on
      */
     public void transition(String transitionName) {
+        logger.debug(() -> format("Transitioning - {0}", transitionName));
         transitionById(getTransitionId(transitionName));
     }
 
@@ -111,6 +115,7 @@ public class Issue extends AbstractJiraService {
         try {
             obj.put("transition", idObj);
             idObj.put("id", transitionId);
+            logger.debug(() -> format("Transitioning using body - {0}", obj.toString()));
             getRequestSpec().log().ifValidationFails()
                     .basePath(JiraEndpoint.ISSUE.getUrl())
                     .contentType(ContentType.JSON).and()
@@ -124,7 +129,7 @@ public class Issue extends AbstractJiraService {
     }
 
     private String getTransitionId(String transitionName) {
-        return getRequestSpec().log().ifValidationFails()
+        String transitionId = getRequestSpec().log().ifValidationFails()
                 .basePath(JiraEndpoint.ISSUE.getUrl())
                 .pathParam(ISSUE_KEY, issueKey)
                 .queryParam("expand", "transitions.fields")
@@ -132,6 +137,8 @@ public class Issue extends AbstractJiraService {
                 .extract().jsonPath()
                 .getString(String.format(
                         "transitions.find {it -> it.name == '%s'}.id", transitionName));
+        logger.debug(() -> format("Found id for transition named {1} - {0}", transitionId, transitionName));
+        return transitionId;
     }
 
     /**

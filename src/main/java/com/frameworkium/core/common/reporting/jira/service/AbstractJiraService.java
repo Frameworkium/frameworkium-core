@@ -27,7 +27,7 @@ public abstract class AbstractJiraService extends BaseService {
 
     @Override
     protected ResponseSpecification getResponseSpec() {
-        throw new AssertionError("Unimplemented");
+        throw new UnsupportedOperationException("Unimplemented");
     }
 
     private RestAssuredConfig config() {

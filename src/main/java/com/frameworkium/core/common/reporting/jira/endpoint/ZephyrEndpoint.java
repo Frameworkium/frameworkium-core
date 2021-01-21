@@ -5,10 +5,13 @@ import com.frameworkium.core.common.properties.Property;
 
 public enum ZephyrEndpoint implements Endpoint {
     BASE_URI(Property.JIRA_URL.getValue()),
-    REST_API_PATH("/rest/zapi/2"),
+    REST_API_PATH("/rest/zapi/latest"),
     EXECUTION("/execution"),
     ADD_TEST_TO_EXECUTION("/execution/addTestsToCycle"),
-    CYCLE("/cycle");
+    EXECUTE_SEARCH("/zql/executeSearch"),
+    CYCLE("/cycle"),
+    ATTACHMENT("/attachment"),
+    ATTACHMENT_BY_ENTITY("/attachment/attachmentsByEntity");
 
     private final String url;
 

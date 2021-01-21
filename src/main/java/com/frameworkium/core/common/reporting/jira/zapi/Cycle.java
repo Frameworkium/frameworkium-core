@@ -1,7 +1,8 @@
-package com.frameworkium.core.common.reporting.jira.service;
+package com.frameworkium.core.common.reporting.jira.zapi;
 
 import com.frameworkium.core.common.reporting.jira.dto.cycle.*;
 import com.frameworkium.core.common.reporting.jira.endpoint.ZephyrEndpoint;
+import com.frameworkium.core.common.reporting.jira.service.AbstractJiraService;
 
 import static org.apache.http.HttpStatus.SC_OK;
 

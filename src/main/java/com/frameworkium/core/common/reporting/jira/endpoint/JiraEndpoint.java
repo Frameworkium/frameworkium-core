@@ -26,7 +26,7 @@ public enum JiraEndpoint implements Endpoint {
     @Override
     public String getUrl(Object... params) {
         if (url.equals(REST_API_PATH.url) || url.equals(BASE_URI.url)) {
-            return url;
+            return String.format(url, params);
         }
         // returns with the rest API path e.g. /rest/api/2/issue
         String urlWithRestAPIPath = REST_API_PATH.url + url;
