@@ -1,7 +1,6 @@
-package com.frameworkium.core.common.reporting.jira.service
+package com.frameworkium.core.common.reporting.jira.zapi
 
 import com.frameworkium.core.common.reporting.jira.endpoint.ZephyrEndpoint
-import com.frameworkium.core.common.reporting.jira.zapi.ExecutionSearch
 import com.github.tomakehurst.wiremock.client.WireMock
 import groovy.json.JsonBuilder
 import spock.lang.Shared
