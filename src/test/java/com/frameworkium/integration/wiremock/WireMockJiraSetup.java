@@ -11,10 +11,10 @@ import org.testng.annotations.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
-@Test(priority = -1, groups = {"experiment"}, singleThreaded = true)
-public class WireMockJiraSetupTest extends BaseAPITest {
+@Test
+public class WireMockJiraSetup extends BaseAPITest {
 
-    public void setupWireMockTest() {
+    public void mockJiraSetup() {
         final WireMock wireMock = new WireMock();
 
         // zapi execution search
