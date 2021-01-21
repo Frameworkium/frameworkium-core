@@ -1,4 +1,4 @@
-package com.frameworkium.core.common.reporting.jira.service
+package com.frameworkium.core.common.reporting.jira.zapi
 
 import com.frameworkium.core.common.reporting.jira.dto.cycle.CreateNewCycleDto
 import com.frameworkium.core.common.reporting.jira.dto.cycle.CycleLightDto

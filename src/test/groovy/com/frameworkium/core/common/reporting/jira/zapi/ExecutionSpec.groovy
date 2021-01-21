@@ -1,8 +1,7 @@
-package com.frameworkium.core.common.reporting.jira.service
+package com.frameworkium.core.common.reporting.jira.zapi
 
 import com.frameworkium.core.common.reporting.jira.dto.execution.AddTestToCycleOperationDto
 import com.frameworkium.core.common.reporting.jira.endpoint.ZephyrEndpoint
-import com.frameworkium.core.common.reporting.jira.zapi.Execution
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.verification.LoggedRequest
 import groovy.json.JsonBuilder
@@ -12,7 +11,7 @@ import spock.lang.Specification
 import static com.github.tomakehurst.wiremock.client.WireMock.*
 import static com.github.tomakehurst.wiremock.common.Metadata.metadata
 
-class Execution2Spec extends Specification {
+class ExecutionSpec extends Specification {
     Long projectId = new Random().nextLong()
     Long versionId = new Random().nextLong()
     String method = "1"
