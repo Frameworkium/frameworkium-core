@@ -2,7 +2,7 @@ package com.frameworkium.core.common.reporting.jira.service
 
 import com.frameworkium.core.common.reporting.jira.dto.execution.AddTestToCycleOperationDto
 import com.frameworkium.core.common.reporting.jira.endpoint.ZephyrEndpoint
-import com.frameworkium.core.common.reporting.jira.zapi.Execution2
+import com.frameworkium.core.common.reporting.jira.zapi.Execution
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.verification.LoggedRequest
 import groovy.json.JsonBuilder
@@ -19,7 +19,7 @@ class Execution2Spec extends Specification {
     String cycleId = new Random().nextLong().toString()
     List<String> issues = ["TEST-1", "TEST-2"]
     String addTestToExecutionBaseUrl = ZephyrEndpoint.ADD_TEST_TO_EXECUTION.getUrl()
-    Execution2 execution = new Execution2()
+    Execution execution = new Execution()
     String stubId = UUID.randomUUID().toString() // to uniquely identify stub for cleanup later
     @Shared
     WireMock wireMock = new WireMock("localhost", 8080)

@@ -2,10 +2,6 @@ package com.frameworkium.core.common.reporting.jira.util;
 
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.jira.JiraConfig;
-import com.frameworkium.core.common.reporting.jira.dto.attachment.AttachmentListDto;
-import com.frameworkium.core.common.reporting.jira.dto.execution.UpdateExecutionOperationDto;
-import com.frameworkium.core.common.reporting.jira.zapi.Attachment;
-import com.frameworkium.core.common.reporting.jira.zapi.Execution2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -110,7 +106,7 @@ public class ExecutionUtil {
             //        StringUtils.abbreviate(comment, commentMaxLen);
             //updateExecutionOperationDto.status = status;
             //
-            //final Execution2 execution2 = new Execution2();
+            //final Execution execution2 = new Execution();
             //execution2.updateExecutionDetails(updateExecutionOperationDto, executionId);
 
         } catch (JSONException e) {

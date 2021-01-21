@@ -7,7 +7,7 @@ import com.frameworkium.core.common.reporting.jira.service.AbstractJiraService;
 
 import static org.apache.http.HttpStatus.SC_OK;
 
-public class Execution2 extends AbstractJiraService {
+public class Execution extends AbstractJiraService {
     public String addTestsToCycle(AddTestToCycleOperationDto addTestToCycleOperationDto) {
         return getRequestSpec()
                 .basePath(ZephyrEndpoint.ADD_TEST_TO_EXECUTION.getUrl())
