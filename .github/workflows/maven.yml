@@ -58,8 +58,8 @@ jobs:
       - name: Build with Maven - test groups and verify that all @Before methods in BaseUITest
         run: mvn verify -B -Dthreads=$THREAD_COUNT -Dbrowser=chrome -Dgroups=fw-bugs -DreuseBrowser=true -Dheadless=true
         # Disabled until we have a JIRA to use
-      - name: Build with Maven
-        run: mvn verify -B -Dthreads=$THREAD_COUNT -Dbrowser=chrome -DjiraURL="http://localhost:8080" -DresultVersion="BUILD TEST VERSION" -DzapiCycleRegEx="myCycle" -DjiraUsername=frameworkium -DjiraPassword=frameworkium -DcaptureURL=$CAPTURE_URL -DsutName="$SUT_NAME" -DsutVersion="$SUT_VERSION"
+      - name: Build with Maven - chrome on grid with jira/zephyr options on
+        run: mvn verify -B -Dthreads=$THREAD_COUNT -Dbrowser=chrome -Dmaximise=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub -DjiraURL="http://localhost:8080" -DresultVersion="BUILD TEST VERSION" -DzapiCycleRegEx="myCycle" -DjiraUsername=frameworkium -DjiraPassword=frameworkium -DcaptureURL=$CAPTURE_URL -DsutName="$SUT_NAME" -DsutVersion="$SUT_VERSION"
         # Disabled until we have saucelabs account
         #      - name: Build with Maven - saucelabs
         #        run: mvn verify -Dsauce=true -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.0 -Ddevice=iPad -DcaptureURL=$CAPTURE_URL -DsutName="$SUT_NAME" -DsutVersion="$SUT_VERSION"
