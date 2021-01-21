@@ -1,28 +1,8 @@
 package com.frameworkium.core.common.reporting.jira;
 
-import com.frameworkium.core.common.properties.Property;
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
-
 public class JiraConfig {
-
-    public static final String JIRA_REST_PATH = "/rest/api/latest/";
-    public static final String REST_ZAPI_PATH = "/rest/zapi/latest/";
-
     private JiraConfig() {
         // hide default constructor for this util class
-    }
-
-    /**
-     * Basic request to send to JIRA and authenticate successfully.
-     */
-    public static RequestSpecification getJIRARequestSpec() {
-        return RestAssured.given()
-                .baseUri(Property.JIRA_URL.getValue())
-                .relaxedHTTPSValidation()
-                .auth().preemptive().basic(
-                        Property.JIRA_USERNAME.getValue(),
-                        Property.JIRA_PASSWORD.getValue());
     }
 
     /**
