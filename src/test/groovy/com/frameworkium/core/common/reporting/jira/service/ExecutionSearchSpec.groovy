@@ -1,6 +1,7 @@
 package com.frameworkium.core.common.reporting.jira.service
 
 import com.frameworkium.core.common.reporting.jira.endpoint.ZephyrEndpoint
+import com.frameworkium.core.common.reporting.jira.zapi.ExecutionSearch
 import com.github.tomakehurst.wiremock.client.WireMock
 import groovy.json.JsonBuilder
 import spock.lang.Shared
@@ -43,9 +44,18 @@ class ExecutionSearchSpec extends Specification {
             def searchResults = search.search(zqlQuery)
         then:
             with(searchResults) {
-                it.executions[0].versionId == versionId
-                it.executions[0].projectId == projectId
+                it.executions[0].executionLightDto.id == 409
+                it.executions[0].executionLightDto.orderId == 1
+                it.executions[0].executionLightDto.comment == "hello"
+                it.executions[0].executionLightDto.htmlComment == "world"
+                it.executions[0].executionLightDto.cycleId == -1
+                it.executions[0].executionLightDto.cycleName == "Ad hoc"
+                it.executions[0].executionLightDto.versionId == versionId
+                it.executions[0].executionLightDto.versionName == "Unscheduled"
+                it.executions[0].executionLightDto.projectId == projectId
                 it.executions[0].issueId == "10125"
+                it.executions[0].executionLightDto.issueKey == "IE-1"
+                it.executions[0].executionLightDto.projectKey == "IE"
                 it.executions[0].status.id == -1
                 it.maxResultAllowed == 20
                 it.totalCount == 1
@@ -82,8 +92,8 @@ class ExecutionSearchSpec extends Specification {
                                 ],
                                 "executedOn"          : "",
                                 "creationDate"        : "27/Apr/16",
-                                "comment"             : "",
-                                "htmlComment"         : "",
+                                "comment"             : "hello",
+                                "htmlComment"         : "world",
                                 "executedBy"          : "",
                                 "executedByUserName"  : "",
                                 "executionDefects"    : [],

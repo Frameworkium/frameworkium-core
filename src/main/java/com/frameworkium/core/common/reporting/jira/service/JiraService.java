@@ -1,5 +1,8 @@
 package com.frameworkium.core.common.reporting.jira.service;
 
+import com.frameworkium.core.common.reporting.jira.zapi.Cycle;
+import com.frameworkium.core.common.reporting.jira.zapi.Execution2;
+
 public class JiraService {
 
     public Project project() {
@@ -10,8 +13,8 @@ public class JiraService {
         return new Cycle();
     }
 
-    public Execution execution() {
-        return new Execution();
+    public Execution2 execution() {
+        return new Execution2();
     }
 
     public Version version() {

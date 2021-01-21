@@ -1,8 +1,11 @@
-package com.frameworkium.core.common.reporting.jira.zapi;
+package com.frameworkium.core.common.reporting.jira.util;
 
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.jira.JiraConfig;
-import com.frameworkium.core.common.reporting.jira.util.ExecutionSearchUtil;
+import com.frameworkium.core.common.reporting.jira.dto.attachment.AttachmentListDto;
+import com.frameworkium.core.common.reporting.jira.dto.execution.UpdateExecutionOperationDto;
+import com.frameworkium.core.common.reporting.jira.zapi.Attachment;
+import com.frameworkium.core.common.reporting.jira.zapi.Execution2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +20,7 @@ import static com.frameworkium.core.common.reporting.jira.JiraConfig.REST_ZAPI_P
 import static com.frameworkium.core.common.reporting.jira.JiraConfig.getJIRARequestSpec;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-public class Execution {
+public class ExecutionUtil {
 
     private static final Logger logger = LogManager.getLogger();
 
@@ -29,7 +32,7 @@ public class Execution {
     /**
      * Constructor that links an execution to an issue.
      */
-    public Execution(String issue) {
+    public ExecutionUtil(String issue) {
         this.version = Property.RESULT_VERSION.getValue();
         this.issue = issue;
         initExecutionIdsAndCurrentStatus();
@@ -102,6 +105,14 @@ public class Execution {
                     .when()
                     .put(REST_ZAPI_PATH + "execution/" + executionId + "/execute");
 
+            //final UpdateExecutionOperationDto updateExecutionOperationDto = new UpdateExecutionOperationDto();
+            //updateExecutionOperationDto.executionDto.executionLightDto.comment =
+            //        StringUtils.abbreviate(comment, commentMaxLen);
+            //updateExecutionOperationDto.status = status;
+            //
+            //final Execution2 execution2 = new Execution2();
+            //execution2.updateExecutionDetails(updateExecutionOperationDto, executionId);
+
         } catch (JSONException e) {
             logger.error("Update status and comment failed", e);
         }
@@ -124,6 +135,13 @@ public class Execution {
                 .stream()
                 .map(fileId -> REST_ZAPI_PATH + "attachment/" + fileId)
                 .forEach(getJIRARequestSpec()::delete);
+
+        //final Attachment attachment = new Attachment();
+        //final AttachmentListDto executionListDto = attachment.getAttachmentByEntity(executionId, "EXECUTION");
+        //executionListDto.data.stream()
+        //        .map(a -> a.fileId)
+        //        .map(Long::parseLong)
+        //        .forEach(attachment::deleteAttachment);
     }
 
     private void addAttachments(Integer executionId, String... attachments) {
@@ -140,5 +158,11 @@ public class Execution {
                                 .multiPart(attachment)
                                 .when()
                                 .post(path));
+        //final Attachment attachment = new Attachment();
+        //Arrays.stream(attachments)
+        //        .filter(Objects::nonNull)
+        //        .map(File::new)
+        //        .forEach(file ->
+        //                attachment.addAttachments(executionId, "EXECUTION", file));
     }
 }

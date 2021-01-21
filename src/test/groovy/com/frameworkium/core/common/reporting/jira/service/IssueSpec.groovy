@@ -172,10 +172,9 @@ class IssueSpec extends Specification {
         def obj = [
                 "update": [
                         (fieldId): [
-                                ["set": ["value": fieldNewValue]]
+                                ["set": fieldNewValue]]
                         ]
                 ]
-        ]
         return new JsonBuilder(obj).toString()
     }
 

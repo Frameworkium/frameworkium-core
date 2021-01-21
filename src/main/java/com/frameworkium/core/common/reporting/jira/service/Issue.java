@@ -41,14 +41,12 @@ public class Issue extends AbstractJiraService {
         JSONObject fieldObj = new JSONObject();
         JSONArray setArr = new JSONArray();
         JSONObject setObj = new JSONObject();
-        JSONObject valueObj = new JSONObject();
 
         try {
             obj.put("update", fieldObj);
             fieldObj.put(getFieldId(fieldToUpdate), setArr);
             setArr.put(setObj);
-            setObj.put("set", valueObj);
-            valueObj.put("value", resultValue);
+            setObj.put("set", resultValue);
 
             getRequestSpec().log().ifValidationFails()
                     .basePath(JiraEndpoint.ISSUE.getUrl())
@@ -101,6 +99,8 @@ public class Issue extends AbstractJiraService {
      * @param transitionName the name of the transition to perform on
      */
     public void transition(String transitionName) {
+        logger.warn("transitioning" + transitionName); //todo rmv
+        logger.warn("found transition id" +  getTransitionId(transitionName));
         transitionById(getTransitionId(transitionName));
     }
 
@@ -111,6 +111,7 @@ public class Issue extends AbstractJiraService {
         try {
             obj.put("transition", idObj);
             idObj.put("id", transitionId);
+            logger.warn("transitionObj made "  + obj.toString()); //todo rmv
             getRequestSpec().log().ifValidationFails()
                     .basePath(JiraEndpoint.ISSUE.getUrl())
                     .contentType(ContentType.JSON).and()

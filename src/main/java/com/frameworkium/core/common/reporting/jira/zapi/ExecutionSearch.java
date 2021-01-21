@@ -1,7 +1,8 @@
-package com.frameworkium.core.common.reporting.jira.service;
+package com.frameworkium.core.common.reporting.jira.zapi;
 
 import com.frameworkium.core.common.reporting.jira.dto.executionsearch.ExecutionSearchDto;
 import com.frameworkium.core.common.reporting.jira.endpoint.ZephyrEndpoint;
+import com.frameworkium.core.common.reporting.jira.service.AbstractJiraService;
 import io.restassured.specification.RequestSpecification;
 
 public class ExecutionSearch extends AbstractJiraService {
