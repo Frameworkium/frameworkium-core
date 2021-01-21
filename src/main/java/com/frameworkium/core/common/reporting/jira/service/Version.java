@@ -7,10 +7,6 @@ import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
 
 public class Version extends AbstractJiraService {
-
-    protected Version() {
-    }
-
     public VersionDto getVersion(String versionId) {
         return getRequestSpec()
                 .basePath(JiraEndpoint.VERSION.getUrl())

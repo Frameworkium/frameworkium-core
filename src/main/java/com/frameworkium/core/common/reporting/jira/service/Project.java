@@ -10,9 +10,6 @@ import java.util.List;
 import static org.apache.http.HttpStatus.SC_OK;
 
 public class Project extends AbstractJiraService {
-    protected Project() {
-    }
-
     public ProjectDto getProject(String projectIdOrKey) {
         return getRequestSpec()
                 .basePath(JiraEndpoint.PROJECT.getUrl())
