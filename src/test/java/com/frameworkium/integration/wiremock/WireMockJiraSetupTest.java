@@ -1,4 +1,4 @@
-package com.frameworkium.integration;
+package com.frameworkium.integration.wiremock;
 
 import com.frameworkium.core.api.tests.BaseAPITest;
 import com.frameworkium.core.common.reporting.jira.endpoint.JiraEndpoint;
@@ -11,9 +11,9 @@ import org.testng.annotations.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
-
+@Test(priority = -1, groups = {"experiment"}, singleThreaded = true)
 public class WireMockJiraSetupTest extends BaseAPITest {
-    @Test(priority = -1, groups = {"experiment"})
+
     public void setupWireMockTest() {
         final WireMock wireMock = new WireMock();
 
