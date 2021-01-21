@@ -132,7 +132,7 @@ class IssueSpec extends Specification {
             File file = createNewFile("temp.txt")
             wireMock.register(post(urlPathMatching(url))
                     .withMetadata(metadata().attr("id", stubId))
-                    .withHeader("X-Atlassian-Token", equalTo("no-check"))
+                    .withHeader("X-Atlassian-Token", equalTo("nocheck"))
                     .willReturn(aResponse().withStatus(200))
             )
         when:

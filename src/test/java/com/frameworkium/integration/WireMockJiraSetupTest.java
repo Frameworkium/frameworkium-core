@@ -7,15 +7,13 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import io.restassured.http.ContentType;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 
 public class WireMockJiraSetupTest extends BaseAPITest {
-    @BeforeSuite
-    @Test(priority = 1, groups = {"experiment"})
+    @Test(priority = -1, groups = {"experiment"})
     public void setupWireMockTest() {
         final WireMock wireMock = new WireMock();
 
