@@ -26,7 +26,7 @@ public class Attachment extends AbstractJiraService {
                 .basePath(ZephyrEndpoint.ATTACHMENT.getUrl())
                 .pathParam("id", id)
                 .when()
-                .delete()
+                .delete("/{id}")
                 .then().log().ifValidationFails()
                 .statusCode(SC_OK);
     }

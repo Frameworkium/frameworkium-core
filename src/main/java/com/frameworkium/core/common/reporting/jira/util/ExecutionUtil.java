@@ -2,18 +2,19 @@ package com.frameworkium.core.common.reporting.jira.util;
 
 import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.common.reporting.jira.JiraConfig;
+import com.frameworkium.core.common.reporting.jira.dto.attachment.AttachmentListDto;
+import com.frameworkium.core.common.reporting.jira.dto.execution.*;
+import com.frameworkium.core.common.reporting.jira.zapi.Attachment;
+import com.frameworkium.core.common.reporting.jira.zapi.Execution;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.testng.ITestResult;
 
 import java.io.File;
 import java.util.*;
 
-import static com.frameworkium.core.common.reporting.jira.JiraConfig.REST_ZAPI_PATH;
-import static com.frameworkium.core.common.reporting.jira.JiraConfig.getJIRARequestSpec;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class ExecutionUtil {
@@ -88,26 +89,19 @@ public class ExecutionUtil {
     }
 
     private void updateStatusAndComment(Integer executionId, int status, String comment) {
-
         try {
-            JSONObject obj = new JSONObject();
-            obj.put("status", String.valueOf(status));
             int commentMaxLen = 750;
-            obj.put("comment", StringUtils.abbreviate(comment, commentMaxLen));
+            final UpdateExecutionOperationDto updateExecutionOperationDto = UpdateExecutionOperationDto.newBuilder()
+                    .status(status)
+                    .executionDto(ExecutionDto.newBuilder()
+                            .executionLightDto(ExecutionLightDto.newBuilder()
+                                    .comment(StringUtils.abbreviate(comment, commentMaxLen))
+                                    .build())
+                            .build())
+                    .build();
 
-            getJIRARequestSpec()
-                    .contentType("application/json")
-                    .body(obj.toString())
-                    .when()
-                    .put(REST_ZAPI_PATH + "execution/" + executionId + "/execute");
-
-            //final UpdateExecutionOperationDto updateExecutionOperationDto = new UpdateExecutionOperationDto();
-            //updateExecutionOperationDto.executionDto.executionLightDto.comment =
-            //        StringUtils.abbreviate(comment, commentMaxLen);
-            //updateExecutionOperationDto.status = status;
-            //
-            //final Execution execution2 = new Execution();
-            //execution2.updateExecutionDetails(updateExecutionOperationDto, executionId);
+            final Execution execution = new Execution();
+            execution.updateExecutionDetails(updateExecutionOperationDto, executionId);
 
         } catch (JSONException e) {
             logger.error("Update status and comment failed", e);
@@ -122,43 +116,20 @@ public class ExecutionUtil {
     }
 
     private void deleteExistingAttachments(Integer executionId) {
-
-        String path = "attachment/attachmentsByEntity?entityType=EXECUTION&entityId=" + executionId;
-
-        getJIRARequestSpec()
-                .get(REST_ZAPI_PATH + path).thenReturn().jsonPath()
-                .getList("data.fileId", String.class)
-                .stream()
-                .map(fileId -> REST_ZAPI_PATH + "attachment/" + fileId)
-                .forEach(getJIRARequestSpec()::delete);
-
-        //final Attachment attachment = new Attachment();
-        //final AttachmentListDto executionListDto = attachment.getAttachmentByEntity(executionId, "EXECUTION");
-        //executionListDto.data.stream()
-        //        .map(a -> a.fileId)
-        //        .map(Long::parseLong)
-        //        .forEach(attachment::deleteAttachment);
+        final Attachment attachment = new Attachment();
+        final AttachmentListDto executionListDto = attachment.getAttachmentByEntity(executionId, "EXECUTION");
+        executionListDto.data.stream()
+                .map(a -> a.fileId)
+                .map(Long::parseLong)
+                .forEach(attachment::deleteAttachment);
     }
 
     private void addAttachments(Integer executionId, String... attachments) {
-
-        String path = REST_ZAPI_PATH
-                + "attachment?entityType=EXECUTION&entityId=" + executionId;
-
+        final Attachment attachment = new Attachment();
         Arrays.stream(attachments)
                 .filter(Objects::nonNull)
                 .map(File::new)
-                .forEach(attachment ->
-                        getJIRARequestSpec()
-                                .header("X-Atlassian-Token", "nocheck")
-                                .multiPart(attachment)
-                                .when()
-                                .post(path));
-        //final Attachment attachment = new Attachment();
-        //Arrays.stream(attachments)
-        //        .filter(Objects::nonNull)
-        //        .map(File::new)
-        //        .forEach(file ->
-        //                attachment.addAttachments(executionId, "EXECUTION", file));
+                .forEach(file ->
+                        attachment.addAttachments(executionId, "EXECUTION", file));
     }
 }

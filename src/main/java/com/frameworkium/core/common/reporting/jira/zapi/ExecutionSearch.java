@@ -1,16 +1,16 @@
 package com.frameworkium.core.common.reporting.jira.zapi;
 
-import com.frameworkium.core.common.reporting.jira.dto.executionsearch.ExecutionSearchDto;
+import com.frameworkium.core.common.reporting.jira.dto.executionsearch.ExecutionSearchListDto;
 import com.frameworkium.core.common.reporting.jira.endpoint.ZephyrEndpoint;
 import com.frameworkium.core.common.reporting.jira.service.AbstractJiraService;
 import io.restassured.specification.RequestSpecification;
 
 public class ExecutionSearch extends AbstractJiraService {
-    public ExecutionSearchDto search(String zqlQuery) {
+    public ExecutionSearchListDto search(String zqlQuery) {
         return search(zqlQuery, null, null, null, null);
     }
 
-    public ExecutionSearchDto search(
+    public ExecutionSearchListDto search(
             String zqlQuery, Integer filterId, Integer offset, Integer maxRecords, String expand) {
         RequestSpecification reqspec = getRequestSpec()
                 .basePath(ZephyrEndpoint.EXECUTE_SEARCH.getUrl())
@@ -32,6 +32,6 @@ public class ExecutionSearch extends AbstractJiraService {
         return reqspec.when()
                 .get().then().log().ifValidationFails()
                 .extract()
-                .as(ExecutionSearchDto.class);
+                .as(ExecutionSearchListDto.class);
     }
 }

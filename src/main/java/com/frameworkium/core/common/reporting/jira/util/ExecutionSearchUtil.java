@@ -1,8 +1,8 @@
 package com.frameworkium.core.common.reporting.jira.util;
 
 import com.frameworkium.core.common.properties.Property;
-import com.frameworkium.core.common.reporting.jira.dto.executionsearch.ExecutionDto;
 import com.frameworkium.core.common.reporting.jira.dto.executionsearch.ExecutionSearchDto;
+import com.frameworkium.core.common.reporting.jira.dto.executionsearch.ExecutionSearchListDto;
 import com.frameworkium.core.common.reporting.jira.zapi.ExecutionSearch;
 import org.apache.commons.lang.StringUtils;
 
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ExecutionSearchUtil {
-    private final ExecutionSearchDto result;
+    private final ExecutionSearchListDto result;
 
     public ExecutionSearchUtil(String query) {
         final ExecutionSearch executionSearch = new ExecutionSearch();
@@ -40,7 +40,7 @@ public class ExecutionSearchUtil {
                 .collect(Collectors.toList());
     }
 
-    private Stream<ExecutionDto> getExecutionStream() {
+    private Stream<ExecutionSearchDto> getExecutionStream() {
         if (StringUtils.isNotEmpty(Property.ZAPI_CYCLE_REGEX.getValue())) {
             return result.executions.stream()
                     .filter(e -> e.executionLightDto.cycleName.equals(Property.ZAPI_CYCLE_REGEX.getValue()));

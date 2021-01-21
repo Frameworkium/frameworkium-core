@@ -1,74 +1,39 @@
 package com.frameworkium.core.common.reporting.jira.dto.executionsearch;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.frameworkium.core.api.dto.AbstractDTO;
+import com.frameworkium.core.common.reporting.jira.dto.execution.ExecutionLightDto;
+import com.frameworkium.core.common.reporting.jira.dto.status.StatusDto;
 
+import java.time.LocalDate;
 import java.util.List;
 
-@JsonDeserialize(builder = ExecutionSearchDto.Builder.class)
 public class ExecutionSearchDto extends AbstractDTO<ExecutionSearchDto> {
-    public List<ExecutionDto> executions;
-    public Long currentIndex;
-    public Long maxResultAllowed;
-    public List<Long> linksNew;
-    public Long totalCount;
-    public List<Long> executionIds;
-
-    public ExecutionSearchDto(Builder builder) {
-        this.executions = builder.executions;
-        this.currentIndex = builder.currentIndex;
-        this.maxResultAllowed = builder.maxResultAllowed;
-        this.linksNew = builder.linksNew;
-        this.totalCount = builder.totalCount;
-        this.executionIds = builder.executionIds;
-    }
-
-    public static ExecutionSearchDto.Builder newBuilder() {
-        return new ExecutionSearchDto.Builder();
-    }
-
-    @JsonPOJOBuilder(withPrefix = "")
-    public static final class Builder {
-        private List<ExecutionDto> executions;
-        private Long currentIndex;
-        private Long maxResultAllowed;
-        private List<Long> linksNew;
-        private Long totalCount;
-        private List<Long> executionIds;
-
-        public Builder executions(final List<ExecutionDto> executions) {
-            this.executions = executions;
-            return this;
-        }
-
-        public Builder currentIndex(final Long currentIndex) {
-            this.currentIndex = currentIndex;
-            return this;
-        }
-
-        public Builder maxResultAllowed(final Long maxResultAllowed) {
-            this.maxResultAllowed = maxResultAllowed;
-            return this;
-        }
-
-        public Builder linksNew(final List<Long> linksNew) {
-            this.linksNew = linksNew;
-            return this;
-        }
-
-        public Builder totalCount(final Long totalCount) {
-            this.totalCount = totalCount;
-            return this;
-        }
-
-        public Builder executionIds(final List<Long> executionIds) {
-            this.executionIds = executionIds;
-            return this;
-        }
-
-        public ExecutionSearchDto build() {
-            return new ExecutionSearchDto(this);
-        }
-    }
+    @JsonUnwrapped
+    public ExecutionLightDto executionLightDto;
+    public String issueId;
+    public String issueSummary;
+    public List<String> labels;
+    public String issueDescription;
+    public String project;
+    public Long projectAvatarId;
+    public String priority;
+    public List<String> components;
+    public StatusDto status;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy/MMM/dd")
+    public LocalDate executedOn;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yy/MMM/dd")
+    public LocalDate creationDate;
+    public String executedBy;
+    public String executedByUserName;
+    public List<String> executionDefects;
+    public List<String> stepDefects;
+    public Long executionDefectCount;
+    public Long stepDefectCount;
+    public Long totalDefectCount;
+    public String executedByDisplay;
+    public String assignee;
+    public String assigneeUserName;
+    public String assigneeDisplay;
 }
