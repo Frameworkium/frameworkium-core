@@ -14,7 +14,10 @@ public class ExecutionSearchUtil {
     private final ExecutionSearchListDto result;
 
     public ExecutionSearchUtil(String query) {
-        final ExecutionSearch executionSearch = new ExecutionSearch();
+        this(new ExecutionSearch(), query);
+    }
+
+    public ExecutionSearchUtil(ExecutionSearch executionSearch, String query) {
         this.result = executionSearch.search(query);
     }
 

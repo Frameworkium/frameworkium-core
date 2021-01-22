@@ -1,47 +1,23 @@
 package com.frameworkium.core.common.reporting.jira.util
 
-
-import com.frameworkium.core.common.reporting.jira.endpoint.ZephyrEndpoint
-import com.github.tomakehurst.wiremock.client.WireMock
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.frameworkium.core.common.reporting.jira.dto.executionsearch.ExecutionSearchListDto
+import com.frameworkium.core.common.reporting.jira.zapi.ExecutionSearch
 import groovy.json.JsonBuilder
 import spock.lang.Requires
-import spock.lang.Shared
 import spock.lang.Specification
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*
-import static com.github.tomakehurst.wiremock.common.Metadata.metadata
 
 @Requires({ System.getProperty("zapiCycleRegEx") != null })
 class ExecutionSearchUtilSpec extends Specification {
     def versionId = new Random().nextLong()
     def projectId = new Random().nextLong()
     def zqlQuery = UUID.randomUUID().toString()
-    def searchBaseUrl = ZephyrEndpoint.EXECUTE_SEARCH.getUrl()
-    String stubId = UUID.randomUUID().toString() // to uniquely identify stub for cleanup later
-    @Shared
-    WireMock wireMock = new WireMock("localhost", 8080)
-
-    def setupSpec() {
-        System.properties["jiraURL"] = "http://localhost:8080"
-        System.properties["jiraUsername"] = "username"
-        System.properties["jiraPassword"] = "password"
-    }
-
-    def cleanup() {
-        wireMock.removeStubsByMetadataPattern(matchingJsonPath(/$.id/, equalTo(stubId)))
-    }
 
     def "Get execution Ids optionally with Property.ZAPI_REGEX_CYCLE set"() {
         given:
-            def searchResponse = createMockedSearchResponse(projectId, versionId)
-            wireMock.register(get(urlPathEqualTo(searchBaseUrl))
-                    .withMetadata(metadata().attr("id", stubId))
-                    .withQueryParam("zqlQuery", equalTo(zqlQuery))
-                    .willReturn(aResponse().withStatus(200)
-                            .withHeader("Content-Type", "application/json")
-                            .withBody(searchResponse))
-            )
-            ExecutionSearchUtil searchUtil = new ExecutionSearchUtil(zqlQuery)
+            ExecutionSearch executionSearch = Mock()
+            executionSearch.search(_ as String) >> createMockedSearchResponse(projectId, versionId)
+            ExecutionSearchUtil searchUtil = new ExecutionSearchUtil(executionSearch, zqlQuery)
         when:
             List<Integer> response = searchUtil.getExecutionIdsByZAPICycleRegex()
         then:
@@ -49,19 +25,14 @@ class ExecutionSearchUtilSpec extends Specification {
                 it.size() == 1
                 it == [409]
             }
+
     }
 
     def "Get execution status Ids optionally with Property.ZAPI_REGEX_CYCLE set"() {
         given:
-            def searchResponse = createMockedSearchResponse(projectId, versionId)
-            wireMock.register(get(urlPathEqualTo(searchBaseUrl))
-                    .withMetadata(metadata().attr("id", stubId))
-                    .withQueryParam("zqlQuery", equalTo(zqlQuery))
-                    .willReturn(aResponse().withStatus(200)
-                            .withHeader("Content-Type", "application/json")
-                            .withBody(searchResponse))
-            )
-            ExecutionSearchUtil searchUtil = new ExecutionSearchUtil(zqlQuery)
+            ExecutionSearch executionSearch = Mock()
+            executionSearch.search(_ as String) >> createMockedSearchResponse(projectId, versionId)
+            ExecutionSearchUtil searchUtil = new ExecutionSearchUtil(executionSearch, zqlQuery)
         when:
             List<Integer> response = searchUtil.getExecutionStatusesByZAPICycleRegex()
         then:
@@ -165,6 +136,8 @@ class ExecutionSearchUtilSpec extends Specification {
                 "totalCount"      : 2,
                 "executionIds"    : []
         ]
-        return new JsonBuilder(obj).toString()
+        def jsonString = new JsonBuilder(obj).toString()
+        def mapper = new ObjectMapper().findAndRegisterModules()
+        return mapper.readValue(jsonString, ExecutionSearchListDto)
     }
 }
