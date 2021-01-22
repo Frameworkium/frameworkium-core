@@ -25,13 +25,53 @@ public class ExecutionUtil {
     private final String issue;
     private List<Integer> idList;
     private int currentStatus;
+    private final ExecutionSearchUtil executionSearchUtil;
+    private final Execution execution;
+    private final Attachment attachment;
 
     /**
-     * Constructor that links an execution to an issue.
+     * Constructor that links an execution to an issue with default version
+     * from {@link com.frameworkium.core.common.properties.Property#RESULT_VERSION}.
+     *
+     * @param issue the target Issue to do operations on
      */
     public ExecutionUtil(String issue) {
-        this.version = Property.RESULT_VERSION.getValue();
+        this(issue, Property.RESULT_VERSION.getValue());
+    }
+
+    /**
+     * Constructor that links an execution to an issue
+     *
+     * @param issue   the target Issue to do operations on
+     * @param version the target Jira fixVersion to filter Issues with
+     */
+    public ExecutionUtil(String issue, String version) {
+        this(new ExecutionSearchUtil(String.format(
+                "issue='%s' and fixVersion='%s'", issue, version)),
+                new Execution(),
+                new Attachment(),
+                issue,
+                version
+        );
+    }
+
+    /**
+     * Constructor that links an execution to an issue
+     *
+     * @param executionSearchUtil a Jira Execution Search Utility instance
+     * @param execution           a ZAPI execution instance
+     * @param attachment          a ZAPI attachment instance
+     * @param issue               the target Issue to do operations on
+     * @param version             the target Jira fixVersion to filter Issues with
+     */
+    public ExecutionUtil(final ExecutionSearchUtil executionSearchUtil,
+                         final Execution execution, final Attachment attachment,
+                         final String issue, final String version) {
+        this.executionSearchUtil = executionSearchUtil;
+        this.execution = execution;
+        this.attachment = attachment;
         this.issue = issue;
+        this.version = version;
         initExecutionIdsAndCurrentStatus();
     }
 
@@ -39,10 +79,6 @@ public class ExecutionUtil {
         if (isBlank(version) || isBlank(issue)) {
             return;
         }
-        String query = String.format(
-                "issue='%s' and fixVersion='%s'", issue, version);
-
-        final ExecutionSearchUtil executionSearchUtil = new ExecutionSearchUtil(query);
         idList = executionSearchUtil.getExecutionIdsByZAPICycleRegex();
 
         List<Integer> statusList = executionSearchUtil.getExecutionStatusesByZAPICycleRegex();
@@ -99,10 +135,7 @@ public class ExecutionUtil {
                                     .build())
                             .build())
                     .build();
-
-            final Execution execution = new Execution();
             execution.updateExecutionDetails(updateExecutionOperationDto, executionId);
-
         } catch (JSONException e) {
             logger.error("Update status and comment failed", e);
         }
@@ -116,7 +149,6 @@ public class ExecutionUtil {
     }
 
     private void deleteExistingAttachments(Integer executionId) {
-        final Attachment attachment = new Attachment();
         final AttachmentListDto executionListDto = attachment.getAttachmentByEntity(executionId, "EXECUTION");
         executionListDto.data.stream()
                 .map(a -> a.fileId)
@@ -125,7 +157,6 @@ public class ExecutionUtil {
     }
 
     private void addAttachments(Integer executionId, String... attachments) {
-        final Attachment attachment = new Attachment();
         Arrays.stream(attachments)
                 .filter(Objects::nonNull)
                 .map(File::new)
