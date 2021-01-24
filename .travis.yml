@@ -27,7 +27,7 @@ env:
     - SELENIUM_VER=${SELENIUM_MAJ_VER}.59
     - SELENIUM_JAR=selenium-server-standalone-${SELENIUM_VER}.jar
     - GECKO_VER=0.27.0
-    - CHROME_DRIVER_VER=86.0.4240.22
+    - CHROME_DRIVER_VER=88.0.4324.96
     # Override Travis default to give browsers more room
     - _JAVA_OPTIONS="-Xms128m -Xmx1024m"
     # Required to turn on workaround for the following issue:
