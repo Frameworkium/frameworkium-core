@@ -5,7 +5,10 @@ import io.qameta.allure.TmsLink;
 import org.testng.IMethodInstance;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
 
@@ -43,6 +46,21 @@ public class TestIdUtils {
             return Optional.of(tcIdAnnotation.value());
         } else if (nonNull(issueAnnotation)) {
             return Optional.of(issueAnnotation.value());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public static Optional<List<String>> getIssueOrTmsLinksValue(Method method) {
+        TmsLink[] tcIdAnnotations = method.getAnnotationsByType(TmsLink.class);
+        Issue[] issueAnnotations = method.getAnnotationsByType(Issue.class);
+
+        if (nonNull(tcIdAnnotations)) {
+            return Optional.of(
+                    Stream.of(tcIdAnnotations).map(TmsLink::value).collect(Collectors.toList()));
+        } else if (nonNull(issueAnnotations)) {
+            return Optional.of(
+                    Stream.of(issueAnnotations).map(Issue::value).collect(Collectors.toList()));
         } else {
             return Optional.empty();
         }

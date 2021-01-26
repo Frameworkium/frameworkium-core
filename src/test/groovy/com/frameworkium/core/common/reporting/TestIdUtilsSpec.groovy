@@ -15,12 +15,29 @@ class TestIdUtilsSpec extends Specification {
         then:
             value == expectedValue
         where:
-            methodName      | expectedValue
-            "none"          | Optional.empty()
-            "tmsLink"       | Optional.of("TMSLink")
-            "issue"         | Optional.of("ISSUE")
-            "bothSame"      | Optional.of("SAME")
-            "bothDifferent" | Optional.of("TMSLink")
+            methodName        | expectedValue
+            "none"            | Optional.empty()
+            "tmsLink"         | Optional.of("TMSLink")
+            "issue"           | Optional.of("ISSUE")
+            "bothSame"        | Optional.of("SAME")
+            "bothDifferent"   | Optional.of("TMSLink")
+            "multipleTmsLink" | Optional.empty()
+    }
+
+    def "GetIssueOrTmsLinkValues get TmsLink or Issue values for method #methodName()"() {
+        when:
+            def value = TestIdUtils.getIssueOrTmsLinkValues(
+                    TestIdData.getMethod(methodName))
+        then:
+            value == expectedValue
+        where:
+            methodName        | expectedValue
+            "none"            | Optional.empty()
+            "tmsLink"         | Optional.of("TMSLink")
+            "issue"           | Optional.of("ISSUE")
+            "bothSame"        | Optional.of("SAME")
+            "bothDifferent"   | Optional.of("TMSLink")
+            "multipleTmsLink" | Optional.of(List.of("TMSLink1", "TMSLink2"))
     }
 
     class TestIdData {
@@ -40,6 +57,16 @@ class TestIdUtilsSpec extends Specification {
         @TmsLink("TMSLink")
         @Issue("ISSUE")
         void bothDifferent() {}
+
+        @TmsLink("TMSLink1")
+        @TmsLink("TMSLink2")
+        void multipleTmsLink() {}
+
+//        @TmsLinks({
+//            @TmsLink("TMS-2"),
+//            @TmsLink("TMS-3")
+//        })
+//        void TmsLinkArray() {}
     }
 }
 
