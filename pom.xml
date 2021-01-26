@@ -66,8 +66,9 @@
       <artifactId>testng</artifactId>
       <version>7.3.0</version>
       <!--
-      Can't upgrade to 7.3.0 as it destroys usability in IntelliJ, see:
+      Need to use IntelliJ 2020.3 or later, see:
       https://stackoverflow.com/questions/57299606/testng-by-default-disables-loading-dtd-from-unsecure-urls
+      https://youtrack.jetbrains.com/issue/IDEA-234765
       -->
     </dependency>
 
