@@ -28,5 +28,3 @@ template: |
   $CHANGES
   ### Notes
   - None
-  ## Links
-  [Commits since $PREVIOUS_TAG](https://github.com/Frameworkium/frameworkium-core/compare/$PREVIOUS_TAG...master)
