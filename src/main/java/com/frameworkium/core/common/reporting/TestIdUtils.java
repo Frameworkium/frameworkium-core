@@ -24,7 +24,8 @@ public class TestIdUtils {
      * @return Optional of either the {@link TmsLink} or {@link Issue} value.
      * @throws IllegalStateException if {@link TmsLink} and {@link Issue}
      *                               are specified inconstantly.
-     * @deprecated Use {@link com.frameworkium.core.common.reporting.TestIdUtils#getIssueOrTmsLinkValues(IMethodInstance)} instead
+     * @deprecated Use
+     * {@link com.frameworkium.core.common.reporting.TestIdUtils#getIssueOrTmsLinkValues(IMethodInstance)} instead
      */
     @Deprecated
     public static Optional<String> getIssueOrTmsLinkValue(IMethodInstance iMethod) {
@@ -33,25 +34,13 @@ public class TestIdUtils {
     }
 
     /**
-     * Get list of {@link TmsLink} or {@link Issue}.
-     *
-     * @param iMethod the {@link IMethodInstance} to check for test ID annotations.
-     * @return List of either the {@link TmsLink} or {@link Issue} value.
-     * @throws IllegalStateException if {@link TmsLink} and {@link Issue}
-     *                               are specified inconstantly.
-     */
-    public static List<String> getIssueOrTmsLinkValues(IMethodInstance iMethod) {
-        Method method = iMethod.getMethod().getConstructorOrMethod().getMethod();
-        return getIssueOrTmsLinkValues(method);
-    }
-
-    /**
      * Get {@link TmsLink} or {@link Issue} for a method.
      * If both are specified it will return jus the {@link TmsLink} value.
      *
      * @param method the method to check for test ID annotations.
      * @return Optional of the {@link TmsLink} or {@link Issue} value.
-     * @deprecated Use {@link com.frameworkium.core.common.reporting.TestIdUtils#getIssueOrTmsLinkValues(Method)} instead.
+     * @deprecated Use
+     * {@link com.frameworkium.core.common.reporting.TestIdUtils#getIssueOrTmsLinkValues(Method)} instead.
      */
     @Deprecated
     public static Optional<String> getIssueOrTmsLinkValue(Method method) {
@@ -65,6 +54,19 @@ public class TestIdUtils {
         } else {
             return Optional.empty();
         }
+    }
+
+    /**
+     * Get list of {@link TmsLink} or {@link Issue}.
+     *
+     * @param iMethod the {@link IMethodInstance} to check for test ID annotations.
+     * @return List of either the {@link TmsLink} or {@link Issue} value.
+     * @throws IllegalStateException if {@link TmsLink} and {@link Issue}
+     *                               are specified inconstantly.
+     */
+    public static List<String> getIssueOrTmsLinkValues(IMethodInstance iMethod) {
+        Method method = iMethod.getMethod().getConstructorOrMethod().getMethod();
+        return getIssueOrTmsLinkValues(method);
     }
 
     /**
