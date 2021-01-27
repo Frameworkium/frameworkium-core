@@ -24,7 +24,7 @@ public class TestIdUtils {
      * @return Optional of either the {@link TmsLink} or {@link Issue} value.
      * @throws IllegalStateException if {@link TmsLink} and {@link Issue}
      *                               are specified inconstantly.
-     * @deprecated Use {@link com.frameworkium.core.common.reporting.TestIdUtils#getIssueOrTmsLinkValues(IMethodInstance) instead}
+     * @deprecated Use {@link com.frameworkium.core.common.reporting.TestIdUtils#getIssueOrTmsLinkValues(IMethodInstance)} instead
      */
     @Deprecated
     public static Optional<String> getIssueOrTmsLinkValue(IMethodInstance iMethod) {
@@ -51,7 +51,7 @@ public class TestIdUtils {
      *
      * @param method the method to check for test ID annotations.
      * @return Optional of the {@link TmsLink} or {@link Issue} value.
-     * @deprecated Use {@link com.frameworkium.core.common.reporting.TestIdUtils#getIssueOrTmsLinkValues(Method) instead}
+     * @deprecated Use {@link com.frameworkium.core.common.reporting.TestIdUtils#getIssueOrTmsLinkValues(Method)} instead.
      */
     @Deprecated
     public static Optional<String> getIssueOrTmsLinkValue(Method method) {
