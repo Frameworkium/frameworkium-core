@@ -23,10 +23,10 @@ env:
     - SUT_NAME="frameworkium-lite"
     - SUT_VERSION=${TRAVIS_BRANCH}
     - THREAD_COUNT=2
-    - SELENIUM_MAJ_VER=3.141
-    - SELENIUM_VER=${SELENIUM_MAJ_VER}.59
-    - SELENIUM_JAR=selenium-server-standalone-${SELENIUM_VER}.jar
-    - GECKO_VER=0.27.0
+    - SELENIUM_MAJ_VER=4.0-beta-1
+    - SELENIUM_VER=4.0.0-beta-1
+    - SELENIUM_JAR=selenium-server-${SELENIUM_VER}.jar
+    - GECKO_VER=0.29.0
     - CHROME_DRIVER_VER=88.0.4324.96
     # Override Travis default to give browsers more room
     - _JAVA_OPTIONS="-Xms128m -Xmx1024m"
@@ -44,10 +44,6 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 
-  # Set up Selenium Grid Hub
-  - wget --quiet https://selenium-release.storage.googleapis.com/${SELENIUM_MAJ_VER}/${SELENIUM_JAR}
-  - java -Xmx128m -jar ${SELENIUM_JAR} -role hub > hub.log 2>&1 &
-
   # Download geckodriver
   - wget --quiet https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VER}/geckodriver-v${GECKO_VER}-linux64.tar.gz
   - tar -xzf geckodriver-v${GECKO_VER}-linux64.tar.gz
@@ -56,14 +52,9 @@ before_script:
   - wget --quiet http://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VER}/chromedriver_linux64.zip
   - unzip chromedriver_linux64.zip
 
-  # Wait for grid hub to be up
-  - until $(curl --output /dev/null --silent --fail http://localhost:4444/grid/console); do printf '.'; sleep 1; done
-
-  # Setup Firefox Selenium Grid Node
-  - java -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=firefox,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5555 > ff-node.log  2>&1 &
-
-  # Set up Chrome Selenium Grid Node
-  - java -Xmx128m -jar ${SELENIUM_JAR} -role node -hub http://localhost:4444/grid/register -browser browserName=chrome,maxInstances=${THREAD_COUNT} -maxSession ${THREAD_COUNT} -port 5556 > chrome-node.log 2>&1 &
+  # Set up Selenium Grid
+  - wget --quiet https://selenium-release.storage.googleapis.com/${SELENIUM_MAJ_VER}/${SELENIUM_JAR}
+  - java -Xmx128m -jar ${SELENIUM_JAR} standalone &
 
 script:
   # Download deps, compile and run checkstyle
@@ -80,7 +71,7 @@ script:
   - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=firefox -DreuseBrowser -Dheadless -Dit.test=TheInternetExampleTests
 
   # Chrome on the grid
-  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser -Dheadless -DgridURL=http://localhost:4444/wd/hub
+  - mvn verify -B -Dthreads=${THREAD_COUNT} -Dbrowser=chrome -DreuseBrowser -Dheadless -DgridURL=http://localhost:4444/
 
   # Custom Browser Impl
   - mvn verify -B -Dthreads=${THREAD_COUNT} -DcustomBrowserImpl=com.frameworkium.integration.CustomFirefoxImpl -Dmaximise=true -Dit.test=DocumentationTest

@@ -2,7 +2,7 @@ browser: Firefox
 browserVersion:
 captureURL:
 customBrowserImpl:
-gridURL: http://localhost:4444/wd/hub
+gridURL: http://localhost:4444/
 headless:
 maximise:
 maxRetryCount:
