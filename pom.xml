@@ -62,12 +62,6 @@
     </dependency>
 
     <dependency>
-      <groupId>ru.yandex.qatools.htmlelements</groupId>
-      <artifactId>htmlelements-java</artifactId>
-      <version>1.20.0</version>
-    </dependency>
-
-    <dependency>
       <groupId>com.paulhammant</groupId>
       <artifactId>ngwebdriver</artifactId>
       <version>1.1.6</version>
