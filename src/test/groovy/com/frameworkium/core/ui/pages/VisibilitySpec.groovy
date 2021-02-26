@@ -1,5 +1,6 @@
 package com.frameworkium.core.ui.pages
 
+import com.frameworkium.core.htmlelements.element.TextInput
 import com.frameworkium.core.ui.pages.pageobjects.PageObjects
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.TimeoutException
