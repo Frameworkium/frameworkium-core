@@ -1,10 +1,10 @@
 package com.frameworkium.core.ui.pages;
 
+import com.frameworkium.core.htmlelements.element.HtmlElement;
 import com.frameworkium.core.ui.ExtraExpectedConditions;
 import com.frameworkium.core.ui.annotations.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.Wait;
-import ru.yandex.qatools.htmlelements.element.HtmlElement;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -14,9 +14,9 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.frameworkium.core.htmlelements.utils.HtmlElementUtils.*;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElements;
-import static ru.yandex.qatools.htmlelements.utils.HtmlElementUtils.*;
 
 /**
  * All things Frameworkium-related dealing with PageObject element visibility.

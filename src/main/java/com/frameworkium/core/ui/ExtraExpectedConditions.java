@@ -3,8 +3,7 @@ package com.frameworkium.core.ui;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import ru.yandex.qatools.htmlelements.element.HtmlElement;
-import ru.yandex.qatools.htmlelements.element.TypifiedElement;
+
 
 import java.util.List;
 import java.util.function.Function;
@@ -14,7 +13,8 @@ import java.util.stream.Collectors;
  * Frameworkium extension of {@link ExpectedConditions}.
  *
  * <p>This provides useful {@link ExpectedCondition}'s for our lazy proxied
- * {@link WebElement}, {@link TypifiedElement} and {@link HtmlElement}'s.
+ * {@link WebElement}, {@link com.frameworkium.core.htmlelements.element.TypifiedElement}
+ * and {@link com.frameworkium.core.htmlelements.element.HtmlElement}'s.
  * The methods here generally accept {@link WebElement} rather than {@link By}
  * because we typically use {@code @FindBy} annotations in page objects.
  */
