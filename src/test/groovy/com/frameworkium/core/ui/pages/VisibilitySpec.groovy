@@ -9,7 +9,6 @@ import org.openqa.selenium.support.events.EventFiringWebDriver
 import org.openqa.selenium.support.ui.FluentWait
 import org.openqa.selenium.support.ui.Sleeper
 import org.openqa.selenium.support.ui.Wait
-import ru.yandex.qatools.htmlelements.element.TextInput
 import spock.lang.Specification
 
 import java.time.Clock
