@@ -1,10 +1,11 @@
 package com.frameworkium.integration.seleniumhq.components;
 
+import com.frameworkium.core.htmlelements.element.HtmlElement;
+import com.frameworkium.core.htmlelements.element.Link;
 import com.frameworkium.core.ui.pages.PageFactory;
 import com.frameworkium.integration.seleniumhq.pages.SeleniumDownloadPage;
 import org.openqa.selenium.support.FindBy;
-import ru.yandex.qatools.htmlelements.element.HtmlElement;
-import ru.yandex.qatools.htmlelements.element.Link;
+
 
 @FindBy(id = "header")
 public class HeaderComponent extends HtmlElement {
