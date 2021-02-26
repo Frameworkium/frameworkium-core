@@ -4,7 +4,6 @@ import com.frameworkium.core.ui.driver.AbstractDriver;
 import com.frameworkium.core.ui.driver.Driver;
 import com.frameworkium.core.ui.driver.remotes.Sauce;
 import org.openqa.selenium.*;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.File;
@@ -76,8 +75,7 @@ public class SauceImpl extends AbstractDriver {
 
     private MutableCapabilities getAndroidCapabilities() {
         MutableCapabilities caps = new MutableCapabilities(capabilities);
-        caps.merge(DesiredCapabilities.android());
-        caps.setCapability("platform", "Linux");
+        caps.setCapability("platformName", "Android");
         if (PLATFORM_VERSION.isSpecified()) {
             caps.setCapability("version", PLATFORM_VERSION.getValue());
         }
@@ -88,8 +86,8 @@ public class SauceImpl extends AbstractDriver {
 
     private MutableCapabilities getIOSCapabilities() {
         MutableCapabilities caps = new MutableCapabilities(capabilities);
-        caps.merge(DesiredCapabilities.iphone());
-        caps.setCapability("platform", "OS X 10.10");
+        caps.setCapability("deviceName", "iPhone .*");
+        caps.setCapability("platformName", "iOS");
         if (PLATFORM_VERSION.isSpecified()) {
             caps.setCapability("version", PLATFORM_VERSION.getValue());
         }
@@ -109,10 +107,10 @@ public class SauceImpl extends AbstractDriver {
         caps.setCapability("browserName", "");
         switch (platform) {
             case IOS:
-                caps.merge(DesiredCapabilities.iphone());
+                caps.setCapability("deviceName", "iPhone .*");
                 return getAppiumCapabilities(caps, "iOS", "Simulator");
             case ANDROID:
-                caps.merge(DesiredCapabilities.android());
+                caps.setCapability("platformName", "Android");
                 return getAppiumCapabilities(caps, "Android", "Emulator");
             default:
                 throw new IllegalStateException("Appium is only available on iOS/Android");

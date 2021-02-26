@@ -1,5 +1,6 @@
 package com.frameworkium.core.ui.pages
 
+import com.frameworkium.core.htmlelements.element.TextInput
 import com.frameworkium.core.ui.pages.pageobjects.PageObjects
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.TimeoutException
@@ -9,7 +10,6 @@ import org.openqa.selenium.support.events.EventFiringWebDriver
 import org.openqa.selenium.support.ui.FluentWait
 import org.openqa.selenium.support.ui.Sleeper
 import org.openqa.selenium.support.ui.Wait
-import ru.yandex.qatools.htmlelements.element.TextInput
 import spock.lang.Specification
 
 import java.time.Clock

@@ -7,7 +7,6 @@ import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import ru.yandex.qatools.htmlelements.annotations.Name;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +22,6 @@ public class DragAndDropPage extends BasePage<DragAndDropPage> {
     private static final String JQUERY_JS_URI = "https://code.jquery.com/jquery-3.2.1.min.js";
 
     @Visible
-    @Name("List of headers")
     @FindBy(css = "header")
     private List<WebElement> boxes;
 

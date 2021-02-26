@@ -1,8 +1,8 @@
 package com.frameworkium.core.ui;
 
+import com.frameworkium.core.htmlelements.element.Link;
 import com.frameworkium.core.ui.element.StreamTable;
 import org.testng.annotations.Test;
-import ru.yandex.qatools.htmlelements.element.Link;
 
 import java.util.ArrayList;
 import java.util.List;
