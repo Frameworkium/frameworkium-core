@@ -77,7 +77,7 @@ public class TheInternetExampleTests extends BaseUITest {
                         .clickAlertButtonAndAccept();
 
         assertThat(javascriptAlerts.getResultText())
-                .isEqualTo("You successfuly clicked an alert");
+                .isEqualTo("You successfully clicked an alert");
     }
 
     @Issue("INT-12")
