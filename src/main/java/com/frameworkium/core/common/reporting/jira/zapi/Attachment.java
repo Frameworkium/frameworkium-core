@@ -1,5 +1,7 @@
 package com.frameworkium.core.common.reporting.jira.zapi;
 
+import com.frameworkium.core.common.reporting.Comment;
+import com.frameworkium.core.common.reporting.IAttachment;
 import com.frameworkium.core.common.reporting.jira.dto.attachment.AttachmentListDto;
 import com.frameworkium.core.common.reporting.jira.endpoint.ZephyrEndpoint;
 import com.frameworkium.core.common.reporting.jira.service.AbstractJiraService;
@@ -8,7 +10,7 @@ import java.io.File;
 
 import static org.apache.http.HttpStatus.SC_OK;
 
-public class Attachment extends AbstractJiraService {
+public class Attachment extends AbstractJiraService implements IAttachment {
     public AttachmentListDto getAttachmentByEntity(Integer entityId, String entityType) {
         return getRequestSpec()
                 .basePath(ZephyrEndpoint.ATTACHMENT_BY_ENTITY.getUrl())

@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.frameworkium</groupId>
@@ -9,17 +10,17 @@
     Frameworkium core code.
     Referenced by the frameworkium-examples project, with more example tests.
   </description>
-  <url />
+  <url/>
   <inceptionYear>2015</inceptionYear>
   <organization>
     <name>Frameworkium</name>
   </organization>
-  <licenses />
+  <licenses/>
 
-  <developers />
-  <contributors />
+  <developers/>
+  <contributors/>
 
-  <modules />
+  <modules/>
 
   <scm>
     <connection>scm:git:git@github.com:frameworkium/frameworkium-core</connection>
@@ -35,11 +36,11 @@
     <url>https://travis-ci.org/Frameworkium/frameworkium-core</url>
   </ciManagement>
 
-  <distributionManagement />
+  <distributionManagement/>
 
   <properties>
     <threads>1</threads>
-    <groups />
+    <groups/>
     <aspectj.version>1.9.6</aspectj.version>
     <allure.version>2.13.8</allure.version>
     <truth.version>1.1.2</truth.version>
@@ -156,6 +157,14 @@
       </exclusions>
     </dependency>
 
+    <!-- dependency injection related -->
+    <dependency>
+      <groupId>com.google.auto.factory</groupId>
+      <artifactId>auto-factory</artifactId>
+      <version>1.0-beta8</version>
+      <optional>true</optional>
+    </dependency>
+
     <!-- Explicitly adding utilities -->
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -197,6 +206,24 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.spockframework</groupId>
+      <artifactId>spock-guice</artifactId>
+      <version>2.0-M4-groovy-3.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.joke</groupId>
+      <artifactId>spock-deepmock</artifactId>
+      <version>2.0.0</version>
+      <scope>test</scope>
+    </dependency>
+    <!--    <dependency>-->
+    <!--      <groupId>io.github.joke</groupId>-->
+    <!--      <artifactId>spock-mockable</artifactId>-->
+    <!--      <version>1.4.0</version>-->
+    <!--      <scope>test</scope>-->
+    <!--    </dependency>-->
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <version>5.7.0</version>
@@ -224,9 +251,9 @@
     </dependency>
   </dependencies>
 
-  <repositories />
+  <repositories/>
 
-  <pluginRepositories />
+  <pluginRepositories/>
 
   <build>
     <!-- Check for updates with mvn versions:display-plugin-updates -->
