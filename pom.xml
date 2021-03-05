@@ -3,7 +3,7 @@
 
   <groupId>com.github.ham1</groupId>
   <artifactId>frameworkium-lite</artifactId>
-  <version>4.1.1</version>
+  <version>4.1.2-SNAPSHOT</version>
   <name>frameworkium-lite</name>
   <description>
     A UI and API Test framework, based upon Frameworkium Core.
@@ -21,7 +21,7 @@
     <connection>scm:git:git@github.com:ham1/frameworkium-lite</connection>
     <url>scm:git:git@github.com:ham1/frameworkium-lite</url>
     <developerConnection>scm:git:git@github.com:ham1/frameworkium-lite</developerConnection>
-    <tag>4.1.1</tag>
+    <tag>4.0.6</tag>
   </scm>
   <issueManagement>
     <system>github issues</system>
