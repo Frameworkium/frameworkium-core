@@ -40,7 +40,7 @@ public class UITestLifecycle {
         return THREAD_LOCAL_INSTANCE.get();
     }
 
-    /** @return check to see if class initialised correctly. */
+    /** @return if class initialised correctly. */
     public boolean isInitialised() {
         return wait != null;
     }
@@ -66,16 +66,20 @@ public class UITestLifecycle {
     }
 
     /**
-     * Run this before each test method to initialise the
-     * browser, wait, capture, and user agent.
+     * Run this before each test method to initialise:
+     * the browser, wait, capture, and user agent.
      *
-     * <p>This is useful for times when the testMethod does not contain the required
-     * test name e.g. using data providers for BDD.
+     * <p>This is public for times when the testMethod does not contain the
+     * required test name e.g. using data providers for BDD.
      *
      * @param testName the test name for Capture
      */
     public void beforeTestMethod(String testName) {
-        driverLifecycle.initBrowserBeforeTest(DriverSetup::instantiateDriver);
+        try {
+            driverLifecycle.initBrowserBeforeTest(DriverSetup::instantiateDriver);
+        } catch (WebDriverException wdex) {
+            reinitialiseCurrentDriver();
+        }
 
         wait = newWaitWithTimeout(DEFAULT_TIMEOUT);
 
