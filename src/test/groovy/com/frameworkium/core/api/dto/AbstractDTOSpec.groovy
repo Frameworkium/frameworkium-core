@@ -54,7 +54,7 @@ class AbstractDTOSpec extends Specification {
 
     def "toString() creates readable output"() {
         expect:
-            sut.toString() == 'TopLevelDTO[lowLevelDTO=LowLevelDTO[data=initial],stringList=[1,a]]'
+            sut.toString() == 'TopLevelDTO[lowLevelDTO=LowLevelDTO[data=initial],stringList=[1, a]]'
     }
 
 }
