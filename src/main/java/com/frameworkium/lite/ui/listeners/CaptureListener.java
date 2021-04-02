@@ -36,15 +36,14 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     private void takeScreenshotAndSend(Command command, WebDriver driver) {
         try {
             UITestLifecycle.get().getCapture().takeAndSendScreenshot(command, driver);
-        } catch (NullPointerException npe) {
-            logger.warn("NullPointerException in takeScreenshotAndSend, screenshot not sent");
-            logger.trace(npe);
+        } catch (Exception e) {
+            logger.warn("Screenshot not sent, see trace log for details");
+            logger.trace(e);
         }
     }
 
     private void takeScreenshotAndSend(String action, WebDriver driver) {
-        Command command = new Command(action, "n/a", "n/a");
-        takeScreenshotAndSend(command, driver);
+        takeScreenshotAndSend(new Command(action, "n/a", "n/a"), driver);
     }
 
     private void takeScreenshotAndSend(String action, WebDriver driver, Throwable thrw) {
@@ -56,15 +55,18 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     private void sendFinalScreenshot(ITestResult result, String action) {
-        if (ScreenshotCapture.isRequired() && isUITest(result.getTestClass().getRealClass())) {
-            Throwable thrw = result.getThrowable();
-            WebDriver driver = UITestLifecycle.get().getWebDriver();
-            if (null != thrw) {
-                takeScreenshotAndSend(action, driver, thrw);
-            } else {
-                Command command = new Command(action, "n/a", "n/a");
-                takeScreenshotAndSend(command, driver);
-            }
+        if (!ScreenshotCapture.isRequired() 
+                || !isUITest(result.getTestClass().getRealClass())) {
+            return;
+        }
+
+        Throwable thrw = result.getThrowable();
+        WebDriver driver = UITestLifecycle.get().getWebDriver();
+        if (null != thrw) {
+            takeScreenshotAndSend(action, driver, thrw);
+        } else {
+            Command command = new Command(action, "n/a", "n/a");
+            takeScreenshotAndSend(command, driver);
         }
     }
 
@@ -87,7 +89,11 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     /* WebDriver events */
     @Override
     public void beforeClickOn(WebElement element, WebDriver driver) {
-        highlightElementOnClickAndSendScreenshot(driver, element);
+        try {
+            highlightElementOnClickAndSendScreenshot(driver, element);
+        } catch (Exception e) {
+            logger.trace("Failed to highlight element before click and send screenshot", e);
+        }
     }
 
     @Override

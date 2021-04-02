@@ -1,13 +1,12 @@
 package com.frameworkium.integration.theinternet.pages;
 
-import com.frameworkium.lite.ui.annotations.Invisible;
-import com.frameworkium.lite.ui.annotations.Visible;
-import com.frameworkium.lite.ui.pages.BasePage;
-import com.frameworkium.lite.ui.pages.PageFactory;
-import org.openqa.selenium.support.FindBy;
 import com.frameworkium.lite.htmlelements.annotations.Timeout;
 import com.frameworkium.lite.htmlelements.element.Button;
 import com.frameworkium.lite.htmlelements.element.HtmlElement;
+import com.frameworkium.lite.ui.annotations.Invisible;
+import com.frameworkium.lite.ui.annotations.Visible;
+import com.frameworkium.lite.ui.pages.BasePage;
+import org.openqa.selenium.support.FindBy;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
@@ -22,10 +21,9 @@ public class DynamicLoadingExamplePage extends BasePage<DynamicLoadingExamplePag
     @FindBy(id = "finish")
     private HtmlElement dynamicElement;
 
-    public static DynamicLoadingExamplePage openExampleTwo() {
-        return PageFactory.newInstance(
-                DynamicLoadingExamplePage.class,
-                "https://the-internet.herokuapp.com/dynamic_loading/2");
+    public static DynamicLoadingExamplePage open() {
+        return new DynamicLoadingExamplePage()
+                .get("https://the-internet.herokuapp.com/dynamic_loading/2");
     }
 
     public DynamicLoadingExamplePage clickStart() {

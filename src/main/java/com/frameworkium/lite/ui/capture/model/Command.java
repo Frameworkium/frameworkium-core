@@ -1,7 +1,7 @@
 package com.frameworkium.lite.ui.capture.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.apache.commons.lang3.StringUtils;
+import com.frameworkium.lite.ui.listeners.LoggingListener;
 import org.openqa.selenium.WebElement;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -19,25 +19,8 @@ public class Command {
 
     public Command(String action, WebElement element) {
         this.action = action;
-        setUsingAndValue(element);
+        this.using = "n/a";
+        this.value = LoggingListener.getLocatorFromElement(element);
     }
 
-    private void setUsingAndValue(WebElement element) {
-        // TODO: Improve this. Use hacky solution in LoggingListener?
-        if (StringUtils.isNotBlank(element.getAttribute("id"))) {
-            this.using = "id";
-            this.value = element.getAttribute("id");
-        } else if (!(element.getText()).isEmpty()) {
-            this.using = "linkText";
-            this.value = element.getText();
-        } else if (!element.getTagName().isEmpty()) {
-            this.using = "css";
-            this.value = element.getTagName() + "."
-                    + element.getAttribute("class").replace(" ", ".");
-        } else {
-            // must be something weird
-            this.using = "n/a";
-            this.value = "n/a";
-        }
-    }
 }

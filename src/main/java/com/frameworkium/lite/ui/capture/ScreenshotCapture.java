@@ -140,7 +140,7 @@ public class ScreenshotCapture {
     }
 
     private void sendScreenshot(CreateScreenshot createScreenshotMessage) {
-        logger.debug("About to send screenshot to Capture for {}", testID);
+        logger.trace("About to send screenshot to Capture for {}", testID);
         try {
             getRequestSpec()
                     .body(createScreenshotMessage)
@@ -148,7 +148,7 @@ public class ScreenshotCapture {
                     .post(CaptureEndpoint.SCREENSHOT.getUrl())
                     .then()
                     .assertThat().statusCode(SC_CREATED);
-            logger.debug("Sent screenshot to Capture for {}", testID);
+            logger.trace("Sent screenshot to Capture for {}", testID);
         } catch (Exception e) {
             logger.warn("Failed sending screenshot to Capture for {}", testID);
             logger.debug(e);

@@ -1,7 +1,7 @@
 package com.frameworkium.integration.theinternet.tests;
 
-import com.frameworkium.lite.ui.tests.BaseUITest;
 import com.frameworkium.integration.theinternet.pages.*;
+import com.frameworkium.lite.ui.tests.BaseUITest;
 import org.openqa.selenium.Keys;
 import org.testng.annotations.Test;
 
@@ -41,11 +41,23 @@ public class TheInternetExampleTests extends BaseUITest {
 
         String elementText =
                 DynamicLoadingExamplePage
-                        .openExampleTwo()
+                        .open()
                         .clickStart()
                         .getElementText();
 
         assertThat(elementText).isEqualTo("Hello World!");
+    }
+
+    public void dropdowns() {
+        var dropDownPage = WelcomePage.open()
+                .clickDropDownLink();
+
+        assertThat(dropDownPage.getAllOptions())
+                .isEqualTo(List.of("Please select an option", "Option 1", "Option 2"));
+
+        dropDownPage.select("Option 1");
+
+        assertThat(dropDownPage.getCurrentSelection()).isEqualTo("Option 1");
     }
 
     public void hovers() {

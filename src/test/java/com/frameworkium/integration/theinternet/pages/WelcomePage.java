@@ -13,6 +13,8 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class WelcomePage extends BasePage<WelcomePage> {
 
+    private static final String URL = "https://the-internet.herokuapp.com";
+
     @Visible
     @FindBy(linkText = "Checkboxes")
     private Link checkboxesLink;
@@ -22,8 +24,8 @@ public class WelcomePage extends BasePage<WelcomePage> {
     @FindBy(linkText = "Drag and Drop")
     private Link dragAndDropLink;
 
-    @FindBy(linkText = "Dynamic Loading")
-    private Link dynamicLoadingLink;
+    @FindBy(linkText = "Dropdown")
+    private Link dropdownLink;
 
     @FindBy(linkText = "Hovers")
     private Link hoversLink;
@@ -35,8 +37,7 @@ public class WelcomePage extends BasePage<WelcomePage> {
     private Link keyPressesLink;
 
     public static WelcomePage open() {
-        return PageFactory.newInstance(
-                WelcomePage.class, "https://the-internet.herokuapp.com");
+        return PageFactory.newInstance(WelcomePage.class, URL);
     }
 
     /**
@@ -46,10 +47,7 @@ public class WelcomePage extends BasePage<WelcomePage> {
      * @return An instance of this page object with specified wait timeout
      */
     public static WelcomePage open(long timeout) {
-        return PageFactory.newInstance(
-                WelcomePage.class,
-                "https://the-internet.herokuapp.com",
-                Duration.of(timeout, SECONDS));
+        return new WelcomePage().get(URL, Duration.of(timeout, SECONDS));
     }
 
     public CheckboxesPage clickCheckboxesLink() {
@@ -66,6 +64,11 @@ public class WelcomePage extends BasePage<WelcomePage> {
     public HoversPage clickHoversLink() {
         hoversLink.click();
         return PageFactory.newInstance(HoversPage.class);
+    }
+
+    public DropDownPage clickDropDownLink() {
+        dropdownLink.click();
+        return new DropDownPage().get();
     }
 
     public JavaScriptAlertsPage clickJavascriptAlertsLink() {

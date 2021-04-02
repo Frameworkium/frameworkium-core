@@ -13,13 +13,13 @@ public class LoggingListener implements WebDriverEventListener {
 
     private static final Logger logger = LogManager.getLogger();
 
-    private static String getLocatorFromElement(WebElement element) {
+    private static final Pattern p = Pattern.compile("->\\s(.*)(?=])");
+
+    public static String getLocatorFromElement(WebElement element) {
         String str = element.toString();
-        Pattern p = Pattern.compile("->\\s(.*)(?=\\])");
         Matcher m = p.matcher(str);
-        return m.find() && m.groupCount() > 0
-                ? m.group(1)
-                : str;
+        var groupFound = m.find() && m.groupCount() > 0;
+        return groupFound ? m.group(1) : str;
     }
 
     @Override
