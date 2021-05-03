@@ -8,5 +8,5 @@ import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
  * ElementLocator will be returned per call.
  */
 public interface CustomElementLocatorFactory extends ElementLocatorFactory {
-    ElementLocator createLocator(Class<?> clazz);
+  ElementLocator createLocator(Class<?> clazz);
 }

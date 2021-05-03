@@ -1,9 +1,8 @@
 package com.frameworkium.core.ui.driver.lifecycle;
 
 import com.frameworkium.core.ui.driver.Driver;
-import org.openqa.selenium.WebDriver;
-
 import java.util.function.Supplier;
+import org.openqa.selenium.WebDriver;
 
 /**
  * Controls the lifecycle of the {@link Driver}(s).
@@ -22,41 +21,43 @@ import java.util.function.Supplier;
  */
 public interface DriverLifecycle {
 
-    /**
-     * Will initialise a pool of {@link Driver}s if required.
-     *
-     * @param driverSupplier the {@link Supplier} that creates {@link Driver}s
-     * @throws IllegalStateException if trying to re-initialise existing pool
-     */
-    default void initDriverPool(Supplier<Driver> driverSupplier) {}
+  /**
+   * Will initialise a pool of {@link Driver}s if required.
+   *
+   * @param driverSupplier the {@link Supplier} that creates {@link Driver}s
+   * @throws IllegalStateException if trying to re-initialise existing pool
+   */
+  default void initDriverPool(Supplier<Driver> driverSupplier) {
+  }
 
-    /**
-     * Will set the current {@link ThreadLocal} {@link Driver} to be the next
-     * available from the pool or will add the {@link Driver} created by the
-     * supplied {@link Supplier}.
-     *
-     * @param driverSupplier the {@link Supplier} that creates {@link Driver}s
-     * @throws java.util.NoSuchElementException if this pool is empty
-     */
-    void initBrowserBeforeTest(Supplier<Driver> driverSupplier);
+  /**
+   * Will set the current {@link ThreadLocal} {@link Driver} to be the next
+   * available from the pool or will add the {@link Driver} created by the
+   * supplied {@link Supplier}.
+   *
+   * @param driverSupplier the {@link Supplier} that creates {@link Driver}s
+   * @throws java.util.NoSuchElementException if this pool is empty
+   */
+  void initBrowserBeforeTest(Supplier<Driver> driverSupplier);
 
-    /**
-     * @return the {@link WebDriver} in use by the current thread.
-     * @throws NullPointerException if called before
-     *                              {@link #initBrowserBeforeTest(Supplier)} or
-     *                              after {@link #tearDownDriver()}.
-     */
-    WebDriver getWebDriver();
+  /**
+   * @return the {@link WebDriver} in use by the current thread.
+   * @throws NullPointerException if called before
+   *                              {@link #initBrowserBeforeTest(Supplier)} or
+   *                              after {@link #tearDownDriver()}.
+   */
+  WebDriver getWebDriver();
 
-    /**
-     * Tears down the driver, ready for reinitialisation, if required, by
-     * {@link #initBrowserBeforeTest(Supplier)}.
-     */
-    void tearDownDriver();
+  /**
+   * Tears down the driver, ready for reinitialisation, if required, by
+   * {@link #initBrowserBeforeTest(Supplier)}.
+   */
+  void tearDownDriver();
 
-    /**
-     * Clears the driver pool, if exists, ready to run run
-     * {@link #initDriverPool(Supplier)} again if required.
-     */
-    default void tearDownDriverPool() {}
+  /**
+   * Clears the driver pool, if exists, ready to run run
+   * {@link #initDriverPool(Supplier)} again if required.
+   */
+  default void tearDownDriverPool() {
+  }
 }

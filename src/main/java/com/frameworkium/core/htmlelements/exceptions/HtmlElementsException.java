@@ -6,21 +6,21 @@ package com.frameworkium.core.htmlelements.exceptions;
  */
 public class HtmlElementsException extends RuntimeException {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public HtmlElementsException() {
-        super();
-    }
+  public HtmlElementsException() {
+    super();
+  }
 
-    public HtmlElementsException(String message) {
-        super(message);
-    }
+  public HtmlElementsException(String message) {
+    super(message);
+  }
 
-    public HtmlElementsException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public HtmlElementsException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-    public HtmlElementsException(Throwable cause) {
-        super(cause);
-    }
+  public HtmlElementsException(Throwable cause) {
+    super(cause);
+  }
 }
