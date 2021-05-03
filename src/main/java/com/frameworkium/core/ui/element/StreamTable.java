@@ -1,11 +1,10 @@
 package com.frameworkium.core.ui.element;
 
+import java.util.List;
+import java.util.stream.Stream;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-
-import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * {@link StreamTable} is an {@link AbstractStreamTable}.
@@ -19,25 +18,25 @@ import java.util.stream.Stream;
  */
 public class StreamTable extends AbstractStreamTable {
 
-    @FindBy(css = "thead > tr > th")
-    private List<WebElement> headerCells;
+  @FindBy(css = "thead > tr > th")
+  private List<WebElement> headerCells;
 
-    @FindBy(css = "tbody > tr")
-    private List<WebElement> rows;
+  @FindBy(css = "tbody > tr")
+  private List<WebElement> rows;
 
-    @Override
-    protected Stream<WebElement> headerCells() {
-        return headerCells.stream().filter(WebElement::isDisplayed);
-    }
+  @Override
+  protected Stream<WebElement> headerCells() {
+    return headerCells.stream().filter(WebElement::isDisplayed);
+  }
 
-    @Override
-    protected Stream<WebElement> rows() {
-        return rows.stream().filter(WebElement::isDisplayed);
-    }
+  @Override
+  protected Stream<WebElement> rows() {
+    return rows.stream().filter(WebElement::isDisplayed);
+  }
 
-    @Override
-    protected By cellLocator() {
-        return By.cssSelector("td");
-    }
+  @Override
+  protected By cellLocator() {
+    return By.cssSelector("td");
+  }
 
 }

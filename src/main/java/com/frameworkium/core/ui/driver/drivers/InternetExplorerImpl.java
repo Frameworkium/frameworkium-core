@@ -9,17 +9,17 @@ import org.openqa.selenium.remote.CapabilityType;
 
 public class InternetExplorerImpl extends AbstractDriver {
 
-    @Override
-    public InternetExplorerOptions getCapabilities() {
-        InternetExplorerOptions ieOptions = new InternetExplorerOptions();
-        ieOptions.setCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, true);
-        ieOptions.setCapability(InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING, true);
-        ieOptions.setCapability("requireWindowFocus", true);
-        return ieOptions;
-    }
+  @Override
+  public InternetExplorerOptions getCapabilities() {
+    InternetExplorerOptions ieOptions = new InternetExplorerOptions();
+    ieOptions.setCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, true);
+    ieOptions.setCapability(InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING, true);
+    ieOptions.setCapability("requireWindowFocus", true);
+    return ieOptions;
+  }
 
-    @Override
-    public WebDriver getWebDriver(Capabilities capabilities) {
-        return new InternetExplorerDriver(new InternetExplorerOptions(capabilities));
-    }
+  @Override
+  public WebDriver getWebDriver(Capabilities capabilities) {
+    return new InternetExplorerDriver(new InternetExplorerOptions(capabilities));
+  }
 }
