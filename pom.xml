@@ -38,6 +38,8 @@
     <groups />
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <!-- default skip.surefire.tests to the value of skipTests -->
+    <skip.surefire.tests>${skipTests}</skip.surefire.tests>
   </properties>
 
   <!-- makes mvn versions:display-plugin-updates faster -->
@@ -254,6 +256,7 @@
           <includes>
             <include>**/*Spec.*</include>
           </includes>
+          <skipTests>${skip.surefire.tests}</skipTests>
         </configuration>
       </plugin>
 

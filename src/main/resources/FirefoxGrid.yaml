@@ -2,11 +2,10 @@ browser: Firefox
 browserVersion:
 captureURL:
 customBrowserImpl:
-gridURL: http://localhost:4444/
-headless:
+gridURL: http://hub:4444/
+headless: true
 maximise:
-maxRetryCount:
-reuseBrowser:
+maxRetryCount: 1
+reuseBrowser: true
 sutName:
 sutVersion:
-threads:

@@ -1,7 +1,6 @@
 # Frameworkium Lite
 
-[![Build Status](https://travis-ci.com/ham1/frameworkium-lite.svg?branch=master)](https://travis-ci.com/ham1/frameworkium-lite)
-[![Maintainability](https://api.codeclimate.com/v1/badges/98704f9112c6877f7910/maintainability)](https://codeclimate.com/github/ham1/frameworkium-lite/maintainability)
+![CI](https://github.com/ham1/frameworkium-lite/actions/workflows/ci.yaml/badge.svg)
 [![codecov](https://codecov.io/gh/ham1/frameworkium-lite/branch/master/graph/badge.svg?token=07Bjy2ePfw)](https://codecov.io/gh/ham1/frameworkium-lite)
 
 A Framework for writing maintainable Selenium and REST API tests in Java.

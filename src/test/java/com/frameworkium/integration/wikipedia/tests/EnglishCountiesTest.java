@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EnglishCountiesTest extends BaseUITest {
 
     public void exploring_english_counties_data_with_stream_table() {
-        EnglishCountiesPage page = EnglishCountiesPage.open();
+        var page = EnglishCountiesPage.open();
 
         assertThat(page.populationOf("Cornwall"))
                 .isGreaterThan(550_000);
@@ -34,7 +34,7 @@ public class EnglishCountiesTest extends BaseUITest {
 
 
     public void exploring_english_counties_data_with_lists() {
-        EnglishCountiesUsingListsPage page = EnglishCountiesUsingListsPage.open();
+        var page = EnglishCountiesUsingListsPage.open();
 
         assertThat(page.populationOf("Cornwall"))
                 .isGreaterThan(550_000);

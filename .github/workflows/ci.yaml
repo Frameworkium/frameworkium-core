@@ -1,11 +1,12 @@
 name: FWium-lite CI
 
-on: [push]
+on: [ push ]
 
 jobs:
-  build:
+  test-local:
     runs-on: ubuntu-latest
-
+    env:
+      THREAD_COUNT: 2
     steps:
       - uses: actions/checkout@v2
       - name: Setup JDK 11
@@ -19,5 +20,160 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Compile and run checkstyle
-        run: mvn test-compile --batch-mode -U --show-version -DskipTests=true -Dmaven.javadoc.skip=true
+      - name: Compile, run checkstyle and unit tests
+        run: |
+          mvn test-compile surefire:test \
+            --batch-mode --show-version
+      - name: Install Firefox and Gecko Driver
+        run: |
+          sudo apt update && sudo apt install -y firefox
+          export GECKO_VER=0.29.1
+          wget --quiet https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VER}/geckodriver-v${GECKO_VER}-linux64.tar.gz
+          tar -xzf geckodriver-v${GECKO_VER}-linux64.tar.gz
+      - name: Use custom Firefox browser impl
+        run: |
+          mvn verify --batch-mode \
+            -Dskip.surefire.tests=true \
+            -DcustomBrowserImpl=com.frameworkium.integration.CustomFirefoxImpl \
+            -Dheadless=true \
+            -Dmaximise=true \
+            -Dit.test=DocumentationTest
+      - name: Test Groups using Firefox
+        run: |
+          mvn verify --batch-mode \
+            -Dskip.surefire.tests=true \
+            -Dbrowser=firefox \
+            -Dheadless \
+            -DreuseBrowser \
+            -Dgroups=fw-bugs
+      - name: Install chrome and chromedriver locally
+        run: |
+          wget --quiet https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt install ./google-chrome-stable_current_amd64.deb
+          wget --quiet http://chromedriver.storage.googleapis.com/90.0.4430.24/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+      - name: Run tests against local Chrome
+        run: |
+          mvn verify --batch-mode \
+            -Dskip.surefire.tests=true \
+            -Dthreads=${THREAD_COUNT} \
+            -Dbrowser=chrome \
+            -Dheadless \
+            -DreuseBrowser
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: fwium-logs
+          path: logs/
+          retention-days: 7
+      - uses: codecov/codecov-action@v1
+
+  test-chrome-grid:
+    runs-on: ubuntu-latest
+    container:
+      image: maven:3.8.1-jdk-11
+    env:
+      HUB_HOST: hub
+      THREAD_COUNT: 2
+    services:
+      hub:
+        image: selenium/hub:4.0.0-beta-3-20210426
+        ports:
+          - 4442-4444:4442-4444
+      chrome1:
+        image: selenium/node-chrome:4.0.0-beta-3-20210426
+        options: -v /dev/shm:/dev/shm
+        env:
+          SE_EVENT_BUS_PUBLISH_PORT: 4442
+          SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
+          SE_EVENT_BUS_HOST: hub
+      chrome2:
+        image: selenium/node-chrome:4.0.0-beta-3-20210426
+        options: -v /dev/shm:/dev/shm
+        env:
+          SE_EVENT_BUS_PUBLISH_PORT: 4442
+          SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
+          SE_EVENT_BUS_HOST: hub
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache Maven deps
+        uses: actions/cache@v2
+        with:
+          path: /root/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Run tests against Chrome grid
+        run: |
+          mvn verify --batch-mode \
+            -Dskip.surefire.tests=true \
+            -Dthreads=${THREAD_COUNT} \
+            -Dbrowser=chrome \
+            -Dheadless \
+            -DreuseBrowser \
+            -DgridURL=http://${HUB_HOST}:4444/
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: fwium-logs
+          path: logs/
+          retention-days: 7
+      - uses: codecov/codecov-action@v1
+
+  test-firefox-grid:
+    runs-on: ubuntu-latest
+    container:
+      image: maven:3.8.1-jdk-11
+    env:
+      HUB_HOST: hub
+      THREAD_COUNT: 2
+    services:
+      hub:
+        image: selenium/hub:4.0.0-beta-3-20210426
+        ports:
+          - 4442-4444:4442-4444
+      firefox1:
+        image: selenium/node-firefox:4.0.0-beta-3-20210426
+        options: -v /dev/shm:/dev/shm
+        env:
+          SE_EVENT_BUS_PUBLISH_PORT: 4442
+          SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
+          SE_EVENT_BUS_HOST: hub
+      firefox2:
+        image: selenium/node-firefox:4.0.0-beta-3-20210426
+        options: -v /dev/shm:/dev/shm
+        env:
+          SE_EVENT_BUS_PUBLISH_PORT: 4442
+          SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
+          SE_EVENT_BUS_HOST: hub
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache Maven deps
+        uses: actions/cache@v2
+        with:
+          path: /root/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Run using yaml FirefoxGrid config
+        run: |
+          mvn verify --batch-mode \
+            -Dskip.surefire.tests=true \
+            -Dthreads=${THREAD_COUNT} \
+            -Dit.test=EnglishCountiesTest \
+            -Dconfig=FirefoxGrid.yaml
+      - name: Run tests against Firefox grid
+        run: |
+          mvn verify --batch-mode \
+            -Dskip.surefire.tests=true \
+            -Dit.test=TheInternetExampleTests \
+            -Dthreads=${THREAD_COUNT} \
+            -Dbrowser=firefox \
+            -Dheadless \
+            -DreuseBrowser \
+            -DgridURL=http://${HUB_HOST}:4444/
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: fwium-logs
+          path: logs/
+          retention-days: 7
+      - uses: codecov/codecov-action@v1

@@ -1,23 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
   <Appenders>
+
     <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level - %msg%n"/>
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level - %msg%n" />
     </Console>
+
     <RollingFile
-            name="FileLogger"
+            name="DebugFileLogger"
             fileName="logs/frameworkium.log"
-            filePattern="logs/frameworkium-%d{yyyy-MM-dd}.log"
+            filePattern="logs/frameworkium-%d{yyyy-MM-dd-HH-mm-ss}.log"
             append="true">
-      <PatternLayout
-              pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{1} - %msg%n"/>
-      <SizeBasedTriggeringPolicy size="10MB"/>
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{1} - %msg%n" />
+      <SizeBasedTriggeringPolicy size="7MB" />
     </RollingFile>
+
+    <RollingFile
+            name="TraceFileLogger"
+            fileName="logs/frameworkium-trace.log"
+            filePattern="logs/frameworkium-trace-%d{yyyy-MM-dd-HH-mm-ss}.log"
+            append="true">
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{1} - %msg%n" />
+
+      <Filters>
+        <!-- First deny debug, info, warn, error and fatal messages -->
+        <ThresholdFilter level="debug" onMatch="DENY" onMismatch="NEUTRAL"/>
+        <!-- Then accept trace -->
+        <ThresholdFilter level="trace"  onMatch="ACCEPT" onMismatch="DENY"/>
+      </Filters>
+
+      <SizeBasedTriggeringPolicy size="20MB" />
+    </RollingFile>
+
   </Appenders>
+
   <Loggers>
-    <Root level="trace">
-      <AppenderRef ref="Console" level="INFO"/>
-      <AppenderRef ref="FileLogger" level="DEBUG"/>
+    <Root level="TRACE">
+      <AppenderRef ref="Console" level="INFO" />
+      <AppenderRef ref="DebugFileLogger" level="DEBUG" />
+      <AppenderRef ref="TraceFileLogger" level="TRACE" />
     </Root>
   </Loggers>
+
 </Configuration>
