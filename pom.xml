@@ -41,7 +41,7 @@
     <threads>1</threads>
     <groups />
     <aspectj.version>1.9.6</aspectj.version>
-    <allure.version>2.13.9</allure.version>
+    <allure.version>2.14.0</allure.version>
     <truth.version>1.1.2</truth.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
