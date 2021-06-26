@@ -1,6 +1,5 @@
 package com.frameworkium.lite.ui.pages.pageobjects
 
-import com.frameworkium.lite.ui.annotations.ForceVisible
 import com.frameworkium.lite.ui.annotations.Invisible
 import com.frameworkium.lite.ui.annotations.Visible
 import com.frameworkium.lite.ui.pages.BasePage
@@ -37,13 +36,6 @@ class PageObjects {
     }
 
     @InheritConstructors
-    static class SingleForceVisibleElement extends BasePage<SingleForceVisibleElement> {
-
-        @ForceVisible
-        WebElement forceVisibleElement
-    }
-
-    @InheritConstructors
     static class ListOfElements extends BasePage<ListOfElements> {
 
         @Visible
@@ -54,9 +46,6 @@ class PageObjects {
 
         @Invisible
         List<WebElement> emptyInvisible
-
-        @ForceVisible
-        List<WebElement> forceVisibles
     }
 
     @InheritConstructors
@@ -67,9 +56,6 @@ class PageObjects {
 
         @Invisible(checkAtMost = 2)
         List<WebElement> invisibles
-
-        @ForceVisible(checkAtMost = 2)
-        List<WebElement> forceVisibles
     }
 
     @InheritConstructors
@@ -100,7 +86,6 @@ class PageObjects {
     static class MultiVisibilityTypifiedElement extends BasePage<MultiVisibilityTypifiedElement> {
 
         @Visible
-        @ForceVisible
         @Invisible
         @Timeout(42)
         @FindBy(css = "html")

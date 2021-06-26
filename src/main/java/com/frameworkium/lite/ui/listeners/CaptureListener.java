@@ -6,7 +6,6 @@ import com.frameworkium.lite.ui.browsers.UserAgent;
 import com.frameworkium.lite.ui.capture.ElementHighlighter;
 import com.frameworkium.lite.ui.capture.ScreenshotCapture;
 import com.frameworkium.lite.ui.capture.model.Command;
-import com.frameworkium.lite.ui.pages.Visibility;
 import com.frameworkium.lite.ui.tests.BaseUITest;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +28,6 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private static final List<String> FRAMEWORKIUM_SCRIPTS  = Arrays.asList(
             UserAgent.SCRIPT,
-            Visibility.FORCE_VISIBLE_SCRIPT,
             ExtraExpectedConditions.JQUERY_AJAX_DONE_SCRIPT
     );
 

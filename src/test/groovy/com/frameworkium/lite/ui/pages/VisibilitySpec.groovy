@@ -10,13 +10,11 @@ import org.openqa.selenium.support.ui.FluentWait
 import org.openqa.selenium.support.ui.Sleeper
 import org.openqa.selenium.support.ui.Wait
 import com.frameworkium.lite.htmlelements.element.TextInput
-import spock.lang.Ignore
 import spock.lang.Specification
 
 import java.time.Clock
 import java.time.Duration
 
-@Ignore
 class VisibilitySpec extends Specification {
 
     /* Mocks used in each test */
@@ -25,10 +23,9 @@ class VisibilitySpec extends Specification {
                     .pollingEvery(Duration.ofMillis(1))
                     // -1 prevents polling (because FluentWait uses `isBefore`)
                     .withTimeout(Duration.ofSeconds(-1))
-    def mockJsEx = Mock(JavascriptExecutor)
     WebDriver mockDriver = Mock(EventFiringWebDriver, constructorArgs: [Mock(WebDriver)])
 
-    def sut = new Visibility(wait, mockJsEx)
+    def sut = new Visibility(wait)
 
     // methods that create new Mocks each time
 
@@ -102,34 +99,6 @@ class VisibilitySpec extends Specification {
             thrown(TimeoutException)
     }
 
-    def "Wait for Single visible @ForceVisible Element to be displayed"() {
-
-        given: "A page object with @ForceVisible element field"
-            def pageObject = new PageObjects.SingleForceVisibleElement(mockDriver, wait)
-
-        when:
-            pageObject.forceVisibleElement = newVisibleElement()
-            sut.waitForAnnotatedElementVisibility(pageObject)
-        then: "forces visible with JS"
-            1 * mockJsEx.executeScript(_ as String, _ as WebElement)
-        then: "wait is successful when element is displayed"
-            notThrown(Exception)
-    }
-
-    def "Wait for Single invisible @ForceVisible Element to be displayed"() {
-
-        given: "A page object with @ForceVisible element field"
-            def pageObject = new PageObjects.SingleForceVisibleElement(mockDriver, wait)
-
-        when:
-            pageObject.forceVisibleElement = newInvisibleElement()
-            sut.waitForAnnotatedElementVisibility(pageObject)
-        then: "forces visible with JS"
-            1 * mockJsEx.executeScript(_ as String, _ as WebElement)
-        then: "wait times out when element is not displayed"
-            thrown(TimeoutException)
-    }
-
     def "Waiting for Lists of Elements passes as expected"() {
 
         given: "A page objects with Lists of Elements"
@@ -138,13 +107,11 @@ class VisibilitySpec extends Specification {
                 visibles = [newVisibleElement()]
                 invisibles = [newInvisibleElement(), newInvisibleElement()]
                 emptyInvisible = []
-                forceVisibles = [newVisibleElement(), newVisibleElement(), newVisibleElement()]
             }
         when: "waiting for visibility"
             sut.waitForAnnotatedElementVisibility(pageObject)
-        then: "No exceptions and 3 forceVisible JS executions"
+        then: "No exceptions"
             notThrown(Exception)
-            3 * mockJsEx.executeScript(_ as String, _ as WebElement)
     }
 
     def "Waiting for Lists of Elements passes as expected where checkAtMost=2"() {
@@ -154,13 +121,11 @@ class VisibilitySpec extends Specification {
             pageObject.with {
                 visibles = [newVisibleElement(), newVisibleElement(), newNoInteractionElement()]
                 invisibles = [newInvisibleElement(), newInvisibleElement(), newNoInteractionElement()]
-                forceVisibles = [newVisibleElement(), newVisibleElement(), newNoInteractionElement()]
             }
         when: "waiting for visibility"
             sut.waitForAnnotatedElementVisibility(pageObject)
-        then: "No exceptions and 2 forceVisible JS executions"
+        then: "No exceptions"
             notThrown(Exception)
-            2 * mockJsEx.executeScript(_ as String, _ as WebElement)
     }
 
     def "HtmlElement 'components' are treated as page objects"() {

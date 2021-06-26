@@ -30,8 +30,7 @@ public abstract class BasePage<T extends BasePage<T>> {
     public BasePage(WebDriver driver, Wait<WebDriver> wait) {
         this.driver = driver;
         this.wait = wait;
-        JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
-        this.visibility = new Visibility(wait, javascriptExecutor);
+        this.visibility = new Visibility(wait);
     }
 
     /**
@@ -126,8 +125,7 @@ public abstract class BasePage<T extends BasePage<T>> {
 
     private void updatePageTimeout(Duration timeout) {
         wait = UITestLifecycle.get().newWaitWithTimeout(timeout);
-        JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
-        visibility = new Visibility(wait, jsExecutor);
+        visibility = new Visibility(wait);
     }
 
     private void takePageLoadedScreenshotAndSendToCapture() {
@@ -196,15 +194,6 @@ public abstract class BasePage<T extends BasePage<T>> {
             logger.debug("Failed Javascript:\n" + javascript, e);
         }
         return returnObj;
-    }
-
-    /**
-     * Convenience method for {@link Visibility#forceVisible(WebElement)}.
-     *
-     * @param element the {@link WebElement} to "force visible" via Javascript.
-     */
-    protected void forceVisible(WebElement element) {
-        visibility.forceVisible(element);
     }
 
 }
