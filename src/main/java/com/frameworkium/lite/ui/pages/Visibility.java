@@ -23,13 +23,8 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllE
  */
 public final class Visibility {
 
-    public static final String FORCE_VISIBLE_SCRIPT =
-            "arguments[0].style.zindex='10000';"
-                    + "arguments[0].style.visibility='visible';"
-                    + "arguments[0].style.opacity='100';";
-
     private static final List<Class<? extends Annotation>> VISIBILITY_ANNOTATION_CLASSES =
-            Arrays.asList(Visible.class, Invisible.class, ForceVisible.class);
+            Arrays.asList(Visible.class, Invisible.class);
 
     private final Wait<WebDriver> wait;
     private final JavascriptExecutor javascriptExecutor;
@@ -107,9 +102,6 @@ public final class Visibility {
         } else if (Invisible.class.equals(visibilityAnnotationClass)) {
             int toCheckCount = field.getAnnotation(Invisible.class).checkAtMost();
             waitForFieldToBeInvisible(pageObject, field, toCheckCount);
-        } else if (ForceVisible.class.equals(visibilityAnnotationClass)) {
-            int toCheckCount = field.getAnnotation(ForceVisible.class).checkAtMost();
-            forceThenWaitForFieldToBeVisible(pageObject, field, toCheckCount);
         }
     }
 
@@ -159,24 +151,6 @@ public final class Visibility {
                                 .collect(toList()))));
     }
 
-    /**
-     * Calls {@link Visibility#forceVisible(WebElement)} for each field
-     * annotated ith {@code @ForceVisible}, then calls
-     * {@link Visibility#waitForFieldToBeVisible(Object, Field, int)}.
-     */
-    private void forceThenWaitForFieldToBeVisible(Object pageObject, Field field, int checkAtMost) {
-
-        applyToWebElements(
-                field,
-                getObjectFromField(pageObject, field),
-                this::forceVisible,
-                list -> list.stream()
-                        .limit(checkAtMost == -1 ? list.size() : checkAtMost)
-                        .forEach(this::forceVisible));
-
-        waitForFieldToBeVisible(pageObject, field, checkAtMost);
-    }
-
     @SuppressWarnings("unchecked")
     private void applyToWebElements(
             Field field,
@@ -212,15 +186,4 @@ public final class Visibility {
         }
     }
 
-    /**
-     * Executes JavaScript in an attempt to make the element visible
-     * e.g. for elements which are occluded but are required for interaction.
-     * To apply this to a list of WebElements, try the following code:
-     * {@code elements.forEach(visibility::forceVisible)}
-     *
-     * @param element the {@link WebElement} to make visible
-     */
-    void forceVisible(WebElement element) {
-        javascriptExecutor.executeScript(FORCE_VISIBLE_SCRIPT, element);
-    }
 }

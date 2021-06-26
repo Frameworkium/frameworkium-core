@@ -29,7 +29,6 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private static final List<String> FRAMEWORKIUM_SCRIPTS  = Arrays.asList(
             UserAgent.SCRIPT,
-            Visibility.FORCE_VISIBLE_SCRIPT,
             ExtraExpectedConditions.JQUERY_AJAX_DONE_SCRIPT
     );
 

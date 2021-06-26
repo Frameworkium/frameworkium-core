@@ -27,10 +27,7 @@ public class FrameworkiumBugsTest extends BaseUITest {
     }
 
     public void use_base_page_visibility() {
-        SeleniumDownloadPage.open()
-                .hideContent()
-                .forceVisibleContent()
-                .waitForContent();
+        SeleniumDownloadPage.open().waitForContent();
     }
 
     @Test(dependsOnMethods = {"use_base_page_visibility"})

@@ -198,13 +198,4 @@ public abstract class BasePage<T extends BasePage<T>> {
         return returnObj;
     }
 
-    /**
-     * Convenience method for {@link Visibility#forceVisible(WebElement)}.
-     *
-     * @param element the {@link WebElement} to "force visible" via Javascript.
-     */
-    protected void forceVisible(WebElement element) {
-        visibility.forceVisible(element);
-    }
-
 }

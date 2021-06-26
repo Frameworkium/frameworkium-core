@@ -27,18 +27,6 @@ public class SeleniumDownloadPage extends BasePage<SeleniumDownloadPage> {
         return latestDownloadLink.getText();
     }
 
-    public SeleniumDownloadPage hideContent() {
-        executeJS("arguments[0].style.visibility='hidden';", latestDownloadLink);
-        wait.until(ExpectedConditions.not(visibilityOf(latestDownloadLink)));
-        return this;
-    }
-
-    public SeleniumDownloadPage forceVisibleContent() {
-        // ensure force visible works
-        forceVisible(latestDownloadLink);
-        return this;
-    }
-
     public void waitForContent() {
         wait.until(visibilityOf(latestDownloadLink));
     }
