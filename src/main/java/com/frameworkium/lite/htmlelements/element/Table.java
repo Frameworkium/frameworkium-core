@@ -62,7 +62,7 @@ public class Table extends TypifiedElement {
                 .findElements(By.xpath(".//tr"))
                 .stream()
                 .map(rowElement -> rowElement.findElements(By.xpath(".//td")))
-                .filter(row -> row.size() > 0) // ignore rows with no <td> tags
+                .filter(row -> !row.isEmpty()) // ignore rows with no <td> tags
                 .collect(toList());
     }
 

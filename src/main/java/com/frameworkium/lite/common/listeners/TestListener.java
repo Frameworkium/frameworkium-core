@@ -21,7 +21,7 @@ public class TestListener implements ITestListener {
     @Override
     public void onTestFailure(ITestResult result) {
         logger.error("FAIL  {}", getTestIdentifier(result));
-        Throwable cause = result.getThrowable();
+        var cause = result.getThrowable();
         if (cause != null) {
             logger.error(cause.getMessage(), cause);
         }
@@ -30,7 +30,7 @@ public class TestListener implements ITestListener {
     @Override
     public void onTestSkipped(ITestResult result) {
         logger.warn("SKIP  {}", getTestIdentifier(result));
-        Throwable cause = result.getThrowable();
+        var cause = result.getThrowable();
         if (cause != null && SkipException.class.isAssignableFrom(cause.getClass())) {
             logger.warn(cause.getMessage());
         }
@@ -41,13 +41,4 @@ public class TestListener implements ITestListener {
                 result.getInstanceName(),
                 result.getMethod().getMethodName());
     }
-
-    @Override
-    public void onTestFailedButWithinSuccessPercentage(ITestResult result) {}
-
-    @Override
-    public void onStart(ITestContext context) {}
-
-    @Override
-    public void onFinish(ITestContext context) {}
 }

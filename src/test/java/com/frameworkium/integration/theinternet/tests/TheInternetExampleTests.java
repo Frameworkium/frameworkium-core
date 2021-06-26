@@ -16,20 +16,22 @@ public class TheInternetExampleTests extends BaseUITest {
 
     public void check_boxes_can_all_be_checked() {
 
-        final int timeout = 15;
-        Stream<Boolean> checkboxesStatus =
+        int timeout = 15;
+        List<Boolean> checkboxesStatus =
                 WelcomePage.open(timeout)
                         .clickCheckboxesLink()
                         .checkAllCheckboxes()
-                        .getAllCheckboxCheckedStatus();
+                        .getAllCheckboxCheckedStatus()
+                        .collect(Collectors.toList());
 
         // Assert that all checkboxes are checked
+        assertThat(checkboxesStatus).isNotEmpty();
         assertThat(checkboxesStatus).doesNotContain(false);
     }
 
     public void dragAndDrop() {
 
-        List<String> headings = WelcomePage.open()
+        var headings = WelcomePage.open()
                 .clickDragAndDropLink()
                 .dragAontoB()
                 .getListOfHeadings();
@@ -71,7 +73,7 @@ public class TheInternetExampleTests extends BaseUITest {
 
     public void javascriptAlerts() {
 
-        JavaScriptAlertsPage javascriptAlerts =
+        var javascriptAlerts =
                 WelcomePage.open()
                         .clickJavascriptAlertsLink()
                         .clickAlertButtonAndAccept();
@@ -82,7 +84,7 @@ public class TheInternetExampleTests extends BaseUITest {
 
     public void keypresses() {
 
-        KeyPressesPage keyPressesPage = WelcomePage
+        var keyPressesPage = WelcomePage
                 .open()
                 .clickKeyPressesLink()
                 .enterKeyPress(Keys.ENTER);
@@ -93,7 +95,7 @@ public class TheInternetExampleTests extends BaseUITest {
 
     public void sortDataTable() {
 
-        SortableDataTablesPage tablesPage = SortableDataTablesPage.open();
+        var tablesPage = SortableDataTablesPage.open();
 
         assertThat(tablesPage.getTable1ColumnContents("Web Site"))
                 .contains("http://www.jdoe.com");

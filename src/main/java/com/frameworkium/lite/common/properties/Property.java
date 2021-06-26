@@ -72,7 +72,7 @@ public enum Property {
         try (InputStream configFileStream =
                      ClassLoader.getSystemClassLoader()
                              .getResourceAsStream(configFileName)) {
-            Properties properties = new Properties();
+            var properties = new Properties();
             properties.load(configFileStream);
             return properties;
         } catch (IOException e) {

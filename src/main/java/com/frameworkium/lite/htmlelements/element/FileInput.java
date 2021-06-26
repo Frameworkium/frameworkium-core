@@ -36,8 +36,7 @@ public class FileInput extends TypifiedElement {
         // Set local file detector in case of remote driver usage
         setLocalFileDetectorIfRequired();
 
-        String filePath = getFilePath(fileName);
-        sendKeys(filePath);
+        sendKeys(getFilePath(fileName));
     }
 
     /**
@@ -61,9 +60,9 @@ public class FileInput extends TypifiedElement {
 
     private void setLocalFileDetectorIfRequired() {
         if (Property.GRID_URL.isSpecified()) {
-            WebDriver webDriver = UITestLifecycle.get().getWebDriver();
-            EventFiringWebDriver efDriver = (EventFiringWebDriver) webDriver;
-            RemoteWebDriver remoteDriver = (RemoteWebDriver) efDriver.getWrappedDriver();
+            var webDriver = UITestLifecycle.get().getWebDriver();
+            var efDriver = (EventFiringWebDriver) webDriver;
+            var remoteDriver = (RemoteWebDriver) efDriver.getWrappedDriver();
             remoteDriver.setFileDetector(new LocalFileDetector());
         }
     }
@@ -71,16 +70,9 @@ public class FileInput extends TypifiedElement {
     /**
      * Submits selected file by simply submitting the whole form, which contains this file input.
      */
+    @Override
     public void submit() {
         getWrappedElement().submit();
-    }
-
-    private WebElement getNotProxiedInputElement() {
-        return getWrappedElement().findElement(By.xpath("."));
-    }
-
-    private void setLocalFileDetector(RemoteWebElement element) {
-        element.setFileDetector(new LocalFileDetector());
     }
 
     private String getFilePath(final String fileName) {
@@ -95,7 +87,6 @@ public class FileInput extends TypifiedElement {
     }
 
     private String getPathForSystemFile(final String fileName) {
-        File file = new File(fileName);
-        return file.getPath();
+        return new File(fileName).getPath();
     }
 }

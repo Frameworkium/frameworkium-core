@@ -43,6 +43,7 @@ public class CheckBox extends TypifiedElement {
      *
      * @return Text of the checkbox label or {@code null} if no label has been found.
      */
+    @Override
     public String getText() {
         return getLabelText().orElse("");
     }

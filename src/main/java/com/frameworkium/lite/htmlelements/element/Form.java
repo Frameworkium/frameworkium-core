@@ -46,7 +46,7 @@ public class Form extends TypifiedElement {
     }
 
     protected WebElement findElementByKey(String key) {
-        List<WebElement> elements = getWrappedElement().findElements(By.name(key));
+        var elements = getWrappedElement().findElements(By.name(key));
         if (elements.isEmpty()) {
             return null;
         } else {
@@ -72,18 +72,18 @@ public class Form extends TypifiedElement {
 
     protected String getElementType(WebElement element) {
         String tagName = element.getTagName();
-        if ("input".equals(tagName)) {
+        if (INPUT_FIELD.equals(tagName)) {
             String type = element.getAttribute("type");
-            if ("checkbox".equals(type)) {
+            if (CHECKBOX_FIELD.equals(type)) {
                 return CHECKBOX_FIELD;
-            } else if ("radio".equals(type)) {
+            } else if (RADIO_FIELD.equals(type)) {
                 return RADIO_FIELD;
-            } else if ("file".equals(type)) {
+            } else if (FILE_FIELD.equals(type)) {
                 return FILE_FIELD;
             } else {
                 return INPUT_FIELD;
             }
-        } else if ("select".equals(tagName)) {
+        } else if (SELECT_FIELD.equals(tagName)) {
             return SELECT_FIELD;
         } else if ("textarea".equals(tagName)) {
             return INPUT_FIELD;
