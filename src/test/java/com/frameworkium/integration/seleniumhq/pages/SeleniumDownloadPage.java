@@ -4,7 +4,6 @@ import com.frameworkium.lite.ui.annotations.Visible;
 import com.frameworkium.lite.ui.pages.BasePage;
 import com.frameworkium.integration.seleniumhq.components.HeaderComponent;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import com.frameworkium.lite.htmlelements.element.Link;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;

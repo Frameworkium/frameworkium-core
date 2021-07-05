@@ -48,7 +48,7 @@ public class DragAndDropPage extends BasePage<DragAndDropPage> {
      */
     private String scriptToSimulateDragDrop() {
         if (jQueryJS.isEmpty()) {
-            Boolean isJQueryAvailable = (Boolean) executeJS("return !!window.jQuery;");
+            var isJQueryAvailable = (Boolean) executeJS("return !!window.jQuery;");
             if (!isJQueryAvailable) {
                 jQueryJS = RestAssured.get(JQUERY_JS_URI).asString();
             }

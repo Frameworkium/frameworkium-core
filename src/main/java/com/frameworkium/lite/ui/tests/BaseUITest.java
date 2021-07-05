@@ -26,7 +26,7 @@ public abstract class BaseUITest {
      */
     @BeforeSuite(alwaysRun = true)
     protected static void initialiseDriverPool() {
-        UITestLifecycle.get().beforeSuite();
+        UITestLifecycle.beforeSuite();
     }
 
     /**

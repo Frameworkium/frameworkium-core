@@ -6,11 +6,6 @@ import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 public interface Driver {
 
-    /** Check whether the driver is for a mobile device. */
-    static boolean isMobile() {
-        return false;
-    }
-
     /** Method to set-up the driver object. */
     void initialise();
 
