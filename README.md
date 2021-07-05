@@ -20,11 +20,12 @@ To use this you will need the following in your `pom.xml`
     <dependency>
       <groupId>com.github.ham1</groupId>
       <artifactId>frameworkium-lite</artifactId>
-      <version>4.1.3</version>
+      <version>4.1.4</version>
     </dependency>
   </dependencies>
 ```
 
 Forked from https://github.com/Frameworkium/frameworkium-core
 
-Incorporates a forked and updated version of https://github.com/yandex-qatools/htmlelements
+Incorporates a forked and updated version of
+https://github.com/yandex-qatools/htmlelements
