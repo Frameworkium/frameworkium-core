@@ -20,14 +20,14 @@ public abstract class BasePage<T extends BasePage<T>> {
     protected Wait<WebDriver> wait;
     private Visibility visibility;
 
-    public BasePage() {
+    protected BasePage() {
         this(UITestLifecycle.get().getWebDriver(), UITestLifecycle.get().getWait());
     }
 
     /**
      * Added to enable testing and, one day, remove coupling to BaseUITest.
      */
-    public BasePage(WebDriver driver, Wait<WebDriver> wait) {
+    protected BasePage(WebDriver driver, Wait<WebDriver> wait) {
         this.driver = driver;
         this.wait = wait;
         this.visibility = new Visibility(wait);
@@ -161,12 +161,12 @@ public abstract class BasePage<T extends BasePage<T>> {
      */
     protected Object executeJS(String javascript, Object... objects) {
         Object returnObj = null;
-        JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+        var jsExecutor = (JavascriptExecutor) driver;
         try {
             returnObj = jsExecutor.executeScript(javascript, objects);
         } catch (Exception e) {
             logger.error("Javascript execution failed!");
-            logger.debug("Failed Javascript:" + javascript, e);
+            logger.debug("Failed Javascript:\n{}", javascript, e);
         }
         return returnObj;
     }
@@ -187,11 +187,11 @@ public abstract class BasePage<T extends BasePage<T>> {
     protected Object executeAsyncJS(String javascript, Object... objects) {
         Object returnObj = null;
         try {
-            JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+            var jsExecutor = (JavascriptExecutor) driver;
             returnObj = jsExecutor.executeAsyncScript(javascript, objects);
         } catch (Exception e) {
             logger.error("Async Javascript execution failed!");
-            logger.debug("Failed Javascript:\n" + javascript, e);
+            logger.debug("Failed Javascript:\n{}", javascript, e);
         }
         return returnObj;
     }

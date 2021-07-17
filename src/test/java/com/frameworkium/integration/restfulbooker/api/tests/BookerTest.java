@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 // app resets every 10m, so could happen in the middle of this test
-@Test(enabled = false) // currently down
+@Test
 public class BookerTest extends BaseAPITest {
 
     @BeforeClass

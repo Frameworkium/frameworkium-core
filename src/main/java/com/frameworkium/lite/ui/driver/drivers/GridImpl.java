@@ -23,13 +23,13 @@ public class GridImpl extends AbstractDriver {
         try {
             this.remoteURL = new URL(Property.GRID_URL.getValue());
         } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
     @Override
     public Capabilities getCapabilities() {
-        MutableCapabilities mutableCapabilities = new MutableCapabilities(capabilities);
+        var mutableCapabilities = new MutableCapabilities(capabilities);
         if (BROWSER_VERSION.isSpecified()) {
             mutableCapabilities.setCapability("version", BROWSER_VERSION.getValue());
         }
