@@ -238,20 +238,20 @@ public abstract class AbstractStreamTable extends HtmlElement {
                 .filter(Objects::nonNull);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
+    protected long getHeaderIndex(Predicate<WebElement> headerPredicate) {
+        return Streams.mapWithIndex(
+                        getHeadings(), (webElement, i) -> headerPredicate.test(webElement) ? i : null)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("No header found."));
+    }
+
     private BiFunction<WebElement, WebElement, WebElement> targetOrNull(Predicate<WebElement> lookupCellMatcher) {
         return (lookupCell, targetCell) ->
                 lookupCellMatcher.test(lookupCell)
                         ? targetCell
                         : null;
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    private long getHeaderIndex(Predicate<WebElement> headerPredicate) {
-        return Streams.mapWithIndex(
-                getHeadings(), (webElement, i) -> headerPredicate.test(webElement) ? i : null)
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("No header found."));
     }
 
 }
