@@ -16,6 +16,8 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
+import java.time.Duration;
+
 public abstract class AbstractDriver implements Driver {
 
   protected static final Logger logger = LogManager.getLogger();
@@ -66,7 +68,7 @@ public abstract class AbstractDriver implements Driver {
       eventFiringWD.register(new CaptureListener());
     }
     if (!Driver.isNative()) {
-      eventFiringWD.manage().timeouts().setScriptTimeout(10, SECONDS);
+      eventFiringWD.manage().timeouts().setScriptTimeout(Duration.ofSeconds(10));
     }
     return eventFiringWD;
   }

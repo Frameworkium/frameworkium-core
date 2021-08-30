@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.github.frameworkium</groupId>
+  <groupId>com.github.custom.frameworkium</groupId>
   <artifactId>frameworkium-core</artifactId>
-  <version>4.0.0-BETA2-SNAPSHOT</version>
+  <version>4.0.1-BETA2-SNAPSHOT</version>
   <name>frameworkium-core</name>
   <description>
     Frameworkium core code.
@@ -22,9 +22,9 @@
   <modules />
 
   <scm>
-    <connection>scm:git:git@github.com:frameworkium/frameworkium-core</connection>
-    <url>scm:git:git@github.com:frameworkium/frameworkium-core</url>
-    <developerConnection>scm:git:git@gitproxy:frameworkium/frameworkium-core</developerConnection>
+    <connection>scm:git:git@github.com:emersonbaillie/frameworkium-core</connection>
+    <url>scm:git:git@github.com:emersonbaillie/frameworkium-core</url>
+    <developerConnection>scm:git:git@gitproxy:emersonbaillie/frameworkium-core</developerConnection>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
