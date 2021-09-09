@@ -8,10 +8,10 @@ import org.openqa.selenium.support.FindBy;
 import com.frameworkium.lite.htmlelements.element.HtmlElement;
 import com.frameworkium.lite.htmlelements.element.Link;
 
-@FindBy(id = "header")
+@FindBy(css = "header")
 public class HeaderComponent extends HtmlElement {
 
-    @FindBy(css = "a.nav-item:nth-child(3)")
+    @FindBy(css = "li:nth-child(3) > a")
     private Link downloadLink;
 
     public SeleniumDownloadPage clickDownloadLink() {

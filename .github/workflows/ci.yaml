@@ -50,8 +50,7 @@ jobs:
         run: |
           wget --quiet https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo apt install ./google-chrome-stable_current_amd64.deb
-          wget --quiet http://chromedriver.storage.googleapis.com/91.0.4472.101/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
+          ./ensure-chromedriver.sh
       - name: Run tests against local Chrome
         run: |
           mvn verify --batch-mode \
@@ -77,18 +76,18 @@ jobs:
       THREAD_COUNT: 2
     services:
       hub:
-        image: selenium/hub:4.0.0-beta-4-20210608
+        image: selenium/hub:4.0
         ports:
           - 4442-4444:4442-4444
       chrome1:
-        image: selenium/node-chrome:4.0.0-beta-4-20210608
+        image: selenium/node-chrome:4.0
         options: -v /dev/shm:/dev/shm
         env:
           SE_EVENT_BUS_PUBLISH_PORT: 4442
           SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
           SE_EVENT_BUS_HOST: hub
       chrome2:
-        image: selenium/node-chrome:4.0.0-beta-4-20210608
+        image: selenium/node-chrome:4.0
         options: -v /dev/shm:/dev/shm
         env:
           SE_EVENT_BUS_PUBLISH_PORT: 4442
@@ -128,18 +127,18 @@ jobs:
       THREAD_COUNT: 2
     services:
       hub:
-        image: selenium/hub:4.0.0-beta-4-20210608
+        image: selenium/hub:4.0
         ports:
           - 4442-4444:4442-4444
       firefox1:
-        image: selenium/node-firefox:4.0.0-beta-4-20210608
+        image: selenium/node-firefox:4.0
         options: -v /dev/shm:/dev/shm
         env:
           SE_EVENT_BUS_PUBLISH_PORT: 4442
           SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
           SE_EVENT_BUS_HOST: hub
       firefox2:
-        image: selenium/node-firefox:4.0.0-beta-4-20210608
+        image: selenium/node-firefox:4.0
         options: -v /dev/shm:/dev/shm
         env:
           SE_EVENT_BUS_PUBLISH_PORT: 4442
