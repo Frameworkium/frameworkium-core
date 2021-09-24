@@ -17,7 +17,7 @@ public class SeleniumDownloadPage extends BasePage<SeleniumDownloadPage> {
     private HeaderComponent header;
 
     @Visible
-    @FindBy(css = "body > div.split-section.container.dark-background > div.right > p:nth-child(1) > a")
+    @FindBy(css = "body .td-main div:nth-child(3) > div:nth-child(2) a")
     private Link latestDownloadLink;
 
     public static SeleniumDownloadPage open() {

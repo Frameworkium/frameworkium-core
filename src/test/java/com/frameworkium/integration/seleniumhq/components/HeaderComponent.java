@@ -7,10 +7,10 @@ import com.frameworkium.integration.seleniumhq.pages.SeleniumDownloadPage;
 import org.openqa.selenium.support.FindBy;
 
 
-@FindBy(id = "header")
+@FindBy(className = "navbar")
 public class HeaderComponent extends HtmlElement {
 
-    @FindBy(css = "#navbar > a:nth-child(3)")
+    @FindBy(css = "#main_navbar [href='/downloads']")
     private Link downloadLink;
 
     public SeleniumDownloadPage clickDownloadLink() {
