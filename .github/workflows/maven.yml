@@ -11,10 +11,6 @@ on:
 
 env:
   THREAD_COUNT: 2
-  CAPTURE_URL: http://capture-6c06138r.cloudapp.net
-  SUT_NAME: frameworkium-core
-  SUT_VERSION: $GITHUB_REF
-
 
 jobs:
   build:
@@ -50,7 +46,7 @@ jobs:
       - name: Build with Maven - checkstyle
         run: mvn test-compile -B -U --show-version -DskipTests=true -Dmaven.javadoc.skip=true
       - name: Build with Maven - firefox off grid
-        run: mvn verify -B -Dthreads=$THREAD_COUNT -Dbrowser=firefox -DreuseBrowser -Dheadless -DcaptureURL=$CAPTURE_URL -DsutName="$SUT_NAME" -DsutVersion="$SUT_VERSION" -Dwebdriver.firefox.logfile=/dev/null
+        run: mvn verify -B -Dthreads=$THREAD_COUNT -Dbrowser=firefox -DreuseBrowser -Dheadless -Dwebdriver.firefox.logfile=/dev/null
       - name: Build with Maven - chrome on grid
         run: mvn verify -B -Dthreads=$THREAD_COUNT -Dbrowser=chrome -Dmaximise=True -DreuseBrowser=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub
       - name: Build with Maven - custom browser on grid
@@ -59,7 +55,7 @@ jobs:
         run: mvn verify -B -Dthreads=$THREAD_COUNT -Dbrowser=chrome -Dgroups=fw-bugs -DreuseBrowser=true -Dheadless=true
         # Disabled until we have a JIRA to use
       - name: Build with Maven - chrome on grid with jira/zephyr options on
-        run: mvn verify -B -Dthreads=$THREAD_COUNT -Dbrowser=chrome -Dmaximise=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub -DjiraURL="http://localhost:8080" -DresultVersion="BUILD TEST VERSION" -DzapiCycleRegEx="myCycle" -DjiraUsername=frameworkium -DjiraPassword=frameworkium -DcaptureURL=$CAPTURE_URL -DsutName="$SUT_NAME" -DsutVersion="$SUT_VERSION"
+        run: mvn verify -B -Dthreads=$THREAD_COUNT -Dbrowser=chrome -Dmaximise=true -Dheadless=true -DgridURL=http://localhost:4444/wd/hub -DjiraURL="http://localhost:8080" -DresultVersion="BUILD TEST VERSION" -DzapiCycleRegEx="myCycle" -DjiraUsername=frameworkium -DjiraPassword=frameworkium
         # Disabled until we have saucelabs account
         #      - name: Build with Maven - saucelabs
         #        run: mvn verify -Dsauce=true -Dplatform=ios -Dbrowser=safari -DplatformVersion=8.0 -Ddevice=iPad -DcaptureURL=$CAPTURE_URL -DsutName="$SUT_NAME" -DsutVersion="$SUT_VERSION"
