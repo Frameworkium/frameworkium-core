@@ -126,7 +126,7 @@ public class ScreenshotCapture {
             return;
         }
 
-        CreateScreenshot createScreenshotMessage =
+        var createScreenshotMessage =
                 new CreateScreenshot(
                         executionID,
                         command,
@@ -160,7 +160,9 @@ public class ScreenshotCapture {
         }
     }
 
-    /** Waits up to 2 minutes to send any remaining Screenshot messages. */
+    /**
+     * Waits up to 2 minutes to send any remaining Screenshot messages.
+     */
     public static void processRemainingBacklog() {
 
         executorService.shutdown();

@@ -58,12 +58,12 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
             return;
         }
 
-        Throwable thrw = result.getThrowable();
-        WebDriver driver = UITestLifecycle.get().getWebDriver();
+        var thrw = result.getThrowable();
+        var driver = UITestLifecycle.get().getWebDriver();
         if (null != thrw) {
             takeScreenshotAndSend(action, driver, thrw);
         } else {
-            Command command = new Command(action, "n/a", "n/a");
+            var command = new Command(action, "n/a", "n/a");
             takeScreenshotAndSend(command, driver);
         }
     }
@@ -79,7 +79,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
         }
         ElementHighlighter highlighter = new ElementHighlighter(driver);
         highlighter.highlightElement(element);
-        Command command = new Command("click", element);
+        var command = new Command("click", element);
         takeScreenshotAndSend(command, driver);
         highlighter.unhighlightPrevious();
     }
@@ -111,13 +111,13 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     @Override
     public void beforeNavigateTo(String url, WebDriver driver) {
-        Command command = new Command("nav", "url", url);
+        var command = new Command("nav", "url", url);
         takeScreenshotAndSend(command, driver);
     }
 
     @Override
     public void afterSwitchToWindow(String windowName, WebDriver driver) {
-        Command command = new Command("nav", "window", windowName);
+        var command = new Command("nav", "window", windowName);
         takeScreenshotAndSend(command, driver);
     }
 
