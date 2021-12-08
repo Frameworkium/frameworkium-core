@@ -121,8 +121,8 @@ public class ScreenshotCapture {
             return;
         }
         
-        if(errorMessage.contains("Skipped after failure")){
-            logger.warn("Not sending screenshot due to test being skipped.");
+        if (errorMessage.contains("Skipped after failure")) {
+            logger.info("Not sending screenshot due to test being skipped.");
             return;
         }
 
