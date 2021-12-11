@@ -26,10 +26,13 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
     private final Logger logger = LogManager.getLogger(this);
 
-    private static final List<String> FRAMEWORKIUM_SCRIPTS  = Arrays.asList(
+    private static final List<String> FRAMEWORKIUM_SCRIPTS = Arrays.asList(
             UserAgent.SCRIPT,
             ExtraExpectedConditions.JQUERY_AJAX_DONE_SCRIPT
     );
+
+    /** Prevent multiple final state screenshots from being sent. */
+    private boolean finalScreenshotSent = false;
 
     private void takeScreenshotAndSend(Command command, WebDriver driver) {
         try {
@@ -53,7 +56,9 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     private void sendFinalScreenshot(ITestResult result, String action) {
-        if (!ScreenshotCapture.isRequired() || !isUITest(result)) {
+        if (!ScreenshotCapture.isRequired() ||
+                !isUITest(result) ||
+                finalScreenshotSent) {
             return;
         }
 
@@ -65,6 +70,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
             var command = new Command(action, "n/a", "n/a");
             takeScreenshotAndSend(command, driver);
         }
+        finalScreenshotSent = true;
     }
 
     private boolean isUITest(ITestResult result) {
