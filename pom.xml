@@ -269,20 +269,25 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>3.0.0-M5</version>
         <configuration>
-          <failIfNoTests>true</failIfNoTests>
           <parallel>methods</parallel>
           <threadCount>${threads}</threadCount>
+
+          <skipAfterFailureCount>1</skipAfterFailureCount>
+
           <systemPropertyVariables>
             <!-- For Local screenshots on test failure -->
             <screenshotDirectory>
               ${project.build.directory}/screenshots
             </screenshotDirectory>
           </systemPropertyVariables>
+
+          <failIfNoTests>true</failIfNoTests>
+          <groups>${groups}</groups>
           <includes>
             <include>**/*Test.java</include>
             <include>**/*Tests.java</include>
           </includes>
-          <groups>${groups}</groups>
+
           <!-- required for Jacoco code coverage -->
           <argLine>${failsafeArgLine}</argLine>
         </configuration>
