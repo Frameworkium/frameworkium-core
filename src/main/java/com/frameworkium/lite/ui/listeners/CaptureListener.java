@@ -56,9 +56,9 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     private void sendFinalScreenshot(ITestResult result, String action) {
-        if (!ScreenshotCapture.isRequired() ||
-                !isUITest(result) ||
-                finalScreenshotSent) {
+        if (!ScreenshotCapture.isRequired()
+                || !isUITest(result)
+                || finalScreenshotSent) {
             return;
         }
 
