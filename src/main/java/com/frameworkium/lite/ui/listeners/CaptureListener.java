@@ -53,8 +53,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     private void sendFinalScreenshot(ITestResult result, String action) {
-        if (!ScreenshotCapture.isRequired() 
-                || !isUITest(result.getTestClass().getRealClass())) {
+        if (!ScreenshotCapture.isRequired() || !isUITest(result)) {
             return;
         }
 
@@ -68,8 +67,8 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
         }
     }
 
-    private boolean isUITest(Class<?> testClass) {
-        return BaseUITest.class.isAssignableFrom(testClass);
+    private boolean isUITest(ITestResult result) {
+        return BaseUITest.class.isAssignableFrom(result.getTestClass().getRealClass());
     }
 
     private void highlightElementOnClickAndSendScreenshot(
