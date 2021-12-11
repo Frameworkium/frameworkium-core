@@ -109,9 +109,6 @@ public class ScreenshotCapture {
         takeAndSendScreenshotWithError(command, driver, null);
     }
 
-    /**
-     * Take and send a screenshot with an error message.
-     */
     public void takeAndSendScreenshotWithError(
             Command command, WebDriver driver, String errorMessage) {
 
@@ -121,11 +118,6 @@ public class ScreenshotCapture {
             return;
         }
         
-        if (errorMessage.contains("Skipped after failure")) {
-            logger.info("Not sending screenshot due to test being skipped.");
-            return;
-        }
-
         var createScreenshotMessage =
                 new CreateScreenshot(
                         executionID,
