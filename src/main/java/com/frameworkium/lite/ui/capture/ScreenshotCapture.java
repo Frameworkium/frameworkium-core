@@ -34,7 +34,7 @@ public class ScreenshotCapture {
 
     /** Prevent multiple final state screenshots from being sent. */
     private boolean finalScreenshotSent = false;
-    private static final Set<String> finalStates = Set.of("pass", "fail", "skip");
+    private static final Set<String> FINAL_STATES = Set.of("pass", "fail", "skip");
 
     public ScreenshotCapture(String testID) {
         logger.debug("About to initialise Capture execution for {}", testID);
@@ -123,10 +123,15 @@ public class ScreenshotCapture {
             return;
         }
 
-        if (finalScreenshotAlreadySent(command)) {
-            logger.info("Not sending another final screenshot for {}", executionID);
+        if (finalScreenshotSent) {
+            logger.debug(
+                    "Final screenshot already sent for {}, skipping {}",
+                    executionID,
+                    command.action);
             return;
         }
+
+        finalScreenshotSent = FINAL_STATES.contains(command.action);
         
         var createScreenshotMessage =
                 new CreateScreenshot(
@@ -136,11 +141,6 @@ public class ScreenshotCapture {
                         errorMessage,
                         getBase64Screenshot((TakesScreenshot) driver));
         addScreenshotToSendQueue(createScreenshotMessage);
-    }
-
-    private boolean finalScreenshotAlreadySent(Command command) {
-        finalScreenshotSent = finalScreenshotSent || finalStates.contains(command.action);
-        return finalScreenshotSent;
     }
 
     private String getBase64Screenshot(TakesScreenshot driver) {
