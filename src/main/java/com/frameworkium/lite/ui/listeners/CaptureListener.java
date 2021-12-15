@@ -31,9 +31,6 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
             ExtraExpectedConditions.JQUERY_AJAX_DONE_SCRIPT
     );
 
-    /** Prevent multiple final state screenshots from being sent. */
-    private boolean finalScreenshotSent = false;
-
     private void takeScreenshotAndSend(Command command, WebDriver driver) {
         try {
             UITestLifecycle.get().getCapture().takeAndSendScreenshot(command, driver);
@@ -56,9 +53,7 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     private void sendFinalScreenshot(ITestResult result, String action) {
-        if (!ScreenshotCapture.isRequired()
-                || !isUITest(result)
-                || finalScreenshotSent) {
+        if (!ScreenshotCapture.isRequired() || !isUITest(result)) {
             return;
         }
 
@@ -70,7 +65,6 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
             var command = new Command(action, "n/a", "n/a");
             takeScreenshotAndSend(command, driver);
         }
-        finalScreenshotSent = true;
     }
 
     private boolean isUITest(ITestResult result) {

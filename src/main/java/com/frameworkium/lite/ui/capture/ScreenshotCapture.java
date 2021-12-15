@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 
 import java.net.*;
+import java.util.Set;
 import java.util.concurrent.*;
 
 import static com.frameworkium.lite.common.properties.Property.*;
@@ -30,6 +31,10 @@ public class ScreenshotCapture {
 
     private final String testID;
     private final String executionID;
+
+    /** Prevent multiple final state screenshots from being sent. */
+    private boolean finalScreenshotSent = false;
+    private static final Set<String> finalStates = Set.of("pass", "fail", "skip");
 
     public ScreenshotCapture(String testID) {
         logger.debug("About to initialise Capture execution for {}", testID);
@@ -117,6 +122,11 @@ public class ScreenshotCapture {
                     + "Capture didn't initialise execution for test: {}", testID);
             return;
         }
+
+        if (finalScreenshotAlreadySent(command)) {
+            logger.info("Not sending another final screenshot for {}", executionID);
+            return;
+        }
         
         var createScreenshotMessage =
                 new CreateScreenshot(
@@ -126,6 +136,11 @@ public class ScreenshotCapture {
                         errorMessage,
                         getBase64Screenshot((TakesScreenshot) driver));
         addScreenshotToSendQueue(createScreenshotMessage);
+    }
+
+    private boolean finalScreenshotAlreadySent(Command command) {
+        finalScreenshotSent = finalScreenshotSent || finalStates.contains(command.action);
+        return finalScreenshotSent;
     }
 
     private String getBase64Screenshot(TakesScreenshot driver) {
