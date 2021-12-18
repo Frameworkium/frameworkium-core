@@ -1,5 +1,6 @@
 package com.frameworkium.core.ui.video
 
+import org.apache.commons.io.FileUtils
 import spock.lang.Specification
 
 import java.nio.file.Files
@@ -8,7 +9,7 @@ import java.util.concurrent.TimeoutException
 class VideoCaptureSpec extends Specification {
 
     def setup() {
-        VideoCapture.VIDEO_FOLDER.deleteDir()
+        FileUtils.deleteDirectory(VideoCapture.VIDEO_FOLDER.toFile())
     }
 
     def array = [0, 1, 0, 1] as byte[]
@@ -25,7 +26,8 @@ class VideoCaptureSpec extends Specification {
         when:
             sut.fetchAndSaveVideo("test1")
         then:
-            VideoCapture.VIDEO_FOLDER.resolve("test1-session1.ext").readBytes() == array
+            def filepath = VideoCapture.VIDEO_FOLDER.resolve("test1-session1.ext")
+            Files.readAllBytes(filepath) == array
     }
 
     def "doesn't save file on fetch timeout"() {
