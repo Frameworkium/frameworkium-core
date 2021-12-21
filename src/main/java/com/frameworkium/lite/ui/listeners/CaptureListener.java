@@ -59,13 +59,19 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
 
         var thrw = result.getThrowable();
         var driver = UITestLifecycle.get().getWebDriver();
-        if (null != thrw) {
-            takeScreenshotAndSend(action, driver, thrw);
-        } else {
-            var command = new Command(action, "n/a", "n/a");
-            takeScreenshotAndSend(command, driver);
-        }
-    }
+		//		# if getting web driver returns null because test has been skipped
+		//        do not send final screenshot
+		if (driver == null && action.equalsIgnoreCase("skip")) {
+			return;
+		} else {
+			if (null != thrw) {
+				takeScreenshotAndSend(action, driver, thrw);
+			} else {
+				var command = new Command(action, "n/a", "n/a");
+				takeScreenshotAndSend(command, driver);
+			}
+		}
+	}
 
     private boolean isUITest(ITestResult result) {
         return BaseUITest.class.isAssignableFrom(result.getTestClass().getRealClass());
