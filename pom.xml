@@ -68,14 +68,15 @@
 
     <!-- Test related -->
     <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <version>7.3.0</version>
       <!--
       Need to use IntelliJ 2020.3 or later, see:
       https://stackoverflow.com/questions/57299606/testng-by-default-disables-loading-dtd-from-unsecure-urls
       https://youtrack.jetbrains.com/issue/IDEA-234765
       -->
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <!-- Can't update to >=7.4.0 until the surefire plugin is updated -->
+      <version>7.3.0</version>
     </dependency>
 
     <dependency>
@@ -85,7 +86,7 @@
     </dependency>
 
     <!-- Used in some parts of the code and is the latest version
-         rather than rely an older version from Selenium. -->
+         rather than rely on an older version from Selenium. -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
