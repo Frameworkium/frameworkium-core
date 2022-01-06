@@ -344,7 +344,7 @@
       -->
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
-        <version>3.0.0-M4</version>
+        <version>3.0.0-M5</version>
         <configuration>
           <useReleaseProfile>false</useReleaseProfile>
           <tagNameFormat>@{version}</tagNameFormat>
