@@ -53,21 +53,30 @@ public class CaptureListener implements WebDriverEventListener, ITestListener {
     }
 
     private void sendFinalScreenshot(ITestResult result, String action) {
-        if (!ScreenshotCapture.isRequired() || !isUITest(result)) {
-            return;
-        }
+        try {
+            if (!ScreenshotCapture.isRequired() || !isUITest(result)) {
+                return;
+            }
 
-        var driver = UITestLifecycle.get().getWebDriver();
-        if (driver == null) {
-            return;
-        }
+            var uiTestLifecycle = UITestLifecycle.get();
+            if (uiTestLifecycle == null) {
+                return;
+            }
 
-        var thrw = result.getThrowable();
-        if (thrw != null) {
-            takeScreenshotAndSend(action, driver, thrw);
-        } else {
-            var command = new Command(action, "n/a", "n/a");
-            takeScreenshotAndSend(command, driver);
+            var driver = uiTestLifecycle.getWebDriver();
+            if (driver == null) {
+                return;
+            }
+
+            var thrw = result.getThrowable();
+            if (thrw != null) {
+                takeScreenshotAndSend(action, driver, thrw);
+            } else {
+                var command = new Command(action, "n/a", "n/a");
+                takeScreenshotAndSend(command, driver);
+            }
+        } catch (Exception e) {
+            logger.debug("Failed to send final screenshot", e);
         }
     }
 
