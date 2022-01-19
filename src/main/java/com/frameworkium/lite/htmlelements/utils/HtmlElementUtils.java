@@ -28,7 +28,7 @@ public final class HtmlElementUtils {
             InstantiationException, NoSuchMethodException, InvocationTargetException {
         if (clazz.isMemberClass() && !Modifier.isStatic(clazz.getModifiers())) {
             Class<?> outerClass = clazz.getDeclaringClass();
-            Object outerObject = outerClass.newInstance();
+            Object outerObject = outerClass.getDeclaredConstructor().newInstance();
             return invokeConstructor(clazz, Lists.asList(outerObject, args).toArray());
         }
         return invokeConstructor(clazz, args);
