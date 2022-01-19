@@ -118,7 +118,13 @@ public class LoggingListener implements WebDriverEventListener {
     @Override
     public void onException(Throwable thrw, WebDriver driver) {
         // Lots of caught exceptions being logged here
-        logger.trace("Event listener onException().", thrw);
+        if (thrw instanceof NoSuchElementException) {
+            // Don't log entire stack trace and message as it's too frequent
+            String firstLineOfMessage = thrw.getMessage().split("\n")[0];
+            logger.trace(firstLineOfMessage);
+        } else {
+            logger.trace("on exception", thrw);
+        }
     }
 
     @Override
