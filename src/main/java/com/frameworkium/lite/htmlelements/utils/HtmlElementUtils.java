@@ -2,12 +2,8 @@ package com.frameworkium.lite.htmlelements.utils;
 
 import com.frameworkium.lite.htmlelements.element.HtmlElement;
 import com.frameworkium.lite.htmlelements.element.TypifiedElement;
-import com.frameworkium.lite.htmlelements.exceptions.HtmlElementsException;
 import com.google.common.collect.Lists;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.RemoteWebElement;
 
 import java.lang.reflect.*;
 import java.net.URL;
@@ -113,32 +109,6 @@ public final class HtmlElementUtils {
 
     public static <T> String getElementName(Class<T> clazz) {
         return clazz.getSimpleName();
-    }
-
-    public static boolean isRemoteWebElement(WebElement element) {
-        return element.getClass().equals(RemoteWebElement.class);
-    }
-
-    public static boolean isOnRemoteWebDriver(WebElement element) {
-        if (!isRemoteWebElement(element)) {
-            return false;
-        }
-
-        // Since subclasses of RemoteWebElement were finally removed in Selenium 2.26.0, WebElements on local drivers
-        // are also instances of RemoteWebElement class. The only way that we found at the current moment to find out
-        // whether WebElement instance is on remote driver is to check the class of RemoteWebElement "parent" filed,
-        // which contains WebDriver instance to which this RemoteWebElement belongs.
-        // As this field has protected access this is done by reflection.
-        // TODO It's is a kind of a dirty hack to be improved in future versions.
-        RemoteWebElement remoteWebElement = (RemoteWebElement) element;
-        try {
-            Field elementParentFiled = RemoteWebElement.class.getDeclaredField("parent");
-            elementParentFiled.setAccessible(true);
-            WebDriver elementParent = (WebDriver) elementParentFiled.get(remoteWebElement);
-            return elementParent.getClass().equals(RemoteWebDriver.class);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new HtmlElementsException("Unable to find out if WebElement is on remote driver", e);
-        }
     }
 
     public static boolean existsInClasspath(final String fileName) {
