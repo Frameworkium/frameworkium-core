@@ -19,10 +19,10 @@ class MultiUseDriverLifecycleSpec extends Specification {
 
     def "following expected lifecycle yields correct driver with MultiUseDriverLifecycle(#poolSize)"() {
         given:
-            def sut = new MultiUseDriverLifecycle(poolSize)
+            def sut = new MultiUseDriverLifecycle(driverSupplier, poolSize)
         when:
-            sut.initDriverPool(driverSupplier)
-            sut.initBrowserBeforeTest(driverSupplier)
+            sut.initDriverPool()
+            sut.initBrowserBeforeTest()
         then:
             sut.getWebDriver() == EFWebDriverMock
 
@@ -37,22 +37,21 @@ class MultiUseDriverLifecycleSpec extends Specification {
             poolSize << [1, 5]
     }
 
-    def "if a driver fails to tearDown exception will be thrown"() {
+    def "if a driver fails to tearDown exception will not be thrown"() {
         given:
-            def sut = new MultiUseDriverLifecycle(1)
-            sut.initDriverPool(driverSupplier)
-            sut.initBrowserBeforeTest(driverSupplier)
+            def sut = new MultiUseDriverLifecycle(driverSupplier, 1)
+            sut.initDriverPool()
+            sut.initBrowserBeforeTest()
         when:
             sut.tearDownDriver()
         then:
             1 * EFWebDriverMock.manage() >> { throw new Exception("") }
-            thrown Exception
     }
 
     def "throwing exception on quit does not prevent subsequent drivers quitting"() {
         given:
-            def sut = new MultiUseDriverLifecycle(2)
-            sut.initDriverPool(driverSupplier)
+            def sut = new MultiUseDriverLifecycle(driverSupplier, 2)
+            sut.initDriverPool()
         when:
             sut.tearDownDriverPool()
         then:
@@ -64,41 +63,35 @@ class MultiUseDriverLifecycleSpec extends Specification {
 
     def "initDriverPool can only be called once"() {
         given:
-            def sut = new MultiUseDriverLifecycle(1)
-            sut.initDriverPool(driverSupplier)
+            def sut = new MultiUseDriverLifecycle(driverSupplier, 1)
+            sut.initDriverPool()
         when:
-            sut.initDriverPool(driverSupplier)
+            sut.initDriverPool()
         then:
             thrown IllegalStateException
     }
 
     def "initDriverPool can only be called again after tearDownDriverPool"() {
         given:
-            def sut = new MultiUseDriverLifecycle(1)
-            sut.initDriverPool(driverSupplier)
+            def sut = new MultiUseDriverLifecycle(driverSupplier, 1)
+            sut.initDriverPool()
             sut.tearDownDriverPool()
         when:
-            sut.initDriverPool(driverSupplier)
+            sut.initDriverPool()
         then:
             noExceptionThrown()
     }
 
     def "reinit current driver quits existing and returns new"() {
         given:
-            def EFWebDriverMock2 = Mock(constructorArgs: [webDriverStub], EventFiringWebDriver)
-            def driverMock2 = Mock(Driver) {
-                getWebDriver() >> EFWebDriverMock2
-            }
-            def driverSupplier2 = { driverMock2 }
-
-            def sut = new MultiUseDriverLifecycle(1)
-            sut.initDriverPool(driverSupplier)
-            sut.initBrowserBeforeTest(null)
+            def sut = new MultiUseDriverLifecycle(driverSupplier, 1)
+            sut.initDriverPool()
+            sut.initBrowserBeforeTest()
             assert sut.getWebDriver() == EFWebDriverMock
         when:
-            sut.reinitialiseCurrentDriver(driverSupplier2)
-            sut.initBrowserBeforeTest(null)
+            sut.reinitialiseCurrentDriver()
+            sut.initBrowserBeforeTest()
         then:
-            sut.getWebDriver() == EFWebDriverMock2
+            sut.getWebDriver() == EFWebDriverMock
     }
 }

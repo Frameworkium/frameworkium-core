@@ -50,11 +50,12 @@ public class UITestLifecycle {
         if (Property.REUSE_BROWSER.getBoolean()) {
             driverLifecycle =
                     new MultiUseDriverLifecycle(
+                            DriverSetup::instantiateDriver,
                             Property.THREADS.getIntWithDefault(1));
         } else {
-            driverLifecycle = new SingleUseDriverLifecycle();
+            driverLifecycle = new SingleUseDriverLifecycle(DriverSetup::instantiateDriver);
         }
-        driverLifecycle.initDriverPool(DriverSetup::instantiateDriver);
+        driverLifecycle.initDriverPool();
     }
 
     /**
@@ -76,8 +77,8 @@ public class UITestLifecycle {
      */
     public void beforeTestMethod(String testName) {
         try {
-            driverLifecycle.initBrowserBeforeTest(DriverSetup::instantiateDriver);
-        } catch (WebDriverException wdex) {
+            driverLifecycle.initBrowserBeforeTest();
+        } catch (WebDriverException | NullPointerException ex) {
             reinitialiseCurrentDriver();
         }
 
@@ -123,7 +124,7 @@ public class UITestLifecycle {
      * unreachable and you don't want to restart the whole suite.
      */
     public void reinitialiseCurrentDriver() {
-        driverLifecycle.reinitialiseCurrentDriver(DriverSetup::instantiateDriver);
+        driverLifecycle.reinitialiseCurrentDriver();
     }
 
     /**
@@ -149,9 +150,7 @@ public class UITestLifecycle {
         return wait;
     }
 
-    /**
-     * @return the user agent of the browser in the first UI test to run.
-     */
+    /** @return the user agent of the browser in the first UI test to run. */
     public Optional<String> getUserAgent() {
         return Optional.ofNullable(userAgent);
     }

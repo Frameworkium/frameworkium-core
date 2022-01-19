@@ -8,7 +8,7 @@ import org.openqa.selenium.WebDriver;
 import java.util.function.Supplier;
 
 /**
- * {@link #initDriverPool(Supplier)} and {@link #tearDownDriverPool()} do not do
+ * {@link #initDriverPool()} and {@link #tearDownDriverPool()} do not do
  * anything for {@link SingleUseDriverLifecycle} and can be omitted.
  *
  * @see DriverLifecycle
@@ -19,14 +19,18 @@ public class SingleUseDriverLifecycle implements DriverLifecycle {
 
     private static final ThreadLocal<Driver> threadLocalDriver = new ThreadLocal<>();
 
+    private final Supplier<Driver> driverSupplier;
+
+    public SingleUseDriverLifecycle(Supplier<Driver> driverSupplier) {
+        this.driverSupplier = driverSupplier;
+    }
+
     /**
      * Sets the {@link Driver} created by the supplied {@link Supplier} to the
      * {@link ThreadLocal} driver.
-     *
-     * @param driverSupplier the {@link Supplier} that creates {@link Driver}s
      */
     @Override
-    public void initBrowserBeforeTest(Supplier<Driver> driverSupplier) {
+    public void initBrowserBeforeTest() {
         threadLocalDriver.set(driverSupplier.get());
     }
 
@@ -35,24 +39,21 @@ public class SingleUseDriverLifecycle implements DriverLifecycle {
         return threadLocalDriver.get().getWebDriver();
     }
 
-    /**
-     * Calls {@code quit()} on the underlying driver.
-     */
+    /** Calls {@code quit()} on the underlying driver. */
     @Override
     public void tearDownDriver() {
         try {
             threadLocalDriver.get().getWebDriver().quit();
         } catch (Exception e) {
-            logger.error("Failed to quit browser.");
+            logger.warn("Failed to quit browser.");
             logger.debug("Failed to quit browser", e);
-            throw e;
         } finally {
             threadLocalDriver.remove();
         }
     }
 
     @Override
-    public void reinitialiseCurrentDriver(Supplier<Driver> newDriverSupplier) {
+    public void reinitialiseCurrentDriver() {
         try {
             threadLocalDriver.get().getWebDriver().quit();
         } catch (Exception e) {

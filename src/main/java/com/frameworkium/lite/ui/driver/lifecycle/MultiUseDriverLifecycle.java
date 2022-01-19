@@ -15,12 +15,18 @@ public class MultiUseDriverLifecycle implements DriverLifecycle {
 
     private static final Logger logger = LogManager.getLogger();
 
+    private static final ThreadLocal<Driver> threadLocalDriver = new ThreadLocal<>();
+
+    private final Supplier<Driver> driverSupplier;
     private final int poolSize;
     private BlockingDeque<Driver> driverPool;
 
-    private static final ThreadLocal<Driver> threadLocalDriver = new ThreadLocal<>();
-
-    public MultiUseDriverLifecycle(int poolSize) {
+    /**
+     * @param driverSupplier the {@link Supplier} that creates {@link Driver}s
+     * @param poolSize the fixed size of the pool of drivers
+     */
+    public MultiUseDriverLifecycle(Supplier<Driver> driverSupplier, int poolSize) {
+        this.driverSupplier = driverSupplier;
         this.poolSize = poolSize;
     }
 
@@ -28,11 +34,10 @@ public class MultiUseDriverLifecycle implements DriverLifecycle {
      * Create {@link Driver}s in parallel and add them to the pool up to the
      * size specified.
      *
-     * @param driverSupplier the {@link Supplier} that creates {@link Driver}s
      * @throws IllegalStateException if trying to re-initialise existing pool
      */
     @Override
-    public void initDriverPool(Supplier<Driver> driverSupplier) {
+    public void initDriverPool() {
         if (driverPool != null) {
             throw new IllegalStateException(
                     "initDriverPool called when already initialised");
@@ -48,11 +53,10 @@ public class MultiUseDriverLifecycle implements DriverLifecycle {
      * Will set the current {@link ThreadLocal} {@link Driver} to be the next
      * available from the pool.
      *
-     * @param driverSupplier ignored for this DriverLifecycle
      * @throws java.util.NoSuchElementException if this pool is empty
      */
     @Override
-    public void initBrowserBeforeTest(Supplier<Driver> driverSupplier) {
+    public void initBrowserBeforeTest() {
         threadLocalDriver.set(driverPool.removeFirst());
     }
 
@@ -73,9 +77,9 @@ public class MultiUseDriverLifecycle implements DriverLifecycle {
             driver.getWebDriver().manage().deleteAllCookies();
             driverPool.addLast(driver);
         } catch (Exception e) {
-            logger.error("Failed to tear down browser after test method.");
+            logger.warn("Failed to tear down browser after test method.");
             logger.debug("Failed to tear down browser after test method.", e);
-            throw e;
+            reinitialiseCurrentDriver();
         } finally {
             threadLocalDriver.remove();
         }
@@ -105,7 +109,7 @@ public class MultiUseDriverLifecycle implements DriverLifecycle {
     }
 
     @Override
-    public void reinitialiseCurrentDriver(Supplier<Driver> newDriverSupplier) {
+    public void reinitialiseCurrentDriver() {
         Driver currentDriver = threadLocalDriver.get();
         if (currentDriver != null) {
             try {
@@ -115,6 +119,6 @@ public class MultiUseDriverLifecycle implements DriverLifecycle {
             }
         }
         threadLocalDriver.remove();
-        driverPool.addLast(newDriverSupplier.get());
+        driverPool.addLast(driverSupplier.get());
     }
 }
