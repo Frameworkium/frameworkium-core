@@ -71,7 +71,7 @@ public class ScreenshotCapture {
             try {
                 node = InetAddress.getLocalHost().getCanonicalHostName();
             } catch (UnknownHostException e) {
-                logger.debug("Failed to get local machine name", e);
+                logger.trace("Failed to get local machine name", e);
             }
         }
         return node;
@@ -81,7 +81,7 @@ public class ScreenshotCapture {
         try {
             return getRemoteNodeAddress();
         } catch (Exception e) {
-            logger.debug("Failed to get node address of remote web driver", e);
+            logger.trace("Failed to get address of remote web driver", e);
         }
         return defaultValue;
     }
