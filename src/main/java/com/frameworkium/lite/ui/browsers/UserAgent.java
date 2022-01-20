@@ -2,7 +2,7 @@ package com.frameworkium.lite.ui.browsers;
 
 import org.openqa.selenium.JavascriptExecutor;
 
-public class UserAgent {
+public final class UserAgent {
 
     public static final String SCRIPT = "return navigator.userAgent;";
 
