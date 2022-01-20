@@ -80,6 +80,7 @@ public class UITestLifecycle {
             driverLifecycle.initBrowserBeforeTest();
         } catch (WebDriverException | NullPointerException ex) {
             reinitialiseCurrentDriver();
+            driverLifecycle.initBrowserBeforeTest();
         }
 
         wait = newWaitWithTimeout(DEFAULT_TIMEOUT);
@@ -121,7 +122,7 @@ public class UITestLifecycle {
     /**
      * Re-initialises the browser for the current thread.
      * This can be useful if the browser crashes or becomes
-     * unreachable and you don't want to restart the whole suite.
+     * unreachable, and you don't want to restart the whole suite.
      */
     public void reinitialiseCurrentDriver() {
         driverLifecycle.reinitialiseCurrentDriver();
