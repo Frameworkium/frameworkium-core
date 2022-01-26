@@ -17,6 +17,7 @@ public enum Property {
 
     // Capture
     CAPTURE_URL("captureURL"),
+    CAPTURE_THREADS("capture.threads"),
     SUT_NAME("sutName"),
     SUT_VERSION("sutVersion"),
 

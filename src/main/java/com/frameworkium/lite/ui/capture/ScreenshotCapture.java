@@ -27,7 +27,7 @@ public class ScreenshotCapture {
 
     /** Shared Executor for async sending of screenshot messages to capture. */
     private static final ExecutorService executorService =
-            Executors.newFixedThreadPool(4);
+            Executors.newFixedThreadPool(CAPTURE_THREADS.getIntWithDefault(1));
 
     private final String testID;
     private final String executionID;
@@ -132,7 +132,7 @@ public class ScreenshotCapture {
         }
 
         finalScreenshotSent = FINAL_STATES.contains(command.action);
-        
+
         var createScreenshotMessage =
                 new CreateScreenshot(
                         executionID,
