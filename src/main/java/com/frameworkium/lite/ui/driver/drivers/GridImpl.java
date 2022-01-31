@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import static com.frameworkium.lite.common.properties.Property.BROWSER_VERSION;
+import static com.frameworkium.lite.common.properties.Property.REMOTE_OTEL_TRACING;
 
 public class GridImpl extends AbstractDriver {
 
@@ -38,6 +39,6 @@ public class GridImpl extends AbstractDriver {
 
     @Override
     public WebDriver getWebDriver(Capabilities capabilities) {
-        return new RemoteWebDriver(remoteURL, capabilities);
+        return new RemoteWebDriver(remoteURL, capabilities, REMOTE_OTEL_TRACING.getBoolean());
     }
 }

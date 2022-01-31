@@ -30,7 +30,9 @@ public enum Property {
 
     REUSE_BROWSER("reuseBrowser"),
     HEADLESS("headless"),
-    CUSTOM_BROWSER_IMPL("customBrowserImpl")
+    CUSTOM_BROWSER_IMPL("customBrowserImpl"),
+
+    REMOTE_OTEL_TRACING("remotewebdriver.tracing")
     ;
 
     private static Properties properties = null;
