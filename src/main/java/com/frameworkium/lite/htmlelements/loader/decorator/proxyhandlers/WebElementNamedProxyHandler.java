@@ -43,11 +43,7 @@ public class WebElementNamedProxyHandler extends LocatingElementHandler {
         throw lastException;
     }
 
-    protected long sleepFor() {
-        return 500L;
-    }
-
     private void waitFor() throws InterruptedException {
-        Thread.sleep(this.sleepFor());
+        Thread.sleep(500L);
     }
 }

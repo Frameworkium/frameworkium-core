@@ -26,7 +26,7 @@ public class DragAndDropPage extends BasePage<DragAndDropPage> {
     // Acts as a cache to prevent multiple fetches of the same libraries from the Internet
     private static String jQueryJS = "";
     // https://gist.githubusercontent.com/rcorreia/2362544/raw/3319e506e204af262d27f7ff9fca311e693dc342/drag_and_drop_helper.js
-    private static String dragDropHelperJS = "!function(t){t.fn.simulateDragDrop=function(a)" +
+    private static final String dragDropHelperJS = "!function(t){t.fn.simulateDragDrop=function(a)" +
             "{return this.each(function(){new t.simulateDragDrop(this,a)})}," +
             "t.simulateDragDrop=function(t,a){this.options=a,this.simulateEvent(t,a)}," +
             "t.extend(t.simulateDragDrop.prototype,{simulateEvent:function(a,e){var " +

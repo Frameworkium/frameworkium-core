@@ -340,7 +340,7 @@
 
       <!--
         Release a new version with Maven, saving a lot of repetitive work.
-        e.g. mvn -Darguments="-DskipTests" release:prepare
+        e.g. mvn -Darguments="-DskipTests" release:clean release:prepare
       -->
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
