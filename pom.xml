@@ -46,11 +46,6 @@
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
   </properties>
 
-  <!-- makes mvn versions:display-plugin-updates faster -->
-  <prerequisites>
-    <maven>3.3.9</maven>
-  </prerequisites>
-
   <!-- Check for updates with mvn versions:display-dependency-updates -->
   <dependencies>
     <!-- Selenium related -->
@@ -75,8 +70,7 @@
       -->
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <!-- Can't update to >=7.4.0 until the surefire plugin is updated -->
-      <version>7.3.0</version>
+      <version>7.5</version>
     </dependency>
 
     <dependency>
@@ -152,6 +146,27 @@
   <build>
     <!-- Check for updates with mvn versions:display-plugin-updates -->
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>3.8</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <!-- Compiles Java -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -278,8 +293,6 @@
         <configuration>
           <parallel>methods</parallel>
           <threadCount>${threads}</threadCount>
-
-          <skipAfterFailureCount>1</skipAfterFailureCount>
 
           <systemPropertyVariables>
             <!-- For Local screenshots on test failure -->
