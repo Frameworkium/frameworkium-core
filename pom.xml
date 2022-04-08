@@ -159,7 +159,8 @@
             <configuration>
               <rules>
                 <requireMavenVersion>
-                  <version>3.8</version>
+                  <!-- this is the version jitpack.io uses -->
+                  <version>3.6.1</version>
                 </requireMavenVersion>
               </rules>
             </configuration>
