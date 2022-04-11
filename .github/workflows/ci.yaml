@@ -27,7 +27,7 @@ jobs:
       - name: Install Firefox and Gecko Driver
         run: |
           sudo apt update && sudo apt install -y firefox
-          export GECKO_VER=0.30.0
+          export GECKO_VER=0.31.0
           wget --quiet https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VER}/geckodriver-v${GECKO_VER}-linux64.tar.gz
           tar -xzf geckodriver-v${GECKO_VER}-linux64.tar.gz
       - name: Use custom Firefox browser impl
