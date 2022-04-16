@@ -418,7 +418,7 @@
       <plugin>
         <groupId>io.qameta.allure</groupId>
         <artifactId>allure-maven</artifactId>
-        <version>2.10.0</version>
+        <version>2.11.2</version>
         <configuration>
           <!-- Keep version in sync with dependencies -->
           <reportVersion>${allure.version}</reportVersion>
