@@ -137,7 +137,7 @@
     <dependency>
       <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
-      <version>5.0.0</version>
+      <version>5.0.1</version>
       <exclusions>
         <exclusion>
           <groupId>org.codehaus.groovy</groupId>
