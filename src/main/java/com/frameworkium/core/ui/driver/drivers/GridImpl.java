@@ -16,8 +16,8 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class GridImpl extends AbstractDriver {
 
-  private URL remoteURL;
-  private Capabilities capabilities;
+  private final URL remoteURL;
+  private final Capabilities capabilities;
 
   /**
    * Implementation of driver for the Selenium Grid .
