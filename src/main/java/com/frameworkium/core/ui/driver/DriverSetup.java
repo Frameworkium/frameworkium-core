@@ -4,11 +4,9 @@ import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.driver.drivers.BrowserStackImpl;
 import com.frameworkium.core.ui.driver.drivers.ChromeImpl;
 import com.frameworkium.core.ui.driver.drivers.EdgeImpl;
-import com.frameworkium.core.ui.driver.drivers.ElectronImpl;
 import com.frameworkium.core.ui.driver.drivers.FirefoxImpl;
 import com.frameworkium.core.ui.driver.drivers.GridImpl;
 import com.frameworkium.core.ui.driver.drivers.InternetExplorerImpl;
-import com.frameworkium.core.ui.driver.drivers.LegacyFirefoxImpl;
 import com.frameworkium.core.ui.driver.drivers.SafariImpl;
 import com.frameworkium.core.ui.driver.drivers.SauceImpl;
 import com.frameworkium.core.ui.driver.remotes.BrowserStack;
@@ -61,8 +59,6 @@ public class DriverSetup {
     switch (browser) {
       case FIREFOX:
         return new FirefoxImpl();
-      case LEGACYFIREFOX:
-        return new LegacyFirefoxImpl();
       case CHROME:
         return new ChromeImpl();
       case EDGE:
@@ -71,8 +67,6 @@ public class DriverSetup {
         return new InternetExplorerImpl();
       case SAFARI:
         return new SafariImpl();
-      case ELECTRON:
-        return new ElectronImpl();
       case CUSTOM:
         String customBrowserImpl = Property.CUSTOM_BROWSER_IMPL.getValue();
         try {
