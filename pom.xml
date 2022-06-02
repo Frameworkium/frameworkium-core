@@ -3,7 +3,7 @@
 
   <groupId>com.github.frameworkium</groupId>
   <artifactId>frameworkium-core</artifactId>
-  <version>4.0.0-BETA2-SNAPSHOT</version>
+  <version>4.2.1.1-SNAPSHOT</version>
   <name>frameworkium-core</name>
   <description>
     Frameworkium core code.
@@ -22,9 +22,9 @@
   <modules />
 
   <scm>
-    <connection>scm:git:git@github.com:frameworkium/frameworkium-core</connection>
-    <url>scm:git:git@github.com:frameworkium/frameworkium-core</url>
-    <developerConnection>scm:git:git@gitproxy:frameworkium/frameworkium-core</developerConnection>
+    <connection>scm:git:git@github.com:Frameworkium/frameworkium-core.git</connection>
+    <url>https://github.com/Frameworkium/frameworkium-core</url>
+    <developerConnection>scm:git:git@github.com:Frameworkium/frameworkium-core.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
@@ -462,6 +462,7 @@
         <configuration>
           <useReleaseProfile>false</useReleaseProfile>
           <tagNameFormat>@{version}</tagNameFormat>
+          <arguments>-Dmaven.javadoc.skip=true -Dmaven.test.skipTests=true -Dmaven.test.skip=true -Dcheckstyle.skip</arguments>
         </configuration>
       </plugin>
 
