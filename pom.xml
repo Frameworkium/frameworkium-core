@@ -32,7 +32,7 @@
     <url>https://github.com/Frameworkium/frameworkium-core/issues</url>
   </issueManagement>
   <ciManagement>
-    <url>https://travis-ci.org/Frameworkium/frameworkium-core</url>
+    <url>https://github.com/Frameworkium/frameworkium-core/actions</url>
   </ciManagement>
 
   <distributionManagement />
@@ -46,11 +46,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
-
-  <!-- makes mvn versions:display-plugin-updates faster -->
-  <prerequisites>
-    <maven>3.3.9</maven>
-  </prerequisites>
 
   <!-- Check for updates with mvn versions:display-dependency-updates -->
   <dependencies>
@@ -458,7 +453,7 @@
       Releasing a project is made in two steps: prepare and perform -->
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
-        <version>2.5.3</version>
+        <version>3.0.0-M5</version>
         <configuration>
           <useReleaseProfile>false</useReleaseProfile>
           <tagNameFormat>@{version}</tagNameFormat>
