@@ -226,10 +226,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.10.1</version>
         <configuration>
-          <!-- From JDK10 on 'release' is used -->
-          <!--<release>11</release>-->
-          <source>10</source>
-          <target>10</target>
+          <release>11</release>
         </configuration>
       </plugin>
 
