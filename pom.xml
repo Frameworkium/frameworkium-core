@@ -3,7 +3,7 @@
 
   <groupId>com.github.frameworkium</groupId>
   <artifactId>frameworkium-core</artifactId>
-  <version>4.0.0-BETA2-SNAPSHOT</version>
+  <version>4.2.1-SNAPSHOT</version>
   <name>frameworkium-core</name>
   <description>
     Frameworkium core code.
@@ -22,9 +22,9 @@
   <modules />
 
   <scm>
-    <connection>scm:git:git@github.com:frameworkium/frameworkium-core</connection>
-    <url>scm:git:git@github.com:frameworkium/frameworkium-core</url>
-    <developerConnection>scm:git:git@gitproxy:frameworkium/frameworkium-core</developerConnection>
+    <connection>scm:git:git@github.com:Frameworkium/frameworkium-core.git</connection>
+    <url>https://github.com/Frameworkium/frameworkium-core</url>
+    <developerConnection>scm:git:git@github.com:Frameworkium/frameworkium-core.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
@@ -32,7 +32,7 @@
     <url>https://github.com/Frameworkium/frameworkium-core/issues</url>
   </issueManagement>
   <ciManagement>
-    <url>https://travis-ci.org/Frameworkium/frameworkium-core</url>
+    <url>https://github.com/Frameworkium/frameworkium-core/actions</url>
   </ciManagement>
 
   <distributionManagement />
@@ -46,11 +46,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
-
-  <!-- makes mvn versions:display-plugin-updates faster -->
-  <prerequisites>
-    <maven>3.3.9</maven>
-  </prerequisites>
 
   <!-- Check for updates with mvn versions:display-dependency-updates -->
   <dependencies>
@@ -225,16 +220,35 @@
   <build>
     <!-- Check for updates with mvn versions:display-plugin-updates -->
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <!-- this is the version jitpack.io uses -->
+                  <version>3.6.1</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <!-- Compiles Java -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.10.1</version>
         <configuration>
-          <!-- From JDK10 on 'release' is used -->
-          <!--<release>11</release>-->
-          <source>10</source>
-          <target>10</target>
+          <release>11</release>
         </configuration>
       </plugin>
 
@@ -458,10 +472,11 @@
       Releasing a project is made in two steps: prepare and perform -->
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
-        <version>2.5.3</version>
+        <version>3.0.0-M5</version>
         <configuration>
           <useReleaseProfile>false</useReleaseProfile>
           <tagNameFormat>@{version}</tagNameFormat>
+          <arguments>-Dmaven.javadoc.skip=true -Dmaven.test.skipTests=true -Dmaven.test.skip=true -Dcheckstyle.skip</arguments>
         </configuration>
       </plugin>
 
