@@ -472,7 +472,7 @@
       Releasing a project is made in two steps: prepare and perform -->
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
-        <version>3.0.0-M5</version>
+        <version>3.0.0-M6</version>
         <configuration>
           <useReleaseProfile>false</useReleaseProfile>
           <tagNameFormat>@{version}</tagNameFormat>
