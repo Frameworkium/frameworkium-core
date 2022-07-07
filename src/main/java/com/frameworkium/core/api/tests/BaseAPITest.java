@@ -1,18 +1,12 @@
 package com.frameworkium.core.api.tests;
 
-import com.frameworkium.core.common.listeners.MethodInterceptor;
-import com.frameworkium.core.common.listeners.ResultLoggerListener;
-import com.frameworkium.core.common.listeners.TestListener;
 import com.frameworkium.core.common.reporting.allure.AllureProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.annotations.AfterSuite;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-@Listeners({MethodInterceptor.class,
-    TestListener.class,
-    ResultLoggerListener.class})
+// Uses the listeners in main.resources.META-INF.services.org.testng.ITestNGListener
 @Test(groups = "base-api")
 public abstract class BaseAPITest {
 

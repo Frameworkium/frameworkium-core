@@ -1,0 +1,8 @@
+io.qameta.allure.testng.AllureTestNg
+com.frameworkium.core.common.listeners.TestListener
+com.frameworkium.core.common.listeners.ResultLoggerListener
+com.frameworkium.core.ui.listeners.ScreenshotListener
+com.frameworkium.core.ui.listeners.CaptureListener
+com.frameworkium.core.ui.listeners.SauceLabsListener
+com.frameworkium.core.ui.listeners.VideoListener
+com.frameworkium.core.common.listeners.MethodInterceptor

@@ -1,15 +1,8 @@
 package com.frameworkium.core.ui.tests;
 
-import com.frameworkium.core.common.listeners.MethodInterceptor;
-import com.frameworkium.core.common.listeners.ResultLoggerListener;
-import com.frameworkium.core.common.listeners.TestListener;
 import com.frameworkium.core.ui.UITestLifecycle;
 import com.frameworkium.core.ui.capture.ScreenshotCapture;
 import com.frameworkium.core.ui.driver.Driver;
-import com.frameworkium.core.ui.listeners.CaptureListener;
-import com.frameworkium.core.ui.listeners.SauceLabsListener;
-import com.frameworkium.core.ui.listeners.ScreenshotListener;
-import com.frameworkium.core.ui.listeners.VideoListener;
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.testng.SauceOnDemandAuthenticationProvider;
@@ -26,13 +19,9 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-@Listeners({
-    CaptureListener.class, ScreenshotListener.class, MethodInterceptor.class,
-    SauceLabsListener.class, TestListener.class, ResultLoggerListener.class,
-    VideoListener.class})
+// Uses the listeners in main.resources.META-INF.services.org.testng.ITestNGListener
 @Test(groups = "base-ui")
 public abstract class BaseUITest
     implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
