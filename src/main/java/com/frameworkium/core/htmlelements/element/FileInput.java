@@ -43,7 +43,7 @@ public class FileInput extends TypifiedElement {
     setLocalFileDetectorIfRequired();
 
     String filePath = getFilePath(fileName);
-    sendKeys(filePath);
+    sendKeys(new File(filePath).toString());
   }
 
   /**

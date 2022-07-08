@@ -18,10 +18,10 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
+import org.testng.ITestListener;
 import org.testng.ITestResult;
-import org.testng.TestListenerAdapter;
 
-public class ScreenshotListener extends TestListenerAdapter {
+public class ScreenshotListener implements ITestListener {
 
   private static final Logger logger = LogManager.getLogger();
   private final boolean captureEnabled = ScreenshotCapture.isRequired();
