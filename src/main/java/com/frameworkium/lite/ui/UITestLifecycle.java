@@ -40,11 +40,6 @@ public class UITestLifecycle {
         return THREAD_LOCAL_INSTANCE.get();
     }
 
-    /** @return if class initialised correctly. */
-    public boolean isInitialised() {
-        return wait != null;
-    }
-
     /** Run this before the test suite to initialise a pool of drivers. */
     public static void beforeSuite() {
         if (Property.REUSE_BROWSER.getBoolean()) {
