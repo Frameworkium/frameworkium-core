@@ -51,8 +51,8 @@ public class ScreenshotCapture {
                     .post(CaptureEndpoint.EXECUTIONS.getUrl())
                     .then().statusCode(SC_CREATED)
                     .extract().path("executionID").toString();
-        } catch (Exception e) {
-            logger.error("Unable to create Capture execution.", e);
+        } catch (Throwable t) {
+            logger.error("Unable to create Capture execution.", t);
             return null;
         }
     }
