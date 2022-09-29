@@ -5,14 +5,12 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
-import org.openqa.selenium.remote.CapabilityType;
 
 public class InternetExplorerImpl extends AbstractDriver {
 
     @Override
     public InternetExplorerOptions getCapabilities() {
         InternetExplorerOptions ieOptions = new InternetExplorerOptions();
-        ieOptions.setCapability(CapabilityType.ForSeleniumServer.ENSURING_CLEAN_SESSION, true);
         ieOptions.setCapability(InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING, true);
         ieOptions.setCapability("requireWindowFocus", true);
         return ieOptions;
