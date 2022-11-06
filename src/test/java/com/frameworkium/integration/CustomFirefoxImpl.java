@@ -1,5 +1,6 @@
 package com.frameworkium.integration;
 
+import com.frameworkium.core.common.properties.Property;
 import com.frameworkium.core.ui.driver.AbstractDriver;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
@@ -13,7 +14,9 @@ public class CustomFirefoxImpl extends AbstractDriver {
 
     @Override
     public Capabilities getCapabilities() {
-        return new FirefoxOptions();
+        var firefoxOptions = new FirefoxOptions();
+        firefoxOptions.setHeadless(Property.HEADLESS.getBoolean());
+        return firefoxOptions;
     }
 
     @Override

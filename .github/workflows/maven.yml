@@ -30,12 +30,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java-version }}
-      #      - name: Configure wiremock mappings
-      #        working-directory: src/test/resources/mappings
-      #        run: |
-      #          ls | xargs -I{} curl -v -X POST -H "Content-Type: application/json" -d @{} http://localhost:8080/__admin/mappings
       - name: Start selenoid
-        uses: Xotabu4/selenoid-github-action@v1
+        uses: Xotabu4/selenoid-github-action@v2
       - name: Cache local Maven repository
         uses: actions/cache@v2
         with:
