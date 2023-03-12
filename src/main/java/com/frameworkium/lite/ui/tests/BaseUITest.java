@@ -25,7 +25,7 @@ public abstract class BaseUITest {
      * Runs before the test suite to initialise a pool of drivers, if requested.
      */
     @BeforeSuite(alwaysRun = true)
-    protected static void initialiseDriverPool() {
+    protected void initialiseDriverPool() {
         UITestLifecycle.beforeSuite();
     }
 
@@ -47,7 +47,7 @@ public abstract class BaseUITest {
      * Tears down the browser after the test method.
      */
     @AfterMethod(alwaysRun = true)
-    protected static void tearDownDriver() {
+    protected void tearDownDriver() {
         UITestLifecycle.get().afterTestMethod();
     }
 
@@ -58,7 +58,7 @@ public abstract class BaseUITest {
      * </ul>
      */
     @AfterSuite(alwaysRun = true)
-    protected static void afterTestSuiteCleanUp() {
+    protected void afterTestSuiteCleanUp() {
         UITestLifecycle.get().afterTestSuite();
     }
 
