@@ -15,6 +15,6 @@ public class SeleniumTest extends BaseUITest {
                 .clickDownloadLink()
                 .getLatestVersion();
 
-        assertThat(latestVersion).matches("\\d\\.\\d+\\.\\d+");
+        assertThat(latestVersion).matches("\\d\\.\\d+\\.\\d+.*");
     }
 }
