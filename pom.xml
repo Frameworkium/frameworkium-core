@@ -197,7 +197,6 @@
             <phase>validate</phase>
             <configuration>
               <configLocation>doc/style/style.xml</configLocation>
-              <encoding>UTF-8</encoding>
               <consoleOutput>true</consoleOutput>
               <failsOnError>true</failsOnError>
             </configuration>
