@@ -27,6 +27,7 @@ jobs:
       - name: Install Firefox and Gecko Driver
         run: |
           sudo apt update && sudo apt install -y firefox
+          which firefox
           export GECKO_VER=0.33.0
           wget --quiet https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VER}/geckodriver-v${GECKO_VER}-linux64.tar.gz
           tar -xzf geckodriver-v${GECKO_VER}-linux64.tar.gz
@@ -69,24 +70,24 @@ jobs:
   test-chrome-grid:
     runs-on: ubuntu-latest
     container:
-      image: maven:3.8-jdk-11
+      image: maven:3.9-eclipse-temurin-17
     env:
       HUB_HOST: hub
       THREAD_COUNT: 2
     services:
       hub:
-        image: selenium/hub:4.7
+        image: selenium/hub:4.13
         ports:
           - 4442-4444:4442-4444
       chrome1:
-        image: selenium/node-chrome:4.7
+        image: selenium/node-chrome:4.13
         options: -v /dev/shm:/dev/shm
         env:
           SE_EVENT_BUS_PUBLISH_PORT: 4442
           SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
           SE_EVENT_BUS_HOST: hub
       chrome2:
-        image: selenium/node-chrome:4.7
+        image: selenium/node-chrome:4.13
         options: -v /dev/shm:/dev/shm
         env:
           SE_EVENT_BUS_PUBLISH_PORT: 4442
@@ -120,24 +121,24 @@ jobs:
   test-firefox-grid:
     runs-on: ubuntu-latest
     container:
-      image: maven:3.8-jdk-11
+      image: maven:3.9-eclipse-temurin-17
     env:
       HUB_HOST: hub
       THREAD_COUNT: 2
     services:
       hub:
-        image: selenium/hub:4.7
+        image: selenium/hub:4.13
         ports:
           - 4442-4444:4442-4444
       firefox1:
-        image: selenium/node-firefox:4.7
+        image: selenium/node-firefox:4.13
         options: -v /dev/shm:/dev/shm
         env:
           SE_EVENT_BUS_PUBLISH_PORT: 4442
           SE_EVENT_BUS_SUBSCRIBE_PORT: 4443
           SE_EVENT_BUS_HOST: hub
       firefox2:
-        image: selenium/node-firefox:4.7
+        image: selenium/node-firefox:4.13
         options: -v /dev/shm:/dev/shm
         env:
           SE_EVENT_BUS_PUBLISH_PORT: 4442
