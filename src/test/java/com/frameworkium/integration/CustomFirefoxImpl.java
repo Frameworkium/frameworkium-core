@@ -18,6 +18,7 @@ public class CustomFirefoxImpl extends AbstractDriver {
         if (Property.HEADLESS.getBoolean()) {
             firefoxOptions.addArguments("--headless");
         }
+        firefoxOptions.setBinary("/snap/bin/firefox");
         return firefoxOptions;
     }
 
