@@ -12,7 +12,9 @@ public class ChromeImpl extends AbstractDriver {
     @Override
     public ChromeOptions getCapabilities() {
         var chromeOptions = new ChromeOptions();
-        chromeOptions.setHeadless(Property.HEADLESS.getBoolean());
+        if (Property.HEADLESS.getBoolean()) {
+            chromeOptions.addArguments("--headless=new");
+        }
         return chromeOptions;
     }
 

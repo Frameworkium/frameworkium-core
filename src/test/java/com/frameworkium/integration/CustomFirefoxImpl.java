@@ -15,7 +15,9 @@ public class CustomFirefoxImpl extends AbstractDriver {
     @Override
     public Capabilities getCapabilities() {
         var firefoxOptions = new FirefoxOptions();
-        firefoxOptions.setHeadless(Property.HEADLESS.getBoolean());
+        if (Property.HEADLESS.getBoolean()) {
+            firefoxOptions.addArguments("--headless");
+        }
         return firefoxOptions;
     }
 
