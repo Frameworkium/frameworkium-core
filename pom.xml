@@ -36,7 +36,7 @@
   <properties>
     <threads>1</threads>
     <groups />
-    <log4j2.version>2.20.0</log4j2.version>
+    <log4j2.version>2.21.0</log4j2.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <!-- default skip.surefire.tests to the value of skipTests -->
