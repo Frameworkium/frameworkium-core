@@ -161,9 +161,9 @@ public class ScreenshotCapture {
                     .then()
                     .assertThat().statusCode(SC_CREATED);
             logger.trace("Sent screenshot to Capture for {}", testID);
-        } catch (Exception e) {
+        } catch (Throwable t) {
             logger.warn("Failed sending screenshot to Capture for {}", testID);
-            logger.debug(e);
+            logger.debug(t);
         }
     }
 
