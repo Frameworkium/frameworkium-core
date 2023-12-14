@@ -24,13 +24,6 @@ jobs:
         run: |
           mvn test-compile surefire:test \
             --batch-mode --show-version
-      - name: Install Firefox and Gecko Driver
-        run: |
-          sudo apt update && sudo apt install -y firefox
-          which firefox
-          export GECKO_VER=0.33.0
-          wget --quiet https://github.com/mozilla/geckodriver/releases/download/v${GECKO_VER}/geckodriver-v${GECKO_VER}-linux64.tar.gz
-          tar -xzf geckodriver-v${GECKO_VER}-linux64.tar.gz
       - name: Use custom Firefox browser impl
         run: |
           mvn verify --batch-mode \
@@ -47,10 +40,6 @@ jobs:
             -Dheadless \
             -DreuseBrowser \
             -Dgroups=fw-bugs
-      - name: Install chrome and chromedriver locally
-        run: |
-          wget --quiet https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo apt install ./google-chrome-stable_current_amd64.deb
       - name: Run tests against local Chrome
         run: |
           mvn verify --batch-mode \
