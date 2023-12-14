@@ -11,7 +11,7 @@ import com.frameworkium.lite.htmlelements.element.Link;
 @FindBy(css = "header")
 public class HeaderComponent extends HtmlElement {
 
-    @FindBy(css = "li:nth-child(3) > a")
+    @FindBy(xpath = "//a/span[contains(text(),'Download')]")
     private Link downloadLink;
 
     public SeleniumDownloadPage clickDownloadLink() {
